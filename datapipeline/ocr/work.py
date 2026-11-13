@@ -156,8 +156,8 @@ class OcrPassage:
     correction: Correction = field(default_factory=Correction)
     fixed: str | None = None     # `base` with the work's tracked fixes applied
     continues: bool = False      # opens inside the paragraph the passage before it ends
-    cut: bool = False            # the clean-up cut it from that paragraph (`continues` is this
-                                 # or a tracked fix's `continues: true`)
+    cut: bool | None = False     # the clean-up cut it from that paragraph (`continues` is this
+                                 # or a tracked fix's `continues: true`); None: not recorded
 
     @property
     def base(self) -> str:
@@ -179,7 +179,7 @@ class OcrPassage:
     def from_dict(cls, d: dict) -> "OcrPassage":
         d = dict(d)
         d["correction"] = Correction(**d.get("correction", {}))
-        d.setdefault("cut", d.get("continues", False))   # cleaned before `cut` was recorded
+        d.setdefault("cut", None)   # cleaned before `cut` was recorded: `fix` finds it again
         return cls(**d)
 
 

@@ -10,7 +10,9 @@ from dataclasses import dataclass, field
 import anthropic
 
 from app.config import settings
-from app.rag.steps.passage_role import display_role
+from app.rag.steps.passage_role import (
+    REJECTED_INSTRUCTION, any_rejected, display_role, rejected_note,
+)
 from app.rag.compare.overlap import OverlapReport
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.types import PipelineResult
@@ -289,13 +291,29 @@ def _build_prompt(
             # display_role when the reference already carries it.
             role = display_role(chunk.unit_label, chunk.reference)
             role_part = f" role={role}" if role else ""
+            # The note production's models see for a rejected passage (2.4d).
+            note = rejected_note(chunk.voice, chunk.unit_label)
+            note_part = f"\n      {note}" if note else ""
             lines.append(
                 f"  [{i+1}] ({attribution}) score={chunk.reranker_score:.3f} "
-                f"ref={chunk.reference or chunk.collection}{role_part}\n"
+                f"ref={chunk.reference or chunk.collection}{role_part}{note_part}\n"
                 f"      {chunk.content[:300]}"
             )
         lines.append("")
     return "\n".join(lines)
+
+
+def _system_blocks(results: list[PipelineResult]) -> list[dict]:
+    """The cached rubric, and the rejected-position instruction as a second block only
+    when a passage shown carries the role (2.4d), so the cached prefix never moves."""
+    blocks = [{
+        "type": "text",
+        "text": _JUDGE_SYSTEM,
+        "cache_control": {"type": "ephemeral"},
+    }]
+    if any(any_rejected(result.chunks) for result in results):
+        blocks.append({"type": "text", "text": REJECTED_INSTRUCTION})
+    return blocks
 
 
 def _fallback_scores(results: list[PipelineResult]) -> list[JudgeScore]:
@@ -364,11 +382,7 @@ async def run(
                 "effort": _JUDGE_EFFORT,
                 "format": {"type": "json_schema", "schema": _OUTPUT_SCHEMA},
             },
-            system=[{
-                "type": "text",
-                "text": _JUDGE_SYSTEM,
-                "cache_control": {"type": "ephemeral"},
-            }],
+            system=_system_blocks(presented),
             messages=[{"role": "user", "content": prompt}],
         ) as stream:
             response = await stream.get_final_message()

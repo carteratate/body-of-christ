@@ -38,6 +38,10 @@ class ChunkCandidate:
     # and without this the reranker sees only "It would seem that..." with nothing
     # marking it. Sourced from the Qdrant payload or backfilled by fetch_positions.
     unit_label: str | None = None
+    # "rejected" when the passage states a position its document rejects (corpus
+    # cleanup 2.4d), else None. Travels exactly like unit_label: the Qdrant payload,
+    # the keyword SQL once 0042 exists, or the fetch_positions backfill.
+    voice: str | None = None
 
 
 @dataclass
@@ -60,6 +64,9 @@ class RankedChunk:
     # Carried through reranking for the same reason as `annotation`: the listwise
     # card and the result UI both need the passage's role. See ChunkCandidate.
     unit_label: str | None = None
+    # Same reason again: the listwise card, the explanation, the judge and the card all
+    # mark a rejected passage. See ChunkCandidate.
+    voice: str | None = None
     # Provenance for interpreting reranker_score. ``rrf_fallback`` is an ordering
     # surrogate, not a measured relevance score, and must not be shown as confidence.
     score_source: str = "unknown"

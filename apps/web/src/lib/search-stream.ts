@@ -8,6 +8,49 @@ import {
   type Tombstone,
 } from "./corpus-lifecycle";
 
+/**
+ * "rejected": the passage states a position its own document rejects — a condemned
+ * proposition, an opponent's speech, a Summa objection (corpus cleanup 2.4d). The UI
+ * shows its `unit_label` above the text so it is never read as the document's teaching.
+ */
+export type PassageVoice = "rejected";
+
+/** The voice a payload names, or null for anything else (the API sends only these). */
+export function passageVoice(value: unknown): PassageVoice | null {
+  return value === "rejected" ? value : null;
+}
+
+/** "ocr": the passage's text came from a scanned edition (corpus cleanup 1.2f). */
+export type TextSource = "ocr";
+/** "unofficial_english": a canon shown in the L’Osservatore Romano English; its Latin,
+ *  at `official_latin_url`, is the official text (1.5b). */
+export type TextStatus = "unofficial_english";
+
+/** Where a passage's text came from, shown when it is opened (corpus cleanup 2.4f). */
+export interface PassageTextLabels {
+  text_source: TextSource | null;
+  text_status: TextStatus | null;
+  official_latin_url: string | null;
+}
+
+/**
+ * The text labels a payload names: the known values only, and the Latin link only when
+ * it is a web address. The one decoder for these fields; restored searches, bookmarks
+ * and reader passages skip `consumeSearchStream`, so their components call it too.
+ */
+export function passageTextLabels(source: {
+  text_source?: unknown;
+  text_status?: unknown;
+  official_latin_url?: unknown;
+}): PassageTextLabels {
+  const url = source.official_latin_url;
+  return {
+    text_source: source.text_source === "ocr" ? "ocr" : null,
+    text_status: source.text_status === "unofficial_english" ? "unofficial_english" : null,
+    official_latin_url: typeof url === "string" && /^https?:\/\//.test(url) ? url : null,
+  };
+}
+
 export interface ChunkSource {
   collection: string;
   document_title: string;
@@ -40,6 +83,14 @@ export interface ChunkSource {
   passage_note?: string | null;
   /** A quoted author (a Father in the Catena Aurea), shown instead of `author`. */
   passage_author?: string | null;
+  /** See PassageVoice. Absent from an older API and for every passage until the
+   *  corpus cleanup's Phase 4 apply. */
+  voice?: PassageVoice | null;
+  /** See PassageTextLabels. Absent from an older API and for every passage until the
+   *  corpus cleanup's Phase 4 apply. */
+  text_source?: TextSource | null;
+  text_status?: TextStatus | null;
+  official_latin_url?: string | null;
 }
 
 /** One passage attached to a matched Summa passage to make it intelligible. */
@@ -260,6 +311,8 @@ function normalizePassage(event: Record<string, unknown>): ChunkResult {
       language: optionalText(source.language),
       passage_note: optionalText(source.passage_note),
       passage_author: optionalText(source.passage_author),
+      voice: passageVoice(source.voice),
+      ...passageTextLabels(source),
     },
     reranker_score: nullableNumber(event.reranker_score),
     explanation: nullableString(event.explanation),

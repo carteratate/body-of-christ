@@ -38,7 +38,10 @@ EDITORIAL_DIV_TITLE = re.compile(
     r"elucidations?|general notes?|(?:two )?notes? by the (?:american editor|edinburgh "
     r"translator)|general notes? by the american editor|translator'?s (?:biographical "
     r"notice|introduction|preface)|introductory (?:note|notice).*|prefatory notice.*"
-    r"|title pages?|contents|note")
+    r"|title pages?|contents|note"
+    # The NPNF Augustine volumes (1.8b): Shedd's essay, the Enchiridion's "Argument", the
+    # editor's digest of On Christian Doctrine.
+    r"|introductory essay|argument|contents of christian doctrine")
 
 # A heading inside an author's chapter that opens an editor's section running to the
 # next heading or the chapter's end ("General Notes by the American Editor." after
@@ -57,12 +60,20 @@ AUTHORIAL_CONTENTS = frozenset({
 # The same research: the Refutation's book summaries are the author's, not "Argument"s.
 AUTHORIAL_ARGUMENTS = frozenset({"church-fathers/third-century-2.xml#iii.iii"})
 
-# The ANF works whose chapter titles are a later editor's, by source key: the Banquet,
-# On the Apparel of Women and To His Wife. The title line moves into the chapter label.
+# The works whose chapter titles are a later editor's, by source key: the Banquet, On the
+# Apparel of Women and To His Wife (1.8a); On the Trinity, the Enchiridion, On the
+# Catechising of the Uninstructed, Faith and the Creed and On Christian Doctrine, whose
+# chapter titles are the Benedictine editors' (1.8b). The title line moves into the
+# chapter label. City of God's titles are the ancient capitula and stay.
 CHAPTER_TITLE_WORKS = frozenset({
     "church-fathers/third-century-3.xml#xi.iii",
     "church-fathers/third-century.xml#iii.iii",
     "church-fathers/third-century.xml#iii.v",
+    "church-fathers/on-the-holy-trinity.xml#iv.i",
+    "church-fathers/on-the-holy-trinity.xml#iv.ii",
+    "church-fathers/on-the-holy-trinity.xml#iv.iii",
+    "church-fathers/on-the-holy-trinity.xml#iv.iv",
+    "church-fathers/city-of-god.xml#v",
 })
 
 RULE_LINE = re.compile(r"^[—–‒―\-_\s]{3,}$")
@@ -72,7 +83,11 @@ NUMBER_LINE = re.compile(
     r"^(?:(?:Chapter|Chap|Book|Epistle|Letter|Treatise|Canon|Topic|Fragment|Section|Part"
     r"|Discourse|Homily|Oration)\.?\s+)?(?:[IVXLCDM]+|\d+)\.?$", re.IGNORECASE)
 ARGUMENT_LINE = re.compile(r"^(?:Chapter [IVXLC]+\.?\s*[—-]*\s*)?Argument\s*[.:—]")
-CHAPTER_TITLE_LINE = re.compile(r"^(?:Chapter|Chap\.) (?P<n>[IVXLC\d]+)\.?\s*[—–-]+\s*(?P<t>\S.*)$")
+CHAPTER_TITLE_LINE = re.compile(r"^(?:Chapter|Chap\.) (?P<n>[IVXLC\d]+)\s*\.?\s*[—–-]+\s*(?P<t>\S.*)$")
+# A preface's title in the same works: "Preface.—Why Augustin Writes of the Trinity." on
+# one line, or "Preface." over a line of its own (On Christian Doctrine).
+PREFACE_TITLE_LINE = re.compile(r"^Preface\.?\s*[—–-]+\s*(?P<t>\S.*)$")
+PREFACE_LINE = re.compile(r"^Preface\.?$")
 LETTER_NUMBER_LINE = re.compile(r"^(?:Epistle|Letter) [IVXLC]+\.")
 # An edition's source line on a paragraph of its own (C-22): an edition abbreviation
 # with a volume or page number. The same pattern as 0.1d's `editorial.provenance_lines`.
@@ -82,6 +97,15 @@ PROVENANCE_LINE = re.compile(
     r"\b(?:vol|tom|p|pp|lib|col|cap|t)\.\s*[\divxlc]+")
 PROVENANCE_MAX_CHARS = 200
 _PROVENANCE_PROSE = re.compile(r"\brefers?\b")
+
+# Footnote callers a source prints as plain digits glued after the sentence, with no
+# <note> for 1.10b's strip to take, by (file, paragraph id): (as printed, without it). The
+# Confessions' four in Book VII, chapter XI (C-17; Carter, 1 Nov 2026, NEEDS-CARTER 1.8b).
+PLAIN_CALLERS = {
+    ("confessions.xml", "viii.xi-p1"): (("immutably.2 ", "immutably. "), ("God,3 ", "God, "),
+                                        ("things.4 ", "things. "),
+                                        ("gooodness.5", "gooodness.")),
+}
 
 BRACKET = re.compile(r"\[[^\[\]]*\]")
 EDITOR_BRACKET = re.compile(
@@ -203,7 +227,8 @@ def judgment(text: str) -> str | None:
 class Removed:
     """One thing a chapter lost: a whole paragraph or a bracketed span inside one."""
     block: str              # the paragraph's id (or `n<k>`)
-    kind: str               # heading | credit | argument | letter-title | provenance | bracket
+    kind: str               # heading | credit | argument | summary | letter-title |
+                            # provenance | bracket | section
     text: str
 
 
@@ -215,7 +240,8 @@ class LineVerdicts:
 
 def classify_lines(paragraphs: list[str], titles: frozenset[str] = frozenset(),
                    *, own_title: str | None = None, argument_lines: bool = True,
-                   chapter_title_to_label: bool = False) -> LineVerdicts:
+                   chapter_title_to_label: bool = False, book_text: bool = False
+                   ) -> LineVerdicts:
     """Which paragraphs of a chapter are an editor's, and why. `titles` are the
     normalized titles and short titles of the chapter's div and its ancestors.
 
@@ -228,14 +254,20 @@ def classify_lines(paragraphs: list[str], titles: frozenset[str] = frozenset(),
     (`own_title`, the letter div's title, normalized). With
     `chapter_title_to_label`, the first "Chapter N.—Title" line there is the label's
     (`label_title`); elsewhere such lines are left in the text, since only the works
-    the Decision log names move theirs."""
+    the Decision log names move theirs. A preface's title goes the same way, printed
+    after "Preface.—" or on the line below "Preface.".
+
+    `book_text` is a book div's own text in the NPNF Augustine works (`_book_text`)."""
+    if book_text:
+        return _book_text(paragraphs)
     v = LineVerdicts()
     lead = True
-    after_number = False
+    after_number = after_preface = False
     for i, raw in enumerate(paragraphs):
         t = " ".join(raw.split())
         if lead and (i >= _LEAD_MAX_BLOCKS
-                     or (len(t) >= _LEAD_MAX_CHARS and not CHAPTER_TITLE_LINE.match(t))):
+                     or (len(t) >= _LEAD_MAX_CHARS and not CHAPTER_TITLE_LINE.match(t)
+                         and not PREFACE_TITLE_LINE.match(t))):
             lead = False
         if CREDIT_LINE.match(t):
             v.drop[i] = "credit"
@@ -249,6 +281,7 @@ def classify_lines(paragraphs: list[str], titles: frozenset[str] = frozenset(),
             continue
         if not lead:
             continue
+        preface, after_preface = after_preface, False
         m = CHAPTER_TITLE_LINE.match(t)
         if m:
             if chapter_title_to_label and v.label_title is None:
@@ -256,6 +289,14 @@ def classify_lines(paragraphs: list[str], titles: frozenset[str] = frozenset(),
                 v.label_title = f"Chapter {m.group('n')}: {m.group('t').rstrip(' .')}"
             after_number = False
             continue
+        if chapter_title_to_label and v.label_title is None:
+            m = PREFACE_TITLE_LINE.match(t)
+            if m or (preface and not t[:1].isdigit()):
+                v.drop[i] = "label"
+                v.label_title = f"Preface: {(m.group('t') if m else t).rstrip(' .')}"
+                after_number = False
+                continue
+            after_preface = bool(PREFACE_LINE.match(t))
         if RULE_LINE.match(t) or NUMBER_LINE.match(t):
             v.drop[i] = "heading"
             after_number = bool(LETTER_NUMBER_LINE.match(t)) or (after_number and RULE_LINE.match(t))
@@ -269,6 +310,27 @@ def classify_lines(paragraphs: list[str], titles: frozenset[str] = frozenset(),
             after_number = False
             continue
         after_number = False
+    return v
+
+
+def _book_text(paragraphs: list[str]) -> LineVerdicts:
+    """A book div's own paragraphs in the NPNF Augustine works, which are all the
+    editors' (1.8b): the title lines down to the last rule line ("The City of God.",
+    "Book I.", "The fifteen books of aurelius augustinus", "———"), then the editor's
+    summary of the book: Dods's "Argument—…" in City of God and On Christian Doctrine,
+    the Benedictine summary in On the Trinity ("In which the unity and equality…",
+    "Augustin pursues his defense…"). More than one paragraph after the rule line would
+    be text this rule was not written for, so it raises."""
+    v = LineVerdicts()
+    lines = [" ".join(p.split()) for p in paragraphs]
+    rules = [i for i, t in enumerate(lines) if RULE_LINE.match(t)]
+    start = rules[-1] + 1 if rules else 0
+    if len(lines) - start > 1:
+        raise ValueError(f"a book's own text holds {len(lines) - start} paragraphs after "
+                         f"its heading: {lines[start][:60]!r}")
+    for i, t in enumerate(lines):
+        v.drop[i] = ("heading" if i < start
+                     else "argument" if ARGUMENT_LINE.match(t) else "summary")
     return v
 
 
@@ -296,7 +358,8 @@ _log: list | None = None
 @contextmanager
 def recording():
     """Collect `(source_key, chapter div id, ChapterEdit)` for every chapter built inside
-    the block, and each editorial div skipped as `(source_key, div id, its title)`."""
+    the block, each editorial div skipped as `(source_key, div id, its title)`, and each
+    title page left out as `(source_key, work div id, TitlePage)`."""
     global _log
     previous, _log = _log, []
     try:
@@ -311,12 +374,16 @@ def _record(source_key: str, div_id: str, removed) -> None:
 
 
 class Editor:
-    """Rule G for one ANF work: which divs to skip, and what each chapter loses."""
+    """Rule G for one work: which divs to skip, and what each chapter loses. With
+    `book_text`, a book div's own text is the editors' (`_book_text`): the NPNF Augustine
+    works print only title lines and a summary there (1.8b)."""
 
-    def __init__(self, source_file: str, source_key: str, parent_map: dict):
+    def __init__(self, source_file: str, source_key: str, parent_map: dict, *,
+                 book_text: bool = False):
         self.source_file = source_file
         self.source_key = source_key
         self.parent_map = parent_map
+        self.book_text = book_text
 
     def skip(self, elem) -> bool:
         if editorial_div(elem.get("title") or "", elem.get("id"), self.source_file):
@@ -339,9 +406,28 @@ class Editor:
         titles.discard("")
         edit = ChapterEdit(elem, frozenset(titles), own_title=own or None,
                            argument_lines=self.source_key not in AUTHORIAL_ARGUMENTS,
-                           chapter_title_to_label=self.source_key in CHAPTER_TITLE_WORKS)
+                           chapter_title_to_label=self.source_key in CHAPTER_TITLE_WORKS,
+                           book_text=self.book_text
+                           and (elem.get("type") or "").lower() == "book")
         _record(self.source_key, elem.get("id"), edit)
         return edit
+
+    def title_page(self, elem) -> None:
+        """Record a work div's own text, its title page, as left out: the title, Latin
+        title and translator's credit, and an editor's notice (1.8b)."""
+        _record(self.source_key, elem.get("id"),
+                TitlePage((elem.get("title") or "").strip(), _block_texts(elem)))
+
+
+@dataclass
+class TitlePage:
+    """A work's title page, which the build leaves out (its text, paragraph by paragraph)."""
+    title: str
+    paragraphs: list[str]
+
+
+def _block_texts(elem) -> list[str]:
+    return [t for t in (_block_text(b) for b in direct_blocks(elem)) if t]
 
 
 class ChapterEdit:
@@ -350,11 +436,12 @@ class ChapterEdit:
     marks, and returns it edited (empty to drop it) with the notes it keeps."""
 
     def __init__(self, elem, titles: frozenset[str], *, own_title: str | None = None,
-                 argument_lines: bool = True, chapter_title_to_label: bool = False):
+                 argument_lines: bool = True, chapter_title_to_label: bool = False,
+                 book_text: bool = False):
         self.elem = elem
         self.again = lambda: ChapterEdit(       # a fresh edit of the same chapter
             elem, titles, own_title=own_title, argument_lines=argument_lines,
-            chapter_title_to_label=chapter_title_to_label)
+            chapter_title_to_label=chapter_title_to_label, book_text=book_text)
         blocks = direct_blocks(elem)
         div = elem.get("id") or ""
         self.locators = {id(b): _locator(b, div, k) for k, b in enumerate(blocks, 1)}
@@ -367,7 +454,7 @@ class ChapterEdit:
                 if t and id(b) not in sections]
         v = classify_lines([t for _, t in kept], titles, own_title=own_title,
                            argument_lines=argument_lines,
-                           chapter_title_to_label=chapter_title_to_label)
+                           chapter_title_to_label=chapter_title_to_label, book_text=book_text)
         self.label_title = v.label_title
         self._read: set[int] = set()
         self.dropped = {id(kept[i][0]): kind for i, kind in v.drop.items()}

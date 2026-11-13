@@ -11,6 +11,7 @@ import {
   submitLabel,
   type ChunkResult,
 } from "@/lib/api";
+import { passageTextLabels } from "@/lib/search-stream";
 import {
   trackBookmarkCreated,
   trackBookmarkDeleted,
@@ -19,7 +20,8 @@ import {
 import { AttachedPassage } from "./AttachedPassage";
 import { RelevanceExplanation } from "./RelevanceExplanation";
 import { getCollectionMeta } from "@/lib/collections";
-import { displayRole } from "@/lib/passageRole";
+import { displayRole, rejectedLabel } from "@/lib/passageRole";
+import { RejectedVoice, RoleCaption } from "@/components/common/RejectedVoice";
 import { stripVerseMarkers } from "@/lib/verse-markers";
 import { contentWithMarkers, footnotesCopyText, parseFootnotes } from "@/lib/footnotes";
 import { PassageNotes, PassageText } from "@/components/common/PassageText";
@@ -74,7 +76,7 @@ export function mobileCitation(
     const match = citation.match(/^[^,]+,\s*(.+?),\s*Question\s+(\d+).*?,\s*Article\s+(\d+)/i);
     if (match) return `${match[1]} · Q. ${match[2]} · Art. ${match[3]}`;
     // 1.7's: "Summa Theologiae II-II, q. 64, a. 6, co.: Whether …" (the part may hold a
-    // comma: "Suppl., App. 1"). The role tag beside it already names the piece.
+    // comma: "Suppl., App. 1"). The opened card's role caption names the piece.
     const cited = citation.match(/^Summa Theologiae\s+(.+?),\s*q\.\s*(\d+),\s*a\.\s*(\d+)/i);
     if (cited) return `${cited[1]} · Q. ${cited[2]} · Art. ${cited[3]}`;
   }
@@ -87,30 +89,8 @@ export function mobileCitation(
   return citation;
 }
 
-/**
- * The passage's role, shown beside its citation.
- *
- * A collapsed card is the default state and shows only a citation, so without this an
- * objection is indistinguishable from Aquinas's own teaching until the user expands it.
- * Kept on the same line as the reference, so it survives the card's fixed-height header
- * at every breakpoint — but as a SIBLING of the truncating element, never inside it.
- * A Summa reference averages 214 characters and overflows the desktop column, so a tag
- * appended within the truncated text is ellipsed away before it is painted: 97% of
- * objection cards would silently lose the marker on the exact surface it exists for.
- */
-function RoleTag({ role, color }: { role: string; color: string }) {
-  return (
-    <span
-      className="ml-1.5 shrink-0 whitespace-nowrap text-xs font-medium"
-      style={{ color }}
-    >
-      · {role}
-    </span>
-  );
-}
-
 /** "disputed", "pseudonymous" or "anonymous" beside the author: a sibling of the
- *  truncating author text, for the same reason as RoleTag. */
+ *  truncating author text, so the ellipsis never cuts the tag away. */
 function CertaintyTag({ tag }: { tag: string }) {
   return (
     <span className="ml-1.5 shrink-0 whitespace-nowrap rounded border border-brand-muted/40 px-1 text-[10px] leading-tight text-brand-muted">
@@ -223,8 +203,12 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   const { collection, document_title, author, reference, document_id } = source;
   // The passage's own role. Ingest moved "Objection N" out of `content`, so without this
   // an objection reads as a flat assertion wherever it travels without its attachment —
-  // collapsed, copied, or announced.
+  // opened, copied, or announced. Not in the collapsed header, which shows no text to
+  // misread (Carter, 12 Nov 2026): the opened card names it above the text.
   const role = displayRole(collection, source.unit_label, reference);
+  // A position the document rejects (2.4d): marked in the opened card, above the text,
+  // and in brackets in the copied citation. The collapsed header stays as it was.
+  const rejected = rejectedLabel(source);
 
   const collectionMeta = getCollectionMeta(collection);
   const color = collectionMeta?.color ?? "var(--color-brand-accent)";
@@ -299,7 +283,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
     const citation = includeAuthorInCopy ? `${primaryReference} (${attribution})` : primaryReference;
     // The role goes in the citation, not the body: the body is the passage as written,
     // and the clipboard is the one place this text leaves the app entirely.
-    const cited = role ? `${citation}, ${role}` : citation;
+    const cited = rejected ? `${citation} [${rejected}]` : role ? `${citation}, ${role}` : citation;
     // The rights holder's credit travels with the text (the USCCB requires it after
     // any Catechism excerpt).
     const credited = sourceCredit ? `\n\n${sourceCredit}` : "";
@@ -411,7 +395,6 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
           <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 pr-12 sm:hidden">
             <div className="flex min-w-0 items-center gap-2 pr-4">
               <span className="inline-flex max-w-[10rem] shrink-0 items-center truncate rounded-full border px-2 py-0.5 text-xs font-medium" style={{ borderColor: color, color }}>{badgeLabel}</span>
-              {role && <RoleTag role={role} color={color} />}
               {displayAuthor && <span className="min-w-0 flex-1 truncate text-xs leading-tight text-brand-muted">{displayAuthor}</span>}
               {certainty && <CertaintyTag tag={certainty} />}
             </div>
@@ -443,7 +426,6 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
                 )}
                 <div className="flex min-w-0 items-baseline">
                   <span className="truncate text-sm font-semibold leading-tight text-brand-primary">{primaryReference}</span>
-                  {role && <RoleTag role={role} color={color} />}
                 </div>
               </div>
             </div>
@@ -472,7 +454,8 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
             <AttachedPassage context={attached} color={color} rgb={rgb} />
           )}
           {result.status === "moved" && <MovedNote kind={result.redirect?.kind} />}
-          <PassageText content={content} footnotes={footnotes} />
+          {!rejected && role && <RoleCaption role={role} />}
+          <RejectedVoice label={rejected}><PassageText content={content} footnotes={footnotes} /></RejectedVoice>
           <PassageNotes footnotes={footnotes} />
           {attached?.relation === "answered_by" && (
             <AttachedPassage context={attached} color={color} rgb={rgb} />
@@ -482,6 +465,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
             passageNote={source.passage_note}
             language={source.language}
             credit={sourceCredit}
+            textLabels={passageTextLabels(source)}
             supersededHref={facts?.superseded_by && !isGuest
               ? readerHref({ docId: facts.superseded_by, origin: "search", returnKey: null })
               : null}

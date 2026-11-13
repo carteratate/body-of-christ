@@ -17,6 +17,7 @@ from identity import passage_id
 from model import Document, Work
 from publication import StageRequest, StageRefused
 from tests import pg_corpus
+from writers import reader_writer
 from tests.stage_world import (DOC_A, DOC_B, DOC_S, LIVE, World, contents_tree, passage,
                                pid)
 
@@ -412,6 +413,27 @@ async def test_stage_refuses_while_staging_holds_another_publish(world):
     with pytest.raises(StageRefused, match="staging holds publish 'test-release'"):
         await world.runner().stage(StageRequest(release="other-release",
                                                 collections=("medieval",)))
+
+
+async def test_stage_refuses_staging_made_before_a_generated_column_changed(world):
+    """2.2c: the search_vector migration rewrites live only. Staging made earlier keeps
+    the old expression, so the stage refuses until 4.0's window recreates it."""
+    world.cluster.psql(world.database, (pg_corpus.MIGRATIONS /
+                       "0045_search_vector_markers_and_reference.sql").read_text(), single=True)
+    conn = await world.connect()
+    try:
+        problems = await reader_writer.staging_shape_problems(conn)
+    finally:
+        await conn.close()
+    # Before Postgres 17 the column also moves to the end, so later columns differ too.
+    [vector] = [p for p in problems if p.startswith("staging.chunks.search_vector is")]
+    assert "to_tsvector('english'::regconfig, content)" in vector
+    with pytest.raises(ValueError, match="the staging tables differ from live"):
+        await world.runner().stage(STAGE)
+
+    world.cluster.psql(world.database,
+                       "SELECT drop_corpus_staging(); SELECT create_corpus_staging();")
+    await world.runner().stage(STAGE)
 
 
 async def test_a_refused_stage_leaves_no_ownership_for_a_retry(world):

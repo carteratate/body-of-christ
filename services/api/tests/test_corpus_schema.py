@@ -74,6 +74,36 @@ def test_read_elsewhere_url_falls_back_to_the_documents_url():
     assert read_elsewhere_url("awaiting-permission", "encyclicals", True, None) is None
 
 
+CODE = {"url": "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.html",
+        "official_latin_urls": {"can/295": "https://www.vatican.va/la/295.html",
+                                "can/700": "javascript:alert(1)"}}
+
+
+@pytest.mark.parametrize("anchor,expected", [
+    ("can/295", "https://www.vatican.va/la/295.html"),
+    ("can/295#retired-p4", "https://www.vatican.va/la/295.html"),  # 2.2w's suffix
+    ("can/296", None),        # not in the map: the Code's index page holds no canon
+    ("can/700", None),        # not a web link
+    (None, None),
+])
+def test_an_amended_canon_links_to_its_latin(anchor, expected):
+    """2.4f: a canon-law passage removed for a translation in preparation links to its
+    own Latin, from the Code's `official_latin_urls`, never the Code's index page."""
+    assert read_elsewhere_url("translation-in-preparation", "canon-law", False, CODE,
+                              anchor) == expected
+
+
+def test_other_canon_law_removals_keep_the_general_rules():
+    assert read_elsewhere_url("rule-a", "canon-law", False, CODE, "can/295") is None
+    assert read_elsewhere_url("awaiting-permission", "canon-law", False, CODE,
+                              "can/295") == CODE["url"]
+    assert read_elsewhere_url("translation-in-preparation", "canon-law", True, CODE,
+                              "can/295") == CODE["url"]
+    assert read_elsewhere_url("translation-in-preparation", "councils", False,
+                              {"url": "https://example.org/c"}, "can/295") == \
+        "https://example.org/c"
+
+
 @pytest.fixture()
 def cluster():
     with local_cluster("tc-schema-") as running:

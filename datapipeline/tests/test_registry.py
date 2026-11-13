@@ -101,10 +101,13 @@ PARAGRAPHS = [f"Paragraph {n} says something particular about the subject {n}." 
 # --------------------------------------------------------------------------- the shipped files
 
 def test_registry_has_421_entries_and_unique_ids(shipped):
-    assert len(shipped.works) == 421
-    assert len({w["document_id"] for w in shipped.works}) == 421
-    assert len({(w["collection"], w["source_key"]) for w in shipped.works}) == 421
-    assert len({w["work_id"] for w in shipped.works}) == 421
+    # 421 frozen by 2.1 on 30 Oct 2026; works registered later are new documents (1.8b's
+    # 14 treatises split out of the two Augustine volumes).
+    assert len([w for w in shipped.works if w["frozen_on"] == "2026-10-30"]) == 421
+    n = len(shipped.works)
+    assert len({w["document_id"] for w in shipped.works}) == n
+    assert len({(w["collection"], w["source_key"]) for w in shipped.works}) == n
+    assert len({w["work_id"] for w in shipped.works}) == n
 
 
 def test_registry_is_sorted_and_stable(shipped, tmp_path):
@@ -719,7 +722,9 @@ def test_shipped_registry_counts_every_snapshot_document(shipped):
     index = json.load(open(os.path.join(os.path.dirname(registry.REGISTRY_DIR), "releases",
                                         "snapshots.json"), encoding="utf-8"))
     latest = max(index["snapshots"], key=lambda s: s["date"])
-    assert latest["tables"]["documents"] == len(shipped.works)
+    # The works the snapshot holds: those registered after it are new documents.
+    assert latest["tables"]["documents"] == len(
+        [w for w in shipped.works if w["frozen_on"] <= latest["date"]])
     redirected = [r for r in shipped.passages if r["status"] == "redirected"]
     assert len(redirected) == len(registry.open_redirects(shipped))
     assert len(shipped.passages) >= latest["tables"]["chunks"]

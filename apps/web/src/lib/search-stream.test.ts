@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   consumeSearchStream,
+  passageTextLabels,
   SearchStreamProtocolError,
   type SearchStreamCallbacks,
 } from "./search-stream";
@@ -126,6 +127,10 @@ describe("consumeSearchStream", () => {
         language: null,
         passage_note: null,
         passage_author: null,
+        voice: null,
+        text_source: null,
+        text_status: null,
+        official_latin_url: null,
         reader_access: null,
         source_url: null,
         source_credit: null,
@@ -511,5 +516,39 @@ describe("consumeSearchStream corpus cleanup fields (2.4a, 2.4b)", () => {
     const onChunk = vi.fn();
     await consumeSearchStream(streamOf(base), { onChunk, onExplanationDelta: vi.fn(), onDone: vi.fn(), onError: vi.fn(), onRateLimit: vi.fn() });
     expect(onChunk.mock.calls[0][0]).not.toHaveProperty("status");
+  });
+});
+
+describe("passage voice (corpus cleanup 2.4d)", () => {
+  async function decodedVoice(voice: unknown) {
+    const cb = callbacks();
+    const source = { ...(passage().source as object), unit_label: "Objection 1", voice };
+    await consumeSearchStream(streamFromText(data(passage({ source }))), cb);
+    return cb.onChunk.mock.calls[0][0].source.voice;
+  }
+
+  it("decodes a rejected passage", async () => {
+    expect(await decodedVoice("rejected")).toBe("rejected");
+  });
+
+  it("treats an absent or unknown voice as none, never failing the passage", async () => {
+    expect(await decodedVoice(undefined)).toBeNull();
+    expect(await decodedVoice("affirmed")).toBeNull();
+    expect(await decodedVoice(7)).toBeNull();
+  });
+});
+
+describe("passageTextLabels (corpus cleanup 2.4f)", () => {
+  it("keeps the known values and a web link", () => {
+    expect(passageTextLabels({
+      text_source: "ocr", text_status: "unofficial_english", official_latin_url: "https://www.vatican.va/content/francesco/la/motu_proprio/documents/papa-francesco-motu-proprio_20150815_de-concordia-inter-codices.html",
+    })).toEqual({ text_source: "ocr", text_status: "unofficial_english", official_latin_url: "https://www.vatican.va/content/francesco/la/motu_proprio/documents/papa-francesco-motu-proprio_20150815_de-concordia-inter-codices.html" });
+  });
+
+  it("drops unknown values and a link that is not a web address", () => {
+    expect(passageTextLabels({
+      text_source: "typed", text_status: "official", official_latin_url: "javascript:alert(1)",
+    })).toEqual({ text_source: null, text_status: null, official_latin_url: null });
+    expect(passageTextLabels({})).toEqual({ text_source: null, text_status: null, official_latin_url: null });
   });
 });

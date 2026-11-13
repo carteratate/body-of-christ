@@ -32,6 +32,8 @@ import defusedxml.ElementTree as ET
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from checks.language import latin_runs
+from ingest.editorial import PLAIN_CALLERS
+from ingest.editorial_keep import kept_quotes, quoted_text
 
 SOURCES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "sources")
 
@@ -110,7 +112,18 @@ def editorial_divs(source_file: str, path: str = EDITORIAL_DIVS_PATH) -> set[str
     notices, elucidations, editors' prefaces), reviewed by Carter on 5 Oct 2026. Rule G
     keeps them out of the corpus, so they are "apparatus", not body."""
     with open(path, encoding="utf-8") as f:
-        return {r["div"] for r in json.load(f) if r["file"] == source_file}
+        return {r["div"] for r in json.load(f)
+                if r["file"] == source_file and not r.get("own_text")}
+
+
+def editorial_own_text(source_file: str, path: str = EDITORIAL_DIVS_PATH) -> set[str]:
+    """Div ids of a ThML file whose own paragraphs are an editor's, though the divs inside
+    them are the author's (`"own_text": true`): the NPNF Augustine volumes' book divs,
+    which print only title lines and the editor's summary, and the treatises' title pages
+    (1.8b). Those paragraphs are "apparatus"."""
+    with open(path, encoding="utf-8") as f:
+        return {r["div"] for r in json.load(f)
+                if r["file"] == source_file and r.get("own_text")}
 
 
 REMOVALS_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -159,11 +172,20 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     holds a poem or a quoted hymn as <l> lines); <note> is "note"; <scripCom> and <pb>
     carry no text and are ignored. unit_id is the nearest ancestor div's id. Divs
     listed in editorial_divs.json, and everything inside them, are "apparatus", and so
-    is a paragraph a removal registry span entry records (`removed_paragraphs`)."""
+    is a paragraph a removal registry span entry records (`removed_paragraphs`), and the
+    own paragraphs of a div `editorial_own_text` lists. A quotation of the author that
+    `ingest.editorial_keep` keeps from an editorial div is body under its passage's
+    chapter key (`<div>/retractations`), and a footnote caller printed as a plain digit
+    (`ingest.editorial.PLAIN_CALLERS`) is read without it, as the adapter reads it."""
     source_file = source_file or os.path.basename(path)
     root = _read_thml(path)
     editorial = editorial_divs(source_file)
+    own_text = editorial_own_text(source_file)
     removed = removed_paragraphs()
+    quotes = {}
+    for q in kept_quotes(source_file):
+        quotes.setdefault(q.first, []).append(q)
+        quotes.setdefault(q.last, []).append(q)
     units: list[SourceUnit] = []
 
     def walk(el, div_id: str | None, region: str, in_div: bool) -> None:
@@ -181,8 +203,15 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
             elif tag in ("p", "verse"):
                 if in_div:
                     text = _thml_text(child, skip_notes=True)
-                    own = "apparatus" if region == "body" and _paragraph_sha1(text) in removed \
-                        else region
+                    for printed, without in PLAIN_CALLERS.get((source_file, child.get("id")),
+                                                              ()):
+                        text = text.replace(printed, without)
+                    own = "apparatus" if region == "body" and (
+                        _paragraph_sha1(text) in removed or div_id in own_text) else region
+                    for q in quotes.get(child.get("id"), [])[:1]:
+                        a, b = quoted_text(text, q, child.get("id"))
+                        units.append(SourceUnit(source_file, q.anchor, text[a:b], "body"))
+                        text = text[:a] + SEGMENT_BREAK + text[b:]
                     units.append(SourceUnit(source_file, div_id, text, own))
                     # A note inside the paragraph is its own unit.
                     for note in child.iter("note"):

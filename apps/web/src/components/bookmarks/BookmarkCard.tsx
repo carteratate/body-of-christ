@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Bookmark as BookmarkIcon, BookOpen, Copy, ExternalLink, Pencil, Plus } from "lucide-react";
 import { updateBookmarkNote, type Bookmark } from "@/lib/api";
+import { passageTextLabels } from "@/lib/search-stream";
 import { trackBookmarkDeleted, trackDocumentOpened } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { stripVerseMarkers } from "@/lib/verse-markers";
@@ -15,6 +16,8 @@ import { MovedNote, PassageFacts, RemovalNotice } from "@/components/common/Pass
 import { certaintyTag, formatAttribution, formatDate, sourceCreditOf, withoutAuthorPrefix } from "@/lib/attribution";
 import { parseTombstone } from "@/lib/corpus-lifecycle";
 import { PassageNotes, PassageText } from "@/components/common/PassageText";
+import { RejectedVoice } from "@/components/common/RejectedVoice";
+import { rejectedLabel } from "@/lib/passageRole";
 
 const NOTE_MAX = 3000;
 
@@ -77,6 +80,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
   const copiedAttribution = attributed
     ? formatAttribution(source.author, source.facts, source.passage_author, { work: source.facts?.work_title ?? document_title })
     : null;
+  // A position the document rejects (2.4d): labelled above the text and in the copy.
+  const rejected = rejectedLabel(source);
   // A removed passage shows why, and no text; the user's note stays (2.4a, 2.4b).
   const tombstone = bookmark.status === "removed" ? parseTombstone(bookmark.tombstone) : null;
 
@@ -95,7 +100,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
     // Text, then its notes, then the credit, which stays last.
     const notes = footnotes.length ? `\n\n${footnotesCopyText(footnotes)}` : "";
     const body = footnotes.length ? contentWithMarkers(content, footnotes) : stripVerseMarkers(content);
-    const cited = copiedAttribution ? `${displayReference} (${copiedAttribution})` : displayReference;
+    const attributed = copiedAttribution ? `${displayReference} (${copiedAttribution})` : displayReference;
+    const cited = rejected ? `${attributed} [${rejected}]` : attributed;
     const text = `${body} — ${cited} (${collection})${notes}${credited}`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text)
@@ -223,13 +229,14 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
       ) : (
         <>
           {bookmark.status === "moved" && <MovedNote kind={bookmark.redirect?.kind} />}
-          <PassageText content={content} footnotes={footnotes} />
+          <RejectedVoice label={rejected}><PassageText content={content} footnotes={footnotes} /></RejectedVoice>
           <PassageNotes footnotes={footnotes} />
           <PassageFacts
             facts={source.facts}
             passageNote={source.passage_note}
             language={source.language}
             credit={sourceCredit}
+            textLabels={passageTextLabels(source)}
             supersededHref={source.facts?.superseded_by
               ? readerHref({ docId: source.facts.superseded_by, origin: "saved", returnKey: null })
               : null}

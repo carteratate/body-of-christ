@@ -409,33 +409,10 @@ describe("ChunkCard keeps the attachment out of every action", () => {
     expect(copied).toContain("Objection 1");
   });
 
-  it("keeps the role marker out of any truncating element", () => {
-    // A Summa reference averages 214 characters and overflows the desktop column, so a
-    // marker appended INSIDE the truncated citation is ellipsed away before it paints —
-    // silently, on 97% of objection cards, on the one surface the marker exists for.
-    // jsdom has no layout, so this asserts the structural property instead: the tag is
-    // never a descendant of a `truncate` or `line-clamp` element.
-    const { container } = render(
-      <ChunkCard
-        result={summaObjection() as never}
-        index={0}
-        searchId="00000000-0000-0000-0000-000000000003"
-        token="token"
-      />,
-    );
-
-    const tags = Array.from(container.querySelectorAll("span"))
-      .filter((el) => el.textContent?.includes("Objection 1") && el.children.length === 0);
-    expect(tags.length).toBeGreaterThan(0);
-    for (const tag of tags) {
-      expect(tag.closest(".truncate")).toBeNull();
-      expect(tag.closest("[class*='line-clamp']")).toBeNull();
-    }
-  });
-
-  it("names the passage's role on the collapsed card", async () => {
-    // The collapsed card is the DEFAULT state and shows only a citation. Without the
-    // role, an objection is indistinguishable from Aquinas's own teaching until opened.
+  it("names the passage's role above the opened text, not on the collapsed card", async () => {
+    // The collapsed card shows no passage text, so there is nothing to misread there;
+    // the role is named where the text is (Carter, 12 Nov 2026). Screen readers still
+    // hear it in the header's name.
     render(
       <ChunkCard
         result={summaObjection() as never}
@@ -444,10 +421,15 @@ describe("ChunkCard keeps the attachment out of every action", () => {
         token="token"
       />,
     );
+    const header = screen.getByRole("button", { expanded: false });
+    expect(header.textContent).not.toContain("Objection 1");
+    expect(header.getAttribute("aria-label")).toContain("Objection 1");
 
-    expect(screen.getAllByText(/Objection 1/).length).toBeGreaterThan(0);
-    expect(screen.getByRole("button", { expanded: false }).getAttribute("aria-label"))
-      .toContain("Objection 1");
+    await userEvent.click(header);
+    const caption = screen.getByText("Objection 1");
+    expect(caption.className).toContain("text-brand-muted");
+    expect(caption.compareDocumentPosition(screen.getByText("THE MATCHED OBJECTION"))
+      & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });
 
@@ -775,5 +757,162 @@ describe("ChunkCard footnotes (issue #279)", () => {
     expect(notes).toBeGreaterThan(0);
     expect(copied.indexOf(CREDIT)).toBeGreaterThan(notes);
     expect(copied.endsWith(CREDIT)).toBe(true);
+  });
+});
+
+describe("ChunkCard rejected voice (corpus cleanup 2.4d)", () => {
+  const LABEL = "Condemned proposition 31 (condemned by Leo X, Exsurge Domine)";
+  const TEXT = "In every good work the just man sins.";
+
+  function condemned(source: Record<string, unknown> = {}) {
+    return {
+      chunk_id: "00000000-0000-0000-0000-000000000031",
+      content: TEXT,
+      source: {
+        collection: "papal-documents",
+        document_title: "Exsurge Domine",
+        author: "Pope Leo X",
+        reference: "Pope Leo X — Exsurge Domine, §31",
+        document_id: "00000000-0000-0000-0000-000000000002",
+        position: 31,
+        anchor: "exsurge-domine/31",
+        unit_label: LABEL,
+        voice: "rejected",
+        ...source,
+      },
+      reranker_score: 0.81,
+      explanation: "Leo X condemned this proposition.",
+    };
+  }
+
+  function renderResult(result: ReturnType<typeof condemned>) {
+    return render(
+      <ChunkCard result={result as never} index={0} searchId="00000000-0000-0000-0000-000000000003" token="token" />,
+    );
+  }
+
+  it("keeps the collapsed header as it was: no label", () => {
+    // Carter, 12 Nov 2026: the header shows the author and the reference only.
+    renderResult(condemned());
+    const header = screen.getByRole("button", { expanded: false });
+    expect(header.textContent).not.toContain(LABEL);
+    expect(screen.queryByText(LABEL)).toBeNull();
+  });
+
+  it("sets the opened text off as a quotation under a caption naming whose it is", async () => {
+    renderResult(condemned());
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    const caption = screen.getByText(LABEL).closest("p")!;
+    expect(caption.textContent).toBe(`${LABEL} · a position the document rejects`);
+    expect(caption.className).toContain("text-brand-muted");
+    const quoted = screen.getByText(TEXT).closest("[data-voice='rejected']")!;
+    expect(quoted.className).toContain("border-l-2");
+    expect(quoted.className).toContain("italic");
+    expect(caption.compareDocumentPosition(quoted) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("adds the label to the copied citation in brackets", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    renderResult(condemned());
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
+    expect(writeText.mock.calls[0][0]).toBe(
+      `${TEXT} — Pope Leo X — Exsurge Domine, §31 [${LABEL}] (papal-documents)`,
+    );
+  });
+
+  it("names a rejected Summa objection once, in its caption", async () => {
+    renderResult(condemned({
+      collection: "summa", document_title: "Summa Theologiae", author: "Thomas Aquinas",
+      reference: "Summa Theologiae I-II, q. 109, a. 2", unit_label: "Objection 1",
+    }));
+    const header = screen.getByRole("button", { expanded: false });
+    expect(header.textContent).not.toContain("Objection 1");
+    await userEvent.click(header);
+    expect(screen.getAllByText("Objection 1")).toHaveLength(1);
+    expect(screen.getByText("Objection 1").closest("p")!.textContent)
+      .toBe("Objection 1 · a position the document rejects");
+  });
+
+  it("renders exactly as today without the field", async () => {
+    // Recorded from master's ChunkCard, before 2.4d. An unknown voice is no voice.
+    for (const voice of [undefined, "affirmed"]) {
+      vi.spyOn(crypto, "randomUUID").mockReturnValue("11111111-1111-4111-8111-111111111111");
+      const { container, unmount } = renderResult(condemned({ voice }));
+      const html = () => container.innerHTML.replace(/_r_[0-9a-z]+_|«r[0-9a-z]+»|:r[0-9a-z]+:/g, "«id»");
+      expect(html()).toMatchSnapshot("collapsed");
+      await userEvent.click(screen.getByRole("button", { expanded: false }));
+      expect(html()).toMatchSnapshot("opened");
+      unmount();
+    }
+  });
+});
+
+describe("ChunkCard text labels (corpus cleanup 2.4f)", () => {
+  const LATIN = "https://www.vatican.va/content/francesco/la/motu_proprio/documents/papa-francesco-motu-proprio_20150815_de-concordia-inter-codices.html";
+  const ORE = "Unofficial English translation (L’Osservatore Romano). The Latin text is official.";
+
+  function canon(source: Record<string, unknown> = {}) {
+    return {
+      chunk_id: "00000000-0000-0000-0000-000000001108",
+      content: "Only those marriages are valid which are contracted before the local ordinary…",
+      source: {
+        collection: "canon-law",
+        document_title: "Code of Canon Law",
+        author: null,
+        reference: "Can. 1108",
+        document_id: "00000000-0000-0000-0000-000000000002",
+        position: 1108,
+        anchor: "can/1108",
+        facts: { source_credit: "© Libreria Editrice Vaticana" },
+        text_status: "unofficial_english",
+        official_latin_url: LATIN,
+        ...source,
+      },
+      reranker_score: 0.81,
+      explanation: "Relevant",
+    };
+  }
+
+  function renderResult(result: ReturnType<typeof canon>) {
+    return render(
+      <ChunkCard result={result as never} index={0} searchId="00000000-0000-0000-0000-000000000003" token="token" />,
+    );
+  }
+
+  it("shows neither label on the collapsed card", () => {
+    renderResult(canon());
+    renderResult(canon({ text_status: null, official_latin_url: null, text_source: "ocr" }));
+    expect(screen.queryByText(/Unofficial English/)).toBeNull();
+    expect(screen.queryByText("Text from a scanned edition")).toBeNull();
+  });
+
+  it("shows the unofficial-English line with the Latin linked, before the credit", async () => {
+    renderResult(canon());
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    const lines = [...screen.getByTestId("passage-facts").querySelectorAll("p")].map((p) => p.textContent);
+    // The link's screen-reader note sits inside the sentence.
+    expect(lines).toEqual([
+      "Unofficial English translation (L’Osservatore Romano). The Latin text is official (opens in a new tab).",
+      "© Libreria Editrice Vaticana",
+    ]);
+    const link = screen.getByRole("link", { name: /The Latin text is official/ });
+    expect(link.getAttribute("href")).toBe(LATIN);
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
+  });
+
+  it("shows the scanned-edition label when the passage is opened", async () => {
+    renderResult(canon({ collection: "church-fathers", text_status: null, official_latin_url: null, text_source: "ocr", facts: null }));
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    expect(screen.getByTestId("text-label").textContent).toBe("Text from a scanned edition");
+  });
+
+  it("keeps the sentence without a link when the Latin's address is missing", async () => {
+    renderResult(canon({ official_latin_url: null }));
+    await userEvent.click(screen.getByRole("button", { expanded: false }));
+    expect(screen.getByTestId("text-label").textContent).toBe(ORE);
+    expect(screen.queryByRole("link", { name: /The Latin text is official/ })).toBeNull();
   });
 });

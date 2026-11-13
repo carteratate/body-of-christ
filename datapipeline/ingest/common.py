@@ -699,16 +699,16 @@ def _book_label(elem) -> str | None:
     return None
 
 
-def iter_chapters(work_root, parent_map, skip=None):
+def iter_chapters(work_root, parent_map, skip=None, front_matter=_cf_skippable):
     """Yield (book_label|None, chapter_elem) for the content-bearing divs under
     work_root, at whatever depth they occur (work→chapter or work→book→chapter).
     A chapter is any div with direct <p> children; its book is the nearest ancestor
-    book division. Chapters under skippable front-matter ancestors are omitted, and so
-    are chapters `skip(div)` accepts, or under a div it accepts (rule G's editorial
-    divs, `ingest.editorial.Editor.skip`).
+    book division. Chapters under skippable front-matter ancestors (`front_matter`, by
+    title) are omitted, and so are chapters `skip(div)` accepts, or under a div it
+    accepts (rule G's editorial divs, `ingest.editorial.Editor.skip`).
     """
     def skippable(div) -> bool:
-        return _cf_skippable(div.get("title") or "") or (skip is not None and skip(div))
+        return front_matter(div.get("title") or "") or (skip is not None and skip(div))
 
     for elem in work_root.iter():
         tag = elem.tag
