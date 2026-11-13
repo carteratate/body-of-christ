@@ -7054,24 +7054,6 @@
   "planned_for": null
  },
  {
-  "work": "Ineffabilis Deus",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/ineffabilis-deus.html",
-  "document_id": "a9956e54-3212-501d-96b4-51c14137b8b1",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9ineff.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Inscrutabile",
   "author": "Pope Pius VI",
   "collection": "encyclicals",
@@ -7418,8 +7400,8 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/officialdocumen00ixgoog/",
-  "document_id": null,
-  "edition": "Official Documents Connected with the Definition of the Dogma of the Immaculate Conception, in Latin and English (Baltimore: John Murphy; London: Charles Dolman, 1855), pp. 59-98. A different translation from papalencyclicals.net's, which is modern. Internet Archive scan officialdocumen00ixgoog",
+  "document_id": "a9956e54-3212-501d-96b4-51c14137b8b1",
+  "edition": "Official Documents Connected with the Definition of the Dogma of the Immaculate Conception, in Latin and English (Baltimore: John Murphy; London: Charles Dolman, 1855), pp. 59-100 (the English). A different translation from papalencyclicals.net's, which is modern. Internet Archive scan officialdocumen00ixgoog",
   "translator": null,
   "first_published": 1855,
   "source_url": "https://archive.org/details/officialdocumen00ixgoog",
@@ -7429,7 +7411,7 @@
   "credit_line": "Translation from Official Documents Connected with the Definition of the Dogma of the Immaculate Conception (Baltimore, 1855)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Omnem Sollicitudinem",

@@ -287,17 +287,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/encyclicals/officialdocumen00ixgoog/officialdocumen00ixgoog_djvu.xml",
-  "sha256": "c02b8008d753c7b609377076dd7b0fe55e2b9486afd9cc8788a07ebe7eddf4db",
-  "bytes": 1405193,
-  "url": "https://archive.org/download/officialdocumen00ixgoog/officialdocumen00ixgoog_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/encyclicals/sim_dublin-review_1859-09_47/sim_dublin-review_1859-09_47_djvu.xml",
   "sha256": "7e9a9c9d5cb17d6bafce9225b3a6f4724834663e13ef0b65efe32047e06e6306",
   "bytes": 9847286,
@@ -5338,6 +5327,17 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "encyclicals",
+  "path": "encyclicals/officialdocumen00ixgoog/officialdocumen00ixgoog_djvu.xml",
+  "sha256": "c02b8008d753c7b609377076dd7b0fe55e2b9486afd9cc8788a07ebe7eddf4db",
+  "bytes": 1405193,
+  "url": "https://archive.org/download/officialdocumen00ixgoog/officialdocumen00ixgoog_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
  },
  {
   "collection": "encyclicals",

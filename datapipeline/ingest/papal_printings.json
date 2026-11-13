@@ -2726,5 +2726,209 @@
     "unit": 22
    }
   ]
+ },
+ "encyclicals/ineffabilis-deus": {
+  "source": "ocr",
+  "work": "official-documents-1855-ineffabilis-deus",
+  "file": "officialdocumen00ixgoog/",
+  "url": "https://archive.org/details/officialdocumen00ixgoog",
+  "translation": "Official Documents Connected with the Definition of the Dogma of the Immaculate Conception (Baltimore, 1855)",
+  "editorial": [
+   {
+    "opens": "LETTERS APOSTOLIC OF OUR MOST HOLY",
+    "why": "The book's heading over the English (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Pius, Bishop, Servant",
+    "unit": "preamble"
+   },
+   {
+    "opens": "For a perpetual remembrance",
+    "unit": "preamble"
+   },
+   {
+    "opens": "God who is ineffable",
+    "unit": 1,
+    "until": "And indeed it was most becoming"
+   },
+   {
+    "opens": "And indeed it was most becoming",
+    "unit": 3
+   },
+   {
+    "opens": "Which original innocence",
+    "unit": 5,
+    "until": "And, therefore, the very words"
+   },
+   {
+    "opens": "And, therefore, the very words",
+    "unit": 6
+   },
+   {
+    "opens": "But though all those things",
+    "unit": 8,
+    "until": "Thus the same Roman Church had"
+   },
+   {
+    "opens": "Thus the same Roman Church had",
+    "unit": 9
+   },
+   {
+    "opens": "Indeed, Our predecessors vehemently",
+    "unit": 11
+   },
+   {
+    "opens": "But since those things which pertain",
+    "unit": 13
+   },
+   {
+    "opens": "Our predecessors thought it their duty",
+    "unit": 14,
+    "until": "all which things Our illustrious"
+   },
+   {
+    "opens": "all which things Our illustrious",
+    "unit": 16
+   },
+   {
+    "opens": "\"Considering that the Holy",
+    "unit": "+"
+   },
+   {
+    "opens": "\"And against all and each",
+    "unit": 17,
+    "until": "likewise we wish to subject"
+   },
+   {
+    "opens": "likewise we wish to subject",
+    "unit": 18
+   },
+   {
+    "opens": "\"And We prohibit",
+    "unit": 19
+   },
+   {
+    "opens": "All are aware",
+    "unit": 21,
+    "until": "To which, lastly, is added"
+   },
+   {
+    "opens": "To which, lastly, is added",
+    "unit": 23
+   },
+   {
+    "opens": "And, in truth, illustrious",
+    "unit": 25
+   },
+   {
+    "opens": "The Fathers and writers of the Church, taught",
+    "unit": 27
+   },
+   {
+    "opens": "This illustrious and singular",
+    "unit": 28
+   },
+   {
+    "opens": "To describe the same totality",
+    "unit": 29,
+    "until": "But when the same Fathers"
+   },
+   {
+    "opens": "But when the same Fathers",
+    "unit": 31
+   },
+   {
+    "opens": "Hence it is the clear",
+    "unit": 33
+   },
+   {
+    "opens": "And therefore to vindicate",
+    "unit": "+"
+   },
+   {
+    "opens": "Wherefore they have never ceased",
+    "unit": 35,
+    "until": "But as if these encomiums"
+   },
+   {
+    "opens": "But as if these encomiums",
+    "unit": 37
+   },
+   {
+    "opens": "To these things are added",
+    "unit": 39
+   },
+   {
+    "opens": "Far more, it was right",
+    "unit": "+",
+    "until": "And this doctrine, indeed"
+   },
+   {
+    "opens": "And this doctrine, indeed",
+    "unit": 40,
+    "until": "No one is ignorant"
+   },
+   {
+    "opens": "No one is ignorant",
+    "unit": 41
+   },
+   {
+    "opens": "It is no wonder",
+    "unit": 43
+   },
+   {
+    "opens": "Therefore with singular joy",
+    "unit": 44,
+    "until": "But wishing to bring"
+   },
+   {
+    "opens": "But wishing to bring",
+    "unit": 45,
+    "until": "And, although from the entreaties"
+   },
+   {
+    "opens": "And, although from the entreaties",
+    "unit": 47
+   },
+   {
+    "opens": "Certainly we were filled",
+    "unit": 48
+   },
+   {
+    "opens": "Afterwards treading",
+    "unit": 49
+   },
+   {
+    "opens": "Therefore, having full trust",
+    "unit": 50
+   },
+   {
+    "opens": "Wherefore, after we had",
+    "unit": 52,
+    "until": "Wherefore if any shall dare"
+   },
+   {
+    "opens": "Wherefore if any shall dare",
+    "unit": 53
+   },
+   {
+    "opens": "Our mouth is filled",
+    "unit": 55
+   },
+   {
+    "opens": "Let all the children",
+    "unit": 56
+   },
+   {
+    "opens": "Finally, in order that this Our definition",
+    "unit": "+"
+   },
+   {
+    "opens": "Let no man presume",
+    "unit": "+"
+   }
+  ]
  }
 }
