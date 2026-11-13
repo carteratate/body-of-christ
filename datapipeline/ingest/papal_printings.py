@@ -181,11 +181,14 @@ def printed_tokens(p: Printing, blocks: list[tuple[str, str]]) -> list[Token]:
                 toks.append(Token(kind, int(u.unit), text, [Segment(loc, text)]))
             continue
         # After the last unit: its dating line or signature, and the lines that finish
-        # the date ("In the nineteenth year of Our Pontificate.").
+        # the date ("In the nineteenth year of Our Pontificate.") or sign it in capitals
+        # ("PIUS P. P. IX.").
         if not units and toks and toks[-1].kind == kind and (
                 papal_common._DATING.match(text) or papal_common._SIGNED.match(text)
                 or (closing and papal_common._DATED.search(text)
-                    and len(text) < papal_common._DATE_CARD_MAX)):
+                    and len(text) < papal_common._DATE_CARD_MAX)
+                or (closing and len(text) <= papal_common._SIGNATURE_MAX
+                    and papal_common.is_shouting(text))):
             closing = True
             last = toks[-1]
             toks[-1] = last._replace(text=f"{last.text}\n\n{text}",

@@ -1066,3 +1066,23 @@ def test_bounded_text_keeps_its_quotes_when_asked():
     dropped = Bounded().split(paras, bounds=(bound,))[0].paragraphs[0].text
     kept = Bounded().split(paras, bounds=({**bound, "keep_quotes": True},))[0].paragraphs[0].text
     assert '"' not in dropped and kept == 'He wrote: "Mirari vos" is cited.'
+
+
+def test_two_column_reads_the_head_then_left_then_right_by_row():
+    from ocr.layout import TwoColumn
+
+    lines = [Line("ROMAN CATHOLIC CHURCH.", 1035, 302, 1925, 340), Line("689", 2586, 314, 2679, 350)]
+    for k in range(6):
+        lines.append(Line(f"left column line {k} of running text here", 240, 440 + 48 * k, 1430, 480 + 48 * k))
+        lines.append(Line(f"right column line {k} of running text here", 1490, 440 + 48 * k, 2680, 480 + 48 * k))
+    # A stray mark before a right-column line does not make it run across the page.
+    lines.append(Line("- anew right column line 6 of text", 1440, 440 + 48 * 6, 2655, 480 + 48 * 6))
+    # One printed line the OCR cut in two, the second piece a few pixels higher.
+    lines.append(Line("left line 6 first half", 240, 440 + 48 * 6 + 4, 800, 480 + 48 * 6))
+    lines.append(Line("and its second half", 820, 440 + 48 * 6 - 3, 1430, 480 + 48 * 6))
+    kept = [ln.text for ln in TwoColumn().reading_order(Page(0, 2900, 4400, lines))]
+    assert kept[:2] == ["ROMAN CATHOLIC CHURCH.", "689"]
+    assert kept[2:10] == [f"left column line {k} of running text here" for k in range(6)] \
+        + ["left line 6 first half", "and its second half"]
+    assert kept[10:] == [f"right column line {k} of running text here" for k in range(6)] \
+        + ["- anew right column line 6 of text"]
