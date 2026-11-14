@@ -17,22 +17,27 @@ from bs4 import BeautifulSoup
 from checks.source_text import SOURCES
 
 COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
-# "Given at Rome …" or "Given in Rome …", up to the first year on the same line.
-_GIVEN = re.compile(r"\bGiven\b,?\s+(?:at|in|from)\s+(?:the\s+)?[A-Z][^\n]{0,240}?"
-                    r"\b(1[2-9]\d\d|20[0-2]\d)\b")
+# "Given at Rome …" or "Given in Rome …", up to the first year after it, printed plain or
+# as an ordinal ("in the 1826th year of the Incarnation").
+_GIVEN = re.compile(r"\bGiven\b,?\s+(?:at|in|from)\s+(?:the\s+)?[A-Z].{0,240}?"
+                    r"\b(1\d\d\d|20[0-2]\d)(?:st|nd|rd|th)?\b")
 # Source key → (the year the source prints, why it is wrong).
 MISPRINTS = {
     "encyclicals/salutis-nostrae": (
         1744, "the page prints 1744 for 1774: Clement XIV, who issued it, was elected in "
               "1769, and the bull proclaims the Jubilee of 1775"),
+    "encyclicals/peregrinantes": (
+        1149, "the page prints 1149 for 1749: it is dated in the ninth year of Benedict XIV, "
+              "elected in 1740, and proclaims the Jubilee of 1750"),
 }
 
 
 def printed_year(path: str) -> int | None:
     """The year of the last dating line in a vendored page, or None if it prints none."""
     with open(path, encoding="utf-8", errors="replace") as f:
-        text = BeautifulSoup(f.read(), "html.parser").get_text("\n")
-    matches = list(_GIVEN.finditer(re.sub(r"[ \t\xa0]+", " ", text)))
+        text = BeautifulSoup(f.read(), "html.parser").get_text(" ")
+    # Inline markup (an italic "Year of Faith", a line break) must not cut a dating line.
+    matches = list(_GIVEN.finditer(re.sub(r"\s+", " ", text)))
     return int(matches[-1].group(1)) if matches else None
 
 
