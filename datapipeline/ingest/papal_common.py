@@ -833,7 +833,10 @@ def _chapter_label(text: str) -> str:
     return _WORD_OPENING.sub(lambda m: m.group(0).upper(), label)
 
 
-def _clean(text: str, slug: str) -> str:
+def _clean(text: str, slug: str, callers: bool = True) -> str:
+    """The site's text made plain. With `callers` false (a printing, 1.3d), note callers
+    are not looked for: the builder keeps a printing's notes out already, and its brackets
+    are text ("AAS [39] 1947", The Catholic Mind's Menti Nostrae)."""
     for wrong, right in _ENTITY_FIXES.items():
         text = text.replace(wrong, right)
     spaces = _LOST_SPACES.get(slug)
@@ -844,6 +847,8 @@ def _clean(text: str, slug: str) -> str:
     if cut:
         text = cut.sub("", text)
     text = _TRAILING_NOTES_HEADING.sub("", text)
+    if not callers:
+        return clean_text(strip_boilerplate(text))
     text = strip_note_callers(clean_text(strip_footnote_markers(strip_boilerplate(text))))
     # A caller between two sentences ('soul?"(23) This') leaves them joined once it goes.
     text = repair_sentence_joins(text)
@@ -880,11 +885,13 @@ def build_document(entry: dict, collection: str, src_dir: str) -> Document:
 def document_from_tokens(entry: dict, collection: str, toks: list[Token], *,
                          url: str | None = None, text_replaced: str | None = None,
                          translation: str = "", metadata: dict | None = None,
-                         passage_metadata: dict | None = None) -> Document:
+                         passage_metadata: dict | None = None,
+                         callers: bool = True) -> Document:
     """A document from its tokens, by the rules every papal source shares. A document
     built from another edition than its manifest's page (1.3d's printings) names that
     edition's `url`, the `text_replaced` every passage declares, its `translation`, and any
-    further document and passage metadata (a scanned printing's label, 1.2f)."""
+    further document and passage metadata (a scanned printing's label, 1.2f), and
+    `callers=False`, since its text holds no site note callers (`_clean`)."""
     slug, author = entry["slug"], entry["author"]
     url = url or entry["url"]
     title = _disambiguate_title(entry["title"], slug, entry["year"])
@@ -896,7 +903,7 @@ def document_from_tokens(entry: dict, collection: str, toks: list[Token], *,
 
     def emit(content: str, ref: str | None, base_anchor: str, ckey: str, clabel: str,
              unit: str | None, segments: list[Segment]) -> None:
-        content = _clean(content, slug)
+        content = _clean(content, slug, callers)
         if not content:
             return
         pieces = pack_text(content, segments, settings.MAX_PASSAGE_CHARS)
