@@ -1650,8 +1650,36 @@
  {
   "collection": "medieval",
   "file": "consolation-of-philosophy.xml",
+  "div": "ix",
+  "title": "Editorial Note",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "consolation-of-philosophy.xml",
+  "div": "vii",
+  "title": "A Note on the Translation",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "consolation-of-philosophy.xml",
   "div": "viii",
   "title": "Appendix",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "consolation-of-philosophy.xml",
+  "div": "x",
+  "title": "Chronological Table",
+  "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "imitation-of-christ.xml",
+  "div": "ii",
+  "title": "Foreword",
   "item": "1.9"
  },
  {

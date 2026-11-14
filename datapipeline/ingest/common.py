@@ -667,7 +667,9 @@ def iter_works(root):
                 yield father, father, chapters
 
 
-_BOOK_RE = re.compile(r"^\s*Book\s+[IVXLCDM0-9]", re.IGNORECASE)
+# "Book I", "Book 3", and the ordinals Cur Deus Homo spells out ("Book First", 1.9).
+_BOOK_RE = re.compile(r"^\s*Book\s+([IVXLCDM0-9]+|First|Second|Third|Fourth|Fifth|Sixth"
+                      r"|Seventh|Eighth|Ninth|Tenth)\b", re.IGNORECASE)
 
 
 def _has_direct_p(elem) -> bool:

@@ -7,7 +7,7 @@
   "church-fathers": "feat/1.8d-incarnation-robertson f5b7d83",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "feat/1.3d-2-wikisource-pair bc02506",
-  "medieval": "feat/1.10c-piece-citations 269d968",
+  "medieval": "worktree-bridge-cse_01A8fdmnk6Vfpyf8yTndcQNH 047867d",
   "papal-documents": "feat/1.3a-papal-parser 8075859",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1278,13 +1278,13 @@
    "pct": 100.0
   },
   "medieval/consolation-of-philosophy.xml": {
-   "body_chars": 227177,
-   "covered_chars": 226750,
-   "pct": 99.81
+   "body_chars": 218421,
+   "covered_chars": 218421,
+   "pct": 100.0
   },
   "medieval/imitation-of-christ.xml": {
-   "body_chars": 298204,
-   "covered_chars": 298204,
+   "body_chars": 295839,
+   "covered_chars": 295839,
    "pct": 100.0
   },
   "medieval/on-loving-god.xml": {
@@ -1294,8 +1294,8 @@
   },
   "medieval/proslogium-monologium-and-cur-deus-homo.xml": {
    "body_chars": 435044,
-   "covered_chars": 384415,
-   "pct": 88.36
+   "covered_chars": 392665,
+   "pct": 90.26
   },
   "papal-documents/dies-domini.html": {
    "body_chars": 115646,
@@ -2630,8 +2630,8 @@
   "807935f8-f62c-53b6-baae-0fd9f7a0aa20": {
    "collection": "medieval",
    "source_file": "imitation-of-christ.xml",
-   "body_chars": 298204,
-   "covered_chars": 298204,
+   "body_chars": 295839,
+   "covered_chars": 295839,
    "pct": 100.0
   },
   "81b3ea0f-3fed-57c7-9326-ac488bb240b6": {
@@ -2651,8 +2651,8 @@
   "82d38756-6fba-5af7-9905-fd508a620f38": {
    "collection": "medieval",
    "source_file": "proslogium-monologium-and-cur-deus-homo.xml",
-   "body_chars": 167056,
-   "covered_chars": 167056,
+   "body_chars": 168846,
+   "covered_chars": 168846,
    "pct": 100.0
   },
   "82e3ba38-e236-5d0b-bf1f-30a7a50b209f": {
@@ -2882,9 +2882,9 @@
   "9a6599ee-ac40-5017-a2c6-7aad2cf14296": {
    "collection": "medieval",
    "source_file": "consolation-of-philosophy.xml",
-   "body_chars": 227177,
-   "covered_chars": 226750,
-   "pct": 99.81
+   "body_chars": 218421,
+   "covered_chars": 218421,
+   "pct": 100.0
   },
   "9ab89df1-f20a-55c8-ac34-b0fa53f39c40": {
    "collection": "encyclicals",
@@ -3302,9 +3302,9 @@
   "c556327d-58ae-5934-ac53-ab8edb93943f": {
    "collection": "medieval",
    "source_file": "proslogium-monologium-and-cur-deus-homo.xml",
-   "body_chars": 48868,
-   "covered_chars": 48868,
-   "pct": 100.0
+   "body_chars": 51953,
+   "covered_chars": 51581,
+   "pct": 99.28
   },
   "c5faaf87-76a5-57f0-990f-ab3c646953a7": {
    "collection": "encyclicals",
@@ -3862,9 +3862,9 @@
   "fa0f4a23-1f41-539e-8203-e69ea44679ae": {
    "collection": "medieval",
    "source_file": "proslogium-monologium-and-cur-deus-homo.xml",
-   "body_chars": 168491,
-   "covered_chars": 168491,
-   "pct": 100.0
+   "body_chars": 172712,
+   "covered_chars": 172238,
+   "pct": 99.73
   },
   "fa2cd483-2f8e-54fe-9a65-06cea946280f": {
    "collection": "church-fathers",

@@ -41,7 +41,10 @@ EDITORIAL_DIV_TITLE = re.compile(
     r"|title pages?|contents|note"
     # The NPNF Augustine volumes (1.8b): Shedd's essay, the Enchiridion's "Argument", the
     # editor's digest of On Christian Doctrine.
-    r"|introductory essay|argument|contents of christian doctrine")
+    r"|introductory essay|argument|contents of christian doctrine"
+    # The medieval files (1.9): Cooper's note and the editors' matter after Boethius, the
+    # 1940 editors' foreword to the Imitation. No Fathers div carries these titles.
+    r"|a note on the translation|editorial note|chronological table|foreword")
 
 # A heading inside an author's chapter that opens an editor's section running to the
 # next heading or the chapter's end ("General Notes by the American Editor." after
