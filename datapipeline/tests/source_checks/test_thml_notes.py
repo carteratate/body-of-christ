@@ -10,6 +10,7 @@ from xml.etree.ElementTree import tostring
 import pytest
 
 import registry
+from checks.language import mostly_foreign
 from checks.source_text import SOURCES
 from ingest.church_fathers import _read_root
 from ingest.common import _block_text, _blocks, _extract_p_text, _strip_tags, direct_blocks
@@ -83,6 +84,9 @@ def test_every_verse_block_of_a_built_chapter_is_read(built):
                 if block.tag != "verse":
                     continue
                 verse = " ".join(words(clean_text(_block_text(block))))
+                # A verse a translator left in Latin is rule E's to withhold (3.3).
+                if mostly_foreign(clean_text(_block_text(block))):
+                    continue
                 if verse and f" {verse} " not in read:
                     missing.append((name, block.get("id")))
     assert missing == []
