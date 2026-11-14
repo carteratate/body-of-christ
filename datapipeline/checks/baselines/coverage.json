@@ -4,11 +4,11 @@
   "bible": "feat/1.4a-bible-every-verse 66c7561",
   "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
   "catechism": "feat/279-catechism-us-text 302b98d",
-  "church-fathers": "feat/1.8b-npnf-augustine-strip 43116e3",
+  "church-fathers": "feat/1.8d-incarnation-robertson f5b7d83",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
-  "encyclicals": "feat/1.3d-5-scans 9ca896e",
-  "medieval": "feat/1.10c-piece-citations 269d968",
-  "papal-documents": "feat/1.3d-5-scans 9ca896e",
+  "encyclicals": "feat/1.3d-5-scans 7216d28",
+  "medieval": "worktree-bridge-cse_01A8fdmnk6Vfpyf8yTndcQNH 047867d",
+  "papal-documents": "feat/1.3d-5-scans 7216d28",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
@@ -762,10 +762,10 @@
    "covered_chars": 597242,
    "pct": 100.0
   },
-  "church-fathers/incarnation.xml": {
-   "body_chars": 127340,
-   "covered_chars": 127340,
-   "pct": 100.0
+  "church-fathers/npnf204.xml": {
+   "body_chars": 137123,
+   "covered_chars": 137092,
+   "pct": 99.98
   },
   "church-fathers/on-the-holy-trinity.xml": {
    "body_chars": 2211805,
@@ -1178,13 +1178,13 @@
    "pct": 100.0
   },
   "medieval/consolation-of-philosophy.xml": {
-   "body_chars": 227177,
-   "covered_chars": 226750,
-   "pct": 99.81
+   "body_chars": 218421,
+   "covered_chars": 218421,
+   "pct": 100.0
   },
   "medieval/imitation-of-christ.xml": {
-   "body_chars": 298204,
-   "covered_chars": 298204,
+   "body_chars": 295839,
+   "covered_chars": 295839,
    "pct": 100.0
   },
   "medieval/on-loving-god.xml": {
@@ -1194,8 +1194,8 @@
   },
   "medieval/proslogium-monologium-and-cur-deus-homo.xml": {
    "body_chars": 435044,
-   "covered_chars": 384415,
-   "pct": 88.36
+   "covered_chars": 392665,
+   "pct": 90.26
   },
   "papal-documents/dies-domini.html": {
    "body_chars": 115646,
@@ -2443,8 +2443,8 @@
   "807935f8-f62c-53b6-baae-0fd9f7a0aa20": {
    "collection": "medieval",
    "source_file": "imitation-of-christ.xml",
-   "body_chars": 298204,
-   "covered_chars": 298204,
+   "body_chars": 295839,
+   "covered_chars": 295839,
    "pct": 100.0
   },
   "81b3ea0f-3fed-57c7-9326-ac488bb240b6": {
@@ -2464,8 +2464,8 @@
   "82d38756-6fba-5af7-9905-fd508a620f38": {
    "collection": "medieval",
    "source_file": "proslogium-monologium-and-cur-deus-homo.xml",
-   "body_chars": 167056,
-   "covered_chars": 167056,
+   "body_chars": 168846,
+   "covered_chars": 168846,
    "pct": 100.0
   },
   "82e56c74-062f-5e8b-9da3-38f2c168fec2": {
@@ -2688,9 +2688,9 @@
   "9a6599ee-ac40-5017-a2c6-7aad2cf14296": {
    "collection": "medieval",
    "source_file": "consolation-of-philosophy.xml",
-   "body_chars": 227177,
-   "covered_chars": 226750,
-   "pct": 99.81
+   "body_chars": 218421,
+   "covered_chars": 218421,
+   "pct": 100.0
   },
   "9ab89df1-f20a-55c8-ac34-b0fa53f39c40": {
    "collection": "encyclicals",
@@ -3073,9 +3073,9 @@
   "c556327d-58ae-5934-ac53-ab8edb93943f": {
    "collection": "medieval",
    "source_file": "proslogium-monologium-and-cur-deus-homo.xml",
-   "body_chars": 48868,
-   "covered_chars": 48868,
-   "pct": 100.0
+   "body_chars": 51953,
+   "covered_chars": 51581,
+   "pct": 99.28
   },
   "c5faaf87-76a5-57f0-990f-ab3c646953a7": {
    "collection": "encyclicals",
@@ -3177,10 +3177,10 @@
   },
   "cf235300-e37d-5a7a-a421-f50efff38355": {
    "collection": "church-fathers",
-   "source_file": "incarnation.xml",
-   "body_chars": 127340,
-   "covered_chars": 127340,
-   "pct": 100.0
+   "source_file": "npnf204.xml",
+   "body_chars": 137123,
+   "covered_chars": 137092,
+   "pct": 99.98
   },
   "cf8278dd-3523-576c-b85a-1402077bdae3": {
    "collection": "church-fathers",
@@ -3598,9 +3598,9 @@
   "fa0f4a23-1f41-539e-8203-e69ea44679ae": {
    "collection": "medieval",
    "source_file": "proslogium-monologium-and-cur-deus-homo.xml",
-   "body_chars": 168491,
-   "covered_chars": 168491,
-   "pct": 100.0
+   "body_chars": 172712,
+   "covered_chars": 172238,
+   "pct": 99.73
   },
   "fa2cd483-2f8e-54fe-9a65-06cea946280f": {
    "collection": "church-fathers",

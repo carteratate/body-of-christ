@@ -26,12 +26,12 @@ from normalize.caps import smart_title_case
 from normalize.text import fold_ligatures
 from ingest.common import (_block_text, _build_parent_map, _cf_skippable, _strip_tags,
                            direct_blocks, iter_chapters)
-from ingest.editorial import PLAIN_CALLERS, Editor, strip_editorial_lines
+from ingest.editorial import PLAIN_CALLERS, Editor, Removed, _norm, strip_editorial_lines
 from ingest.editorial_keep import QuoteEdit, kept_quotes
 from ingest.thml_doc import ChapterPlan, _chapter_label, distinct_titles, make_doc
 
 _SRC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "church-fathers")
-_SINGLE_AUTHOR = {"confessions.xml": "Augustine", "incarnation.xml": "Athanasius"}
+_SINGLE_AUTHOR = {"confessions.xml": "Augustine"}
 _AUGUSTINE_FILES = {"city-of-god.xml", "on-the-holy-trinity.xml"}
 
 # ------------------------------------------------------------------ 1.8b: NPNF Augustine
@@ -40,6 +40,17 @@ _AUGUSTINE_FILES = {"city-of-god.xml", "on-the-holy-trinity.xml"}
 # Treatises" split into their 16 works, the one exception to D6 (Carter, 4 Nov 2026).
 # The registry pins On the Holy Trinity and On Continence to the two volumes' IDs.
 _WORK_PER_DIV2 = frozenset({"on-the-holy-trinity.xml"})
+
+# ------------------------------------------------------------------ 1.8d: On the Incarnation
+
+# Volumes only some works of which are emitted, by file: {work div id: author}. NPNF2-04's
+# On the Incarnation is Robertson's translation, which replaces Lawson's (1.8d); the rest of
+# the volume (Against the Heathen, the anti-Arian works) is 5.6a's. The registry keeps the
+# work's document ID. `checks.source_text.VOLUME_SCOPE` names the same divs.
+VOLUME_WORKS = {"npnf204.xml": {"vii.ii": "Athanasius"}}
+# "§1. " at the head of a section: before Robertson's italic analytical heading, or, in §5,
+# which prints none, before the author's text.
+_SECTION_NUMBER = re.compile(r"^\s*§\s*(\d+)\.\s*")
 
 # ------------------------------------------------------------------ 1.8c: names
 
@@ -391,6 +402,72 @@ def _anf_document(filename, father, work, parent_map, d1):
                      works=works)
 
 
+# ------------------------------------------------------------------ On the Incarnation (1.8d)
+
+class _SectionEditor(Editor):
+    """Rule G for a work printed in numbered sections, each opening with the translator's
+    analytical heading: "§1. Introductory.—The subject of this treatise…" in Robertson's On
+    the Incarnation, his summary, not the author's (R6). The heading paragraph goes as a
+    `section-summary`, recorded for the removal registry. A section that prints none (§5)
+    loses only its "§5." number, a heading the label repeats."""
+
+    def chapter(self, elem, label):
+        return self._sectioned(super().chapter(elem, label), elem, label)
+
+    def _sectioned(self, edit, elem, label):
+        """`edit` with the section's heading or number taken out; its `again()` (the
+        audit's fresh edit, `tests/test_editorial.py`) takes out the same."""
+        plain = edit.again
+        edit.again = lambda: self._sectioned(plain(), elem, label)
+        n = int(label.removeprefix("Section "))
+        lead = next(b for b in direct_blocks(elem)
+                    if _block_text(b) and id(b) not in edit.dropped)
+        text = _block_text(lead)
+        m = _SECTION_NUMBER.match(text)
+        if m is None or int(m.group(1)) != n:
+            raise ValueError(f"{elem.get('id')}: does not open with §{n}")
+        locator = edit.locators[id(lead)]
+        if _norm(text[m.end():]) == _norm(elem.get("title") or ""):
+            edit.dropped[id(lead)] = "section-summary"
+            edit.removed.append(Removed(locator, "section-summary", text))
+            return edit
+        inner, cut = edit.edit, []
+
+        def without_number(block, marked, notes):
+            marked, notes = inner(block, marked, notes)
+            if block is lead:
+                number = _SECTION_NUMBER.match(marked)
+                if not cut:
+                    cut.append(number.group(0))
+                    edit.removed.append(Removed(locator, "heading", number.group(0).strip()))
+                marked = marked[number.end():]
+            return marked, notes
+
+        edit.edit = without_number
+        return edit
+
+
+def _section_chapters(work) -> list:
+    """The work's sections, labelled "Section 1" to "Section N" in order."""
+    sections = [d for d in work if isinstance(d.tag, str) and d.tag.startswith("div")]
+    if any(direct_blocks(work)) or any(not direct_blocks(d) for d in sections):
+        raise ValueError(f"{work.get('id')}: text outside its sections")
+    return [(None, d, ChapterPlan(label=f"Section {k}")) for k, d in enumerate(sections, 1)]
+
+
+def _volume_documents(filename, root, parent_map) -> list[Document]:
+    divs = {e.get("id"): e for e in root.iter() if e.get("id")}
+    docs = []
+    for work_id, author in VOLUME_WORKS[filename].items():
+        work = divs[work_id]
+        editor = _SectionEditor(filename, _source_key(filename, work), parent_map)
+        d = _make_doc(filename, author, _work_title(work), _section_chapters(work),
+                      work=work, editor=editor)
+        if d:
+            docs.append(d)
+    return docs
+
+
 # ------------------------------------------------------------------ NPNF Augustine (1.8b)
 
 def _npnf_front_matter(title: str) -> bool:
@@ -470,6 +547,8 @@ def build_documents(path: str) -> list[Document]:
     parent_map = _build_parent_map(root)
     docs: list[Document] = []
 
+    if filename in VOLUME_WORKS:
+        return _volume_documents(filename, root, parent_map)
     single = _SINGLE_AUTHOR.get(filename)
     if single:
         title = smart_title_case((root.findtext(".//DC.Title") or "Unknown").strip())
