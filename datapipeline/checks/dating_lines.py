@@ -17,9 +17,11 @@ from bs4 import BeautifulSoup
 from checks.source_text import SOURCES
 
 COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
-# "Given at Rome …" or "Given in Rome …", up to the first year after it, printed plain or
-# as an ordinal ("in the 1826th year of the Incarnation").
-_GIVEN = re.compile(r"\bGiven\b,?\s+(?:at|in|from)\s+(?:the\s+)?[A-Z].{0,240}?"
+# "Given at Rome …", "Given in Rome …", "From the Vatican, …", an editor's "[Dated: …]" or
+# the Italian "Dato a Roma …", up to the first year after it, printed plain or as an
+# ordinal ("in the 1826th year of the Incarnation").
+_GIVEN = re.compile(r"(?:\bGiven\b,?\s+(?:at|in|from)\s+(?:the\s+)?[A-Z]|"
+                    r"\bFrom the Vatican\b|\[Dated:|\bDato a\s+[A-Z]).{0,240}?"
                     r"\b(1\d\d\d|20[0-2]\d)(?:st|nd|rd|th)?\b")
 # Source key → (the year the source prints, why it is wrong).
 MISPRINTS = {

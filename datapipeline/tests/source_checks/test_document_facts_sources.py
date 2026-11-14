@@ -42,12 +42,14 @@ def test_papal_years_equal_their_dating_lines():
 @needs_sources
 def test_a_wrong_year_is_caught_through_markup_and_ordinals():
     """Dating lines broken by inline markup (Providentissimus Deus's line break, Evangelii
-    Gaudium's italic "Year of Faith") or printing an ordinal year (Quo Graviora's
-    "1826th") are read, so a wrong registry year there fails."""
+    Gaudium's italic "Year of Faith"), printing an ordinal year (Quo Graviora's "1826th"),
+    or in another form ("From the Vatican", "[Dated: …]", "Dato a Roma") are read, so a
+    wrong registry year there fails."""
     reg = registry.load_registry()
     years = {w["source_key"]: w["year"] for w in reg.works if registry.has_facts(w)}
     for key in ("encyclicals/providentissimus-deus", "encyclicals/quo-graviora",
-                "encyclicals/evangelii-gaudium"):
+                "encyclicals/evangelii-gaudium", "papal-documents/tertio-millennio-adveniente",
+                "papal-documents/sublimis-deus", "encyclicals/ubi-lutetiam"):
         wrong = dating_lines.mismatches({**years, key: 1900})[1]
         assert [k for k, _, _ in wrong] == [key], key
 
