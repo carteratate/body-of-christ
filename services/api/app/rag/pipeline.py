@@ -29,9 +29,11 @@ from app.rag.steps.types import PipelineResult
 
 logger = logging.getLogger(__name__)
 
-# hyde_cohere_luna with the issue #235 seat rule: 10-25 Cohere candidates per
-# collection reach the listwise call instead of quota+3 under a 40-seat cap.
-_PRODUCTION_PIPELINE = "hyde_cohere_luna_seats10t80"
+# hyde_cohere_luna with the issue #235 seat rule (10-25 Cohere candidates per
+# collection reach the listwise call instead of quota+3 under a 40-seat cap) and the
+# issue #233 keyword match (passages holding at least half the question's terms,
+# instead of all of them, which matched nothing for most questions).
+_PRODUCTION_PIPELINE = "hyde_cohere_luna_seats10t80_ftsminmatch"
 _PIPELINE_HEARTBEAT_SECONDS = 10.0
 _PERSIST_TIMEOUT_SECONDS = 10.0
 

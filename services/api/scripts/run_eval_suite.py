@@ -34,8 +34,8 @@ for _n in ("app.rag.steps.rerank_cohere", "app.rag.steps.rerank",
 # challenger has to beat production by more than the gap between these two. Any
 # other registry pipeline can be added with ``--pipelines``.
 PIPELINES = [
-    "hyde_cohere_luna_seats10t80",              # production (_PRODUCTION_PIPELINE)
-    "hyde_cohere_luna_seats10t80_hydesample",   # noise floor
+    "hyde_cohere_luna_seats10t80_ftsminmatch",             # production
+    "hyde_cohere_luna_seats10t80_ftsminmatch_hydesample",  # noise floor
 ]
 
 COLLECTIONS = ["bible", "catechism", "summa", "encyclicals", "church-fathers"]
