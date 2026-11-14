@@ -189,3 +189,31 @@ async def test_the_eval_capture_overlaps_keyword_search_and_cancels_it_on_failur
         with pytest.raises(RuntimeError):
             await shared_runner.capture("q", ["bible"], 4, [CONFIG])
     assert cancelled.is_set()
+
+
+async def test_one_failing_mode_does_not_leave_the_other_running():
+    """The eval capture runs one keyword search per mode; if one fails, the capture
+    raises only after the others have settled."""
+    finished = asyncio.Event()
+
+    async def fts(query, collections, quota, k=None, mode="and"):
+        if mode == "and":
+            raise RuntimeError("pool gone")
+        await asyncio.sleep(0.05)
+        finished.set()
+        return KEYWORD
+
+    with (
+        patch("app.rag.compare.shared_runner.embed.run", new=AsyncMock(return_value=[0.1])),
+        patch("app.rag.compare.shared_runner.hyde_s25.run",
+              new=AsyncMock(return_value={"bible": [[0.2]]})),
+        patch("app.rag.compare.shared_runner.retrieve_vector.run",
+              new=AsyncMock(return_value=VECTOR)),
+        patch("app.rag.compare.shared_runner.retrieve_fts.run",
+              new=AsyncMock(side_effect=fts)),
+    ):
+        with pytest.raises(RuntimeError, match="pool gone"):
+            await shared_runner.capture(
+                "q", ["bible"], 4, [PIPELINES["hyde_cohere_luna_seats10t80"], CONFIG],
+            )
+    assert finished.is_set()

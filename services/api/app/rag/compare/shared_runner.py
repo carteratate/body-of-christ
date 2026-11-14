@@ -104,10 +104,14 @@ async def capture(
     fts_modes = list(dict.fromkeys(config.retrieval.fts_mode for config in configs))
 
     async def keyword_searches() -> dict:
+        # return_exceptions so one mode's failure does not leave the others running.
         found = await asyncio.gather(*[
             retrieve_fts.run(query, collections, quota, k=max_k, mode=mode)
             for mode in fts_modes
-        ])
+        ], return_exceptions=True)
+        for outcome in found:
+            if isinstance(outcome, BaseException):
+                raise outcome
         return dict(zip(fts_modes, found))
 
     fts_task = asyncio.create_task(keyword_searches())
