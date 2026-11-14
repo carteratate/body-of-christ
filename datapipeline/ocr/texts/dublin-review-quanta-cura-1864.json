@@ -5,7 +5,7 @@
   "text_source": "ocr",
   "scan_id": "sim_dublin-review_1865-04_4"
  },
- "gate": "pending",
+ "gate": "pass",
  "passages": [
   {
    "id": "quanta-cura-01",
