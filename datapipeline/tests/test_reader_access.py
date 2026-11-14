@@ -150,6 +150,22 @@ def test_a_document_with_no_url_is_not_held():
     assert result.held == [] and live["reader_access"] == "full"
 
 
+def test_sync_will_not_open_an_older_edition_known_only_by_its_file():
+    # The Fathers' documents record a source file, no URL: Lawson's On the Incarnation
+    # stays excerpt-only under Robertson's row until the publish brings npnf204.xml (1.8d).
+    table = _table(_entry("1", "On the Incarnation of the Word", "pd-us-pre-1931"))
+    lawson = {**_row("1", "On the Incarnation of the Word", "excerpt"),
+              "source_file": "incarnation.xml"}
+    files = {"1": "npnf204.xml"}
+    result = asyncio.run(RA.sync(FakeConn([lawson]), table, apply=True, urls={},
+                                 files=files))
+    assert [c.reason for c in result.held] == [RA.OTHER_EDITION]
+    assert lawson["reader_access"] == "excerpt"
+    robertson = {**lawson, "source_file": "npnf204.xml"}
+    asyncio.run(RA.sync(FakeConn([robertson]), table, apply=True, urls={}, files=files))
+    assert robertson["reader_access"] == "full"
+
+
 def test_a_closing_status_is_never_held():
     # The guard only stops an opening: an uncleared row still closes the live document.
     live = {**_row("1", "Libertas", "full"), "url": "https://old"}

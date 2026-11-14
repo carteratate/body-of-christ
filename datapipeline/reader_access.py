@@ -26,7 +26,8 @@ would silently block a public-domain text.
 
 A row describes the edition a build publishes, and the document ID outlives an edition: a
 re-sourced work keeps its ID. So `sync` makes a document excerpt-only, whatever it is now,
-when its live `metadata.url` differs from its row's `source_url`: the live text is still
+when its live `metadata.url` differs from its row's `source_url`, or, where either has no
+URL, its `metadata.source_file` differs from the row's `source_path`: the live text is still
 the older edition, and its replacement's status does not cover it. Such a document is
 listed as held and opens with the publish that brings the new edition. A rollback likewise
 never leaves a document more open than its snapshot (`stricter`).
@@ -37,6 +38,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import os
 from dataclasses import dataclass, field
 from functools import lru_cache
 
@@ -109,12 +111,25 @@ def _default_source_urls() -> dict[str, str | None]:
             for i, e in rights_inventory.by_document_id(rights_inventory.load()).items()}
 
 
+@lru_cache(maxsize=1)
+def _default_source_files() -> dict[str, str | None]:
+    return {i: os.path.basename(e["source_path"]) if e.get("source_path") else None
+            for i, e in rights_inventory.by_document_id(rights_inventory.load()).items()}
+
+
 def other_edition(document_id: str, live_url: str | None,
-                  urls: dict[str, str | None] | None = None) -> bool:
-    """Whether the live document is a different edition from the one its row describes.
-    A document or row with no URL says nothing either way."""
+                  urls: dict[str, str | None] | None = None, live_file: str | None = None,
+                  files: dict[str, str | None] | None = None) -> bool:
+    """Whether the live document is a different edition from the one its row describes:
+    its URL differs from the row's, or, where either has none, its source file differs
+    from the file of the row's `source_path` (the Fathers' documents record only
+    `metadata.source_file`; On the Incarnation's row moved to Robertson's npnf204.xml while
+    Lawson's incarnation.xml is live, 1.8d). A side with neither says nothing."""
     row_url = (_default_source_urls() if urls is None else urls).get(document_id)
-    return bool(live_url and row_url and live_url != row_url)
+    if live_url and row_url:
+        return live_url != row_url
+    row_file = (_default_source_files() if files is None else files).get(document_id)
+    return bool(live_file and row_file and live_file != row_file)
 
 
 @dataclass(frozen=True)
@@ -144,12 +159,13 @@ class UnmatchedDocuments(RuntimeError):
     pass
 
 
-_DOCUMENTS_SQL = ("SELECT id, collection, title, reader_access, metadata->>'url' AS url "
-                  "FROM documents")
+_DOCUMENTS_SQL = ("SELECT id, collection, title, reader_access, metadata->>'url' AS url, "
+                  "metadata->>'source_file' AS source_file FROM documents")
 
 
 async def plan(conn, table: dict[str, str] | None = None,
-               urls: dict[str, str | None] | None = None, *, lock: bool = False) -> Plan:
+               urls: dict[str, str | None] | None = None, *, lock: bool = False,
+               files: dict[str, str | None] | None = None) -> Plan:
     """What a sync would do: every live document whose reader_access disagrees with the
     inventory, every document the inventory did not decide, every document held at
     excerpt because its live text is another edition, and the resulting totals. With
@@ -158,7 +174,8 @@ async def plan(conn, table: dict[str, str] | None = None,
     totals = {FULL: 0, EXCERPT: 0}
     for row in await conn.fetch(_DOCUMENTS_SQL + (" FOR UPDATE" if lock else "")):
         after, reason = resolve(str(row["id"]), table)
-        if after == FULL and other_edition(str(row["id"]), row.get("url"), urls):
+        if after == FULL and other_edition(str(row["id"]), row.get("url"), urls,
+                                           row.get("source_file"), files):
             after, reason = EXCERPT, OTHER_EDITION
             held.append(Change(str(row["id"]), row["collection"], row["title"],
                                row["reader_access"], after, reason))
@@ -176,15 +193,16 @@ async def plan(conn, table: dict[str, str] | None = None,
 
 async def sync(conn, table: dict[str, str] | None = None, *, apply: bool,
                allow_unmatched: bool = False,
-               urls: dict[str, str | None] | None = None) -> Plan:
+               urls: dict[str, str | None] | None = None,
+               files: dict[str, str | None] | None = None) -> Plan:
     """Bring every document's reader_access in line with the inventory. With
     apply=False this only reports; with apply=True it decides and writes in one
     transaction, with the rows locked so a rollback cannot change an edition between the
     two, and refuses while any document is unmatched unless allow_unmatched is set."""
     if not apply:
-        return await plan(conn, table, urls)
+        return await plan(conn, table, urls, files=files)
     async with conn.transaction():
-        result = await plan(conn, table, urls, lock=True)
+        result = await plan(conn, table, urls, lock=True, files=files)
         if result.unmatched and not allow_unmatched:
             raise UnmatchedDocuments(
                 f"REFUSING: {len(result.unmatched)} live document(s) have no row in the "

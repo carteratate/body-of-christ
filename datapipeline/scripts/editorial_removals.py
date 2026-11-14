@@ -51,9 +51,11 @@ from publication import build  # noqa: E402
 ITEM = "1.8a"
 COLLECTION = "church-fathers"
 # The files each item's entries cover: 1.8b's are the NPNF Augustine volumes that carry
-# rule G's editor (the Confessions has none), 1.8a's every other.
+# rule G's editor (the Confessions has none), 1.8d's Robertson's On the Incarnation in
+# NPNF2-04, 1.8a's every other.
 NPNF_FILES = frozenset({"city-of-god.xml", "on-the-holy-trinity.xml"})
-ITEMS = ("1.8a", "1.8b")
+ITEM_FILES = {"npnf204.xml": "1.8d"}
+ITEMS = ("1.8a", "1.8b", "1.8d")
 REASON = "rule-g-editorial"
 TOMBSTONE = ("This passage was an editor's note and was removed because TheoCorpus shows "
              "only the authors' own words.")
@@ -72,6 +74,8 @@ DETAIL = {
     "r4-heading": "A heading line above the book's contents (\"Book N.\", \"Contents.\", a "
                   "rule line), as R4 lists; the chapter label keeps the same information",
     "summary": "The editors' summary of the book",
+    "section-summary": "The translator's analytical heading of the section (Robertson's italic "
+                       "summary, printed after its number), not the author's text",
 }
 # A chapter whose text was all the editors', by what it held (1.8b).
 WHOLE_DETAIL = {
@@ -139,6 +143,8 @@ NOT_JUDGMENTS: dict[str, str] = {
     "74a39b0132bc": "an Argument: the empire attributed to false gods",
     "79ebee362a30": "an Argument: calamities attributed to the Christian religion",
     "b02e664a0a01": "an Argument: doubtful signification of words",
+    # 1.8d, Robertson's analytical headings in On the Incarnation.
+    "2deb663e8643": "forgetfulness",
 }
 # The verdict for each flagged sentence that is an authenticity judgment (sha1 of the
 # sentence -> (verdict, overridden_by_plan)). The plan's "Labels for works that stay"
@@ -254,6 +260,8 @@ def holder(document, chapter_key: str, order: list[str], locator: str) -> str | 
 
 def item_of(file: str) -> str:
     """The item whose entries cover a source file's removals."""
+    if file in ITEM_FILES:
+        return ITEM_FILES[file]
     return "1.8b" if file in NPNF_FILES else "1.8a"
 
 

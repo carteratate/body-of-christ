@@ -349,6 +349,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-11-04: as recommended: none before Phase 4 except Asterius Urbanus; the rest through 5.6a with normal rule checks.
 - **1.9** [Phase 1]. Add Anselm's reply to Gaunilo ("Anselm's Apologetic"). Default is no. Gaunilo's own piece would need its own rule check.
   Answered 2026-11-04: add both Anselm's reply and Gaunilo's piece after Phase 4, with 5.6b, once Gaunilo has his rule check.
+- **1.9 (title lines)** [Phase 1]. With labels no longer cut at 60 characters, three Church Fathers passages open on a line that repeats their now-full label, which rule G drops. Let those lines go (and update 1.8a's heading-line counts), or keep the Fathers text unchanged as the spec asked? Recommended answer: let them go.
+  Answered 2026-11-13: let them go.
 
 ### Phase 2
 
