@@ -58,8 +58,9 @@ MEDIEVAL = [
 
 
 # Keep the historical local filenames because church_fathers.py uses them to identify
-# the two single-author works and Augustine's multi-work NPNF volumes. The URLs are the
-# original CCEL ThML downloads, not converted reader HTML.
+# the Confessions, Augustine's multi-work NPNF volumes and NPNF2-04, from which only On
+# the Incarnation is built (1.8d). The URLs are the original CCEL ThML downloads, not
+# converted reader HTML.
 CHURCH_FATHERS = [
     {"url": "https://ccel.org/ccel/a/augustine/confess.xml",
      "file": "confessions.xml", "title": "Confessions of Saint Augustine"},
@@ -67,8 +68,8 @@ CHURCH_FATHERS = [
      "file": "city-of-god.xml", "title": "NPNF1-02: City of God and Christian Doctrine"},
     {"url": "https://ccel.org/ccel/s/schaff/anf01.xml",
      "file": "apostolic fathers.xml", "title": "ANF01: Apostolic Fathers"},
-    {"url": "https://ccel.org/ccel/a/athanasius/incarnation.xml",
-     "file": "incarnation.xml", "title": "On the Incarnation of the Word"},
+    {"url": "https://ccel.org/ccel/s/schaff/npnf204.xml",
+     "file": "npnf204.xml", "title": "NPNF2-04: Athanasius, Select Works and Letters"},
     {"url": "https://ccel.org/ccel/s/schaff/npnf103.xml",
      "file": "on-the-holy-trinity.xml", "title": "NPNF1-03: On the Holy Trinity"},
     {"url": "https://ccel.org/ccel/s/schaff/anf02.xml",

@@ -20277,13 +20277,315 @@
  },
  {
   "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "f2609f37-5027-539f-a0c0-3794e8e1e6fb",
+  "old_anchor": "ii",
+  "new_passage_id": "981c7830-911e-562b-8328-f6b8cd71725a",
+  "new_anchor": "vii.ii.i",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 1 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "b6f9e094-7961-5f80-a8e6-5e01c94ccdb6",
+  "old_anchor": "ii/from-p5",
+  "new_passage_id": "8e4ef4d6-2661-5abd-bbf0-5f03e9facfa8",
+  "new_anchor": "vii.ii.ii",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 2 holds the text it continued",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "13c68072-f037-584a-ba9d-2f2fdf946d28",
+  "old_anchor": "ii/from-p7",
+  "new_passage_id": "ff9f1795-e9b4-5067-aec1-c3f3cb0c0365",
+  "new_anchor": "vii.ii.iii",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 3 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "969d36e1-e5c4-5ac8-b207-ffac83fc8f74",
+  "old_anchor": "ii/from-p8",
+  "new_passage_id": "b5ddc8ed-67df-5b10-ba48-07f6e3de2115",
+  "new_anchor": "vii.ii.iv",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 4 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "30412c35-ac62-5415-b7ce-840b19ddf061",
+  "old_anchor": "ii/from-p9",
+  "new_passage_id": "463781ec-c700-5e29-b056-43a4c12c7dc1",
+  "new_anchor": "vii.ii.v",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 5 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "09d468ae-67cd-5539-bef6-c2706d5a9748",
+  "old_anchor": "iii",
+  "new_passage_id": "8766c105-f0a2-52a0-b3b3-72344210e3b7",
+  "new_anchor": "vii.ii.vi",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 6 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "6a779aa8-9609-565d-bae5-4f4ede2563db",
+  "old_anchor": "iii/from-p4",
+  "new_passage_id": "61a9cd51-4f5e-53c9-bad4-95d799dc1fbf",
+  "new_anchor": "vii.ii.viii",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 8 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "e1d7c8f0-1b78-5b92-9f1e-b67746ee3730",
+  "old_anchor": "iii/from-p5",
+  "new_passage_id": "43d6deaf-8a26-5b94-ba2c-2f23323a565f",
+  "new_anchor": "vii.ii.ix",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 9 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "3b7c4ac5-5967-546f-b0dd-dacb70fb8cce",
+  "old_anchor": "iii/from-p6",
+  "new_passage_id": "e1c1f480-0d5f-534a-a418-ff796ec1de3e",
+  "new_anchor": "vii.ii.x",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 10 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "5c461019-b83e-58e7-a99d-4806a6c67b68",
+  "old_anchor": "iv",
+  "new_passage_id": "c253882c-4d58-5b1c-abe6-12346c6f26d1",
+  "new_anchor": "vii.ii.xi",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 11 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "b8e6c05b-ccd9-53dc-acfd-cab3bbbff061",
+  "old_anchor": "iv/from-p11",
+  "new_passage_id": "2c5ffff7-9cb9-5bb5-94a7-c2fe82d35293",
+  "new_anchor": "vii.ii.xv",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 15 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "d1eae713-44ba-559b-b587-363f10a9d957",
+  "old_anchor": "iv/from-p14",
+  "new_passage_id": "c0f24dd7-fb91-53cf-8f9d-137d677b14b6",
+  "new_anchor": "vii.ii.xvii",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 17 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "6084a2cc-7d4b-52a4-98a3-d1e3a248080a",
+  "old_anchor": "iv/from-p16",
+  "new_passage_id": "0da92db8-185b-5d67-be4c-b0c92284b0fa",
+  "new_anchor": "vii.ii.xviii",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 18 holds the text it continued",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
   "old_passage_id": "8624bd77-76ba-56c7-9f49-197b95066130",
   "old_anchor": "iv/from-p16-2",
   "new_passage_id": "6084a2cc-7d4b-52a4-98a3-d1e3a248080a",
   "new_anchor": "iv/from-p16",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8d",
+  "closed_on": "2026-11-13"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "8624bd77-76ba-56c7-9f49-197b95066130",
+  "old_anchor": "iv/from-p16-2",
+  "new_passage_id": "0da92db8-185b-5d67-be4c-b0c92284b0fa",
+  "new_anchor": "vii.ii.xviii",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 18 holds the text it continued",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "2c47397c-eb7c-5f68-8f37-f36f39abdaf9",
+  "old_anchor": "iv/from-p4",
+  "new_passage_id": "74dc2480-4b31-525a-9bd3-c553421330c2",
+  "new_anchor": "vii.ii.xii",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 12 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "c99c3a15-ed11-557b-91e1-1da19bd6c987",
+  "old_anchor": "iv/from-p7",
+  "new_passage_id": "14e59bec-4a1f-5fc2-9453-29f58541c770",
+  "new_anchor": "vii.ii.xiv",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 14 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "540bcb67-8ba8-55ee-b666-d82a634e56b8",
+  "old_anchor": "ix",
+  "new_passage_id": "db3e8f2d-cb30-5eaf-988a-41ac338f8240",
+  "new_anchor": "vii.ii.xlvi",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 46 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "56c3d01f-2cd7-5469-b049-a0733d5e566c",
+  "old_anchor": "ix/from-p10",
+  "new_passage_id": "5e9e1f44-596f-5171-89cb-e4af48e3e0f3",
+  "new_anchor": "vii.ii.li",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 51 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "72d6ed27-d3af-5346-9af1-6579df3e7413",
+  "old_anchor": "ix/from-p13",
+  "new_passage_id": "156d5549-580a-5dea-b625-7ae674f57848",
+  "new_anchor": "vii.ii.liii",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 53 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "55da3f10-2e40-5169-a17d-ce86e76fbba7",
+  "old_anchor": "ix/from-p16",
+  "new_passage_id": "97769b19-ee75-5b9d-bd20-d1e1b898b029",
+  "new_anchor": "vii.ii.lv",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 55 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "d358d1b5-a96c-5a20-ab6d-d91c5452298c",
+  "old_anchor": "ix/from-p3",
+  "new_passage_id": "d13588ee-1d1c-51e2-a68b-b1c99c6827d8",
+  "new_anchor": "vii.ii.xlvii",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 47 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "ebf84a2e-e991-54e9-ad01-c17ab1f7554d",
+  "old_anchor": "ix/from-p5",
+  "new_passage_id": "c543a965-47cd-5fb3-9078-35d4d8e685b7",
+  "new_anchor": "vii.ii.xlix",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 49 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "a8e438e9-5f4a-5a8a-a50e-897d55dc0db4",
+  "old_anchor": "ix/from-p8",
+  "new_passage_id": "e0502eba-315c-5fde-acd8-703a4fe439fe",
+  "new_anchor": "vii.ii.l",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 50 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "ed70e48a-0ea1-5717-ae96-c4312fbc64d2",
+  "old_anchor": "v",
+  "new_passage_id": "effcca3a-e5d5-5031-b680-e0cbbd0c271c",
+  "new_anchor": "vii.ii.xix",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 19 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "3950df28-240a-5b5b-8c02-069b7ae4dd34",
+  "old_anchor": "v/from-p11",
+  "new_passage_id": "c0b35dfc-ceca-5742-abd0-c074802198f6",
+  "new_anchor": "vii.ii.xxiv",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 24 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "4bdcc529-9991-50f9-be34-af75c8121c83",
+  "old_anchor": "v/from-p12",
+  "new_passage_id": "06265873-3dad-5cb9-95e7-4d835ac94659",
+  "new_anchor": "vii.ii.xxv",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 25 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "dd29c6b1-c8b0-5b3b-b8d8-0fa57ee03151",
+  "old_anchor": "v/from-p6",
+  "new_passage_id": "162f082f-c834-5301-bf94-1fcfe4e24289",
+  "new_anchor": "vii.ii.xxi",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 21 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "35b9fd55-f600-59ce-bc4a-df49c0e961a8",
+  "old_anchor": "v/from-p8",
+  "new_passage_id": "52ffa980-4e99-55c2-a824-8ef11109a344",
+  "new_anchor": "vii.ii.xxii",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 22 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "e147764b-acb4-5e6d-837e-beab4532faaf",
+  "old_anchor": "vi",
+  "new_passage_id": "9105637c-b598-5123-8cc6-3225e6a08c46",
+  "new_anchor": "vii.ii.xxvi",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 26 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "dae2d85a-24d0-51cf-8438-3c0b5803560e",
+  "old_anchor": "vi/from-p10",
+  "new_passage_id": "07f73f45-7715-5e73-ab88-83987ffdd149",
+  "new_anchor": "vii.ii.xxxii",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 32 holds its text",
+  "added_by": "1.8d"
  },
  {
   "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
@@ -20293,7 +20595,79 @@
   "new_anchor": "vi",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8d",
+  "closed_on": "2026-11-13"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "d926b377-73cc-54d8-911e-a5711754f443",
+  "old_anchor": "vi/from-p4",
+  "new_passage_id": "d83ddf03-439a-593c-9e09-a60010f27e16",
+  "new_anchor": "vii.ii.xxvii",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 27 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "02d2225e-62bd-5792-99ac-64025bba8efa",
+  "old_anchor": "vi/from-p5",
+  "new_passage_id": "35266798-ca26-59ac-bc7d-182ad700f419",
+  "new_anchor": "vii.ii.xxviii",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 28 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "bf6784cd-be3f-54a1-828c-39664164046d",
+  "old_anchor": "vi/from-p6",
+  "new_passage_id": "f9d71742-f9d3-52d6-9634-c63af87a139a",
+  "new_anchor": "vii.ii.xxix",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 29 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "a261d516-eed9-5f1b-8cd2-c75a925d8e76",
+  "old_anchor": "vi/from-p7",
+  "new_passage_id": "e87c9564-a8b9-588f-83f4-7a4f2123c7f3",
+  "new_anchor": "vii.ii.xxx",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 30 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "edbcd93e-dd46-51f8-b8ce-d8e17c82a22f",
+  "old_anchor": "vi/from-p8",
+  "new_passage_id": "11654115-0090-51b3-9719-fb8739df1b0c",
+  "new_anchor": "vii.ii.xxxi",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 31 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "d2defa1f-d15a-572d-af02-12585be9a1b9",
+  "old_anchor": "vii",
+  "new_passage_id": "6980621e-f6f7-5ca3-b17e-63182e87f2b5",
+  "new_anchor": "vii.ii.xxxiii",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 33 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "d4c462e3-c0b1-5817-b322-4d9f44ba90ff",
+  "old_anchor": "vii/from-p10",
+  "new_passage_id": "39e94172-7e49-555a-8886-867a31d37d28",
+  "new_anchor": "vii.ii.xxxix",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 39 holds its text",
+  "added_by": "1.8d"
  },
  {
   "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
@@ -20303,7 +20677,49 @@
   "new_anchor": "vii/from-p10",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8d",
+  "closed_on": "2026-11-13"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "1bb30ff0-b8d0-5d5d-acb7-e4daf5e1cb04",
+  "old_anchor": "vii/from-p10-2",
+  "new_passage_id": "39e94172-7e49-555a-8886-867a31d37d28",
+  "new_anchor": "vii.ii.xxxix",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 39 holds the text it continued",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "022a822a-74ce-5438-bd8c-1699910588b3",
+  "old_anchor": "vii/from-p11",
+  "new_passage_id": "47ae46e3-0e3e-5890-a382-0156c793d8b6",
+  "new_anchor": "vii.ii.xl",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 40 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "c7f30a81-f2e2-5137-8eb9-46d520f346d5",
+  "old_anchor": "vii/from-p11-2",
+  "new_passage_id": "47ae46e3-0e3e-5890-a382-0156c793d8b6",
+  "new_anchor": "vii.ii.xl",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 40 holds the text it continued",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "1688d3b8-c03c-5fda-84bf-b2ed81eb842b",
+  "old_anchor": "vii/from-p4",
+  "new_passage_id": "42bf3e55-6629-5345-b9a3-9302cf1195c8",
+  "new_anchor": "vii.ii.xxxiv",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 34 holds the first section number it printed",
+  "added_by": "1.8d"
  },
  {
   "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
@@ -20313,7 +20729,29 @@
   "new_anchor": "vii/from-p4",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8d",
+  "closed_on": "2026-11-13"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "8a56b805-2525-5fc8-a95a-82073cdb0573",
+  "old_anchor": "vii/from-p4-2",
+  "new_passage_id": "a3a7c381-3914-5a0a-97d2-d4ef35d5fd71",
+  "new_anchor": "vii.ii.xxxv",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 35 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "3e717629-be43-54e7-9f8e-03c331792c03",
+  "old_anchor": "vii/from-p6",
+  "new_passage_id": "655fe2c6-7d8f-591d-ab63-0aeb26281998",
+  "new_anchor": "vii.ii.xxxvi",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 36 holds the first section number it printed",
+  "added_by": "1.8d"
  },
  {
   "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
@@ -20323,7 +20761,99 @@
   "new_anchor": "vii/from-p6",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "1.8d",
+  "closed_on": "2026-11-13"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "7db9a47c-2929-556e-902c-a45d5fe6a927",
+  "old_anchor": "vii/from-p7",
+  "new_passage_id": "655fe2c6-7d8f-591d-ab63-0aeb26281998",
+  "new_anchor": "vii.ii.xxxvi",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 36 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "768c1430-113d-589e-ac30-36deadaa48ff",
+  "old_anchor": "vii/from-p8",
+  "new_passage_id": "084b8441-9df3-5345-938d-0b558fa33fa4",
+  "new_anchor": "vii.ii.xxxvii",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 37 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "ce50390a-4330-5252-aa82-5aec16ffcaa6",
+  "old_anchor": "vii/from-p9",
+  "new_passage_id": "bc1080c7-7e80-593b-a898-2a492202ae8d",
+  "new_anchor": "vii.ii.xxxviii",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 38 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "9bf1a2fc-0890-5104-a16a-fda73c3af30b",
+  "old_anchor": "viii",
+  "new_passage_id": "d96b97f3-cb36-5fdb-ac91-7b3fad2e0db5",
+  "new_anchor": "vii.ii.xli",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 41 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "e9ca2e9d-5270-5f76-b76d-d6a61c121d3e",
+  "old_anchor": "viii/from-p10",
+  "new_passage_id": "225898c6-f01e-5d77-94d8-7d31b19c2a47",
+  "new_anchor": "vii.ii.xlv",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 45 holds its text",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "d97b5ac9-5f0d-5551-bfb0-d63fb26eda0e",
+  "old_anchor": "viii/from-p5",
+  "new_passage_id": "076aeb42-59ba-5579-aced-7f7d4bede9d3",
+  "new_anchor": "vii.ii.xliii",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 43 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "5256e4f6-e8bd-58e6-97bc-3ea367061353",
+  "old_anchor": "viii/from-p7",
+  "new_passage_id": "3636a967-cfcc-55ea-bab4-ac21910312db",
+  "new_anchor": "vii.ii.xliv",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 44 holds the first section number it printed",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "db47a8a0-c3e8-5e4f-9f7d-1d7983bfb69c",
+  "old_anchor": "viii/from-p9",
+  "new_passage_id": "3636a967-cfcc-55ea-bab4-ac21910312db",
+  "new_anchor": "vii.ii.xliv",
+  "kind": "moved",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 44 holds the text it continued",
+  "added_by": "1.8d"
+ },
+ {
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "old_passage_id": "3a9b6c77-78b8-514c-9bea-0491b0a394e1",
+  "old_anchor": "x",
+  "new_passage_id": "75ac0048-67f8-5f80-b152-4c2c3866aa1e",
+  "new_anchor": "vii.ii.lvi",
+  "kind": "split",
+  "reason": "Lawson's translation, which is under copyright, was replaced by Robertson's (1.8d): section 56 holds the first section number it printed",
+  "added_by": "1.8d"
  },
  {
   "document_id": "d008b160-5c71-5092-b5e8-641bbf4ef282",

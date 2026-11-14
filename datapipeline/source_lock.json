@@ -155,17 +155,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/church-fathers/npnf204.xml",
-  "sha256": "bd625a0fa4f5ddd4b2fa13fcee753de8832ea4b316625e0e06454beb81cfa652",
-  "bytes": 5809854,
-  "url": "https://ccel.org/ccel/s/schaff/npnf204.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/church-fathers/npnf207.xml",
   "sha256": "3ac73f4179c0b7d6e66e6fea04ae572e64c0e4a80e8fa38980b40366c8a13928",
   "bytes": 4247548,
@@ -3823,23 +3812,23 @@
  },
  {
   "collection": "church-fathers",
-  "path": "church-fathers/incarnation.xml",
-  "sha256": "fad6e5d0adf77ccc16f8dd66d4beb55d91182384182a2d8334eedf1dfdb79672",
-  "bytes": 156660,
-  "url": "https://ccel.org/ccel/a/athanasius/incarnation.xml",
-  "acquired": "unknown-before-2026-09-29",
-  "hashed_on": "2026-10-04",
-  "role": "adapter-input"
+  "path": "church-fathers/manifest.json",
+  "sha256": "cfa843d4cab79f8b408f8b88ee02974cab573bd07bd251a6ecc65b585741a986",
+  "bytes": 2556,
+  "url": null,
+  "acquired": "unknown-before-2026-11-13",
+  "hashed_on": "2026-11-13",
+  "role": "adapter-auxiliary"
  },
  {
   "collection": "church-fathers",
-  "path": "church-fathers/manifest.json",
-  "sha256": "502c62c073b9ab7eb5cf7bd897f2068d79d755dc5e5a66d1e3f7a3579a5d2686",
-  "bytes": 2551,
-  "url": null,
-  "acquired": "unknown-before-2026-09-29",
-  "hashed_on": "2026-10-04",
-  "role": "adapter-auxiliary"
+  "path": "church-fathers/npnf204.xml",
+  "sha256": "bd625a0fa4f5ddd4b2fa13fcee753de8832ea4b316625e0e06454beb81cfa652",
+  "bytes": 5809854,
+  "url": "https://ccel.org/ccel/s/schaff/npnf204.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
  },
  {
   "collection": "church-fathers",
