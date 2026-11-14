@@ -1,0 +1,635 @@
+[
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "Archbishops, Bishops and",
+  "replace": "Archbishops, Bishops, and",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"Bishops,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "\n\nFaithful Christians.\n\nVuweranre Brorners anp Betovep Sons, Heaurn axp Avostori0AL Benxpiction:",
+  "replace": " Faithful Christians.\n\nVenerable Brothers and Beloved Sons, Health and Apostolical Benediction:",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"Faithful Christians. Venerable Brothers and Beloved Sons, Health and Apostolical Benediction:\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "seaneely",
+  "replace": "majesty",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"majesty\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "ani- _ mated",
+  "replace": "animated",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"animated\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "true tence and",
+  "replace": "true penitence and",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"penitence\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "sin, jw might",
+  "replace": "sin, they might",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"they\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": " throne of with more",
+  "replace": " throne of grace with more",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"grace\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "God. ‘This also,",
+  "replace": "God. This also,",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"This\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "ecumenical",
+  "replace": "Œcumenical",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"Œcumenical\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "Church, be the celebration ",
+  "replace": "Church, be furthered in the sight of the Almighty; and, although the celebration ",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"furthered in the sight of the Almighty; and, although\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": "sus-furthered in the sight of the Anay; and, although pended,",
+  "replace": "suspended,",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"suspended,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-01",
+  "find": " remains, in\n\nits force, ",
+  "replace": " remains, in all its force, ",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"all\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-02",
+  "find": "Free neeecre",
+  "replace": "predecessors",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"predecessors\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-02",
+  "find": "niversal",
+  "replace": "Universal",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"Universal\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-02",
+  "find": "faithful, ardused to",
+  "replace": "faithful, aroused to",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"aroused\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-02",
+  "find": "our cen when,",
+  "replace": "our century when,",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"century\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-02",
+  "find": "the yon 1825",
+  "replace": "the year 1825",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"year\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-02",
+  "find": "of lessed memory,",
+  "replace": "of blessed memory,",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"blessed\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-02",
+  "find": "b istian",
+  "replace": "Christian",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"Christian\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-02",
+  "find": "seen pac | the",
+  "replace": "seen during the",
+  "why": "p. 753: misread on the page (a second reading: Wikisource's transcription); the print reads \"during\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-03",
+  "continues": true,
+  "why": "p. 753: \"O that such were\" runs on in the same sentence; the OCR lost \"that\" at the line's start"
+ },
+ {
+  "passage": "gravibus-ecclesiae-03",
+  "find": "such, were",
+  "replace": "that such were",
+  "why": "pp. 753–754: misread on the page (a second reading: Wikisource's transcription); the print reads \"that such\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-03",
+  "find": "and increased that",
+  "replace": "and increased, that",
+  "why": "pp. 753–754: misread on the page (a second reading: Wikisource's transcription); the print reads \"increased,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-03",
+  "find": "directed —we",
+  "replace": "directed—we",
+  "why": "pp. 753–754: spacing"
+ },
+ {
+  "passage": "gravibus-ecclesiae-03",
+  "find": "and pardon,",
+  "replace": "and pardon.",
+  "why": "pp. 753–754: misread on the page (a second reading: Wikisource's transcription); the print reads \"pardon.\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "MILITANT, ",
+  "replace": "MILITANT.\n\n",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"MILITANT.\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "we penponere",
+  "replace": "we, suspending",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"we, suspending\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "ood will and ead",
+  "replace": "good will and pleasure,",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"good will and pleasure,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": " dispensation. In ",
+  "replace": " dispensation.\n\nIn ",
+  "why": "p. 754: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "the merey of",
+  "replace": "the mercy of",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"mercy\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "upon ‘us, however",
+  "replace": "upon us, however",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"us,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "every one. of",
+  "replace": "every one of",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"one\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "and who having",
+  "replace": "and who, having",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"who,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "Mag-giore,",
+  "replace": "Maggiore,",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"Maggiore,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "heresies",
+  "replace": "heresies,",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"heresies,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "peace an unity",
+  "replace": "peace and unity",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"and\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "pardon forall their",
+  "replace": "pardon for all their",
+  "why": "p. 754: spacing"
+ },
+ {
+  "passage": "gravibus-ecclesiae-04",
+  "find": "we_concede may be apes by ‘* means of suffrage,”’",
+  "replace": "we concede may be applied by “means of suffrage,”",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"we concede may be applied by “means of suffrage,”\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-05",
+  "find": "DISCIPLINE, ",
+  "replace": "DISCIPLINE.\n\n",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"DISCIPLINE.\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-05",
+  "find": "select one ",
+  "replace": "select any one ",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"any\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-05",
+  "find": "conscientiae",
+  "replace": "conscientiæ",
+  "why": "p. 754: misread on the page (a second reading: Wikisource's transcription); the print reads \"conscientiæ\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "may b as",
+  "replace": "may be, as",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"be,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "ordinaries an to",
+  "replace": "ordinaries and to",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"and\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "not nh 3\n\njudged ",
+  "replace": "not be judged ",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"be\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "censures, ",
+  "replace": "censures.\n\n",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"censures.\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "irregularity —whether",
+  "replace": "irregularity—whether",
+  "why": "pp. 754–755: spacing"
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "in-pera he",
+  "replace": "inability,",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"inability,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "grant Pe A ty for",
+  "replace": "grant any faculty for",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"any faculty\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "re-\n\ntate",
+  "replace": "rehabilitate",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"rehabilitate\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "‘oro conscientia;",
+  "replace": "foro conscientiæ;",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"foro conscientiæ;\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": " derogate\n\nthe ",
+  "replace": " derogate from the ",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"from\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-06",
+  "find": "‘‘ Sacramentum",
+  "replace": "“Sacramentum",
+  "why": "pp. 754–755: misread on the page (a second reading: Wikisource's transcription); the print reads \"“Sacramentum\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "continues": true,
+  "why": "p. 755: \"Sacramentum pœnitentiæ\" runs on from the passage before"
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "” dated the",
+  "replace": "pœnitentiæ,” dated the",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"pœnitentiæ,”\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "1741, he first",
+  "replace": "1741, the first",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"the\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "Apostolic See or",
+  "replace": "Apostolic See, or",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"See,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "ecclesiasti",
+  "replace": "ecclesiastical",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"ecclesiastical\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "present yoar they",
+  "replace": "present year they",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"year\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "the others, For",
+  "replace": "the others. For",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"others.\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "of ing this",
+  "replace": "of gaining this",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"gaining\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "yresrese",
+  "replace": "prescribed",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"prescribed\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "pate pade",
+  "replace": "prescribed",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"prescribed\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "ready intention will",
+  "replace": "ready intention, will",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"intention,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "confesse",
+  "replace": "confessed",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"confessed\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "however, aiter obtaining",
+  "replace": "however, after obtaining",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"after\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "not grantin indulgences",
+  "replace": "not granting indulgences",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"granting\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "order, ay a ag or",
+  "replace": "order, congregation, or",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"congregation,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-07",
+  "find": "specitic,",
+  "replace": "specific,",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"specific,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-08",
+  "find": " FAITHFUL. While ",
+  "replace": " FAITHFUL.\n\nWhile ",
+  "why": "p. 755: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "gravibus-ecclesiae-08",
+  "find": "and pe by",
+  "replace": "and adjuring by",
+  "why": "p. 755: misread on the page (a second reading: Wikisource's transcription); the print reads \"adjuring\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "continues": true,
+  "why": "p. 755: \"the Prince of Pastors\" runs on from the passage before"
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "nee of Pastors,",
+  "replace": "Prince of Pastors,",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"Prince\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "ordinary j ction of",
+  "replace": "ordinary jurisdiction of",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"jurisdiction\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "announce 80 great",
+  "replace": "announce so great",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"so\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "— to their",
+  "replace": "to their charge,",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"to their charge,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "faithful",
+  "replace": "faithful,",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"faithful,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "im jlored",
+  "replace": "implored",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"implored\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "to fil the",
+  "replace": "to fill the",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"fill\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "and » Shall be",
+  "replace": "and grace, shall be",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"grace, shall\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "Christian eople to",
+  "replace": "Christian people to",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"people\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "then-not",
+  "replace": "then not",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"then not\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "the people do",
+  "replace": "the people, do",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"people,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "the ze of",
+  "replace": "the zeal of",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"zeal\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "priests, pb i and",
+  "replace": "priests, willingly and",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"willingly\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "religion, will M means",
+  "replace": "religion, will, by means",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"will, by\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "the Bro ordering",
+  "replace": "the right ordering",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"right\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "many aoe perils.",
+  "replace": "many great perils.",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"great\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "‘bitterly",
+  "replace": "bitterly",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"bitterly\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "‘* Whosoever",
+  "replace": "“Whosoever",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"“Whosoever\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "the sea’? (St.",
+  "replace": "the sea” (St.",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"sea”\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "and bodies, If",
+  "replace": "and bodies. If",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"bodies.\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-09",
+  "find": "increase",
+  "replace": "increase,",
+  "why": "pp. 755–756: misread on the page (a second reading: Wikisource's transcription); the print reads \"increase,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "we direct ",
+  "replace": "To you, finally, all ye sons of the Catholic Church, we direct ",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"To you, finally, all ye sons of the Catholic Church,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": " To you, fi Ys all ye sons of the Catholic Church,",
+  "replace": "",
+  "why": "p. 756: a stray mark read as text, removed"
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "times itis necessary—now",
+  "replace": "times it is necessary—now",
+  "why": "p. 756: spacing"
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "it s0—most beloved",
+  "replace": "it so—most beloved",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"so—most\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "repentance and. to",
+  "replace": "repentance and to",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"and\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "truth, ‘men are",
+  "replace": "truth, “men are",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"“men\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "himself;”?",
+  "replace": "himself;”",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"himself;”\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "For, ‘‘ the nearer",
+  "replace": "For, “the nearer",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"“the\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "do re chiefly",
+  "replace": "do ye chiefly",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"ye\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "Divine udge, and",
+  "replace": "Divine Judge, and",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"Judge,\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "passeth.",
+  "replace": "passeth",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"passeth\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "enemies-of",
+  "replace": "enemies of",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"enemies of\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "and salut. fruit",
+  "replace": "and salutary fruit",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"salutary\""
+ },
+ {
+  "passage": "gravibus-ecclesiae-10",
+  "find": "— in the Lord to-you",
+  "replace": "in the Lord to you",
+  "why": "p. 756: misread on the page (a second reading: Wikisource's transcription); the print reads \"in the Lord to you\""
+ }
+]

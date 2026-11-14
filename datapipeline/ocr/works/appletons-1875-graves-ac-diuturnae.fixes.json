@@ -1,0 +1,145 @@
+[
+ {
+  "passage": "graves-ac-diuturnae-01",
+  "find": " VENERABLE BROTHERS AND DEAR Sons, HEALTH AND AposToLio Brnepiction:",
+  "replace": "\n\nVenerable Brothers and dear Sons, Health and Apostolic Benediction:",
+  "why": "p. 691: misread on the page; the print reads \"Venerable Brothers and dear Sons, Health and Apostolic Benediction:\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-01",
+  "find": "which Pee under",
+  "replace": "which keep under",
+  "why": "p. 691: misread on the page; the print reads \"keep\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-01",
+  "find": "said, ‘‘ Woe to",
+  "replace": "said, “Woe to",
+  "why": "p. 691: misread on the page; the print reads \"“Woe\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-01",
+  "find": "tumult.”’",
+  "replace": "tumult.”",
+  "why": "p. 691: misread on the page; the print reads \"tumult.”\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-02",
+  "find": "say one that",
+  "replace": "say openly that",
+  "why": "p. 691: misread on the page; the print reads \"openly\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-03",
+  "find": " schismatics. We ",
+  "replace": " schismatics.\n\nWe ",
+  "why": "pp. 691–692: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "graves-ac-diuturnae-03",
+  "find": " destroy. The ",
+  "replace": " destroy.\n\nThe ",
+  "why": "pp. 691–692: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "graves-ac-diuturnae-04",
+  "find": "said ro ag this",
+  "replace": "said respecting this",
+  "why": "p. 692: misread on the page; the print reads \"respecting\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-04",
+  "find": "conformin",
+  "replace": "conforming",
+  "why": "p. 692: misread on the page; the print reads \"conforming\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-04",
+  "find": "they wil avoid",
+  "replace": "they will avoid",
+  "why": "p. 692: misread on the page; the print reads \"will\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-04",
+  "find": "the conrage of",
+  "replace": "the courage of",
+  "why": "p. 692: misread on the page; the print reads \"courage\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-04",
+  "find": "and our courage,",
+  "replace": "and your courage,",
+  "why": "p. 692: misread on the page; the print reads \"your\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-04",
+  "find": " glory. And ",
+  "replace": " glory.\n\nAnd ",
+  "why": "p. 692: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "graves-ac-diuturnae-04",
+  "find": "salvation. Youall know",
+  "replace": "salvation. You all know",
+  "why": "p. 692: spacing"
+ },
+ {
+  "passage": "graves-ac-diuturnae-04",
+  "find": "ancestors. - Therefore, ",
+  "replace": "ancestors. Therefore, ",
+  "why": "p. 692: a word broken at a line end, joined"
+ },
+ {
+  "passage": "graves-ac-diuturnae-05",
+  "continues": true,
+  "why": "p. 692: \"to remain closely attached\" runs on across the columns"
+ },
+ {
+  "passage": "graves-ac-diuturnae-05",
+  "find": "truth: ‘‘He who",
+  "replace": "truth: “He who",
+  "why": "p. 692: misread on the page; the print reads \"“He\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-05",
+  "find": "scattereth.’’",
+  "replace": "scattereth.”",
+  "why": "p. 692: misread on the page; the print reads \"scattereth.”\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-05",
+  "find": "‘‘ Beware",
+  "replace": "“Beware",
+  "why": "p. 692: misread on the page; the print reads \"“Beware\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-05",
+  "find": "wolves.’’",
+  "replace": "wolves.”",
+  "why": "p. 692: misread on the page; the print reads \"wolves.”\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-05",
+  "find": "‘‘ until",
+  "replace": "“until",
+  "why": "p. 692: misread on the page; the print reads \"“until\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-05",
+  "find": "wanting.—WS.",
+  "replace": "wanting.—S.",
+  "why": "p. 692: misread on the page; the print reads \"wanting.—S.\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-06",
+  "find": "the egis of",
+  "replace": "the ægis of",
+  "why": "p. 692: misread on the page; the print reads \"ægis\""
+ },
+ {
+  "passage": "graves-ac-diuturnae-06",
+  "find": " repentance. Join ",
+  "replace": " repentance.\n\nJoin ",
+  "why": "p. 692: two paragraphs on the page, which the clean-up ran together"
+ }
+]

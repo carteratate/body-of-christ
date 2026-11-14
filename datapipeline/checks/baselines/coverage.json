@@ -6,9 +6,9 @@
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.8d-incarnation-robertson f5b7d83",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
-  "encyclicals": "feat/1.3d-3-same-translation 86fa866",
+  "encyclicals": "feat/1.3d-4-appletons-metropolitan d2be279",
   "medieval": "worktree-bridge-cse_01A8fdmnk6Vfpyf8yTndcQNH 047867d",
-  "papal-documents": "feat/1.3d-3-same-translation 86fa866",
+  "papal-documents": "feat/1.3d-4-appletons-metropolitan d2be279",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
@@ -887,16 +887,6 @@
    "covered_chars": 46065,
    "pct": 100.0
   },
-  "encyclicals/amantissimi-redemptoris.html": {
-   "body_chars": 13344,
-   "covered_chars": 13344,
-   "pct": 100.0
-  },
-  "encyclicals/apostolicae-nostrae-caritatis.html": {
-   "body_chars": 8845,
-   "covered_chars": 8845,
-   "pct": 100.0
-  },
   "encyclicals/caritas-in-veritate.html": {
    "body_chars": 170990,
    "covered_chars": 170762,
@@ -981,16 +971,6 @@
    "body_chars": 222927,
    "covered_chars": 222897,
    "pct": 99.99
-  },
-  "encyclicals/graves-ac-diuturnae.html": {
-   "body_chars": 8625,
-   "covered_chars": 8625,
-   "pct": 100.0
-  },
-  "encyclicals/gravibus-ecclesiae.html": {
-   "body_chars": 15387,
-   "covered_chars": 15387,
-   "pct": 100.0
   },
   "encyclicals/hf_ben-xv_enc_15091920_spiritus-paraclitus.html": {
    "body_chars": 71750,
@@ -1117,11 +1097,6 @@
    "covered_chars": 37464,
    "pct": 100.0
   },
-  "encyclicals/inter-multiplices.html": {
-   "body_chars": 12812,
-   "covered_chars": 12812,
-   "pct": 100.0
-  },
   "encyclicals/inter-praecipuas.html": {
    "body_chars": 17859,
    "covered_chars": 17859,
@@ -1182,11 +1157,6 @@
    "covered_chars": 31186,
    "pct": 100.0
   },
-  "encyclicals/quod-nunquam.html": {
-   "body_chars": 8502,
-   "covered_chars": 8502,
-   "pct": 100.0
-  },
   "encyclicals/redemptor-hominis.html": {
    "body_chars": 120429,
    "covered_chars": 120088,
@@ -1201,11 +1171,6 @@
    "body_chars": 178209,
    "covered_chars": 178067,
    "pct": 99.92
-  },
-  "encyclicals/respicientes.html": {
-   "body_chars": 18328,
-   "covered_chars": 18328,
-   "pct": 100.0
   },
   "encyclicals/salutis-nostrae.html": {
    "body_chars": 9908,
@@ -1256,11 +1221,6 @@
    "body_chars": 239627,
    "covered_chars": 239555,
    "pct": 99.97
-  },
-  "encyclicals/vix-dum-a-nobis.html": {
-   "body_chars": 11949,
-   "covered_chars": 11949,
-   "pct": 100.0
   },
   "encyclicals/vix-pervenit.html": {
    "body_chars": 11261,
@@ -1522,13 +1482,6 @@
    "covered_chars": 113307,
    "pct": 95.48
   },
-  "115bdbfd-9de8-5d54-a970-7e3cafdeba63": {
-   "collection": "encyclicals",
-   "source_file": "amantissimi-redemptoris.html",
-   "body_chars": 13344,
-   "covered_chars": 13344,
-   "pct": 100.0
-  },
   "12083c91-ed66-5b5c-ac89-bd4ebbadb439": {
    "collection": "church-fathers",
    "source_file": "third-century-3.xml",
@@ -1639,13 +1592,6 @@
    "source_file": "third-century-3.xml",
    "body_chars": 11986,
    "covered_chars": 11986,
-   "pct": 100.0
-  },
-  "1916beac-f8f6-59fa-bfeb-0facfbb6052b": {
-   "collection": "encyclicals",
-   "source_file": "graves-ac-diuturnae.html",
-   "body_chars": 8625,
-   "covered_chars": 8625,
    "pct": 100.0
   },
   "198c81e9-e119-5153-b4b2-a436574d067a": {
@@ -1793,13 +1739,6 @@
    "source_file": "vat2-presbyterorum-ordinis.html",
    "body_chars": 66291,
    "covered_chars": 66291,
-   "pct": 100.0
-  },
-  "29897c86-0820-5f41-a3f6-951743a69566": {
-   "collection": "encyclicals",
-   "source_file": "vix-dum-a-nobis.html",
-   "body_chars": 11949,
-   "covered_chars": 11949,
    "pct": 100.0
   },
   "29bf3975-5f39-5550-a949-6767cb666695": {
@@ -1969,13 +1908,6 @@
    "body_chars": 1302340,
    "covered_chars": 1236491,
    "pct": 94.94
-  },
-  "3bcae73a-4e86-5cfb-9bf7-efc71fd6969d": {
-   "collection": "encyclicals",
-   "source_file": "gravibus-ecclesiae.html",
-   "body_chars": 15387,
-   "covered_chars": 15387,
-   "pct": 100.0
   },
   "3e93eb36-8361-5a2b-a1a6-267318aaf29d": {
    "collection": "bible",
@@ -3321,13 +3253,6 @@
    "covered_chars": 158105,
    "pct": 99.82
   },
-  "cc81769d-2c6a-5735-9562-a4cb600edb41": {
-   "collection": "encyclicals",
-   "source_file": "respicientes.html",
-   "body_chars": 18328,
-   "covered_chars": 18328,
-   "pct": 100.0
-  },
   "cc97bad6-b510-55d5-809f-e61c9a7359b1": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/82-1THeng-web-c.usfm",
@@ -3447,13 +3372,6 @@
    "covered_chars": 72754,
    "pct": 100.0
   },
-  "d6ecb3a9-6a32-568a-817d-53b1390a55f7": {
-   "collection": "encyclicals",
-   "source_file": "apostolicae-nostrae-caritatis.html",
-   "body_chars": 8845,
-   "covered_chars": 8845,
-   "pct": 100.0
-  },
   "d72938c6-9f4d-5241-8af8-6feb01ee8dd6": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
@@ -3508,13 +3426,6 @@
    "source_file": "eng-web-c_usfm/22-ECCeng-web-c.usfm",
    "body_chars": 26855,
    "covered_chars": 26855,
-   "pct": 100.0
-  },
-  "dddc9eb5-4c5a-55a2-9202-f93453fe900e": {
-   "collection": "encyclicals",
-   "source_file": "inter-multiplices.html",
-   "body_chars": 12812,
-   "covered_chars": 12812,
    "pct": 100.0
   },
   "debb22d8-702c-5df3-952c-6df5cd720e42": {
@@ -3663,13 +3574,6 @@
    "body_chars": 105539,
    "covered_chars": 105330,
    "pct": 99.8
-  },
-  "eee1a6b6-6e6c-5c84-8a31-e071b361efb3": {
-   "collection": "encyclicals",
-   "source_file": "quod-nunquam.html",
-   "body_chars": 8502,
-   "covered_chars": 8502,
-   "pct": 100.0
   },
   "ef57a4a0-0811-5189-a42b-cf488f19592b": {
    "collection": "apostolic-exhortations",

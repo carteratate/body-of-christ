@@ -3,7 +3,8 @@
 A work's config names its layout. `single-column` is one block of text read top to
 bottom. `parallel-left` keeps the left of two parallel columns (Deferrari's Constantinople
 IV: Anastasius's Latin on the left, the Greek on the right); `parallel-right` keeps the
-right (Unam Sanctam's English beside its Latin, 1.3d). A page in two columns of
+right (Unam Sanctam's English beside its Latin, 1.3d); `two-column` reads running text in
+two columns, the left then the right (Appletons' Annual Cyclopaedia, 1.3d). A page in two columns of
 running text, or in parallel Latin and English columns (R8: Unam Sanctam, Ubi Primum
 1849), would be another `Layout` that returns the lines it keeps in reading order;
 `furniture.py` works on whatever a layout returns, so adding one does not change the
@@ -121,8 +122,73 @@ class ParallelRight:
                 if ln.x0 >= middle or (ln.x0 < middle and ln.x1 > middle + across)]
 
 
+def _rows(lines: list[Line]) -> list[Line]:
+    """A column's lines by printed row, each row left to right: the OCR can cut one
+    printed line into pieces whose tops differ by a few pixels, and sorting by top alone
+    would put a later piece first. A line is in a row when its middle lies within half
+    the column's usual line height of the row's first line's middle."""
+    if not lines:
+        return []
+    half = statistics.median(ln.height for ln in lines) / 2
+    rows: list[list[Line]] = []
+    for ln in sorted(lines, key=lambda ln: (ln.top + ln.bottom) / 2):
+        mid = (ln.top + ln.bottom) / 2
+        if rows and abs(mid - (rows[-1][0].top + rows[-1][0].bottom) / 2) <= half:
+            rows[-1].append(ln)
+        else:
+            rows.append([ln])
+    return [ln for row in rows for ln in sorted(row, key=lambda ln: ln.x0)]
+
+
+class TwoColumn:
+    """Running text in two columns (Appletons' Annual Cyclopaedia, 1.3d): the left column
+    top to bottom, then the right. A line across both columns (a heading) divides the
+    page into bands, each read the same way, so text before a heading comes before it.
+
+    The text block runs from the left edge of most lines to the right edge of most
+    lines; a line is in the right column when its centre is right of the block's middle, and
+    across the page when it starts and ends more than `ACROSS` of the page width either
+    side of the middle (a stray mark before a right-column line does not make it one). Each column is read by printed row (`_rows`). What stands
+    above the first line of running text (the running head and page number) is read
+    first, so the clean-up finds it at the top."""
+    name = "two-column"
+
+    ACROSS = 0.1
+    TEXT_WORDS = 6
+
+    def reading_order(self, page: Page) -> list[Line]:
+        lines = sorted(page.lines, key=lambda ln: (ln.top, ln.x0))
+        if not lines:
+            return lines
+        lefts = sorted(ln.x0 for ln in lines)
+        rights = sorted(ln.x1 for ln in lines)
+        middle = (lefts[len(lefts) // 10] + rights[-1 - len(rights) // 10]) / 2
+        across = self.ACROSS * page.width
+        # The page's head (running head, page number) stands above the first line of
+        # running text, a line of several words; it is read first.
+        text_top = min((ln.top for ln in lines if len(ln.text.split()) >= self.TEXT_WORDS),
+                       default=0)
+        out: list[Line] = [ln for ln in lines if ln.bottom <= text_top]
+        lines = [ln for ln in lines if ln.bottom > text_top]
+        band: list[Line] = []
+
+        def flush() -> None:
+            out.extend(_rows([ln for ln in band if (ln.x0 + ln.x1) / 2 < middle]))
+            out.extend(_rows([ln for ln in band if (ln.x0 + ln.x1) / 2 >= middle]))
+            band.clear()
+
+        for ln in lines:
+            if ln.x0 < middle - across and ln.x1 > middle + across:
+                flush()
+                out.append(ln)
+            else:
+                band.append(ln)
+        flush()
+        return out
+
+
 LAYOUTS: dict[str, Layout] = {SingleColumn.name: SingleColumn(), ParallelLeft.name: ParallelLeft(),
-                              ParallelRight.name: ParallelRight()}
+                              ParallelRight.name: ParallelRight(), TwoColumn.name: TwoColumn()}
 
 
 def get_layout(name: str) -> Layout:

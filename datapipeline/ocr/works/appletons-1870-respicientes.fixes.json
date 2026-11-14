@@ -1,0 +1,712 @@
+[
+ {
+  "passage": "respicientes-01",
+  "find": "\n\n1st of November, 1850:",
+  "replace": " 1st of November, 1850;",
+  "why": "p. 664: misread on the page; the print reads \"1st of November, 1850;\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "world, e",
+  "replace": "world. We",
+  "why": "p. 664: misread on the page; the print reads \"world. We\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "published png ago",
+  "replace": "published long ago",
+  "why": "p. 664: misread on the page; the print reads \"long\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "sufliciently",
+  "replace": "sufficiently",
+  "why": "p. 664: misread on the page; the print reads \"sufficiently\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": " 16.) Venerable ",
+  "replace": " 16.)\n\nVenerable ",
+  "why": "p. 664: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "filit met perditi quoniam prae-valuit inimicus,",
+  "replace": "filii mei perditi quoniam praevaluit inimicus.",
+  "why": "p. 664: misread on the page; the print reads \"filii mei perditi quoniam praevaluit inimicus.\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "convertens ani-mam meam,",
+  "replace": "convertens animam meam,",
+  "why": "p. 664: misread on the page; the print reads \"animam\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "aquas, guia longe",
+  "replace": "aquas, quia longe",
+  "why": "p. 664: misread on the page; the print reads \"quia\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "God, adore’ His",
+  "replace": "God, adore His",
+  "why": "p. 664: misread on the page; the print reads \"adore\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "that de-Sign into",
+  "replace": "that design into",
+  "why": "p. 664: misread on the page; the print reads \"design\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "usur ation,",
+  "replace": "usurpation,",
+  "why": "p. 664: misread on the page; the print reads \"usurpation,\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "remaining States, of",
+  "replace": "remaining states, of",
+  "why": "p. 664: misread on the page; the print reads \"states,\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": " the\n\nApostolic ",
+  "replace": " the Apostolic ",
+  "why": "p. 664: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "incessant ey aiming",
+  "replace": "incessant plots aiming",
+  "why": "p. 664: misread on the page; the print reads \"plots\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "roceedings",
+  "replace": "proceedings",
+  "why": "p. 664: misread on the page; the print reads \"proceedings\""
+ },
+ {
+  "passage": "respicientes-01",
+  "find": "Prius IX., sy DIVINE PROVIDENCE POPE, TO ALL PA-TRIAROHS, PRIMATES, ARCHBISHOPS, AND BISHOPS, AND TO OTHER LOCAL ORDINARIES HAVING FAVOR AND COMMUNION WITH THE APOSTOLIOAL SEE, ",
+  "replace": "Pius IX., by Divine Providence Pope, to all Patriarchs, Primates, Archbishops, and Bishops, and to other Local Ordinaries having Favor and Communion with the Apostolical See.\n\n",
+  "why": "p. 664: misread on the page; the print reads \"Pius IX., by Divine Providence Pope, to all Patriarchs, Primates, Archbishops, and Bishops, and to other Local Ordinaries having Favor and Communion with the Apostolical See.\""
+ },
+ {
+  "passage": "respicientes-02",
+  "continues": true,
+  "why": "p. 664: the list of dates runs on (\"the 22d of January and 26th of June, 1855\")"
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "common father had",
+  "replace": "common father, had",
+  "why": "p. 664: misread on the page; the print reads \"father,\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "ieee band of Cathohe",
+  "replace": "volunteer band of Catholic",
+  "why": "p. 664: misread on the page; the print reads \"volunteer band of Catholic\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "atrimony,",
+  "replace": "Patrimony,",
+  "why": "p. 664: misread on the page; the print reads \"Patrimony,\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "other a situate",
+  "replace": "other provinces situate",
+  "why": "p. 664: misread on the page; the print reads \"provinces\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "overnment,",
+  "replace": "government,",
+  "why": "p. 664: misread on the page; the print reads \"government,\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "eople haying",
+  "replace": "people having",
+  "why": "p. 664: misread on the page; the print reads \"people having\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "the Amilia were",
+  "replace": "the Æmilia were",
+  "why": "p. 664: misread on the page; the print reads \"Æmilia\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "Church. Fon are",
+  "replace": "Church. You are",
+  "why": "p. 664: misread on the page; the print reads \"You\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "what eunning and",
+  "replace": "what cunning and",
+  "why": "p. 664: misread on the page; the print reads \"cunning\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "doeu-ments,",
+  "replace": "documents,",
+  "why": "p. 664: misread on the page; the print reads \"documents,\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": " treaties being curtly repudiated at the very time",
+  "replace": "",
+  "why": "p. 664: a stray mark or the next article's running head (\"ROUMANIA. 667\") read as text, removed"
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "those when ",
+  "replace": "those treaties being curtly repudiated at the very time when ",
+  "why": "p. 664: misread on the page; the print reads \"treaties being curtly repudiated at the very time\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "oceupa-tion",
+  "replace": "occupation",
+  "why": "p. 664: misread on the page; the print reads \"occupation\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "BOY-ereign",
+  "replace": "sovereign",
+  "why": "p. 664: misread on the page; the print reads \"sovereign\""
+ },
+ {
+  "passage": "respicientes-02",
+  "find": "November, 1867, In",
+  "replace": "November, 1867. In",
+  "why": "p. 664: misread on the page; the print reads \"1867.\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "said, asl reconcile",
+  "replace": "said, would reconcile",
+  "why": "pp. 664–665: misread on the page; the print reads \"would\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "it? Itis matter",
+  "replace": "it? It is matter",
+  "why": "pp. 664–665: spacing"
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "it tobe invaded",
+  "replace": "it to be invaded",
+  "why": "pp. 664–665: spacing"
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "treaty; ErcRe were engaged in a great war, with one of",
+  "replace": "treaty",
+  "why": "pp. 664–665: misread on the page; the print reads \"treaty\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": " nations of",
+  "replace": " nations of Europe were engaged in a great war, with one of",
+  "why": "pp. 664–665: misread on the page; the print reads \"of Europe were engaged in a great war, with one\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "op-ortunity",
+  "replace": "opportunity",
+  "why": "pp. 664–665: misread on the page; the print reads \"opportunity\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": " succession. And ",
+  "replace": " succession.\n\nAnd ",
+  "why": "pp. 664–665: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "searcely",
+  "replace": "scarcely",
+  "why": "pp. 664–665: misread on the page; the print reads \"scarcely\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "anx-leties,",
+  "replace": "anxieties,",
+  "why": "pp. 664–665: misread on the page; the print reads \"anxieties,\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": " nation. _ Inso many",
+  "replace": " nation.\n\nIn so many",
+  "why": "pp. 664–665: misread on the page; the print reads \"In so\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "beloved subjects as",
+  "replace": "beloved subjects, as",
+  "why": "pp. 664–665: misread on the page; the print reads \"subjects,\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "out Riere us",
+  "replace": "out against us",
+  "why": "pp. 664–665: misread on the page; the print reads \"against\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "unwa- ‘Yeringly",
+  "replace": "unwaveringly",
+  "why": "pp. 664–665: misread on the page; the print reads \"unwaveringly\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "-unshaken",
+  "replace": "unshaken",
+  "why": "pp. 664–665: misread on the page; the print reads \"unshaken\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "“without",
+  "replace": "without",
+  "why": "pp. 664–665: misread on the page; the print reads \"without\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "provinees",
+  "replace": "provinces",
+  "why": "pp. 664–665: misread on the page; the print reads \"provinces\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "censures ‘upon them;",
+  "replace": "censures upon them;",
+  "why": "pp. 664–665: misread on the page; the print reads \"upon\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "abettors’to",
+  "replace": "abettors to",
+  "why": "pp. 664–665: misread on the page; the print reads \"abettors to\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "possessions’",
+  "replace": "possessions",
+  "why": "pp. 664–665: misread on the page; the print reads \"possessions\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "octrine,",
+  "replace": "doctrine,",
+  "why": "pp. 664–665: misread on the page; the print reads \"doctrine,\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "everywhere i ne the",
+  "replace": "everywhere promoted the",
+  "why": "pp. 664–665: misread on the page; the print reads \"promoted\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "to restoro in",
+  "replace": "to restore in",
+  "why": "pp. 664–665: misread on the page; the print reads \"restore\""
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "out thatit had",
+  "replace": "out that it had",
+  "why": "pp. 664–665: spacing"
+ },
+ {
+  "passage": "respicientes-03",
+  "find": "sacrilegious seed es has",
+  "replace": "sacrilegious usurpation, has",
+  "why": "pp. 664–665: misread on the page; the print reads \"usurpation,\""
+ },
+ {
+  "passage": "respicientes-04",
+  "continues": true,
+  "why": "p. 665: \"the greatness of any man\" runs on from p. 664"
+ },
+ {
+  "passage": "respicientes-04",
+  "find": "Apostolic, June 10",
+  "replace": "Apostolic, June 10, 1809.)",
+  "why": "p. 665: misread on the page; the print reads \"10, 1809.)\""
+ },
+ {
+  "passage": "respicientes-04",
+  "find": "demonstrate.”?",
+  "replace": "demonstrate.”",
+  "why": "p. 665: misread on the page; the print reads \"demonstrate.”\""
+ },
+ {
+  "passage": "respicientes-04",
+  "find": "(De Basi1, trad.",
+  "replace": "(De Basil, trad.",
+  "why": "p. 665: misread on the page; the print reads \"Basil,\""
+ },
+ {
+  "passage": "respicientes-04",
+  "find": " quoting: ‘* Let us",
+  "replace": " quoting:\n\n“Let us",
+  "why": "p. 665: misread on the page; the print reads \"“Let\""
+ },
+ {
+  "passage": "respicientes-04",
+  "find": "( Wisdom,",
+  "replace": "(Wisdom,",
+  "why": "p. 665: spacing"
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "aceredited",
+  "replace": "accredited",
+  "why": "pp. 665–666: misread on the page; the print reads \"accredited\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "daffaires",
+  "replace": "d’affaires",
+  "why": "pp. 665–666: misread on the page; the print reads \"d’affaires\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "have iene declared",
+  "replace": "have already declared",
+  "why": "pp. 665–666: misread on the page; the print reads \"already\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "the Chureh, in",
+  "replace": "the Church, in",
+  "why": "pp. 665–666: misread on the page; the print reads \"Church,\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": " course. As ",
+  "replace": " course.\n\nAs ",
+  "why": "pp. 665–666: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "are im the",
+  "replace": "are in the",
+  "why": "pp. 665–666: misread on the page; the print reads \"in\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "from us.. And",
+  "replace": "from us. And",
+  "why": "pp. 665–666: misread on the page; the print reads \"us.\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "ineurred dpso Facto,",
+  "replace": "incurred ipso facto,",
+  "why": "pp. 665–666: misread on the page; the print reads \"incurred ipso facto,\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "Possessions",
+  "replace": "possessions",
+  "why": "pp. 665–666: misread on the page; the print reads \"possessions\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": " Government. We ",
+  "replace": " Government.\n\nWe ",
+  "why": "pp. 665–666: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "are plying any",
+  "replace": "are hindered by reason of our present position from applying any",
+  "why": "pp. 665–666: misread on the page; the print reads \"hindered by reason of our present position from applying\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "hindered by reason of” our present position from ap-see",
+  "replace": "see",
+  "why": "pp. 665–666: misread on the page; the print reads \"see\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": " father. And ",
+  "replace": " father.\n\nAnd ",
+  "why": "pp. 665–666: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "filled witha large",
+  "replace": "filled with a large",
+  "why": "pp. 665–666: spacing"
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "us an to",
+  "replace": "us and to",
+  "why": "pp. 665–666: misread on the page; the print reads \"and\""
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "then ina short",
+  "replace": "then in a short",
+  "why": "pp. 665–666: spacing"
+ },
+ {
+  "passage": "respicientes-05",
+  "find": "There ‘ore,",
+  "replace": "Therefore,",
+  "why": "pp. 665–666: misread on the page; the print reads \"Therefore,\""
+ },
+ {
+  "passage": "respicientes-06",
+  "continues": true,
+  "why": "p. 666: \"accredited to us and to this Holy See\" runs on across the columns"
+ },
+ {
+  "passage": "respicientes-06",
+  "find": "hinder,”",
+  "replace": "hinder.”",
+  "why": "p. 666: misread on the page; the print reads \"hinder.”\""
+ },
+ {
+  "passage": "respicientes-06",
+  "find": "Apostate",
+  "replace": "Apostolic",
+  "why": "p. 666: misread on the page; the print reads \"Apostolic\""
+ },
+ {
+  "passage": "respicientes-06",
+  "find": "said: ‘To do",
+  "replace": "said: “To do",
+  "why": "p. 666: misread on the page; the print reads \"“To\""
+ },
+ {
+  "passage": "respicientes-06",
+  "find": "project,",
+  "replace": "project",
+  "why": "p. 666: misread on the page; the print reads \"project\""
+ },
+ {
+  "passage": "respicientes-06",
+  "find": "Belial?”?",
+  "replace": "Belial?”",
+  "why": "p. 666: misread on the page; the print reads \"Belial?”\""
+ },
+ {
+  "passage": "respicientes-06",
+  "find": "Paul: ‘‘Quae participatio",
+  "replace": "Paul: “Quae participatio",
+  "why": "p. 666: misread on the page; the print reads \"“Quae\""
+ },
+ {
+  "passage": "respicientes-06",
+  "find": "our supreme authority",
+  "replace": "our pastoral authority",
+  "why": "p. 666: the page reads \"pastoral authority\"; the OCR read \"arti\" and the model's accepted correction made it \"supreme\""
+ },
+ {
+  "passage": "respicientes-06",
+  "find": "abrogated,",
+  "replace": "abrogated.",
+  "why": "p. 666: misread on the page; the print reads \"abrogated.\""
+ },
+ {
+  "passage": "respicientes-06",
+  "find": "still to - be accomplished, ",
+  "replace": "still to be accomplished, ",
+  "why": "p. 666: a word broken at a line end, joined"
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "\n\nROUMANTIA.\n\n667",
+  "replace": "",
+  "why": "pp. 666–667: a stray mark or the next article's running head (\"ROUMANIA. 667\") read as text, removed"
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "His merey, to",
+  "replace": "His mercy, to",
+  "why": "pp. 666–667: misread on the page; the print reads \"mercy,\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "who came. to",
+  "replace": "who came to",
+  "why": "pp. 666–667: misread on the page; the print reads \"came\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "22, C, 11",
+  "replace": "22, C. 11",
+  "why": "pp. 666–667: misread on the page; the print reads \"C.\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "and ‘the decrees",
+  "replace": "and the decrees",
+  "why": "pp. 666–667: misread on the page; the print reads \"the\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "penaipiga",
+  "replace": "penalties",
+  "why": "pp. 666–667: misread on the page; the print reads \"penalties\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "ineurred,,",
+  "replace": "incurred,",
+  "why": "pp. 666–667: misread on the page; the print reads \"incurred,\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "and al others,",
+  "replace": "and all others,",
+  "why": "pp. 666–667: misread on the page; the print reads \"all\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "their agents abettors,",
+  "replace": "their agents, abettors,",
+  "why": "pp. 666–667: misread on the page; the print reads \"agents,\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "most aspen) mention,",
+  "replace": "most special mention,",
+  "why": "pp. 666–667: misread on the page; the print reads \"special\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "our belove city,",
+  "replace": "our beloved city,",
+  "why": "pp. 666–667: misread on the page; the print reads \"beloved\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "doz minion",
+  "replace": "dominion",
+  "why": "pp. 666–667: misread on the page; the print reads \"dominion\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "who haye perpetrated",
+  "replace": "who have perpetrated",
+  "why": "pp. 666–667: misread on the page; the print reads \"have\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "whole C urch, that",
+  "replace": "whole Church, that",
+  "why": "pp. 666–667: misread on the page; the print reads \"Church,\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "to ou, venerable",
+  "replace": "to you, venerable",
+  "why": "pp. 666–667: misread on the page; the print reads \"you,\""
+ },
+ {
+  "passage": "respicientes-07",
+  "find": "admonitions",
+  "replace": "admonitions,",
+  "why": "pp. 666–667: misread on the page; the print reads \"admonitions,\""
+ },
+ {
+  "passage": "respicientes-08",
+  "continues": true,
+  "why": "p. 667: \"thinking upon the eternal damnation\" runs on from p. 666"
+ },
+ {
+  "passage": "respicientes-08",
+  "find": " BIG Pee adxs",
+  "replace": "\n\nPIUS P. P. IX.",
+  "why": "p. 667: the signature \"PIUS P. P. IX.\", which the OCR read as \"BIG Pee adxs\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "enediction,",
+  "replace": "benediction,",
+  "why": "p. 667: misread on the page; the print reads \"benediction,\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "our inmost: heart",
+  "replace": "our inmost heart",
+  "why": "p. 667: misread on the page; the print reads \"inmost\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "and, asa pledge",
+  "replace": "and, as a pledge",
+  "why": "p. 667: spacing"
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "and aity confided",
+  "replace": "and laity confided",
+  "why": "p. 667: misread on the page; the print reads \"laity\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "for ire venerable",
+  "replace": "for you, venerable",
+  "why": "p. 667: misread on the page; the print reads \"you,\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": " 244.) _. And ",
+  "replace": " 244.)\n\nAnd ",
+  "why": "p. 667: a stray mark or the next article's running head (\"ROUMANIA. 667\") read as text, removed"
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "pecca-tores, prolongaverunt iniquitatem suam,’",
+  "replace": "peccatores, prolongaverunt iniquitatem suam.’",
+  "why": "p. 667: misread on the page; the print reads \"peccatores, prolongaverunt iniquitatem suam.’\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "mea,.etenim non potuerunt mihi,",
+  "replace": "mea, etenim non potuerunt mihi.",
+  "why": "p. 667: misread on the page; the print reads \"mea, etenim non potuerunt mihi.\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "expugna-verunt",
+  "replace": "expugnaverunt",
+  "why": "p. 667: misread on the page; the print reads \"expugnaverunt\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "altagaitien",
+  "replace": "altogether",
+  "why": "p. 667: misread on the page; the print reads \"altogether\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "Divine -merey such",
+  "replace": "Divine mercy such",
+  "why": "p. 667: misread on the page; the print reads \"mercy\""
+ },
+ {
+  "passage": "respicientes-08",
+  "find": "grief,, Ih",
+  "replace": "grief.\n\nIn",
+  "why": "p. 667: misread on the page; the print reads \"grief. In\""
+ }
+]

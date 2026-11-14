@@ -903,5 +903,722 @@
    }
   ],
   "marks_sources": true
+ },
+ "encyclicals/gravibus-ecclesiae": {
+  "source": "ocr",
+  "work": "appletons-1874-gravibus-ecclesiae",
+  "file": "appletonsannualc14newyuoft/",
+  "url": "https://archive.org/details/appletonsannualc14newyuoft",
+  "translation": "The American Annual Cyclopaedia for 1874 (New York: Appleton, 1875)",
+  "units": [
+   {
+    "opens": "To all the Patriarchs",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brothers and Beloved Sons",
+    "unit": "preamble",
+    "until": "Moved not only"
+   },
+   {
+    "opens": "Moved not only",
+    "unit": 1
+   },
+   {
+    "opens": "Nevertheless, the course",
+    "unit": 2,
+    "until": "What a pious and holy solemnity"
+   },
+   {
+    "opens": "What a pious and holy solemnity",
+    "unit": 3
+   },
+   {
+    "opens": "Let, then, the Universal Church",
+    "unit": 4
+   },
+   {
+    "opens": "In the mean time, relying",
+    "unit": 5
+   },
+   {
+    "opens": "In virtue, also, of this",
+    "unit": 6
+   },
+   {
+    "opens": "Equally may the same confessors",
+    "unit": 7
+   },
+   {
+    "opens": "We do not intend, however",
+    "unit": 8,
+    "until": "For the rest, if any"
+   },
+   {
+    "opens": "For the rest, if any",
+    "unit": 9,
+    "until": "We also will and decree"
+   },
+   {
+    "opens": "We also will and decree",
+    "unit": 10
+   },
+   {
+    "opens": "While thus by the apostolic office",
+    "unit": 11,
+    "until": "Because then not only"
+   },
+   {
+    "opens": "Because then not only",
+    "unit": 12,
+    "until": "Since, therefore, at the present time"
+   },
+   {
+    "opens": "Since, therefore, at the present time",
+    "unit": 13,
+    "until": "Nothing then is more worthy"
+   },
+   {
+    "opens": "Nothing then is more worthy",
+    "unit": 14
+   },
+   {
+    "opens": "To you, finally, all ye sons",
+    "unit": 15,
+    "until": "But do ye chiefly hear"
+   },
+   {
+    "opens": "But do ye chiefly hear",
+    "unit": 16,
+    "until": "These are our desires"
+   },
+   {
+    "opens": "These are our desires",
+    "unit": 17,
+    "until": "Meanwhile, for the successful"
+   },
+   {
+    "opens": "Meanwhile, for the successful",
+    "unit": 18
+   }
+  ],
+  "editorial": [
+   {
+    "opens": "IN PEACEFUL TIMES.",
+    "why": "Appletons' run-in heading, the cyclopaedia's, not the pope's (rule G)"
+   },
+   {
+    "opens": "A CALL TO THE CHURCH MILITANT.",
+    "why": "Appletons' run-in heading, the cyclopaedia's, not the pope's (rule G)"
+   },
+   {
+    "opens": "RULES AND DISCIPLINE.",
+    "why": "Appletons' run-in heading, the cyclopaedia's, not the pope's (rule G)"
+   },
+   {
+    "opens": "TO THE FAITHFUL.",
+    "why": "Appletons' run-in heading, the cyclopaedia's, not the pope's (rule G)"
+   }
+  ]
+ },
+ "encyclicals/vix-dum-a-nobis": {
+  "source": "ocr",
+  "work": "appletons-1874-vix-dum-a-nobis",
+  "file": "appletonsannualc14newyuoft/",
+  "url": "https://archive.org/details/appletonsannualc14newyuoft",
+  "translation": "The American Annual Cyclopaedia for 1874 (New York: Appleton, 1875)",
+  "units": [
+   {
+    "opens": "Dear Sons and Venerable Brethren",
+    "unit": "preamble",
+    "until": "Scarcely had we"
+   },
+   {
+    "opens": "Scarcely had we",
+    "unit": 1
+   },
+   {
+    "opens": "It is true that a few years back",
+    "unit": 2,
+    "until": "For the Creator and Redeemer"
+   },
+   {
+    "opens": "For the Creator and Redeemer",
+    "unit": 3,
+    "until": "But this supernatural power"
+   },
+   {
+    "opens": "But this supernatural power",
+    "unit": 4
+   },
+   {
+    "opens": "You recognize with us",
+    "unit": 5
+   },
+   {
+    "opens": "In effect, by virtue",
+    "unit": 6
+   },
+   {
+    "opens": "By this the secular government",
+    "unit": 7
+   },
+   {
+    "opens": "Hence it follows",
+    "unit": "+"
+   },
+   {
+    "opens": "As regards these laws",
+    "unit": 8
+   },
+   {
+    "opens": "We do not care to examine",
+    "unit": 9
+   },
+   {
+    "opens": "The contract which was concluded",
+    "unit": "+",
+    "until": "Could such a thing ever"
+   },
+   {
+    "opens": "Could such a thing ever",
+    "unit": 10
+   },
+   {
+    "opens": "We reprove all the more",
+    "unit": "+"
+   },
+   {
+    "opens": "There may be in the Empire",
+    "unit": "+",
+    "until": "A new form of right"
+   },
+   {
+    "opens": "A new form of right",
+    "unit": 11
+   },
+   {
+    "opens": "With the projected laws",
+    "unit": "+"
+   },
+   {
+    "opens": "In truth, a great task",
+    "unit": 12
+   },
+   {
+    "opens": "Again, what are we to expect",
+    "unit": "+"
+   },
+   {
+    "opens": "As the laws discussed",
+    "unit": 13
+   },
+   {
+    "opens": "This phrase has been explained",
+    "unit": "+"
+   },
+   {
+    "opens": "Therefore we call upon you",
+    "unit": "+",
+    "until": "But our hopes are not all placed"
+   },
+   {
+    "opens": "But our hopes are not all placed",
+    "unit": 14
+   },
+   {
+    "opens": "We, therefore, who by virtue",
+    "unit": "+"
+   },
+   {
+    "opens": "Uplift your hearts",
+    "unit": "+",
+    "until": "But as you will have to direct"
+   },
+   {
+    "opens": "But as you will have to direct",
+    "unit": 15
+   },
+   {
+    "opens": "But as the number of assailants",
+    "unit": 16
+   }
+  ]
+ },
+ "encyclicals/quod-nunquam": {
+  "source": "ocr",
+  "work": "appletons-1875-quod-nunquam",
+  "file": "appletonsannualc15newyuoft/",
+  "url": "https://archive.org/details/appletonsannualc15newyuoft",
+  "translation": "The American Annual Cyclopaedia for 1875 (New York: Appleton, 1876)",
+  "units": [
+   {
+    "opens": "To our Venerable Brethren the Archbishops",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble",
+    "until": "That which we could never"
+   },
+   {
+    "opens": "That which we could never",
+    "unit": 1
+   },
+   {
+    "opens": "For these laws ascribe",
+    "unit": 2
+   },
+   {
+    "opens": "These same laws have raised",
+    "unit": "+",
+    "until": "We will say no more"
+   },
+   {
+    "opens": "We will say no more",
+    "unit": 3
+   },
+   {
+    "opens": "But we are unable to keep silence",
+    "unit": "+",
+    "until": "Truly, we who recall"
+   },
+   {
+    "opens": "Truly, we who recall",
+    "unit": 4
+   },
+   {
+    "opens": "Those venerable brethren have feared",
+    "unit": "+"
+   },
+   {
+    "opens": "Although brilliant panegyrics",
+    "unit": 5
+   },
+   {
+    "opens": "In fulfillment of the duties",
+    "unit": "+"
+   },
+   {
+    "opens": "To this melancholy posture",
+    "unit": 6
+   },
+   {
+    "opens": "After what we have just said",
+    "unit": 7
+   },
+   {
+    "opens": "In the midst of these tribulations",
+    "unit": 8
+   },
+   {
+    "opens": "Why cannot we procure",
+    "unit": 9
+   },
+   {
+    "opens": "Would that those who are your enemies",
+    "unit": 10
+   },
+   {
+    "opens": "Let them know, at the same time",
+    "unit": "+",
+    "until": "Have courage, then"
+   },
+   {
+    "opens": "Have courage, then",
+    "unit": 11
+   },
+   {
+    "opens": "Look to him who has gone",
+    "unit": "+"
+   },
+   {
+    "opens": "It is He who has arrayed",
+    "unit": "+"
+   },
+   {
+    "opens": "Believing in this victory",
+    "unit": 12
+   }
+  ]
+ },
+ "encyclicals/graves-ac-diuturnae": {
+  "source": "ocr",
+  "work": "appletons-1875-graves-ac-diuturnae",
+  "file": "appletonsannualc15newyuoft/",
+  "url": "https://archive.org/details/appletonsannualc15newyuoft",
+  "translation": "The American Annual Cyclopaedia for 1875 (New York: Appleton, 1876)",
+  "units": [
+   {
+    "opens": "To our Venerable Brothers and Bishops",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brothers and dear Sons",
+    "unit": "preamble",
+    "until": "The serious and prolonged"
+   },
+   {
+    "opens": "The serious and prolonged",
+    "unit": 1,
+    "until": "But, as deceit and trickery"
+   },
+   {
+    "opens": "But, as deceit and trickery",
+    "unit": 2
+   },
+   {
+    "opens": "They have no other desire",
+    "unit": "+",
+    "until": "We even know that"
+   },
+   {
+    "opens": "We even know that",
+    "unit": 3
+   },
+   {
+    "opens": "By our letters of the 21st",
+    "unit": "+"
+   },
+   {
+    "opens": "We publicly renew",
+    "unit": 4
+   },
+   {
+    "opens": "The sons of the Church",
+    "unit": "+"
+   },
+   {
+    "opens": "We are also aware",
+    "unit": 5
+   },
+   {
+    "opens": "Therefore, we strenuously exhort",
+    "unit": "+",
+    "until": "As for you, our beloved sons"
+   },
+   {
+    "opens": "As for you, our beloved sons",
+    "unit": 6
+   },
+   {
+    "opens": "And you, beloved sons",
+    "unit": 7
+   },
+   {
+    "opens": "Have ever before your eyes",
+    "unit": "+"
+   },
+   {
+    "opens": "We have thought it well",
+    "unit": 8
+   },
+   {
+    "opens": "Join your fervent prayers",
+    "unit": "+"
+   }
+  ]
+ },
+ "encyclicals/respicientes": {
+  "source": "ocr",
+  "work": "appletons-1870-respicientes",
+  "file": "bwb_P9-CSD-414/",
+  "url": "https://archive.org/details/bwb_P9-CSD-414",
+  "translation": "The American Annual Cyclopaedia for 1870 (New York: Appleton, 1871)",
+  "units": [
+   {
+    "opens": "Pius IX., by Divine Providence Pope",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble",
+    "until": "Having regard to all"
+   },
+   {
+    "opens": "Having regard to all",
+    "unit": 1
+   },
+   {
+    "opens": "Venerable brethren, the history",
+    "unit": 2,
+    "until": "You are well aware how"
+   },
+   {
+    "opens": "You are well aware how",
+    "unit": 3
+   },
+   {
+    "opens": "Neither is any man ignorant",
+    "unit": "+",
+    "until": "It is, moreover, true that we"
+   },
+   {
+    "opens": "It is, moreover, true that we",
+    "unit": 4,
+    "until": "But these attempts not succeeding"
+   },
+   {
+    "opens": "But these attempts not succeeding",
+    "unit": 5
+   },
+   {
+    "opens": "In so many conflicts",
+    "unit": 6
+   },
+   {
+    "opens": "And now, when things were",
+    "unit": 7,
+    "until": "We in truth could not but"
+   },
+   {
+    "opens": "We in truth could not but",
+    "unit": 8
+   },
+   {
+    "opens": "“Let us remember",
+    "unit": "+"
+   },
+   {
+    "opens": "Therefore, adhering",
+    "unit": 9
+   },
+   {
+    "opens": "And ever since that day",
+    "unit": 10
+   },
+   {
+    "opens": "We cannot here",
+    "unit": 11
+   },
+   {
+    "opens": "As to ourselves",
+    "unit": 12
+   },
+   {
+    "opens": "But since our admonitions",
+    "unit": 13
+   },
+   {
+    "opens": "But, calling to mind",
+    "unit": 14
+   },
+   {
+    "opens": "In order to obtain from the Divine",
+    "unit": 15
+   },
+   {
+    "opens": "And now, we ask of God",
+    "unit": 16
+   }
+  ]
+ },
+ "encyclicals/inter-multiplices": {
+  "source": "ocr",
+  "work": "metropolitan-1853-inter-multiplices",
+  "file": "metropolitanmont01balt/",
+  "url": "https://archive.org/details/metropolitanmont01balt",
+  "translation": "The Metropolitan (Baltimore), vol. 1 (June 1853)",
+  "units": [
+   {
+    "opens": "To our well beloved Sons",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Pius PP. IX. Well beloved",
+    "unit": "preamble"
+   },
+   {
+    "opens": "In the midst of the multiplied",
+    "unit": 1,
+    "until": "We do not feel less satisfaction"
+   },
+   {
+    "opens": "We do not feel less satisfaction",
+    "unit": 2,
+    "until": "But in reminding you of all"
+   },
+   {
+    "opens": "But in reminding you of all",
+    "unit": 3,
+    "until": "This, well beloved sons and venerable brethren, we ask"
+   },
+   {
+    "opens": "This, well beloved sons and venerable brethren, we ask",
+    "unit": 4,
+    "until": "Thus, that illustrious clergy"
+   },
+   {
+    "opens": "Thus, that illustrious clergy",
+    "unit": 5
+   },
+   {
+    "opens": "You are, as we are",
+    "unit": "+",
+    "until": "And here we cannot refrain"
+   },
+   {
+    "opens": "And here we cannot refrain",
+    "unit": 6,
+    "until": "Moreover, your wisdom"
+   },
+   {
+    "opens": "Moreover, your wisdom",
+    "unit": 7
+   },
+   {
+    "opens": "And here we cannot avoid",
+    "unit": "+"
+   },
+   {
+    "opens": "Before terminating this letter",
+    "unit": 8
+   }
+  ]
+ },
+ "encyclicals/apostolicae-nostrae-caritatis": {
+  "source": "ocr",
+  "work": "metropolitan-1854-apostolicae-nostrae-caritatis",
+  "file": "sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9/",
+  "url": "https://archive.org/details/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1854-10_2_9",
+  "translation": "The Metropolitan (Baltimore), vol. 2 (October 1854)",
+  "units": [
+   {
+    "opens": "To our Venerable Brethren the Patriarchs",
+    "unit": "preamble"
+   },
+   {
+    "opens": "PIUS IX., P.P.",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble",
+    "until": "In looking with the solicitude"
+   },
+   {
+    "opens": "In looking with the solicitude",
+    "unit": 1
+   },
+   {
+    "opens": "Therefore, it is, that in the midst",
+    "unit": 2
+   },
+   {
+    "opens": "It is for that purpose",
+    "unit": 3
+   },
+   {
+    "opens": "Explain to the faithful",
+    "unit": "+"
+   },
+   {
+    "opens": "We earnestly desire",
+    "unit": 4
+   },
+   {
+    "opens": "That the faithful confided",
+    "unit": 5
+   },
+   {
+    "opens": "To work, therefore",
+    "unit": 6
+   },
+   {
+    "opens": "And again, let nothing",
+    "unit": "+"
+   },
+   {
+    "opens": "In conclusion, as a pledge",
+    "unit": 7
+   }
+  ]
+ },
+ "encyclicals/amantissimi-redemptoris": {
+  "source": "ocr",
+  "work": "metropolitan-1858-amantissimi-redemptoris",
+  "file": "sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7/",
+  "url": "https://archive.org/details/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7",
+  "translation": "The Metropolitan (Baltimore), new series vol. 1 (August 1858)",
+  "units": [
+   {
+    "opens": "To all the Patriarchs",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble"
+   },
+   {
+    "opens": "The goodness and charity",
+    "unit": 1,
+    "until": "Thus in the unbloody sacrifice"
+   },
+   {
+    "opens": "Thus in the unbloody sacrifice",
+    "unit": 2,
+    "until": "Such is the pure oblation"
+   },
+   {
+    "opens": "Such is the pure oblation",
+    "unit": 3,
+    "until": "There is nothing then, greater"
+   },
+   {
+    "opens": "There is nothing then, greater",
+    "unit": 4
+   },
+   {
+    "opens": "Now, it is in favor of mankind",
+    "unit": 5,
+    "until": "By the returns on the state"
+   },
+   {
+    "opens": "By the returns on the state",
+    "unit": 6
+   },
+   {
+    "opens": "Full of extreme solicitude",
+    "unit": 7,
+    "until": "After having weighed"
+   },
+   {
+    "opens": "After having weighed",
+    "unit": 8
+   },
+   {
+    "opens": "It is, therefore, that we declare",
+    "unit": "+",
+    "until": "Wishing also in the love"
+   },
+   {
+    "opens": "Wishing also in the love",
+    "unit": 9,
+    "until": "In giving these decisions"
+   },
+   {
+    "opens": "In giving these decisions",
+    "unit": 10
+   },
+   {
+    "opens": "We entertain no doubt",
+    "unit": "+",
+    "until": "And as you very well know"
+   },
+   {
+    "opens": "And as you very well know",
+    "unit": 11,
+    "until": "In fine, nothing is more"
+   },
+   {
+    "opens": "In fine, nothing is more",
+    "unit": 12,
+    "until": "Be assured that we"
+   },
+   {
+    "opens": "Be assured that we",
+    "unit": 13
+   }
+  ]
  }
 }

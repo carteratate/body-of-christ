@@ -1,0 +1,616 @@
+[
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "anp VENERABLE Breraren, HEAwTE anp Apostotio Benepiotion:",
+  "replace": "and Venerable Brethren, Health and Apostolic Benediction:",
+  "why": "pp. 758–759: misread on the page; the print reads \"and Venerable Brethren, Health and Apostolic Benediction:\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "‘Catholic",
+  "replace": "Catholic",
+  "why": "pp. 758–759: misread on the page; the print reads \"Catholic\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "complaint, ‘t You have",
+  "replace": "complaint, “You have",
+  "why": "pp. 758–759: misread on the page; the print reads \"“You\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "wounds.””",
+  "replace": "wounds.”",
+  "why": "pp. 758–759: misread on the page; the print reads \"wounds.”\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "in - the ",
+  "replace": "in the ",
+  "why": "pp. 758–759: a word broken at a line end, joined"
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "Apostolic See.; It ",
+  "replace": "Apostolic See.\n\nIt ",
+  "why": "pp. 758–759: misread on the page; the print reads \"See.\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "supernatural gis of",
+  "replace": "supernatural gifts of",
+  "why": "pp. 758–759: misread on the page; the print reads \"gifts\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "Hokie: mastn",
+  "replace": "propagation",
+  "why": "pp. 758–759: misread on the page; the print reads \"propagation\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "priest-ood",
+  "replace": "priesthood",
+  "why": "pp. 758–759: misread on the page; the print reads \"priesthood\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "supernatural Mle of",
+  "replace": "supernatural power of",
+  "why": "pp. 758–759: misread on the page; the print reads \"power\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "and rs, who,",
+  "replace": "and doctors, who,",
+  "why": "pp. 758–759: misread on the page; the print reads \"doctors,\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-01",
+  "find": "as itis the",
+  "replace": "as it is the",
+  "why": "pp. 758–759: spacing"
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "continues": true,
+  "why": "p. 759: \"follow-ing\" broken across the column; the OCR lost \"ing\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "the discipline ",
+  "replace": "ing the discipline ",
+  "why": "p. 759: misread on the page; the print reads \"ing\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "Church.\n\nou recognize",
+  "replace": "Church.\n\nYou recognize",
+  "why": "p. 759: misread on the page; the print reads \"You\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "Aus- ‘trian Reichsrath contain\n\n",
+  "replace": "Austrian Reichsrath contain ",
+  "why": "p. 759: misread on the page; the print reads \"Austrian Reichsrath contain\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "entire Cath-\n\nIn",
+  "replace": "entire Catholic people.\n\nIn",
+  "why": "p. 759: misread on the page; the print reads \"Catholic people.\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": " of\n\n7\n\nChrist, ",
+  "replace": " of Christ, ",
+  "why": "p. 759: a stray mark read as text, removed"
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": " the\n\nr power",
+  "replace": " the superior power",
+  "why": "p. 759: misread on the page; the print reads \"superior\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "sec government, in\n\né",
+  "replace": "secular government, in virtue",
+  "why": "p. 759: misread on the page; the print reads \"secular government, in virtue\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "eccles stical",
+  "replace": "ecclesiastical",
+  "why": "p. 759: misread on the page; the print reads \"ecclesiastical\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "those —_— secular,",
+  "replace": "those purely secular,",
+  "why": "p. 759: misread on the page; the print reads \"purely\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "— the Dr ce",
+  "replace": "usurp the place",
+  "why": "p. 759: misread on the page; the print reads \"usurp the place\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "religious sonny which",
+  "replace": "religious power, which",
+  "why": "p. 759: misread on the page; the print reads \"power,\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "ordination or the",
+  "replace": "ordination for the",
+  "why": "p. 759: misread on the page; the print reads \"for\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "to Cesar, and",
+  "replace": "to Cæsar, and",
+  "why": "p. 759: misread on the page; the print reads \"Cæsar,\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "answer: “ Do - not",
+  "replace": "answer: “Do not",
+  "why": "p. 759: misread on the page; the print reads \"“Do\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "exalt ee Ot but",
+  "replace": "exalt thyself, but",
+  "why": "p. 759: misread on the page; the print reads \"thyself,\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "to God,’? He",
+  "replace": "to God.” He",
+  "why": "p. 759: misread on the page; the print reads \"God.”\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "written: ** What is",
+  "replace": "written: “What is",
+  "why": "p. 759: misread on the page; the print reads \"“What\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-02",
+  "find": "Cesar’s, Cesar’s.””?",
+  "replace": "Cæsar’s, Cæsar’s.”",
+  "why": "p. 759: misread on the page; the print reads \"Cæsar’s, Cæsar’s.”\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": " reality\n\nthe ",
+  "replace": " reality of the ",
+  "why": "p. 759: misread on the page; the print reads \"of\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "to = more",
+  "replace": "to be more",
+  "why": "p. 759: misread on the page; the print reads \"be\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "Prussian WS.\n\nWe",
+  "replace": "Prussian laws.\n\nWe",
+  "why": "p. 759: misread on the page; the print reads \"laws.\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "to exumine in",
+  "replace": "to examine in",
+  "why": "p. 759: misread on the page; the print reads \"examine\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "P dome yeas",
+  "replace": "presentation",
+  "why": "p. 759: misread on the page; the print reads \"presentation\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": " The eontract",
+  "replace": "\n\nThe contract",
+  "why": "p. 759: misread on the page; the print reads \"The contract\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "and prom d throughout",
+  "replace": "and promulgated throughout",
+  "why": "p. 759: misread on the page; the print reads \"promulgated\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "without an previous",
+  "replace": "without any previous",
+  "why": "p. 759: misread on the page; the print reads \"any\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "See, an moreover",
+  "replace": "See, and moreover",
+  "why": "p. 759: misread on the page; the print reads \"and\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "a sa contempt",
+  "replace": "a public contempt",
+  "why": "p. 759: misread on the page; the print reads \"public\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "\n\ndertaken",
+  "replace": " undertaken",
+  "why": "p. 759: misread on the page; the print reads \"undertaken\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": "public vio-on of",
+  "replace": "public violation of",
+  "why": "p. 759: misread on the page; the print reads \"violation\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-03",
+  "find": " inflicted\n\nupon ",
+  "replace": " inflicted upon ",
+  "why": "p. 759: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "vix-dum-a-nobis-04",
+  "continues": true,
+  "why": "p. 759: \"published and confirmed\" runs on; the OCR lost \"confirmed\" at the line's start"
+ },
+ {
+  "passage": "vix-dum-a-nobis-04",
+  "find": "ed by the Gicumenical",
+  "replace": "confirmed by the Œcumenical",
+  "why": "p. 759: misread on the page; the print reads \"confirmed by the Œcumenical\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-04",
+  "find": "fushioned,",
+  "replace": "fashioned,",
+  "why": "p. 759: misread on the page; the print reads \"fashioned,\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-04",
+  "find": "articles of. faith",
+  "replace": "articles of faith",
+  "why": "p. 759: misread on the page; the print reads \"of\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-04",
+  "find": "the Church, There ",
+  "replace": "the Church.\n\nThere ",
+  "why": "p. 759: misread on the page; the print reads \"Church.\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-04",
+  "find": "will, the have",
+  "replace": "will, they have",
+  "why": "p. 759: misread on the page; the print reads \"they\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-04",
+  "find": "conclude",
+  "replace": "concluded",
+  "why": "p. 759: misread on the page; the print reads \"concluded\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-04",
+  "find": "B Nabotcursars a Dew",
+  "replace": "government a new",
+  "why": "p. 759: misread on the page; the print reads \"government a new\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-04",
+  "find": "projected Jaws they",
+  "replace": "projected laws they",
+  "why": "p. 759: misread on the page; the print reads \"laws\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": "either deceiye us",
+  "replace": "either deceive us",
+  "why": "p. 759: misread on the page; the print reads \"deceive\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": "superiors, ef C9 that",
+  "replace": "superiors, supposing that",
+  "why": "p. 759: misread on the page; the print reads \"supposing\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": " state. Again, ",
+  "replace": " state.\n\nAgain, ",
+  "why": "p. 759: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": "communities? ‘heir fatal",
+  "replace": "communities? Their fatal",
+  "why": "p. 759: misread on the page; the print reads \"Their\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": "ruin end extinction",
+  "replace": "ruin and extinction",
+  "why": "p. 759: misread on the page; the print reads \"and\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": "great tbat it",
+  "replace": "great that it",
+  "why": "p. 759: misread on the page; the print reads \"that\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": "a Vota sale",
+  "replace": "a public sale",
+  "why": "p. 759: misread on the page; the print reads \"public\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": "will dp ee to",
+  "replace": "will arrogate to",
+  "why": "p. 759: misread on the page; the print reads \"arrogate\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": "a mock-\n\nand ",
+  "replace": "a mockery and ",
+  "why": "p. 759: misread on the page; the print reads \"mockery\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-05",
+  "find": " injustice. As ",
+  "replace": " injustice.\n\nAs ",
+  "why": "p. 759: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "continues": true,
+  "why": "p. 759: \"ex-posed\" broken at a line end; the OCR lost \"po\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "sed, you",
+  "replace": "posed, you",
+  "why": "pp. 759–760: misread on the page; the print reads \"posed,\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "rothers, the actual gers",
+  "replace": "brothers, the actual dangers",
+  "why": "pp. 759–760: misread on the page; the print reads \"brothers, the actual dangers\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "The uni and",
+  "replace": "The unity and",
+  "why": "pp. 759–760: misread on the page; the print reads \"unity\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "the Ch are",
+  "replace": "the Church are",
+  "why": "pp. 759–760: misread on the page; the print reads \"Church\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "stake, an they",
+  "replace": "stake, and they",
+  "why": "pp. 759–760: misread on the page; the print reads \"and\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "called ‘the soul",
+  "replace": "called “the soul",
+  "why": "pp. 759–760: misread on the page; the print reads \"“the\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "the Ch without",
+  "replace": "the Church, without",
+  "why": "pp. 759–760: misread on the page; the print reads \"Church,\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": " which has",
+  "replace": " which she has",
+  "why": "pp. 759–760: misread on the page; the print reads \"she\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "of God.’\n\nThis",
+  "replace": "of God.”\n\nThis",
+  "why": "pp. 759–760: misread on the page; the print reads \"God.”\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "terms: ‘‘God loves",
+  "replace": "terms: “God loves",
+  "why": "pp. 759–760: misread on the page; the print reads \"“God\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "God pine: His",
+  "replace": "God wishes His",
+  "why": "pp. 759–760: misread on the page; the print reads \"wishes\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "nota slave,”?",
+  "replace": "not a slave.”",
+  "why": "pp. 759–760: misread on the page; the print reads \"not a slave.”\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "intallible",
+  "replace": "infallible",
+  "why": "pp. 759–760: misread on the page; the print reads \"infallible\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "us, ‘‘In the",
+  "replace": "us, “In the",
+  "why": "pp. 759–760: misread on the page; the print reads \"“In\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-06",
+  "find": "the world.’",
+  "replace": "the world.”",
+  "why": "pp. 759–760: misread on the page; the print reads \"world.”\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "warfare ae era the",
+  "replace": "warfare against the",
+  "why": "p. 760: misread on the page; the print reads \"against\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "times: ‘* The war",
+  "replace": "times: “The war",
+  "why": "p. 760: misread on the page; the print reads \"“The\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "us isa war",
+  "replace": "us is a war",
+  "why": "p. 760: spacing"
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": " Uplift ho",
+  "replace": "\n\nUplift your",
+  "why": "p. 760: misread on the page; the print reads \"Uplift your\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "from ‘this, or",
+  "replace": "from this, or",
+  "why": "p. 760: misread on the page; the print reads \"this,\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "liberty! Butas you",
+  "replace": "liberty! But as you",
+  "why": "p. 760: spacing"
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "the meagers which",
+  "replace": "the dangers which",
+  "why": "p. 760: misread on the page; the print reads \"dangers\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "the Sharch, by",
+  "replace": "the Church, by",
+  "why": "p. 760: misread on the page; the print reads \"Church,\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "readily rien that",
+  "replace": "readily acknowledge that",
+  "why": "p. 760: misread on the page; the print reads \"acknowledge\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "united gat efforts",
+  "replace": "united your efforts",
+  "why": "p. 760: misread on the page; the print reads \"your\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "acrenere",
+  "replace": "arranged",
+  "why": "p. 760: misread on the page; the print reads \"arranged\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "situation. e exhort",
+  "replace": "situation. We exhort",
+  "why": "p. 760: misread on the page; the print reads \"We\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "to unite’ yourselves",
+  "replace": "to unite yourselves",
+  "why": "p. 760: misread on the page; the print reads \"unite\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "neglected our. duty",
+  "replace": "neglected our duty",
+  "why": "p. 760: misread on the page; the print reads \"our\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "‘existing",
+  "replace": "existing",
+  "why": "p. 760: misread on the page; the print reads \"existing\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-07",
+  "find": "is the- devotion",
+  "replace": "is the devotion",
+  "why": "p. 760: misread on the page; the print reads \"the\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-08",
+  "continues": true,
+  "why": "p. 760: \"the Emperor\" runs on from the passage before"
+ },
+ {
+  "passage": "vix-dum-a-nobis-08",
+  "find": " afflictions. But ",
+  "replace": " afflictions.\n\nBut ",
+  "why": "p. 760: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "vix-dum-a-nobis-08",
+  "find": "He dei to",
+  "replace": "He deign to",
+  "why": "p. 760: misread on the page; the print reads \"deign\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-08",
+  "find": "iis strength and seer",
+  "replace": "His strength and all-powerful",
+  "why": "p. 760: misread on the page; the print reads \"His strength and all-powerful\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-08",
+  "find": "souls! Asa sign",
+  "replace": "souls! As a sign",
+  "why": "p. 760: spacing"
+ },
+ {
+  "passage": "vix-dum-a-nobis-08",
+  "find": " benediction. Given ",
+  "replace": " benediction.\n\nGiven ",
+  "why": "p. 760: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "vix-dum-a-nobis-08",
+  "find": "our Bem\n\nPIUS",
+  "replace": "our pontificate.\n\nPIUS",
+  "why": "p. 760: misread on the page; the print reads \"pontificate.\""
+ },
+ {
+  "passage": "vix-dum-a-nobis-08",
+  "find": "P. P. 1X.",
+  "replace": "P. P. IX.",
+  "why": "p. 760: misread on the page; the print reads \"IX.\""
+ }
+]

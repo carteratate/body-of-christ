@@ -1,0 +1,37 @@
+{
+ "work": "appletons-1874-vix-dum-a-nobis",
+ "title": "Vix Dum a Nobis, in The American Annual Cyclopaedia ... of the Year 1874 (New York: Appleton, 1875), Roman Catholic Church, pp. 758–760",
+ "scan": "appletonsannualc14newyuoft",
+ "djvu_xml": "encyclicals/appletonsannualc14newyuoft/appletonsannualc14newyuoft_djvu.xml",
+ "page_numbers": "encyclicals/appletonsannualc14newyuoft/appletonsannualc14newyuoft_page_numbers.json",
+ "pages": [
+  "758",
+  "760"
+ ],
+ "layout": "two-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "vix-dum-a-nobis",
+   "first": "^Dear Sons",
+   "last": "^PIUS P",
+   "keep_quotes": true
+  }
+ ],
+ "leaf_offset": 1
+}

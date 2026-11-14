@@ -1,0 +1,80 @@
+[
+ {
+  "passage": "amantissimi-redemptoris-01",
+  "find": "of Elis love",
+  "replace": "of His love",
+  "why": "p. 447: misread on the page; the print reads \"His\""
+ },
+ {
+  "passage": "amantissimi-redemptoris-01",
+  "find": "VeneraBLe Breturex, Heatta anp Apostotic BenepicTION:",
+  "replace": "Venerable Brethren, Health and Apostolic Benediction:",
+  "why": "p. 447: misread on the page; the print reads \"Venerable Brethren, Health and Apostolic Benediction:\""
+ },
+ {
+  "passage": "amantissimi-redemptoris-01",
+  "find": " Places\n\nin ",
+  "replace": " Places in ",
+  "why": "p. 447: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "amantissimi-redemptoris-02",
+  "find": "sun’’(2.)",
+  "replace": "sun”",
+  "why": "pp. 447–448: a note number the magazine prints without its note, left out as callers are"
+ },
+ {
+  "passage": "amantissimi-redemptoris-02",
+  "find": "predicted ** that the",
+  "replace": "predicted “that the",
+  "why": "pp. 447–448: misread on the page; the print reads \"“that\""
+ },
+ {
+  "passage": "amantissimi-redemptoris-02",
+  "find": "oblation’’ (1.)",
+  "replace": "oblation”",
+  "why": "pp. 447–448: a note number the magazine prints without its note, left out as callers are"
+ },
+ {
+  "passage": "amantissimi-redemptoris-03",
+  "find": " us” (3.) There",
+  "replace": " us” There",
+  "why": "p. 448: a note number the magazine prints without its note, left out as callers are"
+ },
+ {
+  "passage": "amantissimi-redemptoris-03",
+  "find": "Mass ‘‘ for the",
+  "replace": "Mass “for the",
+  "why": "p. 448: misread on the page; the print reads \"“for\""
+ },
+ {
+  "passage": "amantissimi-redemptoris-04",
+  "find": "memory (5),",
+  "replace": "memory,",
+  "why": "pp. 448–449: a note number the magazine prints without its note, left out as callers are"
+ },
+ {
+  "passage": "amantissimi-redemptoris-04",
+  "find": " sacrifice (5.) By",
+  "replace": " sacrifice By",
+  "why": "pp. 448–449: a note number the magazine prints without its note, left out as callers are"
+ },
+ {
+  "passage": "amantissimi-redemptoris-04",
+  "find": "(parochos)",
+  "replace": "(parachos)",
+  "why": "pp. 448–449: misread on the page; the print reads \"(parachos)\""
+ },
+ {
+  "passage": "amantissimi-redemptoris-04",
+  "find": "them ''(4.)",
+  "replace": "them”",
+  "why": "pp. 448–449: a note number the magazine prints without its note, left out as callers are"
+ },
+ {
+  "passage": "amantissimi-redemptoris-04",
+  "find": "grave, ''that by",
+  "replace": "grave, “that by",
+  "why": "pp. 448–449: misread on the page; the print reads \"“that\""
+ }
+]

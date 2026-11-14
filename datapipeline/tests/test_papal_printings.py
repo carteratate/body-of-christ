@@ -221,3 +221,13 @@ def test_scanned_blocks_rejoin_a_paragraph_and_a_word_broken_between_passages():
                          {"id": "c", "text": "and five.", "continues": True}]}
     assert papal_printings.ocr_blocks(text) == [
         ("p0", "One."), ("p1", "Two runs on and philosophy; three."), ("p2", "Four. and five.")]
+
+
+def test_a_signature_in_capitals_after_the_dating_line_joins_the_last_unit():
+    p = _printing([("Join your prayers", 8)])
+    toks = printed_tokens(p, [("p0", "Join your prayers to ours."),
+                              ("p1", "Given at Rome, the 5th February of the year 1875."),
+                              ("p2", "PIUS, P.P. IX.")])
+    assert [t.number for t in toks] == [8] and toks[0].text.endswith("1875.\n\nPIUS, P.P. IX.")
+    with pytest.raises(ValueError, match="in no unit"):
+        printed_tokens(p, [("p0", "Join your prayers to ours."), ("p1", "PIUS, P.P. IX.")])

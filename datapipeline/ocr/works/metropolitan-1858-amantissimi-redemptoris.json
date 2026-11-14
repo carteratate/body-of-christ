@@ -1,0 +1,38 @@
+{
+ "work": "metropolitan-1858-amantissimi-redemptoris",
+ "title": "Amantissimi Redemptoris, in The Metropolitan (Baltimore), new series vol. 1 no. 7 (August 1858), Record of Events, pp. 447–451",
+ "scan": "sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7",
+ "djvu_xml": "encyclicals/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7_djvu.xml",
+ "page_numbers": "encyclicals/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7/sim_metropolitan-a-monthly-magazine-devoted-to-religion_1858-08_1_7_page_numbers.json",
+ "pages": [
+  "447",
+  "451"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "amantissimi-redemptoris",
+   "first": "^To all the Patriarchs, Primates",
+   "last": "twelfth year of our Pon",
+   "end": "tificate\\.",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true
+}

@@ -1,0 +1,198 @@
+[
+ {
+  "passage": "quod-nunquam-01",
+  "find": "Bish-\n\nops",
+  "replace": "Bishops",
+  "why": "p. 689: a word broken at a line end, joined"
+ },
+ {
+  "passage": "quod-nunquam-01",
+  "find": "LX., Pope. VENERABLE BretuHren, HeattaH anp APposTo.io Brenepiorion: That'which",
+  "replace": "IX., Pope.\n\nVenerable Brethren, Health and Apostolic Benediction: That which",
+  "why": "p. 689: misread on the page; the print reads \"IX., Pope. Venerable Brethren, Health and Apostolic Benediction: That which\""
+ },
+ {
+  "passage": "quod-nunquam-01",
+  "find": "brethrens",
+  "replace": "brethren.",
+  "why": "p. 689: misread on the page; the print reads \"brethren.\""
+ },
+ {
+  "passage": "quod-nunquam-01",
+  "find": "storm. ‘To the",
+  "replace": "storm. To the",
+  "why": "p. 689: misread on the page; the print reads \"To\""
+ },
+ {
+  "passage": "quod-nunquam-01",
+  "find": "the _ absence ",
+  "replace": "the absence ",
+  "why": "p. 689: a stray mark or the printer's signature line (\"VOL. XV.—44 A\") read as text, removed"
+ },
+ {
+  "passage": "quod-nunquam-01",
+  "find": "flocks. ‘I'hese laws",
+  "replace": "flocks. These laws",
+  "why": "p. 689: misread on the page; the print reads \"These\""
+ },
+ {
+  "passage": "quod-nunquam-01",
+  "find": "well,venerable",
+  "replace": "well, venerable",
+  "why": "p. 689: spacing"
+ },
+ {
+  "passage": "quod-nunquam-02",
+  "find": "their sees, ",
+  "replace": "their episcopal sees, ",
+  "why": "p. 689: the page reads \"their episcopal sees\"; the model's correction dropped the word the OCR had garbled (\"ss ee\")"
+ },
+ {
+  "passage": "quod-nunquam-02",
+  "find": "named: ‘Happy, indeed,",
+  "replace": "named: “Happy, indeed,",
+  "why": "p. 689: misread on the page; the print reads \"“Happy,\""
+ },
+ {
+  "passage": "quod-nunquam-02",
+  "find": "of Man.”’ St.",
+  "replace": "of Man.” St.",
+  "why": "p. 689: misread on the page; the print reads \"Man.”\""
+ },
+ {
+  "passage": "quod-nunquam-02",
+  "find": "‘* Blessed",
+  "replace": "“Blessed",
+  "why": "p. 689: misread on the page; the print reads \"“Blessed\""
+ },
+ {
+  "passage": "quod-nunquam-02",
+  "find": "Man’s sake.”’ Those ",
+  "replace": "Man’s sake.”\n\nThose ",
+  "why": "p. 689: misread on the page; the print reads \"sake.”\""
+ },
+ {
+  "passage": "quod-nunquam-02",
+  "find": "\n\nVou, xv.—44 A",
+  "replace": "",
+  "why": "p. 689: a stray mark or the printer's signature line (\"VOL. XV.—44 A\") read as text, removed"
+ },
+ {
+  "passage": "quod-nunquam-03",
+  "continues": true,
+  "why": "p. 689: \"as well as all their brethren\" runs on across the columns"
+ },
+ {
+  "passage": "quod-nunquam-03",
+  "find": "xxi. 16,17). It",
+  "replace": "xxi. 16, 17). It",
+  "why": "p. 689: spacing"
+ },
+ {
+  "passage": "quod-nunquam-03",
+  "find": "\n\nXX. 28),",
+  "replace": "",
+  "why": "p. 689: a stray mark or the printer's signature line (\"VOL. XV.—44 A\") read as text, removed"
+ },
+ {
+  "passage": "quod-nunquam-04",
+  "continues": true,
+  "why": "p. 689: \"the Holy Spirit to rule\" runs on; the OCR set the reference \"xx. 28),\" apart"
+ },
+ {
+  "passage": "quod-nunquam-04",
+  "find": "Re rule in",
+  "replace": "Spirit to rule in",
+  "why": "p. 689: misread on the page; the print reads \"Spirit to\""
+ },
+ {
+  "passage": "quod-nunquam-04",
+  "find": "Apostles, To ",
+  "replace": "Apostles, xx. 28).\n\nTo ",
+  "why": "p. 689: misread on the page; the print reads \"xx. 28).\""
+ },
+ {
+  "passage": "quod-nunquam-04",
+  "find": " terror. After ",
+  "replace": " terror.\n\nAfter ",
+  "why": "p. 689: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "quod-nunquam-05",
+  "find": " brethren. Why ",
+  "replace": " brethren.\n\nWhy ",
+  "why": "pp. 689–690: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "quod-nunquam-05",
+  "find": "to Cesar that",
+  "replace": "to Cæsar that",
+  "why": "pp. 689–690: misread on the page; the print reads \"Cæsar\""
+ },
+ {
+  "passage": "quod-nunquam-05",
+  "find": " men. Let ",
+  "replace": " men.\n\nLet ",
+  "why": "pp. 689–690: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "quod-nunquam-05",
+  "find": "to Cesar, and",
+  "replace": "to Cæsar, and",
+  "why": "pp. 689–690: misread on the page; the print reads \"Cæsar,\""
+ },
+ {
+  "passage": "quod-nunquam-06",
+  "find": " world. It ",
+  "replace": " world.\n\nIt ",
+  "why": "p. 690: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "quod-nunquam-06",
+  "find": "hope. e submit",
+  "replace": "hope. We submit",
+  "why": "p. 690: misread on the page; the print reads \"We\""
+ },
+ {
+  "passage": "quod-nunquam-06",
+  "find": "‘*In the,world",
+  "replace": "“In the world",
+  "why": "p. 690: misread on the page; the print reads \"“In the world\""
+ },
+ {
+  "passage": "quod-nunquam-06",
+  "find": "world.”’ ",
+  "replace": "world.”\n\n",
+  "why": "p. 690: misread on the page; the print reads \"world.”\""
+ },
+ {
+  "passage": "quod-nunquam-06",
+  "find": "and grace, As",
+  "replace": "and grace. As",
+  "why": "p. 690: misread on the page; the print reads \"grace.\""
+ },
+ {
+  "passage": "quod-nunquam-06",
+  "find": "upon ou with",
+  "replace": "upon you with",
+  "why": "p. 690: misread on the page; the print reads \"you\""
+ },
+ {
+  "passage": "quod-nunquam-06",
+  "find": "as weil as",
+  "replace": "as well as",
+  "why": "p. 690: misread on the page; the print reads \"well\""
+ },
+ {
+  "passage": "quod-nunquam-06",
+  "find": "and aity intrusted",
+  "replace": "and laity intrusted",
+  "why": "p. 690: misread on the page; the print reads \"laity\""
+ },
+ {
+  "passage": "quod-nunquam-06",
+  "find": " pontificate.",
+  "replace": " pontificate.\n\nPIUS, P.P. IX.",
+  "why": "p. 690: the signature \"PIUS, P.P. IX.\", which the OCR read as \"PLUG. Puke las\" outside the text's bounds"
+ }
+]
