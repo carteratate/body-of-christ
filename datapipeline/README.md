@@ -195,6 +195,14 @@ the stability threshold is listed as a problem until a person checks it and reru
 declares `text_replaced` (a new translation, an amended canon) is not held to its live text,
 as in the release report.
 
+Each document's facts (genre, issuer, year and display date, translation, source credit,
+notes; 2.3) live on its `registry/works.json` entry, and the build sets them on the
+Document over the adapter's values. They are derived, not typed by hand: after a change to
+an adapter's year or notes, a papal genre, a rights row's credit line or a rule in
+`document_facts.py`, run `python3 scripts/document_facts_registry.py` (needs the sources)
+and commit `works.json`. A source check fails while the two disagree. After a merge of
+master, rerun it rather than merging `works.json` facts by hand.
+
 A papal document whose text moves to another edition (1.3c, 1.3d) is aligned with its old
 one first: `python3 scripts/align_editions.py --collection <name> [--slug <slug>] --out
 <file>` pairs the two editions' paragraphs by the names, numbers and rarer words they
