@@ -5,7 +5,7 @@
   "text_source": "ocr",
   "scan_id": "TheTrueAndFalse"
  },
- "gate": "pending",
+ "gate": "pass",
  "passages": [
   {
    "id": "syllabus-01",

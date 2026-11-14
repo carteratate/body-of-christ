@@ -5,7 +5,7 @@
   "text_source": "ocr",
   "scan_id": "USCatholicMagazineMonthlyReviewV6"
  },
- "gate": "pending",
+ "gate": "pass",
  "passages": [
   {
    "id": "qui-pluribus-01",
