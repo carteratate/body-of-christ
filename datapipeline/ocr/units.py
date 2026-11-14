@@ -267,7 +267,11 @@ class Bounded:
         return units
 
     def _kept(self, paragraphs: list, bound: dict) -> list:
-        """A bounded text's paragraphs as they go on."""
+        """A bounded text's paragraphs as they go on. A bound with `keep_quotes` keeps its
+        double quotation marks: a text printed on its own quotes in them (the Dublin
+        Review's Quanta Cura, 1.3d), where Giles's quote the whole document."""
+        if bound.get("keep_quotes"):
+            return list(paragraphs)
         return [replace(p, text=self._unquoted(p.text)) for p in paragraphs]
 
     def _unquoted(self, text: str) -> str:

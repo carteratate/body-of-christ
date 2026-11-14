@@ -1,0 +1,35 @@
+{
+ "work": "curley-unam-sanctam",
+ "title": "Unam Sanctam, in Sister M. Mildred Curley, 'An Episode in the Conflict between Boniface VIII and Philip the Fair', The Catholic Historical Review, new series vol. 7 no. 2 (July 1927), pp. 194–197 (the English column, beside the Latin)",
+ "scan": "sim_catholic-historical-review_1927-07_7_2",
+ "djvu_xml": "papal-documents/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_djvu.xml",
+ "page_numbers": "papal-documents/sim_catholic-historical-review_1927-07_7_2/sim_catholic-historical-review_1927-07_7_2_page_numbers.json",
+ "pages": [
+  "194",
+  "197"
+ ],
+ "layout": "parallel-right",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "unam-sanctam",
+   "first": "^“?Urged by faith",
+   "last": "subject to the Roman Pontiff\\.”?$"
+  }
+ ]
+}

@@ -1,0 +1,45 @@
+{
+ "work": "dublin-review-quanta-cura-1864",
+ "title": "Quanta Cura (1864), in The Dublin Review, new series vol. 4 (April 1865), pp. 501–513 (the English on the odd pages, facing the Latin)",
+ "scan": "sim_dublin-review_1865-04_4",
+ "djvu_xml": "encyclicals/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_djvu.xml",
+ "page_numbers": "encyclicals/sim_dublin-review_1865-04_4/sim_dublin-review_1865-04_4_page_numbers.json",
+ "pages": [
+  "501",
+  "513"
+ ],
+ "only_pages": [
+  "501",
+  "503",
+  "505",
+  "507",
+  "509",
+  "511",
+  "513"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "quanta-cura",
+   "first": "^THE ENCYCLICAL LETTER",
+   "last": "nineteenth year of Our Pontificate",
+   "keep_quotes": true
+  }
+ ]
+}

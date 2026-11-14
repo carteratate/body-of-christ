@@ -879,18 +879,19 @@ def build_document(entry: dict, collection: str, src_dir: str) -> Document:
 
 def document_from_tokens(entry: dict, collection: str, toks: list[Token], *,
                          url: str | None = None, text_replaced: str | None = None,
-                         translation: str = "", metadata: dict | None = None) -> Document:
+                         translation: str = "", metadata: dict | None = None,
+                         passage_metadata: dict | None = None) -> Document:
     """A document from its tokens, by the rules every papal source shares. A document
     built from another edition than its manifest's page (1.3d's printings) names that
     edition's `url`, the `text_replaced` every passage declares, its `translation`, and any
-    further document `metadata`."""
+    further document and passage metadata (a scanned printing's label, 1.2f)."""
     slug, author = entry["slug"], entry["author"]
     url = url or entry["url"]
     title = _disambiguate_title(entry["title"], slug, entry["year"])
     source_key = f"{collection}/{slug}"
     did = resolve_document_id(collection, source_key, (collection, slug))
     has_sec = any(t.kind == "section" for t in toks)
-    meta = {"pope": author, "url": url, "source_url": url}
+    meta = {"pope": author, "url": url, "source_url": url, **(passage_metadata or {})}
     units: list[_Unit] = []
 
     def emit(content: str, ref: str | None, base_anchor: str, ckey: str, clabel: str,

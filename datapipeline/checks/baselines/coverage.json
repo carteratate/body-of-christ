@@ -6,9 +6,9 @@
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.8d-incarnation-robertson f5b7d83",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
-  "encyclicals": "feat/1.3d-2-wikisource-pair bc02506",
+  "encyclicals": "feat/1.3d-3-same-translation 86fa866",
   "medieval": "worktree-bridge-cse_01A8fdmnk6Vfpyf8yTndcQNH 047867d",
-  "papal-documents": "feat/1.3a-papal-parser 8075859",
+  "papal-documents": "feat/1.3d-3-same-translation 86fa866",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
@@ -1167,11 +1167,6 @@
    "covered_chars": 67648,
    "pct": 100.0
   },
-  "encyclicals/quanta-cura-1864.html": {
-   "body_chars": 21387,
-   "covered_chars": 21387,
-   "pct": 100.0
-  },
   "encyclicals/quanto-conficiamur-moerore.html": {
    "body_chars": 16555,
    "covered_chars": 16555,
@@ -1231,11 +1226,6 @@
    "body_chars": 104940,
    "covered_chars": 104940,
    "pct": 100.0
-  },
-  "encyclicals/syllabus-of-errors.html": {
-   "body_chars": 18651,
-   "covered_chars": 18286,
-   "pct": 98.04
   },
   "encyclicals/traditi-humilitati.html": {
    "body_chars": 12521,
@@ -1352,20 +1342,10 @@
    "covered_chars": 91569,
    "pct": 99.68
   },
-  "papal-documents/sublimis-deus.html": {
-   "body_chars": 3390,
-   "covered_chars": 3322,
-   "pct": 97.99
-  },
   "papal-documents/tertio-millennio-adveniente.html": {
    "body_chars": 91649,
    "covered_chars": 91564,
    "pct": 99.91
-  },
-  "papal-documents/unam-sanctam.html": {
-   "body_chars": 5402,
-   "covered_chars": 5346,
-   "pct": 98.96
   },
   "summa/summa.xml": {
    "body_chars": 14059391,
@@ -1905,13 +1885,6 @@
    "body_chars": 23108,
    "covered_chars": 23108,
    "pct": 100.0
-  },
-  "2f92bbcb-619d-5d04-b9e0-e8be423b2feb": {
-   "collection": "papal-documents",
-   "source_file": "sublimis-deus.html",
-   "body_chars": 3390,
-   "covered_chars": 3322,
-   "pct": 97.99
   },
   "3071fe45-c09f-522d-a0b5-88bbc00acdcf": {
    "collection": "papal-documents",
@@ -2494,13 +2467,6 @@
    "covered_chars": 5830,
    "pct": 100.0
   },
-  "6bafb4a7-2d6e-55cc-92b8-cdc221bea175": {
-   "collection": "encyclicals",
-   "source_file": "syllabus-of-errors.html",
-   "body_chars": 18651,
-   "covered_chars": 18286,
-   "pct": 98.04
-  },
   "6d52640c-5a62-5cf4-baeb-d41b8219458f": {
    "collection": "church-fathers",
    "source_file": "on-the-holy-trinity.xml",
@@ -2893,13 +2859,6 @@
    "covered_chars": 16555,
    "pct": 100.0
   },
-  "9b41d623-88c4-5e59-9984-a7134ba900a9": {
-   "collection": "encyclicals",
-   "source_file": "quanta-cura-1864.html",
-   "body_chars": 21387,
-   "covered_chars": 21387,
-   "pct": 100.0
-  },
   "9c052574-ccbc-5aa6-8a1e-b582b7dd73e4": {
    "collection": "church-fathers",
    "source_file": "third-century.xml",
@@ -3053,13 +3012,6 @@
    "body_chars": 630465,
    "covered_chars": 630465,
    "pct": 100.0
-  },
-  "aaf92092-6fe2-5381-b027-640ee8ad8420": {
-   "collection": "papal-documents",
-   "source_file": "unam-sanctam.html",
-   "body_chars": 5402,
-   "covered_chars": 5346,
-   "pct": 98.96
   },
   "abd0e330-31fe-5de4-bf93-e9b572c179b5": {
    "collection": "church-fathers",

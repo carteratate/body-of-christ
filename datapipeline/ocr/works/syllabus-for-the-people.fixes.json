@@ -1,0 +1,679 @@
+[
+ {
+  "passage": "syllabus-01",
+  "find": "§1.\n\nPantheism, ",
+  "replace": "§ I. Pantheism, ",
+  "why": "pp. 9–10: misread on the page; the print reads \"§ I.\""
+ },
+ {
+  "passage": "syllabus-01",
+  "find": "mat-\n\nter,",
+  "replace": "matter,",
+  "why": "pp. 9–10: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-01",
+  "find": "na-\n\ntions. Ibid.; ",
+  "replace": "nations. Ibid.\n\n",
+  "why": "pp. 9–10: misread on the page; the print reads \"nations. Ibid.\""
+ },
+ {
+  "passage": "syllabus-01",
+  "find": "Strength",
+  "replace": "strength",
+  "why": "pp. 9–10: misread on the page; the print reads \"strength\""
+ },
+ {
+  "passage": "syllabus-01",
+  "find": "reason; Hence reason",
+  "replace": "reason; hence reason",
+  "why": "pp. 9–10: misread on the page; the print reads \"hence\""
+ },
+ {
+  "passage": "syllabus-01",
+  "find": " ultimate\n\nstandard ",
+  "replace": " ultimate standard ",
+  "why": "pp. 9–10: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "syllabus-01",
+  "find": " 9th,\n\n1846, ",
+  "replace": " 9th, 1846, ",
+  "why": "pp. 9–10: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "syllabus-01",
+  "find": "corre-\n\nsponding",
+  "replace": "corresponding",
+  "why": "pp. 9–10: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-01",
+  "find": "\n\nIbid. 6. ",
+  "replace": "\n\nIbid.\n\n6. ",
+  "why": "pp. 9–10: two paragraphs (a proposition or its source line) the clean-up ran together"
+ },
+ {
+  "passage": "syllabus-01",
+  "find": "re-\n\nsult",
+  "replace": "result",
+  "why": "pp. 9–10: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-01",
+  "find": "Ibid.\n\n§11.\n\nModerate ",
+  "replace": "Ibid.\n\n§ II. Moderate ",
+  "why": "pp. 9–10: misread on the page; the print reads \"§ II.\""
+ },
+ {
+  "passage": "syllabus-01",
+  "find": " 1854. 9. ",
+  "replace": " 1854.\n\n9. ",
+  "why": "pp. 9–10: two paragraphs (a proposition or its source line) the clean-up ran together"
+ },
+ {
+  "passage": "syllabus-02",
+  "continues": true,
+  "why": "p. 10: \"philoso-phy\" runs on from the passage before, the word broken at the line end"
+ },
+ {
+  "passage": "syllabus-02",
+  "find": " an ' historical",
+  "replace": " an historical",
+  "why": "pp. 10–12: a stray mark read as text, removed"
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "Dec. nth,\n\n1862, ",
+  "replace": "Dec. 11th, 1862, ",
+  "why": "pp. 10–12: misread on the page; the print reads \"11th,\""
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "Ibid9 Dec. nth, 1862. ",
+  "replace": "Ibid, Dec. 11th, 1862.\n\n",
+  "why": "pp. 10–12: misread on the page; the print reads \"Ibid, Dec. 11th, 1862.\""
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "judg-\n\nment",
+  "replace": "judgment",
+  "why": "pp. 10–12: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "itself.\n\nIbid% Dec.",
+  "replace": "itself.\n\nIbid, Dec.",
+  "why": "pp. 10–12: misread on the page; the print reads \"Ibid,\""
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "pro-\n\ngress",
+  "replace": "progress",
+  "why": "pp. 10–12: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "Gunther,",
+  "replace": "Günther,",
+  "why": "pp. 10–12: misread on the page; the print reads \"Günther,\""
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "Eximiam tuam9 June",
+  "replace": "Eximiam tuam, June",
+  "why": "pp. 10–12: misread on the page; the print reads \"tuam,\""
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "and m that",
+  "replace": "and in that",
+  "why": "pp. 10–12: misread on the page; the print reads \"in\""
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "hand medtocrit April 30th, i860.\n\n% III.\n\n",
+  "replace": "haud mediocri, April 30th, 1860.\n\n§ III. ",
+  "why": "pp. 10–12: misread on the page; the print reads \"haud mediocri, April 30th, 1860. § III.\""
+ },
+ {
+  "passage": "syllabus-02",
+  "find": "Maxima quidcm, June",
+  "replace": "Maxima quidem, June",
+  "why": "pp. 10–12: misread on the page; the print reads \"quidem,\""
+ },
+ {
+  "passage": "syllabus-02",
+  "find": " 17th,\n\n1863, ",
+  "replace": " 17th, 1863, ",
+  "why": "pp. 10–12: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "\n\nSocialism, Communism, Secret Societies \\ Biblical Societies,\n\nClericoMberal",
+  "replace": " Socialism, Communism, Secret Societies, Biblical Societies, Clerico-liberal",
+  "why": "pp. 12–13: misread on the page; the print reads \"Socialism, Communism, Secret Societies, Biblical Societies, Clerico-liberal\""
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "1849 5 Allocu-\n\ntion",
+  "replace": "1849; Allocution",
+  "why": "pp. 12–13: misread on the page; the print reads \"1849; Allocution\""
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "loth, 1863.",
+  "replace": "10th, 1863.\n\n§ V.",
+  "why": "pp. 12–13: \"loth\" is the print's \"10th\"; and the heading \"§ V.\", set at the top of p. 13, which the clean-up took for a page number, is restored"
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "per-\n\npetual",
+  "replace": "perpetual",
+  "why": "pp. 12–13: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-03",
+  "find": " 1861. 21. ",
+  "replace": " 1861.\n\n21. ",
+  "why": "pp. 12–13: two paragraphs (a proposition or its source line) the clean-up ran together"
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "dog-\n\nmatically",
+  "replace": "dogmatically",
+  "why": "pp. 12–13: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "Apostolic Letter Multiplicesy June 10th,",
+  "replace": "Apostolic Letter Multiplices, June 10th,",
+  "why": "pp. 12–13: misread on the page; the print reads \"Multiplices,\""
+ },
+ {
+  "passage": "syllabus-03",
+  "find": " 21st,\n\n1863.\n\n",
+  "replace": " 21st, 1863.\n\n",
+  "why": "pp. 12–13: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "CEcumenical",
+  "replace": "Œcumenical",
+  "why": "pp. 12–13: misread on the page; the print reads \"Œcumenical\""
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "Multiplicesy June loth,",
+  "replace": "Multiplices, June 10th,",
+  "why": "pp. 12–13: misread on the page; the print reads \"Multiplices, June 10th,\""
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "force, aor has",
+  "replace": "force, nor has",
+  "why": "pp. 12–13: misread on the page; the print reads \"nor\""
+ },
+ {
+  "passage": "syllabus-03",
+  "find": "Apostolic*? August 22hd, 185 r.",
+  "replace": "Apostolicæ, August 22nd, 1851.",
+  "why": "pp. 12–13: misread on the page; the print reads \"Apostolicæ, August 22nd, 1851.\""
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "temporal powder has",
+  "replace": "temporal power has",
+  "why": "pp. 14–15: misread on the page; the print reads \"power\""
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "au-\n\nthority",
+  "replace": "authority",
+  "why": "pp. 14–15: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-04",
+  "find": " affairs. *\n\nAllocution",
+  "replace": " affairs.\n\nAllocution",
+  "why": "pp. 14–15: a stray mark read as text, removed"
+ },
+ {
+  "passage": "syllabus-04",
+  "find": " Ibid. 30. ",
+  "replace": " Ibid.\n\n30. ",
+  "why": "pp. 14–15: two paragraphs (a proposition or its source line) the clean-up ran together"
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "ecclesiasti-\n\ncal",
+  "replace": "ecclesiastical",
+  "why": "pp. 14–15: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "Multiplies, June 10th, 1851. ",
+  "replace": "Multiplices, June 10th, 1851.\n\n",
+  "why": "pp. 14–15: misread on the page; the print reads \"Multiplices, June 10th, 1851.\""
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "con-\n\nsulting",
+  "replace": "consulting",
+  "why": "pp. 14–15: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "Holy See*\n\nAllocution",
+  "replace": "Holy See.\n\nAllocution",
+  "why": "pp. 14–15: misread on the page; the print reads \"See.\""
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "Dec, 15th, 1856. ",
+  "replace": "Dec. 15th, 1856.\n\n",
+  "why": "pp. 14–15: misread on the page; the print reads \"Dec. 15th, 1856.\" (the stop after \"Dec\" is broken on the page)"
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "ex-\n\nonerated",
+  "replace": "exonerated",
+  "why": "pp. 14–15: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "na-\n\ntural",
+  "replace": "natural",
+  "why": "pp. 14–15: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "\n\nSeptember 29th, 1864.\n\n33*",
+  "replace": " September 29th, 1864.\n\n33.",
+  "why": "pp. 14–15: misread on the page; the print reads \"September 29th, 1864. 33.\""
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "Sove-\n\nreign",
+  "replace": "Sovereign",
+  "why": "pp. 14–15: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "uni-\n\nversal ^Church,",
+  "replace": "universal Church,",
+  "why": "pp. 14–15: misread on the page; the print reads \"universal Church,\""
+ },
+ {
+  "passage": "syllabus-04",
+  "find": "Apostolicee,",
+  "replace": "Apostolicæ,",
+  "why": "pp. 14–15: misread on the page; the print reads \"Apostolicæ,\""
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "trans-\n\nferring",
+  "replace": "transferring",
+  "why": "pp. 15–16: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "\n\nIbid. 36. ",
+  "replace": "\n\nIbid.\n\n36. ",
+  "why": "pp. 15–16: two paragraphs (a proposition or its source line) the clean-up ran together"
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "civil au-\n\nthority can",
+  "replace": "civil authority can",
+  "why": "pp. 15–16: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "\n\nIbid. 37. ",
+  "replace": "\n\nIbid.\n\n37. ",
+  "why": "pp. 15–16: two paragraphs (a proposition or its source line) the clean-up ran together"
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "the au-\n\nthority of",
+  "replace": "the authority of",
+  "why": "pp. 15–16: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "17th, i860.\n\n38.",
+  "replace": "17th, 1860.\n\n38.",
+  "why": "pp. 15–16: misread on the page; the print reads \"1860.\""
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "Apostolica, August 22nd, 1851. l6\n\n§ VI.\n\n",
+  "replace": "Apostolicæ, August 22nd, 1851.\n\n§ VI. ",
+  "why": "pp. 15–16: misread on the page; the print reads \"Apostolicæ, August 22nd, 1851. § VI.\""
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "\n\nin its relatim",
+  "replace": " in its relation",
+  "why": "pp. 15–16: misread on the page; the print reads \"in its relation\""
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "circum-\n\nscribed",
+  "replace": "circumscribed",
+  "why": "pp. 15–16: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-05",
+  "find": " 1862. 40. ",
+  "replace": " 1862.\n\n40. ",
+  "why": "pp. 15–16: two paragraphs (a proposition or its source line) the clean-up ran together"
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "nega-\n\ntive",
+  "replace": "negative",
+  "why": "pp. 15–16: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "Letter 9 Ad Apostolic#,",
+  "replace": "Letter, Ad Apostolicæ,",
+  "why": "pp. 15–16: misread on the page; the print reads \"Letter, Ad Apostolicæ,\""
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "de-. dare,",
+  "replace": "declare,",
+  "why": "pp. 15–16: misread on the page; the print reads \"declare,\""
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "Allocution Mult is gravibusque,",
+  "replace": "Allocution Multis gravibusque,",
+  "why": "pp. 15–16: spacing"
+ },
+ {
+  "passage": "syllabus-05",
+  "find": "17th, i860, etc.",
+  "replace": "17th, 1860, etc.",
+  "why": "pp. 15–16: misread on the page; the print reads \"1860,\""
+ },
+ {
+  "passage": "syllabus-06",
+  "find": "Consist or tali,",
+  "replace": "Consistoriali,",
+  "why": "pp. 16–18: misread on the page; the print reads \"Consistoriali,\""
+ },
+ {
+  "passage": "syllabus-06",
+  "find": "dis-\n\ncipline",
+  "replace": "discipline",
+  "why": "pp. 16–18: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-06",
+  "find": "luctuosissimis.",
+  "replace": "luctuosissimis,",
+  "why": "pp. 16–18: misread on the page; the print reads \"luctuosissimis,\""
+ },
+ {
+  "passage": "syllabus-06",
+  "find": "interfer-\n\nence,",
+  "replace": "interference,",
+  "why": "pp. 16–18: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-06",
+  "find": "ac-\n\ncording",
+  "replace": "according",
+  "why": "pp. 16–18: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-06",
+  "find": "age … r..\n\nEpistle-",
+  "replace": "age.\n\nEpistle",
+  "why": "pp. 16–18: misread on the page; the print reads \"age. Epistle\""
+ },
+ {
+  "passage": "syllabus-06",
+  "find": " July\n\n14th, ",
+  "replace": " July 14th, ",
+  "why": "pp. 16–18: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "syllabus-07",
+  "find": " 1862. 50. ",
+  "replace": " 1862.\n\n50. ",
+  "why": "pp. 18–19: two paragraphs (a proposition or its source line) the clean-up ran together"
+ },
+ {
+  "passage": "syllabus-07",
+  "find": "re-\n\nceive",
+  "replace": "receive",
+  "why": "pp. 18–19: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-07",
+  "find": "Holy. See.\n\nAllocution Nunquant",
+  "replace": "Holy See.\n\nAllocution Nunquam",
+  "why": "pp. 18–19: misread on the page; the print reads \"Holy See. Allocution Nunquam\""
+ },
+ {
+  "passage": "syllabus-07",
+  "find": "reli-\n\ngious",
+  "replace": "religious",
+  "why": "pp. 18–19: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-07",
+  "find": "obli-\n\ngation",
+  "replace": "obligation",
+  "why": "pp. 18–19: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-07",
+  "find": "sup-\n\npress",
+  "replace": "suppress",
+  "why": "pp. 18–19: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-07",
+  "find": "ad-\n\nministration",
+  "replace": "administration",
+  "why": "pp. 18–19: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-07",
+  "find": "* Allocution Acerbissitnam,",
+  "replace": "Allocution Acerbissimam,",
+  "why": "pp. 18–19: misread on the page; the print reads \"Allocution Acerbissimam,\""
+ },
+ {
+  "passage": "syllabus-07",
+  "find": " VII.\n\nErrors ",
+  "replace": " VII. Errors ",
+  "why": "pp. 18–19: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "excel-\n\nlence",
+  "replace": "excellence",
+  "why": "pp. 19–21: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "accumula* tion",
+  "replace": "accumulation",
+  "why": "pp. 19–21: misread on the page; the print reads \"accumulation\""
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "pleasure. Ibid*\n\n59.",
+  "replace": "pleasure. Ibid.\n\n59.",
+  "why": "pp. 19–21: misread on the page; the print reads \"Ibid.\""
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "forces* Ibtd.; ",
+  "replace": "forces. Ibid.\n\n",
+  "why": "pp. 19–21: misread on the page; the print reads \"forces. Ibid.\""
+ },
+ {
+  "passage": "syllabus-08",
+  "find": " -\n\nAllocution Jamdudum cerhimus, March 18th, 1861. ",
+  "replace": "\n\nAllocution Jamdudum cernimus, March 18th, 1861.\n\n",
+  "why": "pp. 19–21: misread on the page; the print reads \"Allocution Jamdudum cernimus, March 18th, 1861.\""
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "28th, i860. 63. ",
+  "replace": "28th, 1860.\n\n63. ",
+  "why": "pp. 19–21: misread on the page; the print reads \"1860.\""
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "Encyclical Qtti pluribus,",
+  "replace": "Encyclical Qui pluribus,",
+  "why": "pp. 19–21: misread on the page; the print reads \"Qui\""
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "quant isque,",
+  "replace": "quantisque,",
+  "why": "pp. 19–21: spacing"
+ },
+ {
+  "passage": "syllabus-08",
+  "find": " VIII.\n\nErrors ",
+  "replace": " VIII. Errors ",
+  "why": "pp. 19–21: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "Apostolicce, August 22nd,\n\n",
+  "replace": "Apostolicæ, August 22nd, ",
+  "why": "pp. 19–21: misread on the page; the print reads \"Apostolicæ, August 22nd,\""
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "Ibid*.. 67. By,thelaw",
+  "replace": "Ibid.\n\n67. By the law",
+  "why": "pp. 19–21: misread on the page; the print reads \"Ibid. 67. By the law\""
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "in-\n\ndissoluble,",
+  "replace": "indissoluble,",
+  "why": "pp. 19–21: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-08",
+  "find": "im-\n\npediments",
+  "replace": "impediments",
+  "why": "pp. 19–21: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-09",
+  "find": " 1851. ' 69. ",
+  "replace": " 1851.\n\n69. ",
+  "why": "pp. 21–22: a stray mark read as text, removed"
+ },
+ {
+  "passage": "syllabus-09",
+  "find": "Apostolica, August 22nd,\n\n",
+  "replace": "Apostolicæ, August 22nd, ",
+  "why": "pp. 21–22: misread on the page; the print reads \"Apostolicæ, August 22nd,\""
+ },
+ {
+  "passage": "syllabus-09",
+  "find": "power. Ibid \\\n\n71.",
+  "replace": "power. Ibid,\n\n71.",
+  "why": "pp. 21–22: misread on the page; the print reads \"Ibid,\""
+ },
+ {
+  "passage": "syllabus-09",
+  "find": "mar* riage",
+  "replace": "marriage",
+  "why": "pp. 21–22: misread on the page; the print reads \"marriage\""
+ },
+ {
+  "passage": "syllabus-09",
+  "find": "Chris-\n\ntians",
+  "replace": "Christians",
+  "why": "pp. 21–22: a word broken at a line end, joined"
+ },
+ {
+  "passage": "syllabus-09",
+  "find": "Multiplied",
+  "replace": "Multiplices",
+  "why": "pp. 21–22: misread on the page; the print reads \"Multiplices\""
+ },
+ {
+  "passage": "syllabus-09",
+  "find": " IX.\n\nErrors ",
+  "replace": " IX. Errors ",
+  "why": "pp. 21–22: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "syllabus-09",
+  "find": " Sovereign\n\nPontiff.\n\n",
+  "replace": " Sovereign Pontiff.\n\n",
+  "why": "pp. 21–22: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "syllabus-10",
+  "find": "1849, an<I Si",
+  "replace": "1849, and Si",
+  "why": "pp. 22–23: misread on the page; the print reads \"and\""
+ },
+ {
+  "passage": "syllabus-10",
+  "find": "26th, i860; Allocutions",
+  "replace": "26th, 1860; Allocutions",
+  "why": "pp. 22–23: misread on the page; the print reads \"1860;\""
+ },
+ {
+  "passage": "syllabus-10",
+  "find": "i860, Jamdudumy",
+  "replace": "1860, Jamdudum,",
+  "why": "pp. 22–23: misread on the page; the print reads \"1860, Jamdudum,\""
+ },
+ {
+  "passage": "syllabus-10",
+  "find": "quidein,",
+  "replace": "quidem,",
+  "why": "pp. 22–23: misread on the page; the print reads \"quidem,\""
+ },
+ {
+  "passage": "syllabus-10",
+  "find": "1862.\n\nI §x.\n\nErrors ",
+  "replace": "1862.\n\n§ X. Errors ",
+  "why": "pp. 22–23: misread on the page; the print reads \"§ X.\""
+ },
+ {
+  "passage": "syllabus-10",
+  "find": "1855*\n\n78..Hence",
+  "replace": "1855.\n\n78. Hence",
+  "why": "pp. 22–23: misread on the page; the print reads \"1855. 78. Hence\""
+ },
+ {
+  "passage": "syllabus-10",
+  "find": "cor* rupt",
+  "replace": "corrupt",
+  "why": "pp. 22–23: misread on the page; the print reads \"corrupt\""
+ },
+ {
+  "passage": "syllabus-10",
+  "find": "and modem civilization.",
+  "replace": "and modern civilization.",
+  "why": "pp. 22–23: misread on the page; the print reads \"modern\""
+ },
+ {
+  "passage": "syllabus-10",
+  "find": "cernitnus,",
+  "replace": "cernimus,",
+  "why": "pp. 22–23: misread on the page; the print reads \"cernimus,\""
+ }
+]

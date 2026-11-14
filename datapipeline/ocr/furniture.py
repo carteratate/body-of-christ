@@ -87,7 +87,7 @@ class Removal:
     leaf: int
     page: str | None
     kind: str        # running_head | page_number | signature | catchword | speck |
-                     # margin_number | note_call (`pdf.py`) | rule
+                     # margin_number | note_call (`pdf.py`) | rule | watermark
     text: str
 
 
@@ -339,7 +339,8 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
                 margin_numbers: bool = False,
                 paragraph_opens: tuple[str, ...] = (),
                 rule_lines: tuple[str, ...] = (),
-                note_opens: tuple[str, ...] = ()) -> CleanResult:
+                note_opens: tuple[str, ...] = (),
+                watermark: str | None = None) -> CleanResult:
     """The pages' body paragraphs, notes and removals. With `max_paragraph_words`, a
     paragraph is cut at the first line ending a sentence or a clause once it holds that
     many words, and the part after the cut `continues` it: a page-long paragraph is too
@@ -350,6 +351,10 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     the OCR lost and whose first line opens a page (Basel's decree 3, p. 475). One that
     matches no line, or more than one, raises.
 
+    `watermark` is a pattern for a stamp the scanner put on the pages, not the printer
+    ("Digitized by Google" on a Google scan, 1.3d): each match is taken out of the line it
+    was read into, and a line left with no letters goes, each logged as a `watermark`.
+
     `rule_lines` and `note_opens` take patterns the same way. A rule line is a printed rule
     the OCR reads as letters ("ee SS ---ς-ς---", Chrystal), removed as furniture. A
     `note_opens` line opens its page's notes, which then run to the page's end, in place
@@ -358,6 +363,19 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     layout = layout or SingleColumn()
     result = CleanResult()
     ordered = [layout.reading_order(p) for p in pages]
+    if watermark:
+        stamp = re.compile(watermark)
+        for k, page in enumerate(pages):
+            kept_lines = []
+            for ln in ordered[k]:
+                if stamp.search(ln.text):
+                    result.removals.append(Removal(page.leaf, page.number, "watermark", ln.text))
+                    text = re.sub(r"\s{2,}", " ", stamp.sub(" ", ln.text)).strip()
+                    if not _HAS_ALNUM.search(text):
+                        continue
+                    ln = replace(ln, text=text)
+                kept_lines.append(ln)
+            ordered[k] = kept_lines
     if margin_numbers:
         for k, page in enumerate(pages):
             ordered[k], removed = _strip_margin_numbers(ordered[k], page)
@@ -536,9 +554,17 @@ def clean_work(workdir, sources=None, force: bool = False,
         numbers_path = sources / config.page_numbers
         leaves = leaves_for_pages(read_page_numbers(numbers_path, config.leaf_offset), *config.pages)
         pages = load_pages(sources / config.djvu_xml, numbers_path, leaves, config.leaf_offset)
+    if config.only_pages:
+        # A printing that sets a translation on the pages facing its original (the
+        # Dublin Review's Latin and English, 1.3d) reads only the translation's pages.
+        missing = set(config.only_pages) - {p.number for p in pages}
+        if missing:
+            raise ValueError(f"{config.work}: only_pages {sorted(missing)} are not in its pages")
+        pages = [p for p in pages if p.number in config.only_pages]
     result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
                          config.max_paragraph_words, config.margin_numbers,
-                         config.paragraph_opens, config.rule_lines, config.note_opens)
+                         config.paragraph_opens, config.rule_lines, config.note_opens,
+                         config.watermark)
     number = {p.leaf: p.number for p in pages}
     result.removals.extend(Removal(c.leaf, number[c.leaf], "note_call", f"{c.after}|{c.text}")
                            for c in note_calls)

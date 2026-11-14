@@ -1,0 +1,43 @@
+{
+ "work": "macnutt-sublimis-deus",
+ "title": "Sublimis Deus, in F. A. MacNutt, Bartholomew de Las Casas (1909), Appendix II, pp. 427–431 (the translation on the odd pages, facing the Latin)",
+ "scan": "bartholomewdelas00macnuoft",
+ "djvu_xml": "papal-documents/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_djvu.xml",
+ "page_numbers": "papal-documents/bartholomewdelas00macnuoft/bartholomewdelas00macnuoft_page_numbers.json",
+ "pages": [
+  "427",
+  "431"
+ ],
+ "only_pages": [
+  "427",
+  "429",
+  "431"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "leaf_offset": 3,
+ "broken_words_continue": true,
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "sublimis-deus",
+   "first": "^Pa\\w+ III Pope",
+   "last": "the third year\\.$",
+   "keep_quotes": true
+  }
+ ]
+}
