@@ -3,6 +3,7 @@
 Synthetic tests of the printing builder first; the vendored checks at the end need the
 sources.
 """
+import dataclasses
 import json
 import os
 import re
@@ -62,6 +63,28 @@ def test_a_fix_must_match_exactly_once():
         apply_fixes(blocks, [{"find": "absent", "replace": "x"}])
 
 
+def test_citations_become_source_lines_and_ibid_names_its_source():
+    from ingest.papal_printings import mark_sources
+
+    texts = ["Error one.\n\nAllocution Maxima quidem, June 9th, 1862.",
+             "Error two. Ibid.",
+             "Error three.\n\nIbid., and Encyclical Qui pluribus, Nov. 9th, 1846, etc.",
+             "Error four.\n\nLetters to the Archbishop of Munich, Dec. 11th, 1862, and Dec. 21st, 1863.",
+             "Error five.\n\nIbid, Dec. 21st, 1863.", "Error six.\n\nIbid.",
+             "A note naming the Encyclical Noscitis, Dec. 8th, 1849; Allocution Novos, Sept. 28th, 1860."]
+    assert [t.split("\n\n")[-1] for t in mark_sources(texts)] == [
+        "[Source: Allocution Maxima quidem, June 9th, 1862]",
+        "[Source: Ibid., Allocution Maxima quidem, June 9th, 1862]",
+        "[Source: Ibid., Allocution Maxima quidem, June 9th, 1862, and Encyclical Qui pluribus, "
+        "Nov. 9th, 1846, etc]",
+        "[Source: Letters to the Archbishop of Munich, Dec. 11th, 1862, and Dec. 21st, 1863]",
+        "[Source: Ibid., Letters to the Archbishop of Munich, Dec. 21st, 1863]",
+        "[Source: Ibid., Letters to the Archbishop of Munich, Dec. 21st, 1863]",
+        texts[-1]]
+    with pytest.raises(ValueError, match="no source before"):
+        mark_sources(["Error two. Ibid."])
+
+
 def test_every_printing_names_its_units_in_order():
     for p in papal_printings.printings().values():
         numbers = [u.unit for u in p.units if isinstance(u.unit, int)]
@@ -100,6 +123,14 @@ def test_printing_coverage():
         src = os.path.join(_SOURCES, p.key.split("/", 1)[0])
         blocks = papal_printings.blocks_of(p, src)
         toks = printed_tokens(p, blocks)
+        if p.marks_sources:
+            # The source lines are the printed citations with their "Ibid." named.
+            unmarked = papal_printings.build_printed(
+                dataclasses.replace(p, marks_sources=False), _manifest(doc.collection)[
+                    p.key.split("/", 1)[1]], doc.collection, src)
+            assert [x.content for x in doc.passages] == papal_printings.mark_sources(
+                [x.content for x in unmarked.passages]), p.key
+            doc = unmarked
         built = _words(" ".join(x.content for x in doc.passages))
         assert built == _words(" ".join(t.text for t in toks)), p.key
         kept = [t for _, t in blocks if not any(t.startswith(e["opens"]) for e in p.editorial)]
