@@ -4,10 +4,10 @@
   "bible": "feat/1.4a-bible-every-verse 66c7561",
   "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
   "catechism": "feat/279-catechism-us-text 302b98d",
-  "church-fathers": "feat/1.8d-incarnation-robertson f5b7d83",
+  "church-fathers": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
-  "encyclicals": "feat/1.3d-6-extracts d276b44",
-  "medieval": "worktree-bridge-cse_01A8fdmnk6Vfpyf8yTndcQNH 047867d",
+  "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
+  "medieval": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -773,29 +773,29 @@
    "pct": 98.13
   },
   "church-fathers/second-century.xml": {
-   "body_chars": 2476627,
-   "covered_chars": 2406519,
-   "pct": 97.17
+   "body_chars": 2357098,
+   "covered_chars": 2286990,
+   "pct": 97.03
   },
   "church-fathers/third-century-2.xml": {
    "body_chars": 2783463,
-   "covered_chars": 2740872,
+   "covered_chars": 2740747,
    "pct": 98.47
   },
   "church-fathers/third-century-3.xml": {
-   "body_chars": 2030722,
+   "body_chars": 2030689,
    "covered_chars": 1877261,
    "pct": 92.44
   },
   "church-fathers/third-century.xml": {
    "body_chars": 2860330,
-   "covered_chars": 2718459,
+   "covered_chars": 2718422,
    "pct": 95.04
   },
   "church-fathers/third-fourth-century.xml": {
-   "body_chars": 2231278,
-   "covered_chars": 2075414,
-   "pct": 93.01
+   "body_chars": 2217379,
+   "covered_chars": 2061515,
+   "pct": 92.97
   },
   "councils/ecum-19-council-of-trent.html": {
    "body_chars": 535924,
@@ -1112,11 +1112,6 @@
    "covered_chars": 104940,
    "pct": 100.0
   },
-  "encyclicals/ubi-lutetiam.html": {
-   "body_chars": 17041,
-   "covered_chars": 17041,
-   "pct": 100.0
-  },
   "encyclicals/ut-unum-sint.html": {
    "body_chars": 145710,
    "covered_chars": 145710,
@@ -1366,8 +1361,8 @@
   "10d8d7c6-680c-5739-bc98-6ce557371f25": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 118677,
-   "covered_chars": 113307,
+   "body_chars": 118755,
+   "covered_chars": 113385,
    "pct": 95.48
   },
   "12083c91-ed66-5b5c-ac89-bd4ebbadb439": {
@@ -1478,8 +1473,8 @@
   "198c81e9-e119-5153-b4b2-a436574d067a": {
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
-   "body_chars": 634458,
-   "covered_chars": 633175,
+   "body_chars": 634540,
+   "covered_chars": 633257,
    "pct": 99.8
   },
   "1a0a016b-395e-5307-9aea-19a896b87eae": {
@@ -1660,8 +1655,8 @@
   "2ddaa182-a332-559f-8bfb-e72b56a12953": {
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
-   "body_chars": 55839,
-   "covered_chars": 55791,
+   "body_chars": 55896,
+   "covered_chars": 55848,
    "pct": 99.91
   },
   "2e227e08-9120-559e-9be1-c5cffb2672bc": {
@@ -1765,9 +1760,9 @@
   "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
-   "body_chars": 1302340,
-   "covered_chars": 1236491,
-   "pct": 94.94
+   "body_chars": 1199746,
+   "covered_chars": 1133897,
+   "pct": 94.51
   },
   "3e93eb36-8361-5a2b-a1a6-267318aaf29d": {
    "collection": "bible",
@@ -1926,9 +1921,9 @@
   "4c96eac3-f3f1-549c-84cf-070661393073": {
    "collection": "church-fathers",
    "source_file": "third-century.xml",
-   "body_chars": 683245,
-   "covered_chars": 683164,
-   "pct": 99.99
+   "body_chars": 683308,
+   "covered_chars": 683190,
+   "pct": 99.98
   },
   "4ca8de72-c75a-5e6f-8e63-5ba1a48e3ee9": {
    "collection": "encyclicals",
@@ -1968,9 +1963,9 @@
   "506ebe31-239c-509c-ba5e-b6c822d002df": {
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
-   "body_chars": 354529,
-   "covered_chars": 354198,
-   "pct": 99.91
+   "body_chars": 354566,
+   "covered_chars": 354173,
+   "pct": 99.89
   },
   "51f1b4df-505c-571a-be5c-208d11aa6936": {
    "collection": "bible",
@@ -2038,8 +2033,8 @@
   "5a05852b-4193-518f-9d01-afd796291979": {
    "collection": "church-fathers",
    "source_file": "third-century.xml",
-   "body_chars": 1317849,
-   "covered_chars": 1317849,
+   "body_chars": 1317786,
+   "covered_chars": 1317786,
    "pct": 100.0
   },
   "5b81cdef-4a4f-52de-8b35-8657680f30dc": {
@@ -2290,8 +2285,8 @@
   "760c4195-f5be-5141-90fc-8958fccd06ba": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
-   "body_chars": 147904,
-   "covered_chars": 147904,
+   "body_chars": 147868,
+   "covered_chars": 147868,
    "pct": 100.0
   },
   "76b8b853-70d2-5821-8ee5-0149e4f59e03": {
@@ -2542,8 +2537,8 @@
   "96584290-90c2-50bc-9d3d-c353b8969e1f": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
-   "body_chars": 414485,
-   "covered_chars": 414485,
+   "body_chars": 397586,
+   "covered_chars": 397586,
    "pct": 100.0
   },
   "9679c400-d314-5394-b916-f6fc27b50104": {
@@ -2619,9 +2614,9 @@
   "9e03c96d-8295-5e5e-a4d3-3570ddcf0415": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 1178519,
-   "covered_chars": 1168020,
-   "pct": 99.11
+   "body_chars": 1169739,
+   "covered_chars": 1159240,
+   "pct": 99.1
   },
   "9e3bf9bd-efe3-50f5-81bc-6849f12d70a4": {
    "collection": "bible",
@@ -2647,8 +2642,8 @@
   "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc": {
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
-   "body_chars": 69207,
-   "covered_chars": 68987,
+   "body_chars": 69124,
+   "covered_chars": 68904,
    "pct": 99.68
   },
   "a2c444e7-7708-5fc7-9dd0-ab4bd21e11f0": {
@@ -2724,8 +2719,8 @@
   "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
-   "body_chars": 630465,
-   "covered_chars": 630465,
+   "body_chars": 630372,
+   "covered_chars": 630372,
    "pct": 100.0
   },
   "abd0e330-31fe-5de4-bf93-e9b572c179b5": {
@@ -2839,13 +2834,6 @@
    "body_chars": 76004,
    "covered_chars": 75973,
    "pct": 99.96
-  },
-  "ba74d920-a179-5c9e-a1a5-5d677116c82a": {
-   "collection": "encyclicals",
-   "source_file": "ubi-lutetiam.html",
-   "body_chars": 17041,
-   "covered_chars": 17041,
-   "pct": 100.0
   },
   "bb35c577-ee5b-546e-abb6-41a0764cd6a7": {
    "collection": "church-fathers",
@@ -3207,9 +3195,9 @@
   "df6fd2f7-c573-5486-9f76-739ba3aa947d": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 29121,
-   "covered_chars": 29121,
-   "pct": 100.0
+   "body_chars": 54744,
+   "covered_chars": 29190,
+   "pct": 53.32
   },
   "e33e591b-9e2e-5059-974f-28c8e4ab6aae": {
    "collection": "councils",
@@ -3354,8 +3342,8 @@
   "f04e045b-64f1-57c1-bb8f-7d308e5d7c26": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 66092,
-   "covered_chars": 66092,
+   "body_chars": 65944,
+   "covered_chars": 65944,
    "pct": 100.0
   },
   "f12b1923-3690-5a7a-8da7-46bb7f1e335f": {
@@ -3432,8 +3420,8 @@
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
    "body_chars": 32143,
-   "covered_chars": 32143,
-   "pct": 100.0
+   "covered_chars": 32080,
+   "pct": 99.8
   },
   "f8faac83-ebf5-5a3c-850e-b9620465bc3d": {
    "collection": "church-fathers",
@@ -3445,8 +3433,8 @@
   "f913305f-b259-578b-a5ca-532fac927aab": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 92898,
-   "covered_chars": 92898,
+   "body_chars": 87779,
+   "covered_chars": 87779,
    "pct": 100.0
   },
   "f97326ef-e316-5a1b-98b9-b04b716fade3": {
@@ -3515,9 +3503,9 @@
   "fd6550b9-0122-5f2e-86ff-cb992d719a9e": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
-   "body_chars": 111945,
-   "covered_chars": 55499,
-   "pct": 49.58
+   "body_chars": 86392,
+   "covered_chars": 55500,
+   "pct": 64.24
   },
   "ff77001d-a2db-55f9-854b-cc1b3d0f7ab7": {
    "collection": "bible",

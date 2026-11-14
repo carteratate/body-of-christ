@@ -5537,7 +5537,9 @@
   "new_anchor": "vi.iv.iii/from-p67",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "3.3",
+  "closed_on": "2026-11-14"
  },
  {
   "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
@@ -13385,7 +13387,9 @@
   "new_anchor": "vi.iii.ii.x/from-p17",
   "kind": "moved",
   "reason": "its text now lies in another piece of the unit",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.3",
+  "closed_on": "2026-11-14"
  },
  {
   "document_id": "96584290-90c2-50bc-9d3d-c353b8969e1f",
