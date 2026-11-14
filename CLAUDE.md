@@ -270,7 +270,7 @@ Two layers, and the split is the point:
 - `rag/pipeline.py` owns the **SSE contract and DB side-effects only**.
 - `rag/pipelines/runner.py` owns the **compute**; `rag/pipelines/registry.py` names the configurations.
 
-Production runs the `hyde_cohere_luna_seats10t80_ftsminmatch` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → Qdrant vector retrieval, then Supabase FTS → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
+Production runs the `hyde_cohere_luna_seats10t80_ftsminmatch` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → Qdrant vector retrieval, with Supabase FTS running alongside from the start → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
 
 **How many Cohere candidates reach the listwise call is a per-pipeline seat rule**,
 `RerankConfig.terminal_seats` (`budget.TerminalSeats`, issue #235). Production seats
@@ -303,7 +303,8 @@ term and matched nothing for 92% of eval (question, collection) pairs. Productio
 `"min_match"`: passages holding at least ⌈n/2⌉ of the question's distinct lexemes, most
 first, falling back to the most-matched when none reaches half. It was made production
 without a judged run (Carter, 13 Nov 2026). The mode is part of `shared_runner.py`'s pool
-shape, and the runner awaits keyword search after vector retrieval, not alongside it.
+shape. Keyword search needs only the question, so the runner and the eval capture start it
+as a task before embed and await it where RRF reads it; an earlier failure cancels it.
 
 **RRF `k` is a per-pipeline axis, not a constant.** It defaults to `settings.rrf_k`
 (env `RRF_K`, 20) and is overridden per pipeline by `RetrievalConfig.rrf_k`, so an eval

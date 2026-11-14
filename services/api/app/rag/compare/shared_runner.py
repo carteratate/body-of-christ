@@ -98,51 +98,66 @@ async def capture(
     effective_k = {name: k for name, (k, _top_n) in sizes.items()}
     max_k = max(effective_k.values())
 
-    query_vec = await embed.run(query, tracker)
-
-    # One HyDE capture per distinct HyDE configuration, so arms that pin different
-    # HyDE models (or ask for an independent draw via `hyde_sample`) each retrieve
-    # from their own passages, while arms that agree still share one capture and
-    # differ only downstream. With default configs this is a single call, made
-    # exactly as before.
-    HydeKey = tuple[str | None, str | None, int]
-
-    def hyde_key(config: PipelineConfig) -> HydeKey:
-        r = config.retrieval
-        return (r.hyde_luna_model, r.hyde_genre_luna_model, r.hyde_sample)
-
-    first_config: dict[HydeKey, PipelineConfig] = {}
-    for config in configs:
-        first_config.setdefault(hyde_key(config), config)
-    # Each draw bills its own tracker, so the per-arm HyDE cost stays attributable.
-    draw_trackers = {key: CostTracker() for key in first_config}
-
-    async def draw(key: HydeKey) -> dict:
-        hyde_vecs = await hyde_s25.run(
-            query, collections, draw_trackers[key],
-            **hyde_overrides(first_config[key].retrieval),
-        )
-        return await retrieve_vector.run(
-            query_vec, hyde_vecs, collections, quota, k=max_k,
-        )
-
-    keys = list(first_config)
-    # return_exceptions so a failing draw does not leave its siblings running
-    # unobserved (and still spending) after the capture has already raised.
-    draws = await asyncio.gather(*[draw(key) for key in keys], return_exceptions=True)
-    for key in keys:
-        tracker.merge(draw_trackers[key])
-    for outcome in draws:
-        if isinstance(outcome, BaseException):
-            raise outcome
-    vector_raw_by_hyde: dict[HydeKey, dict] = dict(zip(keys, draws))
     # One keyword search per FTS mode the arms use; with default configs that is one
-    # call, made exactly as before.
+    # call. They need only the question, so they run alongside embed, HyDE and vector
+    # retrieval, as in the runner, and the finally cancels them if a step fails.
     fts_modes = list(dict.fromkeys(config.retrieval.fts_mode for config in configs))
-    fts_by_mode = dict(zip(fts_modes, [
-        await retrieve_fts.run(query, collections, quota, k=max_k, mode=mode)
-        for mode in fts_modes
-    ]))
+
+    async def keyword_searches() -> dict:
+        found = await asyncio.gather(*[
+            retrieve_fts.run(query, collections, quota, k=max_k, mode=mode)
+            for mode in fts_modes
+        ])
+        return dict(zip(fts_modes, found))
+
+    fts_task = asyncio.create_task(keyword_searches())
+    try:
+        query_vec = await embed.run(query, tracker)
+
+        # One HyDE capture per distinct HyDE configuration, so arms that pin different
+        # HyDE models (or ask for an independent draw via `hyde_sample`) each retrieve
+        # from their own passages, while arms that agree still share one capture and
+        # differ only downstream. With default configs this is a single call, made
+        # exactly as before.
+        HydeKey = tuple[str | None, str | None, int]
+
+        def hyde_key(config: PipelineConfig) -> HydeKey:
+            r = config.retrieval
+            return (r.hyde_luna_model, r.hyde_genre_luna_model, r.hyde_sample)
+
+        first_config: dict[HydeKey, PipelineConfig] = {}
+        for config in configs:
+            first_config.setdefault(hyde_key(config), config)
+        # Each draw bills its own tracker, so the per-arm HyDE cost stays attributable.
+        draw_trackers = {key: CostTracker() for key in first_config}
+
+        async def draw(key: HydeKey) -> dict:
+            hyde_vecs = await hyde_s25.run(
+                query, collections, draw_trackers[key],
+                **hyde_overrides(first_config[key].retrieval),
+            )
+            return await retrieve_vector.run(
+                query_vec, hyde_vecs, collections, quota, k=max_k,
+            )
+
+        keys = list(first_config)
+        # return_exceptions so a failing draw does not leave its siblings running
+        # unobserved (and still spending) after the capture has already raised.
+        draws = await asyncio.gather(*[draw(key) for key in keys], return_exceptions=True)
+        for key in keys:
+            tracker.merge(draw_trackers[key])
+        for outcome in draws:
+            if isinstance(outcome, BaseException):
+                raise outcome
+        vector_raw_by_hyde: dict[HydeKey, dict] = dict(zip(keys, draws))
+        fts_by_mode = await fts_task
+    finally:
+        if not fts_task.done():
+            fts_task.cancel()
+            await asyncio.wait({fts_task})
+        if not fts_task.cancelled():
+            # Retrieves a failure an earlier step's exception superseded.
+            fts_task.exception()
 
     # Keyed by every input that changes the merged pool. `rrf_k` belongs here for
     # the same reason `fts` does: two arms differing only in it produce differently
