@@ -1,0 +1,137 @@
+[
+ {
+  "collection": "church-fathers",
+  "document_id": "0e326c02-a623-538c-898b-56623197c955",
+  "title": "The Acts of the Disputation with the Heresiarch Manes",
+  "first_anchor": "vii.iii.v",
+  "last_anchor": "vii.iii.v",
+  "label": "Mani's teaching, refuted by Archelaus",
+  "basis": "Mani's letter to Marcellus (chapter 5). The work's own reply: Archelaus refutes Mani in the disputation before the judges."
+ },
+ {
+  "collection": "church-fathers",
+  "document_id": "0e326c02-a623-538c-898b-56623197c955",
+  "title": "The Acts of the Disputation with the Heresiarch Manes",
+  "first_anchor": "vii.iii.vi/from-p5",
+  "last_anchor": "vii.iii.x",
+  "label": "Mani's teaching, refuted by Archelaus",
+  "basis": "Turbo's account of Mani's doctrine (chapters 7 to 11). The work's own reply: Archelaus refutes Mani in the disputation before the judges."
+ },
+ {
+  "collection": "church-fathers",
+  "document_id": "0e326c02-a623-538c-898b-56623197c955",
+  "title": "The Acts of the Disputation with the Heresiarch Manes",
+  "first_anchor": "vii.iii.xii",
+  "last_anchor": "vii.iii.xii/from-p1-2",
+  "label": "Mani's teaching, refuted by Archelaus",
+  "basis": "Mani's opening speech (chapter 13). The work's own reply: Archelaus refutes Mani in the disputation before the judges."
+ },
+ {
+  "collection": "church-fathers",
+  "document_id": "0e326c02-a623-538c-898b-56623197c955",
+  "title": "The Acts of the Disputation with the Heresiarch Manes",
+  "first_anchor": "vii.iii.xiii/from-p1-2",
+  "last_anchor": "vii.iii.xiii/from-p1-2",
+  "label": "Mani's teaching, refuted by Archelaus",
+  "basis": "Mani's speech continued (chapter 14, from \"Look, for instance\"). The work's own reply: Archelaus refutes Mani in the disputation before the judges."
+ },
+ {
+  "collection": "church-fathers",
+  "document_id": "0e326c02-a623-538c-898b-56623197c955",
+  "title": "The Acts of the Disputation with the Heresiarch Manes",
+  "first_anchor": "vii.iii.xlvi/from-p1-3",
+  "last_anchor": "vii.iii.xlvi/from-p1-3",
+  "label": "Mani's teaching, refuted by Archelaus",
+  "basis": "Mani's speech continued (chapter 47, from \"The Apostle Peter\"). The work's own reply: Archelaus refutes Mani in the disputation before the judges."
+ },
+ {
+  "collection": "church-fathers",
+  "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
+  "title": "The Octavius of Minucius Felix",
+  "first_anchor": "iv.iii.v",
+  "last_anchor": "iv.iii.xiii",
+  "label": "Caecilius, pagan objection; answered by Octavius",
+  "basis": "Caecilius's case against Christianity (chapters 5 to 13). The work's own reply: Octavius answers it from chapter 16, and Caecilius concedes in chapter 40."
+ },
+ {
+  "collection": "councils",
+  "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
+  "title": "Council of Ephesus",
+  "first_anchor": "council-of-ephesus/nestorius-second-letter",
+  "last_anchor": "council-of-ephesus/nestorius-second-letter/from-p6-2",
+  "label": "Letter of Nestorius, condemned by the Council of Ephesus",
+  "basis": "Read at the council's first session (22 June 431), which judged it contrary to the faith of Nicaea and deposed Nestorius."
+ },
+ {
+  "collection": "councils",
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "title": "Council of Constance",
+  "first_anchor": "council-of-constance/session-8/wyclif-articles",
+  "last_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+  "label": "Condemned articles of John Wyclif (Council of Constance)",
+  "basis": "Council of Constance, session 8 (4 May 1415), condemned the 45 articles of John Wyclif."
+ },
+ {
+  "collection": "councils",
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "title": "Council of Constance",
+  "first_anchor": "council-of-constance/session-15/hus-articles",
+  "last_anchor": "council-of-constance/session-15/hus-articles/from-p18",
+  "label": "Condemned articles of Jan Hus (Council of Constance)",
+  "basis": "Council of Constance, session 15 (6 July 1415), condemned the 30 articles of Jan Hus."
+ },
+ {
+  "collection": "encyclicals",
+  "document_id": "6bafb4a7-2d6e-55cc-92b8-cdc221bea175",
+  "title": "Syllabus of Errors",
+  "first_anchor": "syllabus-of-errors/1",
+  "last_anchor": "syllabus-of-errors/14",
+  "label": "Condemned proposition {n} (condemned by Pius IX, Syllabus of Errors)",
+  "basis": "Pius IX, Syllabus of Errors (8 December 1864): the propositions are errors he had condemned in earlier acts, each cited after it. The Syllabus's note after section II (text-2) is its own and stands outside."
+ },
+ {
+  "collection": "encyclicals",
+  "document_id": "6bafb4a7-2d6e-55cc-92b8-cdc221bea175",
+  "title": "Syllabus of Errors",
+  "first_anchor": "syllabus-of-errors/15",
+  "last_anchor": "syllabus-of-errors/18",
+  "label": "Condemned proposition {n} (condemned by Pius IX, Syllabus of Errors)",
+  "basis": "Pius IX, Syllabus of Errors (8 December 1864): the propositions are errors he had condemned in earlier acts, each cited after it. Section IV's heading and note (text-4) stand outside."
+ },
+ {
+  "collection": "encyclicals",
+  "document_id": "6bafb4a7-2d6e-55cc-92b8-cdc221bea175",
+  "title": "Syllabus of Errors",
+  "first_anchor": "syllabus-of-errors/19",
+  "last_anchor": "syllabus-of-errors/74",
+  "label": "Condemned proposition {n} (condemned by Pius IX, Syllabus of Errors)",
+  "basis": "Pius IX, Syllabus of Errors (8 December 1864): the propositions are errors he had condemned in earlier acts, each cited after it. The note after section VIII (text-8) stands outside."
+ },
+ {
+  "collection": "encyclicals",
+  "document_id": "6bafb4a7-2d6e-55cc-92b8-cdc221bea175",
+  "title": "Syllabus of Errors",
+  "first_anchor": "syllabus-of-errors/75",
+  "last_anchor": "syllabus-of-errors/76",
+  "label": "Condemned proposition {n} (condemned by Pius IX, Syllabus of Errors)",
+  "basis": "Pius IX, Syllabus of Errors (8 December 1864): the propositions are errors he had condemned in earlier acts, each cited after it. The note after section IX (text-9) stands outside."
+ },
+ {
+  "collection": "encyclicals",
+  "document_id": "6bafb4a7-2d6e-55cc-92b8-cdc221bea175",
+  "title": "Syllabus of Errors",
+  "first_anchor": "syllabus-of-errors/77",
+  "last_anchor": "syllabus-of-errors/80",
+  "label": "Condemned proposition {n} (condemned by Pius IX, Syllabus of Errors)",
+  "basis": "Pius IX, Syllabus of Errors (8 December 1864): the propositions are errors he had condemned in earlier acts, each cited after it."
+ },
+ {
+  "collection": "papal-documents",
+  "document_id": "616dfaea-6099-593e-951f-2b017a7ec938",
+  "title": "Exsurge Domine",
+  "first_anchor": "exsurge-domine/1",
+  "last_anchor": "exsurge-domine/41",
+  "label": "Condemned proposition {n} of Martin Luther (condemned by Leo X, Exsurge Domine)",
+  "basis": "Leo X, bull Exsurge Domine (15 June 1520), condemned the 41 propositions of Martin Luther."
+ }
+]
