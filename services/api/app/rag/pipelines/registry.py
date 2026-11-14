@@ -159,16 +159,24 @@ PIPELINES: dict[str, PipelineConfig] = {
         "hyde_cohere_luna_seats10t80", cohere=True, llm="luna",
         seats=TerminalSeats(minimum=10, total=80, maximum=25),
     ),
-    # Production (seats10t80) with its own HyDE draw: the noise floor any change to
-    # production must clear. hyde_cohere_luna_hydesample is the pre-#235 equivalent.
+    # seats10t80 with its own HyDE draw: production's noise floor until #233.
+    # hyde_cohere_luna_hydesample is the pre-#235 equivalent.
     "hyde_cohere_luna_seats10t80_hydesample": _p(
         "hyde_cohere_luna_seats10t80_hydesample", cohere=True, llm="luna",
         seats=TerminalSeats(minimum=10, total=80, maximum=25), hyde_sample=1,
     ),
-    # Issue #233: production with keyword search matching at least half a question's
-    # terms instead of all of them, against production and its noise floor above.
+    # Issue #233, production since: seats10t80 with keyword search matching at least
+    # half a question's terms instead of all of them. Made production without a judged
+    # run (Carter, 13 Nov 2026); the coverage measurement is on the issue.
     "hyde_cohere_luna_seats10t80_ftsminmatch": _p(
         "hyde_cohere_luna_seats10t80_ftsminmatch", cohere=True, llm="luna",
         seats=TerminalSeats(minimum=10, total=80, maximum=25), fts_mode="min_match",
+    ),
+    # Production with its own HyDE draw: the noise floor any change to production
+    # must clear. The two seats10t80 arms above are the pre-#233 pair.
+    "hyde_cohere_luna_seats10t80_ftsminmatch_hydesample": _p(
+        "hyde_cohere_luna_seats10t80_ftsminmatch_hydesample", cohere=True, llm="luna",
+        seats=TerminalSeats(minimum=10, total=80, maximum=25), fts_mode="min_match",
+        hyde_sample=1,
     ),
 }

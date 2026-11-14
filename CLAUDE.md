@@ -270,7 +270,7 @@ Two layers, and the split is the point:
 - `rag/pipeline.py` owns the **SSE contract and DB side-effects only**.
 - `rag/pipelines/runner.py` owns the **compute**; `rag/pipelines/registry.py` names the configurations.
 
-Production runs the `hyde_cohere_luna_seats10t80` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → parallel Qdrant vector + Supabase FTS retrieval → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
+Production runs the `hyde_cohere_luna_seats10t80_ftsminmatch` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → Qdrant vector retrieval, then Supabase FTS → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
 
 **How many Cohere candidates reach the listwise call is a per-pipeline seat rule**,
 `RerankConfig.terminal_seats` (`budget.TerminalSeats`, issue #235). Production seats
@@ -293,9 +293,17 @@ The registry also holds evaluation arms (no-HyDE, Cohere-only, Haiku instead of 
 nothing to the database). It retrieves once per query, replays each named pipeline over
 the same candidates (`rag/compare/shared_runner.py`), and has the judge
 (`rag/compare/judge.py`) score them. Its default arms are production and
-`hyde_cohere_luna_seats10t80_hydesample`; add any registry name with `--pipelines`. A new
+`hyde_cohere_luna_seats10t80_ftsminmatch_hydesample`; add any registry name with `--pipelines`. A new
 model or setting to test is one new registry entry pinning it. The HTTP lab
 (`/search/compare`) and `compare_batch/` were removed in October 2026.
+
+**Keyword search's match is a per-pipeline axis**, `RetrievalConfig.fts_mode` (issue
+#233, modes in `steps/retrieve_fts.py`). `"and"` is `plainto_tsquery`, which ANDs every
+term and matched nothing for 92% of eval (question, collection) pairs. Production uses
+`"min_match"`: passages holding at least ⌈n/2⌉ of the question's distinct lexemes, most
+first, falling back to the most-matched when none reaches half. It was made production
+without a judged run (Carter, 13 Nov 2026). The mode is part of `shared_runner.py`'s pool
+shape, and the runner awaits keyword search after vector retrieval, not alongside it.
 
 **RRF `k` is a per-pipeline axis, not a constant.** It defaults to `settings.rrf_k`
 (env `RRF_K`, 20) and is overridden per pipeline by `RetrievalConfig.rrf_k`, so an eval
@@ -311,7 +319,7 @@ The harness records the default `k` in its fingerprint for unpinned arms.
 `RerankConfig.llm_model` / `llm_reasoning_effort` (`None` = the production default).
 `compare/shared_runner.py` draws HyDE once per distinct (passage model, genre model,
 `hyde_sample`) and includes that key in its pool shape, so arms with different HyDE never
-share a candidate pool; `SharedArtifacts.hyde_costs` records each arm's own draw cost. `hyde_cohere_luna_seats10t80_hydesample` is production with its own HyDE draw
+share a candidate pool; `SharedArtifacts.hyde_costs` records each arm's own draw cost. `hyde_cohere_luna_seats10t80_ftsminmatch_hydesample` is production with its own HyDE draw
 — the noise floor any HyDE change must clear. Cost is always recorded against the model
 actually called.
 

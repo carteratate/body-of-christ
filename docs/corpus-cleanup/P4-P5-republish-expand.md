@@ -312,7 +312,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 - **Type:** ops
 - **Depends on:** 4.1a, and the staging build from 4.1b step 1. Until 30 Oct 2026 it also compared judge scores against a judged baseline from 0.3; Carter dropped 0.3, so this item checks accuracy only and makes no judge calls (Decision log "Baseline eval (0.3)").
 - **Goal:** Show, before and after cutover, that removed texts no longer appear, that recovered and fixed texts now do, and that every collection still answers. This is what Carter's go or no-go rests on.
-- **Current state:** Production pipeline is `hyde_cohere_luna_seats10t80` (CLAUDE.md §5). `services/api/scripts/run_eval_suite.py` runs the pipeline in process, not through an API server; its judge is not used here.
+- **Current state:** Production pipeline is `hyde_cohere_luna_seats10t80_ftsminmatch` (CLAUDE.md §5; #233 changed keyword matching on 13 Nov 2026). `services/api/scripts/run_eval_suite.py` runs the pipeline in process, not through an API server; its judge is not used here.
 - **Changes:** Runbook, a check script and a report file.
   1. **Check script.** Add `services/api/scripts/republish_checks.py`. For each check below it runs a question through the production pipeline in process (as `run_eval_suite.py` does) and asserts over the returned passages; the database-only checks are single SELECTs. The questions are written fresh in neutral wording, never taken from users' stored searches, and Carter reviews the list in the PR. It also runs one ordinary question per collection and asserts it returns results with no error.
   2. **Pre-cutover run, on staging.** Run the script with `CORPUS_READ_SCHEMA=staging` and `QDRANT_READ_COLLECTION` set (2.2w). That is why 2.2w lets an in-process run use the override while the deployed API refuses to start with it. Its corpus reads go to the `staging` schema and its vector reads go to the new Qdrant collection (`QDRANT_READ_COLLECTION=chunks-<release>`, from 2.2b). It reads production data and writes nothing.
@@ -1046,7 +1046,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 
 - **Type:** decision (tracking parent)
 - **Depends on:** the republish (4.1b's cutover), and the P5 additions whose effects it measures.
-- **Goal:** One place to collect retrieval changes that the cleanup made visible but deliberately did not make, so each is judged against a judged run on the republished corpus and the `hyde_cohere_luna_seats10t80_hydesample` noise floor.
+- **Goal:** One place to collect retrieval changes that the cleanup made visible but deliberately did not make, so each is judged against a judged run on the republished corpus and the `hyde_cohere_luna_seats10t80_ftsminmatch_hydesample` noise floor.
 - **Current state:** Nothing opened. Candidates gathered while writing these specs:
   - Genre-aware HyDE for Papal documents and Roman Curia (5.1a leaves one prompt per collection).
   - Whether the Compendium's Q&A form is found by the CCC-style prompt (5.5).

@@ -29,7 +29,7 @@ from tests.test_corpus_facts_migration import (
 )
 from tests.test_retrieve_fts_sql import ALL, TODAY_FTS
 
-PRODUCTION = "hyde_cohere_luna_seats10t80"
+CONTROL = "hyde_cohere_luna_seats10t80"  # the arm before #233: keyword search ANDs
 ARM = "hyde_cohere_luna_seats10t80_ftsminmatch"
 
 
@@ -59,15 +59,15 @@ def test_an_unknown_mode_is_refused():
 
 # --- The axis ----------------------------------------------------------------------
 
-def test_production_keeps_and_and_the_arm_differs_only_in_fts_mode():
+def test_the_control_keeps_and_and_the_arm_differs_only_in_fts_mode():
     assert RetrievalConfig().fts_mode == "and"
-    assert PIPELINES[PRODUCTION].retrieval.fts_mode == "and"
+    assert PIPELINES[CONTROL].retrieval.fts_mode == "and"
     arm = PIPELINES[ARM]
     assert arm.retrieval.fts_mode == "min_match"
     assert dataclasses.replace(
-        arm, name=PRODUCTION,
+        arm, name=CONTROL,
         retrieval=dataclasses.replace(arm.retrieval, fts_mode="and"),
-    ) == PIPELINES[PRODUCTION]
+    ) == PIPELINES[CONTROL]
 
 
 def _row(i: int) -> dict:
@@ -101,13 +101,13 @@ async def test_capture_searches_once_per_mode_and_never_shares_a_pool_across_mod
               new=AsyncMock(side_effect=lambda candidates: candidates)),
     ):
         artifacts = await shared_runner.capture(
-            "q", ["bible"], 4, [PIPELINES[PRODUCTION], PIPELINES[ARM]],
+            "q", ["bible"], 4, [PIPELINES[CONTROL], PIPELINES[ARM]],
         )
 
     assert sorted(call.kwargs["mode"] for call in search.await_args_list) == [
         "and", "min_match",
     ]
-    control = artifacts.candidate_pools[PRODUCTION]["bible"]
+    control = artifacts.candidate_pools[CONTROL]["bible"]
     variant = artifacts.candidate_pools[ARM]["bible"]
     assert [c.rrf_score for c in control] != [c.rrf_score for c in variant]
 
@@ -132,7 +132,7 @@ async def test_the_runner_searches_with_the_pipelines_mode():
               new=AsyncMock(side_effect=lambda pool, *a, **k: pool)),
     ):
         await runner.run(PIPELINES[ARM], "grace", ["bible"], quota=4)
-        await runner.run(PIPELINES[PRODUCTION], "grace", ["bible"], quota=4)
+        await runner.run(PIPELINES[CONTROL], "grace", ["bible"], quota=4)
     assert [call.kwargs["mode"] for call in fts.await_args_list] == ["min_match", "and"]
 
 
