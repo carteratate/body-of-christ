@@ -378,7 +378,9 @@ async def run(
     k, top_n = _pool_sizes(config, quota)
     vec_raw   = await _timed_async("retrieve_vector", retrieve_vector.run(query_vec, hyde_vecs, collections, quota, user_id, k=k))
     if config.retrieval.fts:
-        fts_raw = await _timed_async("retrieve_fts", retrieve_fts.run(query, collections, quota, user_id, k=k))
+        fts_raw = await _timed_async("retrieve_fts", retrieve_fts.run(
+            query, collections, quota, user_id, k=k, mode=config.retrieval.fts_mode,
+        ))
     else:
         # Lexical ablation — dense only. RRF handles a missing path natively.
         fts_raw = {}

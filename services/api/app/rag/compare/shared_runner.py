@@ -136,22 +136,30 @@ async def capture(
         if isinstance(outcome, BaseException):
             raise outcome
     vector_raw_by_hyde: dict[HydeKey, dict] = dict(zip(keys, draws))
-    fts_raw = await retrieve_fts.run(query, collections, quota, k=max_k)
+    # One keyword search per FTS mode the arms use; with default configs that is one
+    # call, made exactly as before.
+    fts_modes = list(dict.fromkeys(config.retrieval.fts_mode for config in configs))
+    fts_by_mode = dict(zip(fts_modes, [
+        await retrieve_fts.run(query, collections, quota, k=max_k, mode=mode)
+        for mode in fts_modes
+    ]))
 
     # Keyed by every input that changes the merged pool. `rrf_k` belongs here for
     # the same reason `fts` does: two arms differing only in it produce differently
     # ordered merges, and reusing one pool for both would hand replay identical
     # candidates and silently compare an arm against itself. The HyDE key is here
     # for the same reason: a pool built from one arm's HyDE vectors must never be
-    # replayed as another arm's.
-    Shape = tuple[int, int | None, bool, int | None, HydeKey]
+    # replayed as another arm's. So is the FTS mode (#233): two arms that differ only
+    # in it fuse different lexical lists.
+    Shape = tuple[int, int | None, bool, str, int | None, HydeKey]
     pools_by_shape: dict[Shape, dict[str, list[ChunkCandidate]]] = {}
     candidate_pools: dict[str, dict[str, list[ChunkCandidate]]] = {}
     for config in configs:
         k = effective_k[config.name]
         _configured_k, top_n = sizes[config.name]
         shape = (
-            k, top_n, config.retrieval.fts, config.retrieval.rrf_k, hyde_key(config),
+            k, top_n, config.retrieval.fts, config.retrieval.fts_mode,
+            config.retrieval.rrf_k, hyde_key(config),
         )
         if shape not in pools_by_shape:
             vector_raw = vector_raw_by_hyde[hyde_key(config)]
@@ -160,7 +168,10 @@ async def capture(
                 for collection, strategies in vector_raw.items()
             }
             lexical = (
-                {collection: ranked[:k] for collection, ranked in fts_raw.items()}
+                {
+                    collection: ranked[:k]
+                    for collection, ranked in fts_by_mode[config.retrieval.fts_mode].items()
+                }
                 if config.retrieval.fts else {}
             )
             merged = rrf.run(vectors, lexical, quota, top_n=top_n, k=config.retrieval.rrf_k)

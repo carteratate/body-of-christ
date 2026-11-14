@@ -17,6 +17,7 @@ _EXPECTED_PIPELINES = {
     "hyde6_cohere_luna6", "hyde6_cohere_luna6_low",
     "hyde_cohere_luna_seats10", "hyde_cohere_luna_seats10t80",
     "hyde_cohere_luna_seats10t80_hydesample",
+    "hyde_cohere_luna_seats10t80_ftsminmatch",
 }
 
 
