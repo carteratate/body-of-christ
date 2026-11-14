@@ -2,6 +2,9 @@
 tests/source_checks/test_document_facts_sources.py checks them against a build."""
 from __future__ import annotations
 
+import os
+import sys
+
 import pytest
 
 import document_facts
@@ -158,6 +161,34 @@ def test_a_held_document_needs_no_credit():
     w = entry(source_credit=None)
     held = {"scope": "document", "document_id": w["document_id"], "collection": "medieval"}
     assert problems(w, removals=[held]) == []
+
+
+@pytest.mark.parametrize("reason", ["awaiting-permission", "translation-in-preparation"])
+def test_a_retired_document_carries_no_facts(reason, monkeypatch):
+    """Any open `document` removal retires the document whatever its reason, held for
+    permission or retired for want of an English translation (3.3's Ubi Lutetiam): the
+    generator writes it no facts, and validation needs no credit for it."""
+    sys.path.insert(0, os.path.join(os.path.dirname(registry.REGISTRY_DIR), "scripts"))
+    import document_facts_registry
+
+    kept, retired = entry(), entry(title="Z")
+    retired.update(document_id="dddddddd-0000-0000-0000-000000000002", work_id="medieval/z",
+                   source_key="medieval/z")
+    removal = {"scope": "document", "document_id": retired["document_id"],
+               "collection": "medieval", "reason": reason}
+    reg = registry.WorkRegistry([kept, retired], [], [], [removal])
+    assert registry.removed_document_ids(reg) == {retired["document_id"]}
+    assert problems(kept, {**retired, "source_credit": None}, removals=[removal]) == []
+
+    built = [Document(id=w["document_id"], collection="medieval", title=w["title"])
+             for w in (kept, retired)]
+    monkeypatch.setattr(document_facts_registry, "SOURCE_ADAPTERS",
+                        {"medieval": lambda: built})
+    documents = document_facts_registry.build_all(reg)
+    assert [d.id for d in documents] == [kept["document_id"]]
+    rows = [{"document_id": kept["document_id"], "credit_line": "Sourced via CCEL.org"}]
+    works = document_facts_registry.generate(reg, documents, rows)
+    assert registry.has_facts(works[0]) and not registry.has_facts(works[1])
 
 
 def test_superseded_by_names_another_registered_document():

@@ -7060,7 +7060,7 @@
   "translation": "Ante-Nicene Fathers (1885-1896)",
   "source_credit": "Sourced via CCEL.org",
   "attribution_note": null,
-  "notes": null,
+  "notes": "Some passages are omitted: the translators left them in Latin and no public-domain English translation exists.",
   "superseded_by": null,
   "superseded_note": null
  },
@@ -7100,7 +7100,7 @@
   "translation": "Ante-Nicene Fathers (1885-1896)",
   "source_credit": "Sourced via CCEL.org",
   "attribution_note": null,
-  "notes": null,
+  "notes": "Some passages are omitted: the translators left them in Latin and no public-domain English translation exists.",
   "superseded_by": null,
   "superseded_note": null
  },
@@ -11225,7 +11225,7 @@
   "translation": "Ante-Nicene Fathers (1885-1896)",
   "source_credit": "Sourced via CCEL.org",
   "attribution_note": null,
-  "notes": null,
+  "notes": "Some passages are omitted: the translators left them in Latin and no public-domain English translation exists.",
   "superseded_by": null,
   "superseded_note": null
  },
@@ -11313,7 +11313,7 @@
   "translation": "Ante-Nicene Fathers (1885-1896)",
   "source_credit": "Sourced via CCEL.org",
   "attribution_note": null,
-  "notes": null,
+  "notes": "Some passages are omitted: the translators left them in Latin and no public-domain English translation exists.",
   "superseded_by": null,
   "superseded_note": null
  },
@@ -17674,18 +17674,7 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": [],
-  "genre": "encyclical",
-  "issuer": "pope-pius-vi",
-  "issuer_label": "Pope Pius VI",
-  "year": 1792,
-  "date_display": null,
-  "translation": "",
-  "source_credit": "Text: papalencyclicals.net",
-  "attribution_note": null,
-  "notes": null,
-  "superseded_by": null,
-  "superseded_note": null
+  "works": []
  },
  {
   "work_id": "encyclicals/ubi-nos",
