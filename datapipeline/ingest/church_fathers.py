@@ -617,16 +617,17 @@ def _without_paragraphs(passage, cut: frozenset[str]):
     """The passage without the paragraphs whose sha1 is in `cut`. Each must be found, so
     a source change that moves one fails the build instead of leaving Latin in place.
     A split piece's `source_units` and its footnotes' offsets move with the text they
-    point at; a unit that starts inside a cut paragraph, or a note placed in one, is
-    dropped and the notes left are renumbered."""
+    point at; a unit that opens a cut paragraph, or a note placed in one, is dropped and
+    the notes left are renumbered."""
     parts = passage.content.split("\n\n")
     found = {span_sha1(p) for p in parts} & cut
     if found != cut:
         raise ValueError(f"{passage.anchor}: rule-E paragraphs not found: "
                          f"{sorted(cut - found)}")
-    kept, spans, at = [], [], 0      # spans: (start, end) of each cut in the old content
+    kept, spans, starts, at = [], [], [], 0   # spans: (start, end) of each cut
     for p in parts:
         end = at + len(p)
+        starts.append(at)
         if span_sha1(p) in cut:
             spans.append((at, min(end + 2, len(passage.content))))
         else:
@@ -636,9 +637,16 @@ def _without_paragraphs(passage, cut: frozenset[str]):
     def moved(offset: int) -> int:
         return offset - sum(end - start for start, end in spans if offset >= end)
 
-    # A unit that starts inside a cut paragraph has no text left in the piece.
-    units = tuple((loc, moved(off)) for loc, off in passage.source_units
-                  if not any(start <= off < end for start, end in spans))
+    # A unit's offset is measured before the text is cleaned, so it lands near, not on,
+    # the start of its paragraph: it belongs to the paragraph whose start is nearest.
+    # One in a cut paragraph has no text left in the piece; the rest move to the start
+    # of their paragraph in the new text.
+    units = []
+    for loc, off in passage.source_units:
+        start = min(starts, key=lambda a: abs(a - off))
+        if not any(a == start for a, _ in spans):
+            units.append((loc, moved(start)))
+    units = tuple(units)
     metadata = passage.metadata
     if metadata and metadata.get("footnotes"):
         # A note sits after the character at `at`; one inside a cut paragraph goes with it.

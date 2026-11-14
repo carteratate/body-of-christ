@@ -115,6 +115,17 @@ def test_cut_paragraph_moves_offsets_and_drops_units_inside_it():
     assert (out.content, out.source_units) == (english, (("p30", 0),))
 
 
+def test_unit_offsets_measured_before_cleaning_go_to_the_nearest_paragraph():
+    # The adapter's offsets land a few characters from the paragraph they open.
+    latin, english = "Tempus autem opportunum conjunctionis solis.", "Well, I also agree."
+    p = _passage(f"{latin}\n\n{english}", (("p3", 0), ("p7", len(latin) - 5)))
+    assert cf._without_paragraphs(p, frozenset({span_sha1(latin)})).source_units == \
+        (("p7", 0),)
+    tail = _passage(f"{english}\n\n{latin}", (("p30", 0), ("p36", len(english) + 1)))
+    assert cf._without_paragraphs(tail, frozenset({span_sha1(latin)})).source_units == \
+        (("p30", 0),)
+
+
 def test_cut_paragraph_takes_its_footnotes_and_moves_the_rest():
     latin, english = "Tempus autem opportunum.", "Well, I also agree."
     content = f"{latin}\n\n{english}"
