@@ -244,6 +244,23 @@ async def test_when_no_passage_reaches_half_it_falls_back_to_the_most_matched(cl
 
 
 @pytest.mark.real_corpus_schema
+async def test_short_of_half_it_keeps_the_most_matched_not_every_one_term_match(cluster):
+    """Six terms (half is three), and the best passages hold two: those are kept, and
+    the passages holding one are not."""
+    found = await _ids(cluster, "trinity grace zebra quokka wombat koala", "min_match")
+    assert set(found) == {ALL_FOUR, TWO}
+
+
+@pytest.mark.real_corpus_schema
+async def test_a_question_of_the_longest_allowed_length_runs(cluster):
+    """1,000 characters, past the 40 terms the pair filter is used for."""
+    words = " ".join(f"word{chr(97 + i % 26)}{chr(97 + i // 26)}" for i in range(140))
+    query = (words + " trinity grace")[-1000:]
+    assert len(query) <= 1000
+    assert set(await _ids(cluster, query, "min_match")) == {ALL_FOUR, TWO}
+
+
+@pytest.mark.real_corpus_schema
 @pytest.mark.parametrize("query", [
     "trinity",                                 # n = 1: the same as AND
     "trinity grace",                           # n = 2

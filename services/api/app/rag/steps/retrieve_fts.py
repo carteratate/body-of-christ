@@ -43,42 +43,76 @@ FTS_MODES: tuple[FtsMode, ...] = ("and", "min_match")
 # The lexemes are `to_tsvector`'s, which are `plainto_tsquery`'s without repeats: the
 # two share one parser and dictionary chain.
 #
-# Order: distinct lexemes matched, then today's `ts_rank` against the AND query, so a
-# passage holding every term ranks exactly where "and" puts it and today's list is
-# always this list's head (n <= 2 included); then `ts_rank` against the OR query, to
-# order passages the AND rank scores alike. The OR query is an InitPlan parameter,
-# which is what lets the GIN index on search_vector serve the match.
+# Which passages: with three or more terms the threshold is at least two, so the GIN
+# index is asked only for passages holding some pair of terms (`pairs`). Without that,
+# a common term ("god" alone matches 27,000 church-fathers passages) made every
+# one-term passage a heap fetch, and the query took ~600 ms instead of ~150. With one
+# or two terms, or when no passage holds a pair (the fallback), the plain OR runs
+# instead (`singles`); `NOT EXISTS` gates it, so it costs nothing otherwise. Past 40
+# terms (780 pairs; a question may run to 1,000 characters) the plain OR runs too.
+#
+# Terms matched: the vector's length less its length with the query's lexemes deleted,
+# one pass over each candidate. Only the passages that pass the threshold are ranked:
+# distinct terms matched, then today's `ts_rank` against the AND query, so a passage
+# holding every term ranks exactly where "and" puts it and today's list is always this
+# list's head (n <= 2 included), then `ts_rank` against the OR query, to order passages
+# the AND rank scores alike. The tsqueries are InitPlan parameters, which is what lets
+# the GIN index on search_vector serve the match.
 _MIN_MATCH_SQL_TEMPLATE = r"""
     WITH terms AS (
-        SELECT array_agg(
+        SELECT array_agg(lexeme) AS lexemes,
+               array_agg(
                    ('''' || replace(replace(lexeme, '\', '\\'), '''', '''''') || '''')::tsquery
                ) AS each_term
         FROM unnest(tsvector_to_array(to_tsvector('english', $2))) AS lexeme
     ),
-    matched AS (
-        SELECT c.id::text AS id, c.content, c.reference, c.anchor, c.chapter_key,
-               c.position, c.annotation, c.unit_label{voice},
-               c.document_id::text AS document_id,
-               d.title AS document_title, d.author, d.collection,
-               (SELECT count(*) FROM unnest(t.each_term) AS term
-                WHERE c.search_vector @@ term) AS terms_matched,
-               cardinality(t.each_term) AS term_count,
-               ts_rank(c.search_vector, plainto_tsquery('english', $2)) AS all_rank,
-               ts_rank(c.search_vector, (SELECT array_to_string(each_term, ' | ')::tsquery
-                                         FROM terms)) AS any_rank
+    query AS (
+        SELECT lexemes, cardinality(lexemes) AS term_count,
+               array_to_string(each_term, ' | ')::tsquery AS any_term,
+               (SELECT string_agg(format('(%s & %s)', a, b), ' | ')
+                FROM unnest(each_term) WITH ORDINALITY AS x(a, i)
+                JOIN unnest(each_term) WITH ORDINALITY AS y(b, j) ON i < j)::tsquery
+                   AS any_pair
+        FROM terms
+    ),
+    pairs AS MATERIALIZED (
+        SELECT c.id, c.search_vector
         FROM chunks c
         JOIN documents d ON c.document_id = d.id
-        CROSS JOIN terms t
         WHERE d.collection = $1
-          AND c.search_vector @@ (SELECT array_to_string(each_term, ' | ')::tsquery
-                                  FROM terms){searchable}
+          AND (SELECT term_count FROM query) BETWEEN 3 AND 40
+          AND c.search_vector @@ (SELECT any_pair FROM query){searchable}
+    ),
+    singles AS (
+        SELECT c.id, c.search_vector
+        FROM chunks c
+        JOIN documents d ON c.document_id = d.id
+        WHERE d.collection = $1
+          AND NOT EXISTS (SELECT 1 FROM pairs)
+          AND c.search_vector @@ (SELECT any_term FROM query){searchable}
+    ),
+    matched AS (
+        SELECT m.id, m.search_vector, q.term_count,
+               length(m.search_vector) - length(ts_delete(m.search_vector, q.lexemes))
+                   AS terms_matched
+        FROM (SELECT * FROM pairs UNION ALL SELECT * FROM singles) m CROSS JOIN query q
+    ),
+    ranked AS (
+        SELECT id, terms_matched,
+               ts_rank(search_vector, plainto_tsquery('english', $2)) AS all_rank,
+               ts_rank(search_vector, (SELECT any_term FROM query)) AS any_rank
+        FROM (SELECT *, max(terms_matched) OVER () AS most_matched FROM matched) m
+        WHERE terms_matched >= LEAST(ceil(term_count / 2.0), most_matched)
+        ORDER BY terms_matched DESC, all_rank DESC, any_rank DESC
+        LIMIT $3
     )
-    SELECT id, content, reference, anchor, chapter_key, position, annotation,
-           unit_label{voice_out}, document_id, document_title, author, collection
-    FROM (SELECT *, max(terms_matched) OVER () AS most_matched FROM matched) m
-    WHERE terms_matched >= LEAST(ceil(term_count / 2.0), most_matched)
-    ORDER BY terms_matched DESC, all_rank DESC, any_rank DESC
-    LIMIT $3
+    SELECT c.id::text AS id, c.content, c.reference, c.anchor, c.chapter_key, c.position,
+           c.annotation, c.unit_label{voice}, c.document_id::text AS document_id,
+           d.title AS document_title, d.author, d.collection
+    FROM ranked r
+    JOIN chunks c ON c.id = r.id
+    JOIN documents d ON c.document_id = d.id
+    ORDER BY r.terms_matched DESC, r.all_rank DESC, r.any_rank DESC
 """
 
 
@@ -92,10 +126,7 @@ def build_sql(schema: corpus_schema.CorpusSchema, mode: FtsMode = "and") -> str:
     if mode == "and":
         return _SQL_TEMPLATE.format(voice=voice, searchable=searchable)
     if mode == "min_match":
-        return _MIN_MATCH_SQL_TEMPLATE.format(
-            voice=voice, voice_out=", voice" if schema.facts else "",
-            searchable=searchable,
-        )
+        return _MIN_MATCH_SQL_TEMPLATE.format(voice=voice, searchable=searchable)
     raise ValueError(f"unknown FTS mode {mode!r}")
 
 
