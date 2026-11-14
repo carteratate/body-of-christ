@@ -20,8 +20,10 @@ credits for document facts (2.3)"):
   holds texts from another edition names both (`COMBINED_CREDITS`). A document held for
   permission (an open `document` removal) shows nowhere and has none.
 - `translation`: the edition or translator shown to users, empty where the credit line
-  already names the translation ("Translated by …", "Translation from …"), so an opened
-  passage does not say it twice (Carter's answer 7A).
+  already names the translation ("Translated by …", "Translation from …", "Official
+  English version …"), so an opened passage does not say it twice (Carter's answer 7A).
+  Only a credit naming just where the text came from (CCEL, eBible, the © line, "Text:",
+  the USCCB notice) leaves the translation line.
 - `notes`: the adapter's (an extract's omitted paragraphs, 1.3d; the Code's held canons).
 - `attribution_note`, `superseded_by`, `superseded_note`: no rule sets them yet; a value
   already in the registry is kept (3.2, 5.4).
@@ -101,14 +103,15 @@ TRANSLATION_BY_KEY = {
 }
 # Councils 1 to 7 come from Percival's volume of the Nicene and Post-Nicene Fathers.
 _PERCIVAL = re.compile(r"^councils/ecum-0[1-7]-")
-# A credit line that already says whose translation it is.
-_NAMES_TRANSLATION = re.compile(r"^Translat(ed|ion)\b")
+# A credit line that names only where the text came from; every other one already says
+# whose translation it is.
+_SOURCE_ONLY = re.compile(r"^(Sourced via|Public domain\.|\u00a9 |Text: |Excerpts from )")
 
 KEPT = ("attribution_note", "superseded_by", "superseded_note")
 
 
 def credit_names_translation(credit: str | None) -> bool:
-    return bool(credit and _NAMES_TRANSLATION.match(credit))
+    return bool(credit) and not _SOURCE_ONLY.match(credit)
 
 
 def issuer_slug(label: str) -> str:
