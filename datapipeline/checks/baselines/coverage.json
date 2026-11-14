@@ -1,6 +1,6 @@
 {
  "measured_on": {
-  "apostolic-exhortations": "feat/1.3a-papal-parser 8075859",
+  "apostolic-exhortations": "feat/1.3d-7-haerent-animo-menti-nostrae aee69b1",
   "bible": "feat/1.4a-bible-every-verse 66c7561",
   "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
   "catechism": "feat/279-catechism-us-text 302b98d",
@@ -92,11 +92,6 @@
    "covered_chars": 56865,
    "pct": 100.0
   },
-  "apostolic-exhortations/haerent-animo.html": {
-   "body_chars": 48842,
-   "covered_chars": 47779,
-   "pct": 97.82
-  },
   "apostolic-exhortations/laudate-deum.html": {
    "body_chars": 41534,
    "covered_chars": 41534,
@@ -106,11 +101,6 @@
    "body_chars": 93354,
    "covered_chars": 93200,
    "pct": 99.84
-  },
-  "apostolic-exhortations/menti-nostrae.html": {
-   "body_chars": 83620,
-   "covered_chars": 83451,
-   "pct": 99.8
   },
   "apostolic-exhortations/pastores-dabo-vobis.html": {
    "body_chars": 307327,
@@ -2394,13 +2384,6 @@
    "covered_chars": 30340,
    "pct": 99.85
   },
-  "83ef10a9-f7a6-594c-b29d-bf96bf9dccbd": {
-   "collection": "apostolic-exhortations",
-   "source_file": "menti-nostrae.html",
-   "body_chars": 83620,
-   "covered_chars": 83451,
-   "pct": 99.8
-  },
   "841b4e0a-225f-5090-a4c0-36d8bf1a2f63": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
@@ -3359,13 +3342,6 @@
    "body_chars": 176032,
    "covered_chars": 176032,
    "pct": 100.0
-  },
-  "f3196ac1-ae24-5da2-831b-207a9cd40b75": {
-   "collection": "apostolic-exhortations",
-   "source_file": "haerent-animo.html",
-   "body_chars": 48842,
-   "covered_chars": 47779,
-   "pct": 97.82
   },
   "f38eed21-08f6-500b-abd7-60fd5ba9eb5d": {
    "collection": "church-fathers",

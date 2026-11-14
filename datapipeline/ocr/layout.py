@@ -230,8 +230,37 @@ class ThreeColumn:
         return out
 
 
+class StackedLower:
+    """The lower block where a page sets an original above its translation (Cardinal
+    Mercier's Retreat prints Haerent Animo's Latin over the Official English Version,
+    each with its own notes, 1.3d): the page's head, then every line below the widest
+    gap between lines in the middle of the page (`BAND` of its height either side of
+    the centre), read top to bottom."""
+    name = "stacked-lower"
+
+    BAND = 0.2
+    TEXT_WORDS = 6
+
+    def reading_order(self, page: Page) -> list[Line]:
+        lines = sorted(page.lines, key=lambda ln: (ln.top, ln.x0))
+        if not lines:
+            return lines
+        text_top = min((ln.top for ln in lines if len(ln.text.split()) >= self.TEXT_WORDS),
+                       default=0)
+        head = [ln for ln in lines if ln.bottom <= text_top]
+        body = [ln for ln in lines if ln.bottom > text_top]
+        low, high = (0.5 - self.BAND) * page.height, (0.5 + self.BAND) * page.height
+        gaps = [(body[i + 1].top - body[i].bottom, body[i + 1].top)
+                for i in range(len(body) - 1) if low <= body[i + 1].top <= high]
+        if not gaps:
+            raise ValueError(f"leaf {page.leaf}: no gap between the two texts")
+        split = max(gaps)[1]
+        return head + _rows([ln for ln in body if ln.top >= split])
+
+
 LAYOUTS: dict[str, Layout] = {SingleColumn.name: SingleColumn(), ParallelLeft.name: ParallelLeft(),
                               ParallelRight.name: ParallelRight(), TwoColumn.name: TwoColumn(),
+                              StackedLower.name: StackedLower(),
                               ThreeColumn.name: ThreeColumn()}
 
 

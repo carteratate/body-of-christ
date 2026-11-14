@@ -12,50 +12,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/apostolic-exhortations/cardinalmerc00mercuoft/cardinalmerc00mercuoft_djvu.xml",
-  "sha256": "d78860602a615047c2716c2607eb47880b1e9f147d799ed30c9f6760c60b263b",
-  "bytes": 8146670,
-  "url": "https://archive.org/download/cardinalmerc00mercuoft/cardinalmerc00mercuoft_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/apostolic-exhortations/cardinalmerc00mercuoft/cardinalmerc00mercuoft_page_numbers.json",
-  "sha256": "a1c6c829a115ce53e813fc201be0467fc5daf6899546221a3418b10e4f5f1ce8",
-  "bytes": 77793,
-  "url": "https://archive.org/download/cardinalmerc00mercuoft/cardinalmerc00mercuoft_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/apostolic-exhortations/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_djvu.xml",
-  "sha256": "b413088f7bf3060b551631179adba22db767c595b59bcff07bf2aaf71a8c044e",
-  "bytes": 3114656,
-  "url": "https://archive.org/download/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_djvu.xml",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/apostolic-exhortations/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_page_numbers.json",
-  "sha256": "a30f5b59369a5485c605475d6987dd3e95326305ac9fc7213c68c69d4c2c16d6",
-  "bytes": 13867,
-  "url": "https://archive.org/download/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_page_numbers.json",
-  "acquired": "2026-11-12",
-  "hashed_on": "2026-11-12",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/catechism/catechismofcounc0000jose/catechismofcounc0000jose_djvu.txt",
   "sha256": "16d93090eb45dcd5b99fa724a318e5e1a42107fc8554040019feb81d9f38292c",
   "bytes": 1321558,
@@ -1682,6 +1638,28 @@
  },
  {
   "collection": "apostolic-exhortations",
+  "path": "apostolic-exhortations/cardinalmerc00mercuoft/cardinalmerc00mercuoft_djvu.xml",
+  "sha256": "d78860602a615047c2716c2607eb47880b1e9f147d799ed30c9f6760c60b263b",
+  "bytes": 8146670,
+  "url": "https://archive.org/download/cardinalmerc00mercuoft/cardinalmerc00mercuoft_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "apostolic-exhortations",
+  "path": "apostolic-exhortations/cardinalmerc00mercuoft/cardinalmerc00mercuoft_page_numbers.json",
+  "sha256": "a1c6c829a115ce53e813fc201be0467fc5daf6899546221a3418b10e4f5f1ce8",
+  "bytes": 77793,
+  "url": "https://archive.org/download/cardinalmerc00mercuoft/cardinalmerc00mercuoft_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "apostolic-exhortations",
   "path": "apostolic-exhortations/catechesi-tradendae.html",
   "sha256": "08e08ebbfd01b13e8ebe9cc62e397ad05e108dcf3f253ef96b4ba3ee66af4994",
   "bytes": 169662,
@@ -1949,6 +1927,28 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "apostolic-exhortations",
+  "path": "apostolic-exhortations/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_djvu.xml",
+  "sha256": "b413088f7bf3060b551631179adba22db767c595b59bcff07bf2aaf71a8c044e",
+  "bytes": 3114656,
+  "url": "https://archive.org/download/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_djvu.xml",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
+ },
+ {
+  "collection": "apostolic-exhortations",
+  "path": "apostolic-exhortations/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_page_numbers.json",
+  "sha256": "a30f5b59369a5485c605475d6987dd3e95326305ac9fc7213c68c69d4c2c16d6",
+  "bytes": 13867,
+  "url": "https://archive.org/download/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_page_numbers.json",
+  "acquired": "2026-11-12",
+  "hashed_on": "2026-11-12",
+  "role": "vendored-unregistered",
+  "note": "on disk, not read by the collection's adapter"
  },
  {
   "collection": "apostolic-exhortations",

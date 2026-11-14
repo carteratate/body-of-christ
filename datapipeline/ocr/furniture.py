@@ -532,6 +532,33 @@ def page_map_agreement(removals: list[Removal]) -> tuple[int, int]:
     return agree, read
 
 
+def strip_edge(page: Page, fraction: float,
+               words_only: bool = False) -> tuple[list[Line], list[Removal]]:
+    """The page's lines without the cut-off lines of the page before, which the frame
+    caught at its left edge (the Archbishop of Quebec's pastoral on microfiche, 1.3d): a
+    line that starts within `fraction` of the image's width goes. With `words_only`, only
+    the words that start there go: the OCR read the facing page's spilt edge into the
+    page's own lines (Menti Nostrae in The Catholic Mind)."""
+    edge = fraction * page.width
+    kept: list[Line] = []
+    removed: list[Removal] = []
+    for ln in page.lines:
+        if ln.x0 >= edge:
+            kept.append(ln)
+            continue
+        words = ln.text.split(" ")
+        inside = [k for k, (left, _) in enumerate(ln.edges) if left < edge]
+        rest = [k for k in range(len(ln.edges)) if k not in inside]
+        if not words_only or not rest or len(words) != len(ln.edges):
+            removed.append(Removal(page.leaf, page.number, "edge_strip", ln.text))
+            continue
+        removed.append(Removal(page.leaf, page.number, "edge_strip",
+                               " ".join(words[k] for k in inside)))
+        kept.append(replace(ln, text=" ".join(words[k] for k in rest),
+                            x0=ln.edges[rest[0]][0], edges=tuple(ln.edges[k] for k in rest)))
+    return kept, removed
+
+
 def clean_work(workdir, sources=None, force: bool = False,
                passage_words: int | None = None) -> CleanResult:
     """Read the work's pages, clean them, and write its passages and clean-up log.
@@ -575,13 +602,9 @@ def clean_work(workdir, sources=None, force: bool = False,
         pages = [p for p in pages if p.number in config.only_pages]
     strips: list[Removal] = []
     if config.edge_strip:
-        # The cut-off lines of the page before, which the frame caught at its left edge
-        # (the Archbishop of Quebec's pastoral on microfiche, 1.3d).
         for page in pages:
-            edge = config.edge_strip * page.width
-            strips += [Removal(page.leaf, page.number, "edge_strip", ln.text)
-                       for ln in page.lines if ln.x0 < edge]
-            page.lines = [ln for ln in page.lines if ln.x0 >= edge]
+            page.lines, removed = strip_edge(page, config.edge_strip, config.edge_strip_words)
+            strips += removed
     result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
                          config.max_paragraph_words, config.margin_numbers,
                          config.paragraph_opens, config.rule_lines, config.note_opens,

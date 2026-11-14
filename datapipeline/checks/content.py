@@ -61,6 +61,13 @@ Registry and collection:
   Units: the shared normalized titles.
 - `text.canon_law.ligature_corruption:canon-law`: no lowercase word holds a capital V or Y
   standing for a lost "ff" or "ffi" ligature (C-16, Sol A-005). Units: canon numbers.
+
+Rejected voices (3.4, C-01):
+- `roles.rejected_voice:<collection>`: with the passage registry's overrides applied, every
+  range in `registry/rejected_voice_ranges.json` resolves to anchors in the build, every
+  passage in a range carries `voice = "rejected"` and its range's label, and no other
+  passage carries the role but a Summa objection (1.7). Run on every collection. Units:
+  "<document ID>#<anchor>: <problem>".
 """
 from __future__ import annotations
 
@@ -73,9 +80,11 @@ from collections import Counter, defaultdict
 
 from checks.structure import (article_id, load_summa_corrections, summa_articles_built,
                               summa_role)
+import registry
 from identity import unit_anchor
 from ingest.pieces import unit_reference
 from model import Document
+from registry import rejected_voice as rv
 
 CHECKS_DIR = os.path.dirname(os.path.abspath(__file__))
 DATAPIPELINE = os.path.dirname(CHECKS_DIR)
@@ -492,8 +501,16 @@ def canon_ligature_corruption(documents: list[Document]) -> Failures:
 
 # --------------------------------------------------------------------------- entry point
 
+def rejected_voice(collection: str, documents: list[Document],
+                   ranges: list[rv.Range] | None = None) -> Failures:
+    """`roles.rejected_voice`, on the documents as the stage writes them: with the passage
+    registry's overrides, which carry the ranges' role and labels."""
+    ranges = rv.load_ranges() if ranges is None else ranges
+    return rv.check(collection, [registry.apply_overrides(d) for d in documents], ranges)
+
+
 def run(collection: str, documents: list[Document], *, corrections: dict | None = None,
-        works: list[dict] | None = None) -> Failures:
+        works: list[dict] | None = None, ranges: list[rv.Range] | None = None) -> Failures:
     """Every failing content check for one collection."""
     out: Failures = {}
     if collection == "summa":
@@ -517,6 +534,7 @@ def run(collection: str, documents: list[Document], *, corrections: dict | None 
     if collection not in UNIQUE_REFERENCE_PENDING:
         out.update(unique_references(collection, documents))
     out.update(unique_titles(collection, documents))
+    out.update(rejected_voice(collection, documents, ranges))
     works = load_works() if works is None else works
     out.update(narrative_of_author_death([w for w in works if w.get("collection") == collection]))
     return out

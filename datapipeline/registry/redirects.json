@@ -25834,6 +25834,606 @@
   "added_by": "1.10b"
  },
  {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "4d194c39-d6b6-55ca-afed-a208f417cc05",
+  "old_anchor": "haerent-animo/10",
+  "new_passage_id": "14770e69-ea01-510e-8348-1a7eae4d59a0",
+  "new_anchor": "haerent-animo/9",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "0e5f7ae8-a996-5043-b444-0d7f3d0341ff",
+  "old_anchor": "haerent-animo/100",
+  "new_passage_id": "0d59e008-01dd-5c3e-ada1-3cea7fa5162c",
+  "new_anchor": "haerent-animo/99",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "f99f99f5-d716-51ab-ad7b-99e77fe99b58",
+  "old_anchor": "haerent-animo/101",
+  "new_passage_id": "0d59e008-01dd-5c3e-ada1-3cea7fa5162c",
+  "new_anchor": "haerent-animo/99",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "d87b8181-3827-5d20-8f85-bcb570fe0cd8",
+  "old_anchor": "haerent-animo/11",
+  "new_passage_id": "14770e69-ea01-510e-8348-1a7eae4d59a0",
+  "new_anchor": "haerent-animo/9",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "debaf469-41c4-5791-bb90-d3f93ff07bbb",
+  "old_anchor": "haerent-animo/12",
+  "new_passage_id": "14770e69-ea01-510e-8348-1a7eae4d59a0",
+  "new_anchor": "haerent-animo/9",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "d3533af1-f886-5c6b-ad40-4f2979cbf756",
+  "old_anchor": "haerent-animo/15",
+  "new_passage_id": "6003b75f-c2fa-5fcc-be34-ba5c295f8e0c",
+  "new_anchor": "haerent-animo/14",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "3d0b0688-4f15-5cb0-bccf-dc27d354e73d",
+  "old_anchor": "haerent-animo/16",
+  "new_passage_id": "6003b75f-c2fa-5fcc-be34-ba5c295f8e0c",
+  "new_anchor": "haerent-animo/14",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "7df98c94-e6f3-5c9b-9ee6-405b1b0ff020",
+  "old_anchor": "haerent-animo/18",
+  "new_passage_id": "67e993a9-46cb-5478-881a-3aaeb30ac600",
+  "new_anchor": "haerent-animo/17",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "205ec278-72c3-5742-b04f-fc7ec1106f5c",
+  "old_anchor": "haerent-animo/22",
+  "new_passage_id": "eb5ac6f9-9137-54b0-ad36-ae17a4359185",
+  "new_anchor": "haerent-animo/21",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "2a787ad8-5bc7-5631-a4ff-65cd41ecda9c",
+  "old_anchor": "haerent-animo/23",
+  "new_passage_id": "eb5ac6f9-9137-54b0-ad36-ae17a4359185",
+  "new_anchor": "haerent-animo/21",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "e85ab9b8-34e5-5c3b-9444-59b28991988d",
+  "old_anchor": "haerent-animo/24",
+  "new_passage_id": "eb5ac6f9-9137-54b0-ad36-ae17a4359185",
+  "new_anchor": "haerent-animo/21",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "03614566-b92c-5c40-b302-0a8023cdaef8",
+  "old_anchor": "haerent-animo/25",
+  "new_passage_id": "eb5ac6f9-9137-54b0-ad36-ae17a4359185",
+  "new_anchor": "haerent-animo/21",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "34b6f307-c40b-514f-a5ad-72f7cf611641",
+  "old_anchor": "haerent-animo/29",
+  "new_passage_id": "cffdfc10-c9c9-5c3a-8dc9-1acab65127ed",
+  "new_anchor": "haerent-animo/28",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "b580957f-b41c-5133-a2c6-0a84c52e0eaf",
+  "old_anchor": "haerent-animo/3",
+  "new_passage_id": "5c6b08b2-6071-5180-8e4e-ea2896c33f35",
+  "new_anchor": "haerent-animo/2",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "8ad8227a-9b3e-5627-98bd-f280f3ced4d5",
+  "old_anchor": "haerent-animo/31",
+  "new_passage_id": "153d370e-1c7f-5b6f-ad97-1c688abf6813",
+  "new_anchor": "haerent-animo/30",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "bab6c4ca-18f6-5aec-8ffa-7f0eddf09334",
+  "old_anchor": "haerent-animo/34",
+  "new_passage_id": "3e0bf8c2-7483-5e4f-8e5c-eb14faa9fc6c",
+  "new_anchor": "haerent-animo/33",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "cf7a80ce-db11-51ef-8cd6-8a008b269020",
+  "old_anchor": "haerent-animo/36",
+  "new_passage_id": "b635b58b-4a9d-5774-b2cd-4c5bb4b21a40",
+  "new_anchor": "haerent-animo/35",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "a95a9c11-7942-502b-8adf-b4d7e45e698e",
+  "old_anchor": "haerent-animo/39",
+  "new_passage_id": "95a9358f-2eed-55c6-8767-518b60d26c73",
+  "new_anchor": "haerent-animo/38",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "e5b1eb01-8012-5b96-9d00-86ef6eea9f70",
+  "old_anchor": "haerent-animo/4",
+  "new_passage_id": "5c6b08b2-6071-5180-8e4e-ea2896c33f35",
+  "new_anchor": "haerent-animo/2",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "19642b5a-5989-540a-91c6-82aed149eff5",
+  "old_anchor": "haerent-animo/40",
+  "new_passage_id": "95a9358f-2eed-55c6-8767-518b60d26c73",
+  "new_anchor": "haerent-animo/38",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "6e7d232c-1ee7-5d6c-9734-538dabf322b5",
+  "old_anchor": "haerent-animo/42",
+  "new_passage_id": "112d1d31-6dd8-50eb-9a08-35d504675942",
+  "new_anchor": "haerent-animo/41",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "ec79de15-6b24-57fb-b01a-c5d9413d3fdd",
+  "old_anchor": "haerent-animo/43",
+  "new_passage_id": "112d1d31-6dd8-50eb-9a08-35d504675942",
+  "new_anchor": "haerent-animo/41",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "ae4bf3e2-91e9-5efe-abdf-23f1fe28a0bb",
+  "old_anchor": "haerent-animo/45",
+  "new_passage_id": "9c396566-1653-57cb-a833-a1feb82d203c",
+  "new_anchor": "haerent-animo/44",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "690c450b-6e95-5c1b-95ff-00503bedad5e",
+  "old_anchor": "haerent-animo/47",
+  "new_passage_id": "664bac2b-ac99-5bc2-a741-ce126ba39954",
+  "new_anchor": "haerent-animo/46",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "1905a52a-2806-56a3-a3bb-69d356d93341",
+  "old_anchor": "haerent-animo/49",
+  "new_passage_id": "125fbe4c-163b-5710-844a-9268534ea739",
+  "new_anchor": "haerent-animo/48",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "6748de3c-62f5-5bce-b279-c7bc25555636",
+  "old_anchor": "haerent-animo/5",
+  "new_passage_id": "5c6b08b2-6071-5180-8e4e-ea2896c33f35",
+  "new_anchor": "haerent-animo/2",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "e63a3736-a796-5e22-8d38-014e71405db8",
+  "old_anchor": "haerent-animo/51",
+  "new_passage_id": "dc29096f-c4e1-52d1-947f-11ac34d92ed1",
+  "new_anchor": "haerent-animo/50",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "f27feb66-2805-5069-827c-54bbdf8ea651",
+  "old_anchor": "haerent-animo/52",
+  "new_passage_id": "dc29096f-c4e1-52d1-947f-11ac34d92ed1",
+  "new_anchor": "haerent-animo/50",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "a3d0a8d6-014f-5d32-a91a-5218c2dc89b2",
+  "old_anchor": "haerent-animo/54",
+  "new_passage_id": "ad064d2a-ee1a-52a0-95d9-0de12566a595",
+  "new_anchor": "haerent-animo/53",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "e4c0cf48-047a-5014-a3da-59712ddbc005",
+  "old_anchor": "haerent-animo/56",
+  "new_passage_id": "9ce30e9a-7272-5d29-ac80-dd77f387be44",
+  "new_anchor": "haerent-animo/55",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "9a9dd92b-b76f-5d85-8408-076134b91199",
+  "old_anchor": "haerent-animo/57",
+  "new_passage_id": "9ce30e9a-7272-5d29-ac80-dd77f387be44",
+  "new_anchor": "haerent-animo/55",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "760253fc-3600-547b-9877-f26a172c9f89",
+  "old_anchor": "haerent-animo/58",
+  "new_passage_id": "9ce30e9a-7272-5d29-ac80-dd77f387be44",
+  "new_anchor": "haerent-animo/55",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "436de21d-5adb-5c80-9612-bb8427d48b4b",
+  "old_anchor": "haerent-animo/6",
+  "new_passage_id": "5c6b08b2-6071-5180-8e4e-ea2896c33f35",
+  "new_anchor": "haerent-animo/2",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "ef2bbee6-7d72-5e8c-83ce-cefddb15e1f7",
+  "old_anchor": "haerent-animo/60",
+  "new_passage_id": "74348329-ec96-56b5-aacf-378e417accda",
+  "new_anchor": "haerent-animo/59",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "d31c7f5e-32e5-5527-b4a7-575020f4ae85",
+  "old_anchor": "haerent-animo/61",
+  "new_passage_id": "74348329-ec96-56b5-aacf-378e417accda",
+  "new_anchor": "haerent-animo/59",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "a6525119-ae42-5d98-aa24-46586d4c98c6",
+  "old_anchor": "haerent-animo/63",
+  "new_passage_id": "d65debdb-487a-5180-bb76-f2d6adff53aa",
+  "new_anchor": "haerent-animo/62",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "cfc9dde2-758c-50b7-a1a6-f2394cd2ea33",
+  "old_anchor": "haerent-animo/64",
+  "new_passage_id": "d65debdb-487a-5180-bb76-f2d6adff53aa",
+  "new_anchor": "haerent-animo/62",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "7197a14b-1f54-5070-9f16-506d5c6e6657",
+  "old_anchor": "haerent-animo/66",
+  "new_passage_id": "1c5fae4b-25cc-59dc-b6cb-f4cb39041bed",
+  "new_anchor": "haerent-animo/65",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "b4f38a75-8ad8-5410-9438-62a367e7de32",
+  "old_anchor": "haerent-animo/67",
+  "new_passage_id": "1c5fae4b-25cc-59dc-b6cb-f4cb39041bed",
+  "new_anchor": "haerent-animo/65",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "b6faff99-38e1-5988-b4d5-6ba7e875c127",
+  "old_anchor": "haerent-animo/69",
+  "new_passage_id": "95fa7890-216d-5af2-b00d-ad7ceaab9051",
+  "new_anchor": "haerent-animo/68",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "cdf3086a-a613-52fb-896e-16d87b1066db",
+  "old_anchor": "haerent-animo/70",
+  "new_passage_id": "95fa7890-216d-5af2-b00d-ad7ceaab9051",
+  "new_anchor": "haerent-animo/68",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "22ea0c67-99e6-56ef-a101-ae5e5594500c",
+  "old_anchor": "haerent-animo/72",
+  "new_passage_id": "c542fd70-1256-579e-8576-dc6bec7440fe",
+  "new_anchor": "haerent-animo/71",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "12faac37-6c1f-5f3c-b597-0cb1681160b8",
+  "old_anchor": "haerent-animo/73",
+  "new_passage_id": "c542fd70-1256-579e-8576-dc6bec7440fe",
+  "new_anchor": "haerent-animo/71",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "3b2cd2d0-b542-5745-87d7-e611aaadcee1",
+  "old_anchor": "haerent-animo/75",
+  "new_passage_id": "f696feee-8790-58dd-902b-9bb0fdda3060",
+  "new_anchor": "haerent-animo/74",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "89719142-0c4d-5594-8e0e-89438e920fa9",
+  "old_anchor": "haerent-animo/76",
+  "new_passage_id": "f696feee-8790-58dd-902b-9bb0fdda3060",
+  "new_anchor": "haerent-animo/74",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "9d33e988-dc9a-51f0-90d7-e98c05e085a9",
+  "old_anchor": "haerent-animo/77",
+  "new_passage_id": "f696feee-8790-58dd-902b-9bb0fdda3060",
+  "new_anchor": "haerent-animo/74",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "7e4beb81-6b47-5367-a22b-b8f2475bb109",
+  "old_anchor": "haerent-animo/79",
+  "new_passage_id": "8280769b-1704-5b70-8126-b619a7b7217e",
+  "new_anchor": "haerent-animo/78",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "b958e6bb-62aa-58fd-90d5-0b430107c2aa",
+  "old_anchor": "haerent-animo/8",
+  "new_passage_id": "eafc900a-9276-5efb-912f-4152c0f36c51",
+  "new_anchor": "haerent-animo/7",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "19a8f7be-62cd-5941-b534-cd8123a2e553",
+  "old_anchor": "haerent-animo/80",
+  "new_passage_id": "8280769b-1704-5b70-8126-b619a7b7217e",
+  "new_anchor": "haerent-animo/78",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "330cca46-8d98-5223-a1d9-c39672b27015",
+  "old_anchor": "haerent-animo/81",
+  "new_passage_id": "8280769b-1704-5b70-8126-b619a7b7217e",
+  "new_anchor": "haerent-animo/78",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "689e21d5-2a7d-5ba3-8e20-9656ca37a6e1",
+  "old_anchor": "haerent-animo/82",
+  "new_passage_id": "8280769b-1704-5b70-8126-b619a7b7217e",
+  "new_anchor": "haerent-animo/78",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "b5c3804d-ae41-5b35-a95a-17af96c7981e",
+  "old_anchor": "haerent-animo/83",
+  "new_passage_id": "8280769b-1704-5b70-8126-b619a7b7217e",
+  "new_anchor": "haerent-animo/78",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "62123b73-3e45-5848-b51e-6ac375a9e6ff",
+  "old_anchor": "haerent-animo/84",
+  "new_passage_id": "8280769b-1704-5b70-8126-b619a7b7217e",
+  "new_anchor": "haerent-animo/78",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "8a6c4afb-ab72-5aa9-af7a-93e85ec0aa70",
+  "old_anchor": "haerent-animo/86",
+  "new_passage_id": "2f267e8c-263c-5122-9a69-fca5f42bd169",
+  "new_anchor": "haerent-animo/85",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "825346ae-62be-5f1d-a71e-1cf26aabeef7",
+  "old_anchor": "haerent-animo/87",
+  "new_passage_id": "2f267e8c-263c-5122-9a69-fca5f42bd169",
+  "new_anchor": "haerent-animo/85",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "ef132ee2-2e43-51fb-ba0c-53d731a9b5ba",
+  "old_anchor": "haerent-animo/88",
+  "new_passage_id": "2f267e8c-263c-5122-9a69-fca5f42bd169",
+  "new_anchor": "haerent-animo/85",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "a6cc833c-0d3f-589d-a1e4-946ec6379eb4",
+  "old_anchor": "haerent-animo/90",
+  "new_passage_id": "3cab4404-f9d3-5d7b-8685-4d4d71e2c8d3",
+  "new_anchor": "haerent-animo/89",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "fa4b05ae-db08-5fa3-a569-fd5079ba885f",
+  "old_anchor": "haerent-animo/94",
+  "new_passage_id": "be935a07-771a-5d5e-aba8-3503c305b547",
+  "new_anchor": "haerent-animo/93",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "044a6e2e-d52d-53f6-971d-9fabc8204bfc",
+  "old_anchor": "haerent-animo/97",
+  "new_passage_id": "f550418a-ea64-5adf-ade8-e1943b6057ad",
+  "new_anchor": "haerent-animo/96",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "old_passage_id": "5d1660fa-aa61-5b64-8d26-5784a0e70b32",
+  "old_anchor": "haerent-animo/98",
+  "new_passage_id": "f550418a-ea64-5adf-ade8-e1943b6057ad",
+  "new_anchor": "haerent-animo/96",
+  "kind": "merged",
+  "reason": "The Official English Version (1908) runs this paragraph into the one before; its text now lies in this passage, in that translation",
+  "added_by": "1.3d"
+ },
+ {
   "document_id": "f38eed21-08f6-500b-abd7-60fd5ba9eb5d",
   "old_passage_id": "66426854-59bf-56ff-b5c9-2a932a1422b6",
   "old_anchor": "iv.ii.cv/from-p2",
