@@ -135,13 +135,16 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   returns it as `contents` only when every node's chapter and anchor still exist in
   reading order (`_contents_tree` in `routes/documents.py`), so a writer that rewrites
   chunks without the tree degrades the reader to the flat list. The API tolerates the
-  table being absent. **Stopgap:** while the Summa has no stored tree, `/toc` derives
-  Part > Question > Article from its current chapter keys and labels
-  (`app/derived_contents.py`). Delete that module and its call once the Summa is
-  published with its own tree (#254). The Catechism adapter emits its tree
-  (`catechism.build_contents`, #253): the source's contents shape, labelled with the US
-  headings the passages print. Live has none stored until its Phase 4 publish, and while
-  it is excerpt-only `/toc` refuses it anyway (403). The overview renders trees with
+  table being absent. The Summa adapter builds its tree (Part > Treatise > Question >
+  Article, keyed by div id; `build_contents` in `ingest/summa.py`, #254); it reaches
+  readers with the Summa's Phase 4 publish. **Stopgap:** until then the live Summa has no
+  stored tree, so `/toc` derives Part > Question > Article from its current chapter keys
+  and labels (`app/derived_contents.py`). Delete that module and its call right after
+  that publish, not before, or live readers lose the tree (Carter, 14 Nov 2026).
+  The Catechism adapter emits its tree (`catechism.build_contents`, #253): the source's
+  contents shape, labelled with the US headings the passages print. Live has none stored
+  until its Phase 4 publish, and while it is excerpt-only `/toc` refuses it anyway (403).
+  The overview renders trees with
   `components/reader/ContentsTree.tsx`; the logic is `lib/contents-tree.ts`.
 - `documents.reader_access` — **excerpt-only documents** (0041, issue #265): `full` or
   `excerpt`, default `full`. An `excerpt` document's rights are not cleared: its passages

@@ -1,7 +1,7 @@
 """A stopgap Summa contents tree, derived from today's chapter list (issue #251).
 
-The Summa adapter will emit its own tree (Part > Treatise > Question > Article, #254)
-once the 1.7 adapter rework is published. Until a stored tree exists, /toc derives
+The Summa adapter emits its own tree (Part > Treatise > Question > Article, #254),
+which is stored when the Summa's Phase 4 publish carries it. Until then, /toc derives
 Part > Question > Article from the current chapter keys and labels so the reader can
 show the Parts now. Delete this module, and its call in routes/documents.py, once the
 Summa is published with a stored tree.

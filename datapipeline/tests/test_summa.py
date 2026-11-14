@@ -12,6 +12,7 @@ from collections import Counter
 
 import pytest
 
+import contents
 from checks import content, structure
 from config import settings
 from ingest import summa
@@ -391,6 +392,105 @@ def test_article_number_comes_from_the_div_id(tmp_path):
         _build(tmp_path, bad)
 
 
+# --------------------------------------------------------------------------- contents tree
+
+def _tree(node):
+    return (node.kind, node.key, node.short_label, node.range_label,
+            node.chapter_key.rsplit("/", 1)[-1], [_tree(c) for c in node.children])
+
+
+def test_contents_tree_shape(tmp_path):
+    """#254: Part > Treatise > Question > Article, keyed by div id. The treatise prologue
+    is a node of its Part; a question opens its prologue's chapter where it has one, else
+    its first article; a one-article question has one article node."""
+    q1 = ('<div3 title="Question. 1 - OF MAN\'S LAST END (TWO ARTICLES)" id="FS_Q1">'
+          '<p id="FS_Q1-p1">We must first consider the last end.</p>'
+          + _article("FS_Q1_A1", OBJ + [SED, RESP], "Article. 1 - Whether it is so?")
+          + _article("FS_Q1_A2", OBJ + [SED, RESP], "Article. 2 - Whether it is not so?")
+          + '</div3>')
+    q2 = ('<div3 title="Question. 2 - Of Happiness (One Article)" id="FS_Q2">'
+          + "".join(f'<p id="FS_Q2-p{k}">{t}</p>' for k, t in enumerate(OBJ + [SED, RESP], 1))
+          + '</div3>')
+    q3 = ('<div3 title="Question. 3 - OF HUMAN ACTS (ONE ARTICLE)" id="FS_Q3">'
+          + _article("FS_Q3_A1", OBJ + [SED, RESP], "Article. 1 - Whether man acts?")
+          + '</div3>')
+    xml = ('<ThML><ThML.body><div1 title="First Part of the Second Part (FS)" id="FS">'
+           '<div2 title="Treatise On The Last End (QQ[1]-2)" id="FS.i">'
+           '<div3 title="Prologue" id="FS.i.i"><p id="FS.i.i-p1">Since, as Damascene '
+           'states, man is said to be made in God\'s image.</p></div3>'
+           f'{q1}{q2}</div2>'
+           f'<div2 title="TREATISE ON HUMAN ACTS (Q[3])" id="FS.ii">{q3}</div2>'
+           '</div1></ThML.body></ThML>')
+    doc = _build(tmp_path, xml)
+    assert [_tree(n) for n in doc.contents] == [
+        ("part", "FS", "I-II · First Part of the Second Part", "Qq. 1–3", "prologue", [
+            ("prologue", "FS.i.i", "Prologue", None, "prologue", []),
+            ("treatise", "FS.i", "Treatise on the Last End", "Qq. 1–2", "prologue", [
+                ("question", "FS_Q1", "Q. 1 · Of Man's Last End", "2 articles", "prologue", [
+                    ("article", "FS_Q1_A1", "Art. 1 · Whether it is so?", None,
+                     "article-1-whether-it-is-so", []),
+                    ("article", "FS_Q1_A2", "Art. 2 · Whether it is not so?", None,
+                     "article-2-whether-it-is-not-so", []),
+                ]),
+                ("question", "FS_Q2", "Q. 2 · Of Happiness", "1 article", "article-1", [
+                    ("article", "FS_Q2_A1", "Art. 1 · Of Happiness", None, "article-1", []),
+                ]),
+            ]),
+            ("treatise", "FS.ii", "Treatise on Human Acts", "Q. 3",
+             "article-1-whether-man-acts", [
+                ("question", "FS_Q3", "Q. 3 · Of Human Acts", "1 article",
+                 "article-1-whether-man-acts", [
+                    ("article", "FS_Q3_A1", "Art. 1 · Whether man acts?", None,
+                     "article-1-whether-man-acts", []),
+                ]),
+            ]),
+        ]),
+    ]
+    assert doc.contents[0].chapter_key == doc.passages[0].chapter_key
+    assert contents.check(doc) == []
+
+
+@pytest.mark.parametrize(("title", "expected"), [
+    ("Treatise on The One God (QQ[2-26])", (2, 26)),
+    ("TREATISE ON THE ANGELS (QQ[50]-64)", (50, 64)),
+    ("Treatise on Sacred Doctrine (Q[1])", (1, 1)),
+    ("Treatise on The Distinction of Good And Evil (Q[48-49])", (48, 49)),
+    ("TREATISE ON LAW (QQ 90-108)", (90, 108)),
+    ("Treatise on The Theological Virtues (QQ[1] - 46)", (1, 46)),
+    ("TREATISE ON HABITS IN PARTICULAR (QQ[55]-89) GOOD HABITS, i.e. VIRTUES  (QQ[55]-70)",
+     (55, 89)),
+    ("Treatise", None),
+])
+def test_treatise_range_normalized(title, expected):
+    assert summa.printed_range(title) == expected
+
+
+def test_treatise_range_must_match_its_questions(tmp_path):
+    xml = _xml(_article("FP_Q1_A1", OBJ + [SED, RESP])).replace(
+        'title="Treatise"', 'title="Treatise on Sacred Doctrine (QQ[1]-2)"')
+    with pytest.raises(ValueError, match=r"FP\.i prints Qq\. 1–2 but holds Q\. 1"):
+        _build(tmp_path, xml)
+
+
+def test_question_title_from_the_paragraph_after_a_section_heading(tmp_path):
+    """I-II q.71's title is the heading of a run of questions ("EVIL HABITS … (QQ[71]-89)");
+    the question's own title is the paragraph after it, with the article count. A div2
+    that is not a treatise (the Supplement's "QQ[1 - 68]") leaves its questions under
+    the Part."""
+    prologue = ('<h3 id="XP_Q1-p0.1">EVIL HABITS, i.e. VICES AND SINS (QQ[1]-9)</h3>'
+                '<p id="XP_Q1-p1"></p><p id="XP_Q1-p2">OF VICE AND SIN CONSIDERED IN '
+                'THEMSELVES (SIX ARTICLES)</p><p id="XP_Q1-p3">We have next to consider vice.</p>')
+    xml = _xml(_article("XP_Q1_A1", OBJ + [SED, RESP]), part="XP", question="Q1",
+               part_title="SUPPLEMENT (XP)", prologue=prologue,
+               q_title="Question. 1 - EVIL HABITS, i.e. VICES AND SINS (QQ[1]-9)",
+               ).replace('title="Treatise"', 'title="QQ[1 - 68]"')
+    doc = _build(tmp_path, xml)
+    [part] = doc.contents
+    assert part.short_label == "Suppl. · Supplement to the Third Part"
+    assert [(n.kind, n.short_label) for n in part.children] == [
+        ("question", "Q. 1 · Of Vice and Sin Considered in Themselves")]
+
+
 # --------------------------------------------------------------------------- citations
 
 def test_citation_format():
@@ -559,3 +659,38 @@ def test_source_prologues_and_recovered_units(built):
     excluded = {e["paragraph"] for e in built.metadata["excluded_paragraphs"]}
     assert summa.OUTSIDE_LEONINE <= excluded
     assert "TP_Q55_A6-p6" not in excluded
+
+
+@pytest.mark.sources
+@_needs_sources
+def test_source_contents_tree(built):
+    """#254's source checks."""
+    assert [(n.key, n.short_label) for n in built.contents] == [
+        ("FP", "I · First Part"), ("FS", "I-II · First Part of the Second Part"),
+        ("SS", "II-II · Second Part of the Second Part"), ("TP", "III · Third Part"),
+        ("XP", "Suppl. · Supplement to the Third Part"),
+        ("vii", "App. · Appendix to the Supplement")]
+    assert contents.check(built) == []
+    nodes = [n for n, _, _ in contents.walk(built.contents)]
+    articles = {p.chapter_key for p in built.passages if p.metadata.get("article")}
+    assert len([n for n in nodes if n.kind == "article"]) == len(articles) == 3125
+    by_key = {n.key: n for n in nodes}
+    assert [c.key for c in by_key["FP_Q71"].children] == ["FP_Q71_A1"]
+    assert [c.key for c in by_key["FP_Q72"].children] == ["FP_Q72_A1"]
+    assert by_key["FP_Q114_A5"].short_label.startswith(
+        "Art. 5 · Whether a demon who is overcome by man")
+    assert by_key["SS_Q64_A6"].short_label == "Art. 6 · Whether it is lawful to kill the innocent?"
+    for key in ("SS_Q64_A8", "SS_Q66_A6", "SS_Q123_A11"):
+        assert by_key[key].kind == "article"
+    for node in nodes:
+        assert not re.search(r"\barticles?\)", node.short_label, re.I), node.key
+        shouted = [w for w in re.findall(r"[A-Z]{2,}", node.short_label.split(" · ")[-1])
+                   if not re.fullmatch(r"[IVXL]+", w)]
+        assert not shouted, node.key
+    first_part = [n for n, _, _ in contents.walk(built.contents[:1])]
+    q1 = [n for n in first_part
+          if n.short_label == "Q. 1 · The Nature and Extent of Sacred Doctrine"]
+    assert len(q1) == 1 and q1[0].range_label == "10 articles"
+    assert Counter(n.kind for n in nodes) == {
+        "part": 6, "treatise": 26, "section": 2, "prologue": 2, "question": 614,
+        "article": 3125}

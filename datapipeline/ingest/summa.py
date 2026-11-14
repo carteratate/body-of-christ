@@ -40,9 +40,9 @@ import defusedxml.ElementTree as ET
 
 from config import settings
 from identity import anchor as make_anchor
-from model import Document, Passage
+from model import ContentsNode, Document, Passage
 from normalize.text import clean_text
-from normalize.caps import title_case_shouting
+from normalize.caps import roman_capitals, title_case_shouting
 from normalize.summa import expand_apparatus
 from ingest.common import _block_text
 from ingest.pieces import Segment, SourceMap, name_pieces, pack_units, piece_reference
@@ -405,10 +405,15 @@ class _Build:
     passages: list[Passage] = field(default_factory=list)
     excluded: list[dict] = field(default_factory=list)
     dropped: list[str] = field(default_factory=list)
+    # For the contents tree: the chapter each emitted unit opens, by its node key (an
+    # article's or treatise prologue's div id, "<question id>/prologue"), and each
+    # question's articles in reading order as (div id, number, title).
+    chapters: dict[str, str] = field(default_factory=dict)
+    articles: dict[str, list[tuple[str, int, str]]] = field(default_factory=dict)
 
     def emit(self, parts: list[_Part], *, div_id: str, part_code: str, ch_key: str,
              ch_label: str, question: str | None, article: str | None,
-             cite_div: str) -> None:
+             cite_div: str, node: str) -> None:
         editions = self.recovered.get("editions", {})
         first = True
         for part in parts:
@@ -446,6 +451,7 @@ class _Build:
                     position=len(self.passages), unit_label=part.label,
                     metadata=dict(metadata), voice=part.voice,
                     note=part.note if first else None, source_units=source_units))
+                self.chapters.setdefault(node, ch_key)
                 first = False
 
 
@@ -541,7 +547,7 @@ def build_document(path: str | None = None, corrections: dict | None = None,
                 parts = [_Part(None, "Prologue", paragraphs(prologue))]
                 b.emit(parts, div_id=div2.get("id"), part_code=code, ch_key=key,
                        ch_label="Prologue", question=None, article=None,
-                       cite_div=div2.get("id"))
+                       cite_div=div2.get("id"), node=div2.get("id"))
         for div3 in div1.iter("div3"):
             q_id = div3.get("id") or ""
             q = _title(div3)
@@ -551,7 +557,7 @@ def build_document(path: str | None = None, corrections: dict | None = None,
                 key = make_anchor("summa", part_title, "prologue")
                 parts = [_Part(None, "Prologue", paragraphs(div3.iter("p")))]
                 b.emit(parts, div_id=q_id, part_code=code, ch_key=key, ch_label="Prologue",
-                       question=None, article=None, cite_div=q_id)
+                       question=None, article=None, cite_div=q_id, node=q_id)
                 continue
             q_number = int(_DIV_ID.match(q_id).group(2))
             if div4s:
@@ -577,7 +583,7 @@ def build_document(path: str | None = None, corrections: dict | None = None,
                 b.emit([_Part(None, label, head_paras)], div_id=q_id, part_code=code,
                        ch_key=make_anchor("summa", part_title, q, "prologue"),
                        ch_label=f"{q} — Prologue", question=None, article=None,
-                       cite_div=q_id)
+                       cite_div=q_id, node=f"{q_id}/prologue")
             if not div4s:
                 kept = _kept(b, body)
                 question = " ".join(_question_text(q).split())
@@ -585,7 +591,8 @@ def build_document(path: str | None = None, corrections: dict | None = None,
                        div_id=q_id, part_code=code,
                        ch_key=make_anchor("summa", part_title, q, "article-1"),
                        ch_label=f"{q} — Article 1 - {question}", question=question,
-                       article=q_id, cite_div=q_id)
+                       article=q_id, cite_div=q_id, node=f"{q_id}_A1")
+                b.articles.setdefault(q_id, []).append((f"{q_id}_A1", 1, question))
                 continue
             for div4 in div4s:
                 _build_article(b, div4, code, part_title, q, articles, moved_to,
@@ -598,7 +605,7 @@ def build_document(path: str | None = None, corrections: dict | None = None,
         metadata["dropped_empty_parts"] = b.dropped
     return Document(id=resolve_document_id("summa", "summa", ("summa",)), collection="summa",
                     title="Summa Theologiae", author="Thomas Aquinas", metadata=metadata,
-                    passages=b.passages)
+                    passages=b.passages, contents=build_contents(root, b))
 
 
 def _build_article(b: _Build, div4, code: str, part_title: str, q: str, articles: dict,
@@ -635,7 +642,9 @@ def _build_article(b: _Build, div4, code: str, part_title: str, q: str, articles
         b.emit(parts, div_id=art_id, part_code=code,
                ch_key=make_anchor("summa", part_title, q, title_text),
                ch_label=f"{q} — {title_text}".strip(" —"), question=question or None,
-               article=art_id, cite_div=art_id)
+               article=art_id, cite_div=art_id, node=art_id)
+        b.articles.setdefault(art_id.rsplit("_A", 1)[0], []).append(
+            (art_id, int(_DIV_ID.match(art_id).group(3)), question))
 
 
 def _missing_note(facts: dict, recovered: dict) -> str | None:
@@ -654,3 +663,187 @@ def _missing_note(facts: dict, recovered: dict) -> str | None:
                 "objections together, which the English translation does not print.")
     names = ", ".join(m["unit"] for m in lost)
     return f"The English translation omits part of this article's Latin text ({names})."
+
+
+# --------------------------------------------------------------------------- contents tree
+
+# The tree's name for each part, by its div1 id: (numeral, name) for "I · First Part".
+# The numerals are the citation's (PART_CITATION).
+PART_TREE = {"FP": ("I", PART_NAME["FP"]), "FS": ("I-II", PART_NAME["FS"]),
+             "SS": ("II-II", PART_NAME["SS"]), "TP": ("III", PART_NAME["TP"]),
+             "XP": (PART_CITATION["XP"], PART_NAME["XP"]),
+             "vii": ("App.", "Appendix to the Supplement")}
+# What the Supplement and its appendix add to their range line (3.2's work note).
+_PART_NOTE = {"XP": "compiled after Aquinas's death from his earlier writings",
+              "vii": "compiled after Aquinas's death from his earlier writings"}
+# Treatise ranges the source prints wrongly, as {div id: (printed, held)}; any other
+# disagreement between a printed range and the questions a treatise holds fails the
+# build. II-II's "Cardinal Virtues" prints the range of both its treatises (its
+# fortitude and temperance are the next div2), and the Supplement's "Last Things"
+# starts at q.86, the Resurrection's last question.
+_RANGE_CORRECTIONS = {"SS.ii": ((47, 170), (47, 122)), "XP.iv": ((86, 99), (87, 99))}
+
+# "(QQ[2-26])", "(QQ[50]-64)", "(Q[1])", "(Q[48-49])", "(QQ 90-108)", "(QQ[1 - 68])".
+_PRINTED_RANGE = re.compile(r"\(\s*QQ?\s*\[?\s*(\d+)\s*\]?\s*(?:-\s*\[?\s*(\d+)\s*\]?\s*)?\)")
+_SOURCE_NOTE = re.compile(r"\s*\[\*.*\]\s*$")
+_SMALL_WORDS = frozenset({"a", "an", "and", "as", "at", "by", "for", "from", "in", "into",
+                          "of", "on", "or", "the", "to", "with"})
+_SHOUTED = re.compile(r"\b[A-Z][A-Z'’]+\b")
+_SMALL_WORD = re.compile(r"(?<=\s)(" + "|".join(sorted(_SMALL_WORDS)) + r")\b", re.IGNORECASE)
+
+
+def _plain(text: str) -> str:
+    """A heading without the translators' trailing note ("[*Strife here denotes…]"),
+    their note marks ("IRONY*") and doubled spaces."""
+    return " ".join(_SOURCE_NOTE.sub("", text).replace("*", "").split())
+
+
+def _heading(text: str) -> str:
+    """Title case for a question or treatise heading, which the source prints in
+    capitals ("OF DULIA"), partly ("OF SATISFACTION, As to Its Nature") or with "The"
+    capitalized ("Treatise on The One God"). Roman numerals stay capitals."""
+    text = _SHOUTED.sub(lambda m: m.group(0).capitalize(), _plain(text))
+    text = _SMALL_WORD.sub(lambda m: m.group(0).lower(), text)
+    return roman_capitals(text[:1].upper() + text[1:])
+
+
+def _count(n: int, noun: str) -> str:
+    return f"{n} {noun}" if n == 1 else f"{n} {noun}s"
+
+
+def _range(low: int, high: int) -> str:
+    return f"Q. {low}" if low == high else f"Qq. {low}–{high}"
+
+
+def printed_range(title: str) -> tuple[int, int] | None:
+    """The question range a treatise title prints, from the source's inconsistent forms,
+    or None when it prints none."""
+    m = _PRINTED_RANGE.search(title)
+    if not m:
+        return None
+    low = int(m.group(1))
+    return low, int(m.group(2) or low)
+
+
+def _question_heading(div3) -> str | None:
+    """The question's title without "Question N -" or its article count. Where the
+    source put a section heading in the title ("EVIL HABITS, i.e. VICES AND SINS
+    (QQ[71]-89)", the Supplement's own title on its q.1), the question's real title is
+    the heading or paragraph after it that ends with the article count."""
+    heads = [_QUESTION_TITLE.sub("", _title(div3))]
+    for child in div3:
+        if child.tag == "div4":
+            break
+        if child.tag in ("h3", "p"):
+            heads.append(expand_apparatus(title_case_shouting("".join(child.itertext()))))
+        if len(heads) > 4:
+            break
+    for head in heads:
+        plain = _plain(head)
+        if _ARTICLE_COUNT.search(plain):
+            return _heading(_ARTICLE_COUNT.sub("", plain))
+    return None
+
+
+def build_contents(root, b: _Build) -> list[ContentsNode]:
+    """The Summa's contents tree: Part > Treatise > Question > Article (#254).
+
+    It walks the same divs as the build: a div1 is a Part, a div2 a Treatise, a div3 a
+    Question, and its articles are the ones the build emitted (with the three split out
+    of shared divs). A question opens its prologue's chapter where it has one. Questions
+    in a div2 that is not a treatise (the Supplement's untitled "QQ[1 - 68]") hang under
+    their Part, and the appendix's two div2s are sections. The treatise prologues of
+    I-II and III are nodes of their Part, before its first treatise. Keys are the
+    source's div ids. Argument parts (objections, replies) are not nodes.
+    """
+    roots: list[ContentsNode] = []
+    for div1 in root.iter("div1"):
+        code = div1.get("id")
+        if code not in PART_TREE:
+            continue
+        numeral, name = PART_TREE[code]
+        children: list[ContentsNode] = []
+        numbers: list[int] = []
+        for div2 in div1.findall("div2"):
+            prologues = [div2.get("id")] + [d.get("id") for d in div2.findall("div3")
+                                            if not _DIV_ID.match(d.get("id") or "")]
+            for key in prologues:
+                if key in b.chapters:
+                    children.append(ContentsNode(
+                        key=key, kind="prologue", label="Prologue", short_label="Prologue",
+                        chapter_key=b.chapters[key]))
+            questions = [_question_node(div3, b) for div3 in div2.findall("div3")
+                         if _DIV_ID.match(div3.get("id") or "")]
+            if not questions:
+                continue
+            held = [int(_DIV_ID.match(q.key).group(2)) for q in questions]
+            numbers += held
+            title = div2.get("title") or ""
+            if title.lower().startswith("treatise"):
+                children.append(_treatise_node(div2, questions, held))
+            elif code == "vii":
+                label = _heading(title)
+                numbered = all(q.short_label.startswith("Q. ") for q in questions)
+                children.append(ContentsNode(
+                    key=div2.get("id"), kind="section", label=label, short_label=label,
+                    chapter_key=questions[0].chapter_key, children=questions,
+                    range_label=_range(min(held), max(held)) if numbered else None))
+            else:
+                children.extend(questions)
+        if not children:
+            continue
+        range_label = _range(min(numbers), max(numbers)) if numbers and code != "vii" else None
+        note = _PART_NOTE.get(code)
+        if note:
+            range_label = f"{range_label} · {note}" if range_label else note[:1].upper() + note[1:]
+        roots.append(ContentsNode(
+            key=code, kind="part", label=name, short_label=f"{numeral} · {name}",
+            chapter_key=children[0].chapter_key, range_label=range_label,
+            children=children))
+    return roots
+
+
+def _treatise_node(div2, questions: list[ContentsNode], held: list[int]) -> ContentsNode:
+    key = div2.get("id")
+    title = div2.get("title") or ""
+    low, high = min(held), max(held)
+    printed = printed_range(title)
+    if key in _RANGE_CORRECTIONS:
+        expected, corrected = _RANGE_CORRECTIONS[key]
+        if printed != expected:
+            raise ValueError(f"summa: treatise {key} now prints {printed}, not {expected}")
+        printed = corrected
+    if printed is not None and printed != (low, high):
+        raise ValueError(f"summa: treatise {key} prints {_range(*printed)} but holds "
+                         f"{_range(low, high)}")
+    label = _heading(title.split("(", 1)[0])
+    return ContentsNode(key=key, kind="treatise", label=label, short_label=label,
+                        chapter_key=questions[0].chapter_key, range_label=_range(low, high),
+                        children=questions)
+
+
+def _question_node(div3, b: _Build) -> ContentsNode:
+    q_id = div3.get("id")
+    articles = []
+    for art_id, number, title in b.articles.get(q_id, []):
+        if art_id not in b.chapters:
+            continue
+        title = _plain(title)
+        articles.append(ContentsNode(
+            key=art_id, kind="article", label=title, short_label=f"Art. {number} · {title}",
+            chapter_key=b.chapters[art_id]))
+    if not articles:
+        raise ValueError(f"summa: question {q_id} has no article chapter for its tree")
+    number = _DIV_ID.match(q_id).group(2)
+    title = _question_heading(div3)
+    if title is None:
+        if _QUESTION_TITLE.match(_title(div3)):
+            raise ValueError(f"summa: question {q_id} has no title with an article count")
+        # The appendix's "TWO ARTICLES ON PURGATORY", a question with no number.
+        title = short_label = _heading(_title(div3))
+    else:
+        short_label = f"Q. {number} · {title}"
+    return ContentsNode(
+        key=q_id, kind="question", label=title, short_label=short_label,
+        chapter_key=b.chapters.get(f"{q_id}/prologue", articles[0].chapter_key),
+        range_label=_count(len(articles), "article"), children=articles)
