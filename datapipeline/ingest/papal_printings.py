@@ -318,7 +318,8 @@ def mark_sources(texts: list[str]) -> list[str]:
             elif re.match(_MONTH, rest):
                 # "Ibid, Dec. 11th, 1862": the same letters, this one; a later bare
                 # "Ibid." means it.
-                last = f"{re.split(rf',\s*{_MONTH}', last)[0]}, {rest}"
+                series = re.split(rf",\s*{_MONTH}", last)[0]
+                last = f"{series}, {rest}"
                 cited = f"Ibid., {last}"
             else:
                 raise ValueError(f"cannot read {printed!r}")
