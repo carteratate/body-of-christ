@@ -342,6 +342,36 @@ async def size_warnings(conn, collections: list[str]) -> list[str]:
     return out
 
 
+def facts_md(diff: list[dict]) -> list[str]:
+    """2.3's "Document facts" section: per field and collection, how many documents'
+    values staging changes against live (new documents counted apart), and every
+    document whose author changes."""
+    collections = sorted({d["collection"] for d in diff})
+    counts = {(c, f): 0 for c in collections for f in FACT_COLUMNS}
+    new = {c: 0 for c in collections}
+    authors = []
+    for d in diff:
+        if d["new_document"]:
+            new[d["collection"]] += 1
+        for f in d["changed"]:
+            counts[(d["collection"], f)] += 1
+        if "author" in d["changed"]:
+            authors.append((d["collection"], d["id"], d["changed"]["author"]))
+    lines = ["", "## Document facts (2.3)", ""]
+    if not diff:
+        return lines + ["No document fact differs from live.", ""]
+    fields = [f for f in FACT_COLUMNS if any(counts[(c, f)] for c in collections)]
+    lines += ["Documents whose value differs from live, by field and collection.", "",
+              "| Field | " + " | ".join(collections) + " |",
+              "|---|" + "---|" * len(collections)]
+    for f in fields:
+        lines.append(f"| {f} | " + " | ".join(str(counts[(c, f)]) for c in collections) + " |")
+    lines.append("| (new documents) | " + " | ".join(str(new[c]) for c in collections) + " |")
+    lines += ["", f"Author changes: {len(authors)}.", ""]
+    lines += [f"- {c} `{i}`: {a['live']!r} → {a['staged']!r}" for c, i, a in authors]
+    return lines + [""]
+
+
 def publish_md(data: dict) -> str:
     ids = data["ids"]
     lines = ["", "## Publish checks (2.2w)", "",
@@ -366,7 +396,8 @@ def publish_md(data: dict) -> str:
         lines.append(f"- {label}: " + ", ".join(f"{t} {n}" for t, n in counts.items()))
     if data["warnings"]:
         lines += ["", "Warnings (not failures):", ""] + [f"- {w}" for w in data["warnings"]]
-    lines += ["", f"Publish checks {'PASS' if data['pass'] else 'FAIL'}."]
+    lines += facts_md(data["facts_diff"])
+    lines += [f"Publish checks {'PASS' if data['pass'] else 'FAIL'}."]
     if data["failures"]:
         lines += [""] + [f"- {f}" for f in data["failures"][:50]]
     return "\n".join(lines) + "\n"

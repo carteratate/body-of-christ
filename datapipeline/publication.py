@@ -62,7 +62,8 @@ def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOU
           limit: int | None = None, registry: reg.WorkRegistry | None = None
           ) -> list[Document]:
     """Run the collection's source adapter, drop what the removal registry retires (D4),
-    and run the document checks. Opens no store."""
+    set each document's facts from the work registry (2.3), and run the document checks.
+    Opens no store."""
     if collection not in source_adapters:
         raise ValueError(f"unknown collection: {collection}")
     if limit is not None and limit <= 0:
@@ -71,7 +72,8 @@ def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOU
     if limit is not None:
         documents = documents[:limit]
     removed = reg.removed_document_ids(registry)
-    documents = [reg.drop_removed(d, registry) for d in documents if d.id not in removed]
+    documents = [reg.apply_document_facts(reg.drop_removed(d, registry), registry)
+                 for d in documents if d.id not in removed]
     validate_documents(collection, documents)
     return documents
 

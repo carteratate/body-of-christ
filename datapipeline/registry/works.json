@@ -26,7 +26,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-benedict-xvi",
+  "issuer_label": "Pope Benedict XVI",
+  "year": 2011,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/c-est-la-confiance",
@@ -55,7 +66,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2023,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/catechesi-tradendae",
@@ -84,7 +106,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1979,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/christifideles-laici",
@@ -113,7 +146,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1988,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/christus-vivit",
@@ -142,7 +186,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2019,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/dilexi-te",
@@ -171,7 +226,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-leo-xiv",
+  "issuer_label": "Pope Leo XIV",
+  "year": 2025,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/ecclesia-in-africa",
@@ -200,7 +266,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1995,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/ecclesia-in-america",
@@ -229,7 +306,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1999,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/ecclesia-in-asia",
@@ -258,7 +346,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1999,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/ecclesia-in-europa",
@@ -287,7 +386,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 2003,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/ecclesia-in-medio-oriente",
@@ -316,7 +426,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-benedict-xvi",
+  "issuer_label": "Pope Benedict XVI",
+  "year": 2012,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/ecclesia-in-oceania",
@@ -345,7 +466,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 2001,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/evangelica-testificatio",
@@ -374,7 +506,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-paul-vi",
+  "issuer_label": "Pope Paul VI",
+  "year": 1971,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/familiaris-consortio",
@@ -403,7 +546,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1981,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/gaudete-et-exsultate",
@@ -432,7 +586,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2018,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/gaudete-in-domino",
@@ -461,7 +626,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-paul-vi",
+  "issuer_label": "Pope Paul VI",
+  "year": 1975,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/haerent-animo",
@@ -490,7 +666,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-pius-x",
+  "issuer_label": "Pope Pius X",
+  "year": 1908,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Official English version (Dublin, 1908), as printed in Cardinal Mercier's Retreat to his Priests (Bruges, 1912)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/laudate-deum",
@@ -519,7 +706,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2023,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/marialis-cultus",
@@ -548,7 +746,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-paul-vi",
+  "issuer_label": "Pope Paul VI",
+  "year": 1974,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/menti-nostrae",
@@ -577,7 +786,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-pius-xii",
+  "issuer_label": "Pope Pius XII",
+  "year": 1950,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation by the N.C.W.C. News Service, from The Catholic Mind (1951)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/pastores-dabo-vobis",
@@ -606,7 +826,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1992,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/pastores-gregis",
@@ -635,7 +866,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 2003,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/querida-amazonia",
@@ -664,7 +906,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2020,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/reconciliatio-et-paenitentia",
@@ -693,7 +946,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1984,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/redemptionis-donum",
@@ -722,7 +986,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1984,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/redemptoris-custos",
@@ -751,7 +1026,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1989,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/sacramentum-caritatis",
@@ -780,7 +1066,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-benedict-xvi",
+  "issuer_label": "Pope Benedict XVI",
+  "year": 2007,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/signum-magnum",
@@ -809,7 +1106,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-paul-vi",
+  "issuer_label": "Pope Paul VI",
+  "year": 1967,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/verbum-domini",
@@ -838,7 +1146,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-benedict-xvi",
+  "issuer_label": "Pope Benedict XVI",
+  "year": 2010,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "apostolic-exhortations/vita-consecrata",
@@ -867,7 +1186,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1996,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/1ch",
@@ -896,7 +1226,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/1co",
@@ -925,7 +1266,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/1jn",
@@ -954,7 +1306,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/1ki",
@@ -983,7 +1346,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/1ma",
@@ -1012,7 +1386,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/1pe",
@@ -1041,7 +1426,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/1sa",
@@ -1070,7 +1466,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/1th",
@@ -1099,7 +1506,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/1ti",
@@ -1128,7 +1546,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/2ch",
@@ -1157,7 +1586,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/2co",
@@ -1186,7 +1626,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/2jn",
@@ -1215,7 +1666,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/2ki",
@@ -1244,7 +1706,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/2ma",
@@ -1273,7 +1746,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/2pe",
@@ -1302,7 +1786,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/2sa",
@@ -1331,7 +1826,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/2th",
@@ -1360,7 +1866,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/2ti",
@@ -1389,7 +1906,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/3jn",
@@ -1418,7 +1946,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/act",
@@ -1447,7 +1986,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/amo",
@@ -1476,7 +2026,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/bar",
@@ -1505,7 +2066,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/col",
@@ -1534,7 +2106,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/dag",
@@ -1563,7 +2146,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/deu",
@@ -1592,7 +2186,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/ecc",
@@ -1621,7 +2226,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/eph",
@@ -1650,7 +2266,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/esg",
@@ -1679,7 +2306,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/exo",
@@ -1708,7 +2346,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/ezk",
@@ -1737,7 +2386,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/ezr",
@@ -1766,7 +2426,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/gal",
@@ -1795,7 +2466,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/gen",
@@ -1824,7 +2506,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/hab",
@@ -1853,7 +2546,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/hag",
@@ -1882,7 +2586,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/heb",
@@ -1911,7 +2626,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/hos",
@@ -1940,7 +2666,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/isa",
@@ -1969,7 +2706,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/jas",
@@ -1998,7 +2746,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/jdg",
@@ -2027,7 +2786,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/jdt",
@@ -2056,7 +2826,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/jer",
@@ -2085,7 +2866,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/jhn",
@@ -2114,7 +2906,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/job",
@@ -2143,7 +2946,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/jol",
@@ -2172,7 +2986,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/jon",
@@ -2201,7 +3026,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/jos",
@@ -2230,7 +3066,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/jud",
@@ -2259,7 +3106,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/lam",
@@ -2288,7 +3146,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/lev",
@@ -2317,7 +3186,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/luk",
@@ -2346,7 +3226,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/mal",
@@ -2375,7 +3266,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/mat",
@@ -2404,7 +3306,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/mic",
@@ -2433,7 +3346,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/mrk",
@@ -2462,7 +3386,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/nam",
@@ -2491,7 +3426,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/neh",
@@ -2520,7 +3466,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/num",
@@ -2549,7 +3506,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/oba",
@@ -2578,7 +3546,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/phm",
@@ -2607,7 +3586,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/php",
@@ -2636,7 +3626,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/pro",
@@ -2665,7 +3666,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/psa",
@@ -2694,7 +3706,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/rev",
@@ -2723,7 +3746,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/rom",
@@ -2752,7 +3786,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/rut",
@@ -2781,7 +3826,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/sir",
@@ -2810,7 +3866,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/sng",
@@ -2840,7 +3907,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/tit",
@@ -2869,7 +3947,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/tob",
@@ -2898,7 +3987,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/wis",
@@ -2927,7 +4027,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/zec",
@@ -2956,7 +4067,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "bible/zep",
@@ -2985,7 +4107,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "WEB-C",
+  "source_credit": "Public domain. Sourced via eBible.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "canon-law",
@@ -3014,7 +4147,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "code",
+  "issuer": "holy-see",
+  "issuer_label": "Holy See",
+  "year": 1983,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no English translation. The official Latin is on vatican.va.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "catechism",
@@ -3043,7 +4187,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "catechism",
+  "issuer": "holy-see",
+  "issuer_label": "Holy See",
+  "year": 1992,
+  "date_display": null,
+  "translation": "United States edition (1997)",
+  "source_credit": "Excerpts from the English translation of the Catechism of the Catholic Church for use in the United States of America Copyright © 1994, United States Catholic Conference, Inc. -- Libreria Editrice Vaticana. Used with Permission. English translation of the Catechism of the Catholic Church: Modifications from the Editio Typica copyright © 1997, United States Conference of Catholic Bishops—Libreria Editrice Vaticana.",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/ii.ii",
@@ -3072,7 +4227,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/iii.ii",
@@ -3101,7 +4267,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/iv.ii",
@@ -3130,7 +4307,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/iv.iv",
@@ -3159,7 +4347,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/ix.ii",
@@ -3188,7 +4387,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/ix.iii",
@@ -3217,7 +4427,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/ix.iv",
@@ -3246,7 +4467,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/ix.vi",
@@ -3275,7 +4507,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/ix.vii",
@@ -3304,7 +4547,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/ix.viii",
@@ -3333,7 +4587,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.ii",
@@ -3362,7 +4627,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.iii",
@@ -3391,7 +4667,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.iv",
@@ -3420,7 +4707,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.v",
@@ -3449,7 +4747,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.vi",
@@ -3478,7 +4787,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.vii",
@@ -3507,7 +4827,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.viii",
@@ -3536,7 +4867,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.x",
@@ -3565,7 +4907,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xi",
@@ -3594,7 +4947,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xii",
@@ -3623,7 +4987,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xiv",
@@ -3652,7 +5027,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xix",
@@ -3681,7 +5067,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xv",
@@ -3710,7 +5107,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xvi",
@@ -3739,7 +5147,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xvii",
@@ -3768,7 +5187,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xviii",
@@ -3797,7 +5227,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xx",
@@ -3826,7 +5267,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xxi",
@@ -3855,7 +5307,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xxii",
@@ -3884,7 +5347,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xxiii",
@@ -3913,7 +5387,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/v.xxv",
@@ -3942,7 +5427,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/vi.ii",
@@ -3971,7 +5467,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/vii.ii",
@@ -4000,7 +5507,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/viii.ii",
@@ -4029,7 +5547,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/viii.iii",
@@ -4058,7 +5587,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/viii.iv",
@@ -4087,7 +5627,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/viii.ix",
@@ -4116,7 +5667,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/viii.v",
@@ -4145,7 +5707,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/viii.vi",
@@ -4174,7 +5747,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/viii.vii",
@@ -4203,7 +5787,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/viii.viii",
@@ -4232,7 +5827,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/apostolic-fathers/viii.xi",
@@ -4261,7 +5867,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/city-of-god/iv",
@@ -4290,7 +5907,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/city-of-god/v",
@@ -4319,7 +5947,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/confessions",
@@ -4348,7 +5987,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "E. B. Pusey (1838)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/incarnation",
@@ -4377,7 +6027,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series II",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/iv",
@@ -4406,7 +6067,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/iv.ii",
@@ -4435,7 +6107,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/iv.iii",
@@ -4464,7 +6147,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/iv.iv",
@@ -4493,7 +6187,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/iv.v",
@@ -4530,7 +6235,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/iv.vi",
@@ -4559,7 +6275,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/iv.vii",
@@ -4588,7 +6315,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/v",
@@ -4625,7 +6363,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/v.ii",
@@ -4654,7 +6403,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/v.iii",
@@ -4683,7 +6443,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/v.iv",
@@ -4712,7 +6483,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/v.ix",
@@ -4741,7 +6523,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/v.v",
@@ -4770,7 +6563,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/v.vi",
@@ -4799,7 +6603,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/v.vii",
@@ -4828,7 +6643,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/on-the-holy-trinity/v.viii",
@@ -4865,7 +6691,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series I",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/ii.ii",
@@ -4894,7 +6731,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/ii.iii",
@@ -4923,7 +6771,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/ii.iv",
@@ -4952,7 +6811,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/iii.ii",
@@ -4981,7 +6851,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/iv.ii",
@@ -5010,7 +6891,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/v.ii",
@@ -5039,7 +6931,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/v.iii",
@@ -5068,7 +6971,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/vi.ii",
@@ -5097,7 +7011,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/vi.iii",
@@ -5126,7 +7051,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/second-century/vi.iv",
@@ -5155,7 +7091,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/iii.iii",
@@ -5184,7 +7131,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/iii.iv",
@@ -5508,7 +7466,18 @@
     "genre": null,
     "clavis_ref": null
    }
-  ]
+  ],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/iii.v",
@@ -5611,7 +7580,18 @@
     "genre": null,
     "clavis_ref": null
    }
-  ]
+  ],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/iv.iv",
@@ -6707,7 +8687,18 @@
     "genre": null,
     "clavis_ref": null
    }
-  ]
+  ],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/iv.v",
@@ -6901,7 +8892,18 @@
     "genre": null,
     "clavis_ref": null
    }
-  ]
+  ],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/iv.vi",
@@ -6930,7 +8932,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/iv.vii",
@@ -7062,7 +9075,18 @@
     "genre": null,
     "clavis_ref": null
    }
-  ]
+  ],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/v.iii",
@@ -7099,7 +9123,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/vi.iii",
@@ -7128,7 +9163,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/vi.iv",
@@ -7157,7 +9203,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/vii.iii",
@@ -7186,7 +9243,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-2/vii.iv",
@@ -7215,7 +9283,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/iii.iii",
@@ -7319,7 +9398,18 @@
     "genre": null,
     "clavis_ref": null
    }
-  ]
+  ],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/iii.iv",
@@ -7448,7 +9538,18 @@
     "genre": null,
     "clavis_ref": null
    }
-  ]
+  ],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/iv.iii",
@@ -7477,7 +9578,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/iv.iv",
@@ -7506,7 +9618,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/ix.iv",
@@ -7535,7 +9658,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/ix.vi",
@@ -7564,7 +9698,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/v.iii",
@@ -7593,7 +9738,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/v.v",
@@ -7622,7 +9778,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vi.iii",
@@ -7651,7 +9818,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vi.iv",
@@ -7680,7 +9858,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vi.ix",
@@ -7717,7 +9906,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vi.v",
@@ -7746,7 +9946,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vi.vi",
@@ -7775,7 +9986,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vi.vii",
@@ -7804,7 +10026,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vi.viii",
@@ -7833,7 +10066,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vi.x",
@@ -7862,7 +10106,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vii.iii",
@@ -7891,7 +10146,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/vii.iv",
@@ -7920,7 +10186,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/viii.iii",
@@ -7949,7 +10226,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/x.iii",
@@ -7978,7 +10266,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/xi.iii",
@@ -8007,7 +10306,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/xi.ix",
@@ -8044,7 +10354,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/xi.v",
@@ -8073,7 +10394,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/xi.vi",
@@ -8102,7 +10434,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/xi.x",
@@ -8131,7 +10474,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/xi.xi",
@@ -8160,7 +10514,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/xi.xii",
@@ -8189,7 +10554,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century-3/xii.iii",
@@ -8218,7 +10594,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iii.ii",
@@ -8247,7 +10634,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iii.iii",
@@ -8276,7 +10674,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iii.iv",
@@ -8305,7 +10714,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iii.ix",
@@ -8334,7 +10754,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iii.v",
@@ -8363,7 +10794,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iii.vi",
@@ -8392,7 +10834,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iii.vii",
@@ -8421,7 +10874,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iii.viii",
@@ -8450,7 +10914,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iii.x",
@@ -8479,7 +10954,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/iv.iii",
@@ -8508,7 +10994,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/v.ii",
@@ -8537,7 +11034,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/vi.ix",
@@ -8566,7 +11074,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/vi.v",
@@ -8595,7 +11114,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-century/vi.viii",
@@ -8632,7 +11162,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/iii.ii",
@@ -8675,7 +11216,18 @@
     "genre": null,
     "clavis_ref": null
    }
-  ]
+  ],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/iii.iii",
@@ -8704,7 +11256,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/iii.iv",
@@ -8741,7 +11304,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/iii.v",
@@ -8770,7 +11344,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/iii.vi",
@@ -8841,7 +11426,18 @@
     "genre": null,
     "clavis_ref": null
    }
-  ]
+  ],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/ix.ii",
@@ -8870,7 +11466,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/ix.iii",
@@ -8899,7 +11506,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/ix.iv",
@@ -8928,7 +11546,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/ix.ix",
@@ -8957,7 +11586,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/ix.v",
@@ -8986,7 +11626,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/ix.vi",
@@ -9015,7 +11666,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/ix.vii",
@@ -9044,7 +11706,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/ix.viii",
@@ -9073,7 +11746,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/v.ii",
@@ -9110,7 +11794,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/vi.ii",
@@ -9147,7 +11842,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "church-fathers/third-fourth-century/viii.iii",
@@ -9176,7 +11882,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": null,
+  "date_display": null,
+  "translation": "Ante-Nicene Fathers (1885-1896)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-01-council-of-nicaea",
@@ -9205,7 +11922,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "council-of-nicaea",
+  "issuer_label": "Council of Nicaea",
+  "year": 325,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series II",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-02-first-council-of-constantinople",
@@ -9234,7 +11962,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "first-council-of-constantinople",
+  "issuer_label": "First Council of Constantinople",
+  "year": 381,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series II",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-03-council-of-ephesus",
@@ -9263,7 +12002,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "council-of-ephesus",
+  "issuer_label": "Council of Ephesus",
+  "year": 431,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series II",
+  "source_credit": "Sourced via CCEL.org; Nestorius's second letter to Cyril translated by James Chrystal (1895)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-04-council-of-chalcedon",
@@ -9292,7 +12042,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "council-of-chalcedon",
+  "issuer_label": "Council of Chalcedon",
+  "year": 451,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series II",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-05-second-council-of-constantinople",
@@ -9321,7 +12082,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-council-of-constantinople",
+  "issuer_label": "Second Council of Constantinople",
+  "year": 553,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series II",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-06-third-council-of-constantinople",
@@ -9350,7 +12122,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "third-council-of-constantinople",
+  "issuer_label": "Third Council of Constantinople",
+  "year": 681,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series II",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-07-second-council-of-nicaea",
@@ -9379,7 +12162,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-council-of-nicaea",
+  "issuer_label": "Second Council of Nicaea",
+  "year": 787,
+  "date_display": null,
+  "translation": "Nicene and Post-Nicene Fathers, Series II",
+  "source_credit": "Sourced via CCEL.org; the four anathemas concerning holy images from Hefele's History of the Councils, translated by William R. Clark (1896)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-08-fourth-council-of-constantinople",
@@ -9408,7 +12202,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "fourth-council-of-constantinople",
+  "issuer_label": "Fourth Council of Constantinople",
+  "year": 870,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937); five canons and an extract of canon 17 by Roy J. Deferrari (1957)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-09-first-lateran-council",
@@ -9437,7 +12242,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "first-lateran-council",
+  "issuer_label": "First Lateran Council",
+  "year": 1123,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-10-second-lateran-council",
@@ -9466,7 +12282,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-lateran-council",
+  "issuer_label": "Second Lateran Council",
+  "year": 1139,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-11-third-lateran-council",
@@ -9495,7 +12322,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "third-lateran-council",
+  "issuer_label": "Third Lateran Council",
+  "year": 1179,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-12-fourth-lateran-council",
@@ -9524,7 +12362,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "fourth-lateran-council",
+  "issuer_label": "Fourth Lateran Council",
+  "year": 1215,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-13-first-council-of-lyons",
@@ -9553,7 +12402,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "first-council-of-lyons",
+  "issuer_label": "First Council of Lyons",
+  "year": 1245,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937); the bull deposing Frederick II and constitution I 7 by J. A. Giles (1853)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-14-second-council-of-lyons",
@@ -9582,7 +12442,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-council-of-lyons",
+  "issuer_label": "Second Council of Lyons",
+  "year": 1274,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-15-council-of-vienne",
@@ -9611,7 +12482,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "council-of-vienne",
+  "issuer_label": "Council of Vienne",
+  "year": 1311,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-16-council-of-constance",
@@ -9640,7 +12522,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "council-of-constance",
+  "issuer_label": "Council of Constance",
+  "year": 1418,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937); the condemned articles of Wyclif and Hus and two extracts by Roy J. Deferrari (1957)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-17-council-of-basel-ferrara-florence",
@@ -9669,7 +12562,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "council-of-basel-ferrara-florence",
+  "issuer_label": "Council of Basel-Ferrara-Florence",
+  "year": 1445,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937); the extracts of three decrees by Roy J. Deferrari (1957)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-18-fifth-lateran-council",
@@ -9698,7 +12602,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "fifth-lateran-council",
+  "issuer_label": "Fifth Lateran Council",
+  "year": 1517,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by H. J. Schroeder (1937); an extract of Pastor aeternus gregem by Roy J. Deferrari (1957)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-19-council-of-trent",
@@ -9727,7 +12642,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "council-of-trent",
+  "issuer_label": "Council of Trent",
+  "year": 1563,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by J. Waterworth (1848). Text: papalencyclicals.net",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/ecum-20-first-vatican-council",
@@ -9756,7 +12682,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "first-vatican-council",
+  "issuer_label": "First Vatican Council",
+  "year": 1870,
+  "date_display": null,
+  "translation": "Henry Edward Manning (1871), in Philip Schaff, The Creeds of Christendom (1877)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-ad-gentes",
@@ -9785,7 +12722,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-apostolicam-actuositatem",
@@ -9814,7 +12762,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-christus-dominus",
@@ -9843,7 +12802,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-dei-verbum",
@@ -9872,7 +12842,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-dignitatis-humanae",
@@ -9901,7 +12882,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-gaudium-et-spes",
@@ -9930,7 +12922,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-gravissimum-educationis",
@@ -9959,7 +12962,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-inter-mirifica",
@@ -9988,7 +13002,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1963,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-lumen-gentium",
@@ -10017,7 +13042,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1964,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-nostra-aetate",
@@ -10046,7 +13082,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-optatam-totius",
@@ -10075,7 +13122,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-orientalium-ecclesiarum",
@@ -10104,7 +13162,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1964,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-perfectae-caritatis",
@@ -10133,7 +13202,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-presbyterorum-ordinis",
@@ -10162,7 +13242,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-sacrosanctum-concilium",
@@ -10191,7 +13282,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1963,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "councils/vat2-unitatis-redintegratio",
@@ -10220,7 +13322,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": "second-vatican-council",
+  "issuer_label": "Second Vatican Council",
+  "year": 1964,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/a-quo-die",
@@ -10307,7 +13420,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-leo-xiii",
+  "issuer_label": "Pope Leo XIII",
+  "year": 1879,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/allatae-sunt",
@@ -10365,7 +13489,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1858,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Metropolitan (Baltimore, 1858)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/amantissimus",
@@ -10481,7 +13616,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1854,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Metropolitan (Baltimore, 1854)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/appetente-sacro",
@@ -10568,7 +13714,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-benedict-xvi",
+  "issuer_label": "Pope Benedict XVI",
+  "year": 2009,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/casti-connubii",
@@ -10597,7 +13754,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-xi",
+  "issuer_label": "Pope Pius XI",
+  "year": 1930,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/centesimus-annus",
@@ -10626,7 +13794,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1991,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/charitas",
@@ -10887,7 +14066,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1859,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation published by the Bishop of Kingston (1859)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/cum-summi",
@@ -10916,7 +14106,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-clement-xiv",
+  "issuer_label": "Pope Clement XIV",
+  "year": 1769,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Interesting Letters of the Late Pope Clement XIV (1777), abridged",
+  "attribution_note": null,
+  "notes": "This English printing (Interesting Letters of Clement XIV, 1777, translated from the French) omits paragraph 9; it is not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/decet-quam-maxime",
@@ -10974,7 +14175,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-benedict-xvi",
+  "issuer_label": "Pope Benedict XVI",
+  "year": 2005,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/dilexit-nos",
@@ -11003,7 +14215,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2024,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/diu-satis",
@@ -11032,7 +14255,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-vii",
+  "issuer_label": "Pope Pius VII",
+  "year": 1800,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by Benedict Rayment (1800)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/dives-in-misericordia",
@@ -11061,7 +14295,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1980,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/divini-redemptoris",
@@ -11090,7 +14335,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-xi",
+  "issuer_label": "Pope Pius XI",
+  "year": 1937,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/divino-afflante-spiritu",
@@ -11119,7 +14375,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-xii",
+  "issuer_label": "Pope Pius XII",
+  "year": 1943,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/divinum-illud-munus",
@@ -11148,7 +14415,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-leo-xiii",
+  "issuer_label": "Pope Leo XIII",
+  "year": 1897,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/dominum-et-vivificantem",
@@ -11177,7 +14455,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1986,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/ecclesia-de-eucharistia",
@@ -11206,7 +14495,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 2003,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/ecclesiam-suam",
@@ -11235,7 +14535,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-paul-vi",
+  "issuer_label": "Pope Paul VI",
+  "year": 1964,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/etsi-multa",
@@ -11264,7 +14575,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1873,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation published with the approbation of the Bishop of Philadelphia ([1874])",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/evangelii-gaudium",
@@ -11293,7 +14615,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2013,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/evangelii-nuntiandi",
@@ -11322,7 +14655,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-exhortation",
+  "issuer": "pope-paul-vi",
+  "issuer_label": "Pope Paul VI",
+  "year": 1975,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/evangelium-vitae",
@@ -11351,7 +14695,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1995,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/ex-omnibus",
@@ -11438,7 +14793,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1851,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation published by the Archbishop of Quebec (1852)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/fides-et-ratio",
@@ -11467,7 +14833,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1998,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/fratelli-tutti",
@@ -11496,7 +14873,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2020,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/graves-ac-diuturnae",
@@ -11525,7 +14913,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1875,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Appletons' Annual Cyclopaedia (1876)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/gravibus-ecclesiae",
@@ -11554,7 +14953,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1874,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Appletons' Annual Cyclopaedia (1875)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/humanae-vitae",
@@ -11583,7 +14993,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-paul-vi",
+  "issuer_label": "Pope Paul VI",
+  "year": 1968,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/humani-generis",
@@ -11612,7 +15033,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-xii",
+  "issuer_label": "Pope Pius XII",
+  "year": 1950,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/immortale-dei",
@@ -11641,7 +15073,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-leo-xiii",
+  "issuer_label": "Pope Leo XIII",
+  "year": 1885,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/in-dominico-agro",
@@ -11699,7 +15142,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-gregory-xvi",
+  "issuer_label": "Pope Gregory XVI",
+  "year": 1839,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Letters of the Late Bishop England to the Hon. John Forsyth (Baltimore, 1844)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/incredibili",
@@ -11757,7 +15211,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-constitution",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1854,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Official Documents Connected with the Definition of the Dogma of the Immaculate Conception (Baltimore, 1855)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/inscrutabile",
@@ -11844,7 +15309,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1853,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Metropolitan (Baltimore, 1853)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/inter-praecipuas",
@@ -11873,7 +15349,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-gregory-xvi",
+  "issuer_label": "Pope Gregory XVI",
+  "year": 1844,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Catholic Cabinet (St. Louis, 1845)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/laborem-exercens",
@@ -11902,7 +15389,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1981,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/laudato-si",
@@ -11931,7 +15429,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2015,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/levate",
@@ -11960,7 +15469,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1867,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Appletons' Annual Cyclopaedia (1868), extract",
+  "attribution_note": null,
+  "notes": "This English printing (The American Annual Cyclopaedia, 1868) quotes most of paragraph 1 and the first part of paragraph 2; the address, the rest of paragraph 2 and paragraphs 3–10 are not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/libertas",
@@ -11989,7 +15509,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-leo-xiii",
+  "issuer_label": "Pope Leo XIII",
+  "year": 1888,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/lumen-fidei",
@@ -12018,7 +15549,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2013,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/magnae-nobis",
@@ -12076,7 +15618,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-leo-xiv",
+  "issuer_label": "Pope Leo XIV",
+  "year": 2026,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/mater-et-magistra",
@@ -12105,7 +15658,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-xxiii",
+  "issuer_label": "Pope John XXIII",
+  "year": 1961,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/maximae-quidem",
@@ -12163,7 +15727,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-xii",
+  "issuer_label": "Pope Pius XII",
+  "year": 1947,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/meridionali-americae",
@@ -12221,7 +15796,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-leo-xiii",
+  "issuer_label": "Pope Leo XIII",
+  "year": 1902,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/mirari-vos",
@@ -12250,7 +15836,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-gregory-xvi",
+  "issuer_label": "Pope Gregory XVI",
+  "year": 1832,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Catholic Magazine and Review (1833). Text: Wikisource",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/mit-brennender-sorge",
@@ -12279,7 +15876,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-xi",
+  "issuer_label": "Pope Pius XI",
+  "year": 1937,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/munificentissimus-deus",
@@ -12308,7 +15916,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-constitution",
+  "issuer": "pope-pius-xii",
+  "issuer_label": "Pope Pius XII",
+  "year": 1950,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/mysterium-fidei",
@@ -12337,7 +15956,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-paul-vi",
+  "issuer_label": "Pope Paul VI",
+  "year": 1965,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/mystici-corporis-christi",
@@ -12366,7 +15996,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-xii",
+  "issuer_label": "Pope Pius XII",
+  "year": 1943,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/neminem-vestrum",
@@ -12482,7 +16123,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1849,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Rambler (1850), abridged",
+  "attribution_note": null,
+  "notes": "This English printing (The Rambler, 1850) omits paragraphs 21–24, 26 and 31–33; they are not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/nullis-certe-verbis",
@@ -12511,7 +16163,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1860,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Rambler (1860), extract",
+  "attribution_note": null,
+  "notes": "This English printing (The Rambler, 1860) quotes paragraph 6 and parts of paragraphs 3, 5, 7 and 8; the address and paragraphs 1–2, 4 and 9–13 are not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/omnem-sollicitudinem",
@@ -12627,7 +16290,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-xxiii",
+  "issuer_label": "Pope John XXIII",
+  "year": 1963,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/pascendi-dominici-gregis",
@@ -12656,7 +16330,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-x",
+  "issuer_label": "Pope Pius X",
+  "year": 1907,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/peregrinantes",
@@ -12714,7 +16399,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-paul-vi",
+  "issuer_label": "Pope Paul VI",
+  "year": 1967,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/praedecessores-nostros",
@@ -12830,7 +16526,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-leo-xiii",
+  "issuer_label": "Pope Leo XIII",
+  "year": 1893,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/quadragesimo-anno",
@@ -12859,7 +16566,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-xi",
+  "issuer_label": "Pope Pius XI",
+  "year": 1931,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/quae-in-patriarchatu",
@@ -12946,7 +16664,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1864,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Dublin Review (1865)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/quanto-conficiamur-moerore",
@@ -12975,7 +16704,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1863,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by Roy J. Deferrari (1957)",
+  "attribution_note": null,
+  "notes": "Only extracts of this encyclical are given, in R. J. Deferrari's translation of Denzinger (1957): paragraph 7, the first part of paragraph 8, and paragraph 9. The rest is not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/quartus-supra",
@@ -13033,7 +16773,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-xi",
+  "issuer_label": "Pope Pius XI",
+  "year": 1925,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/quas-vestro",
@@ -13091,7 +16842,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1859,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Dublin Review (1859), extract",
+  "attribution_note": null,
+  "notes": "This English printing (The Dublin Review, 1859) quotes paragraph 1 and part of paragraph 3; the address, paragraph 2 and the rest of paragraph 3 are not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/qui-pluribus",
@@ -13120,7 +16882,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1846,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The United States Catholic Magazine (1847)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/quo-graviora",
@@ -13236,7 +17009,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1875,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Appletons' Annual Cyclopaedia (1876)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/quod-provinciale",
@@ -13294,7 +17078,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1979,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/redemptoris-mater",
@@ -13323,7 +17118,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1987,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/redemptoris-missio",
@@ -13352,7 +17158,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1990,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/rerum-novarum",
@@ -13381,7 +17198,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-leo-xiii",
+  "issuer_label": "Pope Leo XIII",
+  "year": 1891,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/respicientes",
@@ -13410,7 +17238,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1870,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Appletons' Annual Cyclopaedia (1871)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/saepe-venerabiles-fratres",
@@ -13468,7 +17307,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-clement-xiv",
+  "issuer_label": "Pope Clement XIV",
+  "year": 1774,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Interesting Letters of the Late Pope Clement XIV (1777), abridged",
+  "attribution_note": null,
+  "notes": "This English printing (Interesting Letters of Clement XIV, 1777, translated from the French) omits paragraphs 3, 4 and 9 and shortens paragraphs 2 and 8 to \"&c.\"; what it leaves out is not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/singulari-nos",
@@ -13497,7 +17347,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-gregory-xvi",
+  "issuer_label": "Pope Gregory XVI",
+  "year": 1834,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by Roy J. Deferrari (1957)",
+  "attribution_note": null,
+  "notes": "Only an extract of this encyclical is given, in R. J. Deferrari's translation of Denzinger (1957): paragraph 8. The rest is not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/singulari-quidem",
@@ -13555,7 +17416,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1987,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/spe-salvi",
@@ -13584,7 +17456,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-benedict-xvi",
+  "issuer_label": "Pope Benedict XVI",
+  "year": 2007,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/spiritus-paraclitus",
@@ -13613,7 +17496,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-benedict-xv",
+  "issuer_label": "Pope Benedict XV",
+  "year": 1920,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/summa-quae",
@@ -13700,7 +17594,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "other",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1864,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation as printed in The Syllabus for the People, by a Monk of St. Augustine's, Ramsgate (1875)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/traditi-humilitati",
@@ -13729,7 +17634,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-viii",
+  "issuer_label": "Pope Pius VIII",
+  "year": 1829,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The Jesuit, or Catholic Sentinel (Boston, 1829), abridged",
+  "attribution_note": null,
+  "notes": "This English printing (The Jesuit, Boston, 1829) is abridged: it shortens several paragraphs and omits paragraphs 2, 8, 9, 11 and 13; what it leaves out is not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/ubi-lutetiam",
@@ -13758,7 +17674,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-vi",
+  "issuer_label": "Pope Pius VI",
+  "year": 1792,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Text: papalencyclicals.net",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/ubi-nos",
@@ -13845,7 +17772,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-leo-xii",
+  "issuer_label": "Pope Leo XII",
+  "year": 1824,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation published by the Catholic bishops of Ireland (Dublin, 1824)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/ubi-primum-1847",
@@ -13903,7 +17841,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1849,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from The United States Catholic Magazine (1849)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/ut-unum-sint",
@@ -13932,7 +17881,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1995,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/veritatis-splendor",
@@ -13961,7 +17921,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1993,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/vix-dum-a-nobis",
@@ -13990,7 +17961,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-pius-ix",
+  "issuer_label": "Pope Pius IX",
+  "year": 1874,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translation from Appletons' Annual Cyclopaedia (1875)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "encyclicals/vix-pervenit",
@@ -14019,7 +18001,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "encyclical",
+  "issuer": "pope-benedict-xiv",
+  "issuer_label": "Pope Benedict XIV",
+  "year": 1745,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by Roy J. Deferrari (1957)",
+  "attribution_note": null,
+  "notes": "Only an extract of this encyclical is given, in R. J. Deferrari's translation of Denzinger (1957): the five teachings on usury in paragraph 3. The rest is not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "medieval/consolation-of-philosophy",
@@ -14048,7 +18041,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": 524,
+  "date_display": null,
+  "translation": "W. V. Cooper (1902)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "medieval/imitation-of-christ",
@@ -14085,7 +18089,18 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": 1441,
+  "date_display": null,
+  "translation": "Aloysius Croft and Harold Bolton (1940)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "medieval/on-loving-god",
@@ -14114,7 +18129,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": 1128,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by William Harman van Allen (1909). Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "medieval/proslogium-monologium-and-cur-deus-homo/iii",
@@ -14143,7 +18169,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": 1077,
+  "date_display": "1077 to 1078",
+  "translation": "Sidney Norton Deane (1903)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "medieval/proslogium-monologium-and-cur-deus-homo/iv",
@@ -14172,7 +18209,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": 1076,
+  "date_display": null,
+  "translation": "Sidney Norton Deane (1903)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "medieval/proslogium-monologium-and-cur-deus-homo/vi",
@@ -14201,7 +18249,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": 1098,
+  "date_display": null,
+  "translation": "James Gardiner Vose (1854-1855)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/dies-domini",
@@ -14230,7 +18289,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1998,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/exsurge-domine",
@@ -14259,7 +18329,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-constitution",
+  "issuer": "pope-leo-x",
+  "issuer_label": "Pope Leo X",
+  "year": 1520,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by Roy J. Deferrari (1957)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/misericordia-et-misera",
@@ -14288,7 +18369,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2016,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/mulieris-dignitatem",
@@ -14317,7 +18409,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1988,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/novo-millennio-ineunte",
@@ -14346,7 +18449,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 2001,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/ordinatio-sacerdotalis",
@@ -14375,7 +18489,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1994,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/orientale-lumen",
@@ -14404,7 +18529,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1995,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/patris-corde",
@@ -14433,7 +18569,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-francis",
+  "issuer_label": "Pope Francis",
+  "year": 2020,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/porta-fidei",
@@ -14462,7 +18609,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "motu-proprio",
+  "issuer": "pope-benedict-xvi",
+  "issuer_label": "Pope Benedict XVI",
+  "year": 2011,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/rosarium-virginis-mariae",
@@ -14491,7 +18649,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 2002,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/salvifici-doloris",
@@ -14520,7 +18689,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1984,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/sublimis-deus",
@@ -14549,7 +18729,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-paul-iii",
+  "issuer_label": "Pope Paul III",
+  "year": 1537,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by Francis Augustus MacNutt (1909)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/tertio-millennio-adveniente",
@@ -14578,7 +18769,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-letter",
+  "issuer": "pope-john-paul-ii",
+  "issuer_label": "Pope John Paul II",
+  "year": 1994,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "papal-documents/unam-sanctam",
@@ -14607,7 +18809,18 @@
    "basis": null,
    "editorial_judgments": []
   },
-  "works": []
+  "works": [],
+  "genre": "apostolic-constitution",
+  "issuer": "pope-boniface-viii",
+  "issuer_label": "Pope Boniface VIII",
+  "year": 1302,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by Sister M. Mildred Curley (1927)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  },
  {
   "work_id": "summa",
@@ -14651,6 +18864,17 @@
     }
    ]
   },
-  "works": []
+  "works": [],
+  "genre": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": 1265,
+  "date_display": "1265 to 1274",
+  "translation": "Fathers of the English Dominican Province (1920)",
+  "source_credit": "Sourced via CCEL.org",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null
  }
 ]

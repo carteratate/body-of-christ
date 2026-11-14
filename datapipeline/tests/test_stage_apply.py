@@ -13,6 +13,7 @@ from dataclasses import replace
 import pytest
 
 import reader_access
+import registry
 from identity import passage_id
 from model import Document, Work
 from publication import StageRequest, StageRefused
@@ -266,6 +267,43 @@ async def test_document_facts_and_works_reach_staging(world):
     assert doc == {"genre": "treatise", "issuer": "bernard-of-clairvaux", "issuer_label": "Bernard"}
     assert await world.fetch("SELECT work_key, title FROM staging.document_works") == \
         [{"work_key": "w1", "title": "Book One"}]
+
+
+async def test_document_facts_reach_staging_and_live_after_apply(world, monkeypatch, tmp_path):
+    """2.3: the registry's facts win over the adapter's, reach staging, and reach live in
+    the apply, with certainty and clavis_ref from the entry's attribution."""
+    from release.staged import staged_content_sha256
+    from writers import apply as A
+
+    monkeypatch.setattr(reader_access, "access_for", lambda document_id: "full")
+    entry = world.registry.entry_by_document[DOC_A]
+    entry.update({k: None for k in registry.FACT_FIELDS})
+    entry.update(genre="treatise", year=1128, date_display="c. 1128",
+                 translation="William Harman van Allen (1909)",
+                 source_credit="Sourced via CCEL.org", notes="A note.")
+    entry["attribution"].update(certainty="genuine", clavis="PL 182")
+    a = _doc(world, DOC_A)
+    a.year, a.translation, a.genre = 1099, "adapter", "sermon"
+
+    await world.runner().stage(STAGE)
+    columns = ("genre, year, date_display, translation, source_credit, notes, certainty, "
+               "clavis_ref, issuer")
+    want = {"genre": "treatise", "year": 1128, "date_display": "c. 1128",
+            "translation": "William Harman van Allen (1909)",
+            "source_credit": "Sourced via CCEL.org", "notes": "A note.",
+            "certainty": "genuine", "clavis_ref": "PL 182", "issuer": None}
+    query = f"SELECT {columns} FROM {{}}.documents WHERE id = $1::uuid"
+    assert await world.fetch(query.format("staging"), DOC_A) == [want]
+
+    conn = await world.connect()
+    try:
+        content = await staged_content_sha256(conn)
+        await conn.execute("UPDATE corpus_publishes SET report_sha256 = $2 WHERE id = $1",
+                           STAGE.release, f"report:{content}")
+        await A.apply(conn, STAGE.release, root=str(tmp_path / "snapshots"))
+    finally:
+        await conn.close()
+    assert await world.fetch(query.format("public"), DOC_A) == [want]
 
 
 async def test_the_contents_tree_is_staged_with_the_chunks(world):
@@ -576,10 +614,20 @@ async def test_report_checks_payload_facts_and_input_hashes(world, tmp_path):
 
 async def test_report_lists_the_document_facts_diff(world, tmp_path):
     _doc(world, DOC_A).genre = "treatise"
+    _doc(world, DOC_B).author = "Bernard"
     await world.runner().stage(STAGE)
     _, data = await _report(world, tmp_path)
     diffs = {d["id"]: d["changed"] for d in data["facts_diff"]}
     assert diffs[DOC_A]["genre"] == {"live": None, "staged": "treatise"}
+    # 2.3: the report's "Document facts" section counts each field per collection and
+    # lists the author changes.
+    report = (tmp_path / "report" / "report.md").read_text()
+    section = report.split("## Document facts (2.3)")[1]
+    assert "| Field | medieval |" in section
+    assert "| genre | 1 |" in section and "| reader_access | 2 |" in section
+    assert "Author changes: 1." in section
+    assert f"`{DOC_B}`: 'Bernard of Clairvaux' → 'Bernard'" in section
+    del diffs[DOC_B]["author"]
     # Neither test document is in the rights inventory, so staging makes both excerpt-only
     # (D12) and the diff says so.
     assert diffs[DOC_B] == {"reader_access": {"live": "full", "staged": "excerpt"}}
