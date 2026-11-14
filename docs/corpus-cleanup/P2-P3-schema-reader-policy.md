@@ -939,7 +939,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
 - **Current state:**
   - The models learn a passage's role only from `unit_label`, through `services/api/app/rag/steps/passage_role.py:display_role`, which `rerank_docs` (the Cohere document and the listwise card) and `steps.explain` call. (The pointwise reranker that also called it was removed in October 2026.) `display_role` suppresses a label that the reference already contains. A comment in `rag/steps/rerank.py` (above `LLM_RERANK_CONTRACT_VERSION`) notes that an "Objection N" label marks a position the author states in order to refute it; nothing tells the models this about any other passage.
   - The card and the reader show no role.
-  - 3.4 records about 270 such passages (C-01): Exsurge Domine §1 to §41, the Syllabus §1 to §80, Constance's condemned articles, Nestorius's letter at Ephesus, Caecilius in the Octavius, and Mani's teaching in the Acts of Archelaus. 1.7 also sets `voice` on every Summa objection (10,527 bold objection markers in the source).
+  - 3.4 records 150 such passages (C-01; about 270 before the council texts were rebuilt): Exsurge Domine §1 to §41, the Syllabus §1 to §80, Constance's condemned articles, Nestorius's letter at Ephesus, Caecilius in the Octavius, and Mani's teaching in the Acts of Archelaus. 1.7 also sets `voice` on every Summa objection (10,527 bold objection markers in the source).
 - **Changes:**
   - Carry `voice` from retrieval, the same way `unit_label` travels today, so the rerankers see it. 2.4a's facts query runs after ranking and only for the final results, so it is too late for the rerankers and is not the source. The path, in `pipelines/runner.py` order (`:391-402`):
     1. `ChunkCandidate` gains `voice: str | None = None` (`rag/steps/types.py`).
@@ -1214,10 +1214,10 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - Not labelled, as the reviewers judged them not misleading: dialogues whose speakers the text names (Trypho in Justin, Boso in Cur Deus Homo, Philosophy in Boethius) and authors quoting opponents inside their own argument (Augustine quoting Seneca). Firmilian's letter in Cyprian's Epistles is a credit question, settled by 1.8c, not a rejected voice.
 - **Changes:**
   - A tracked list, `datapipeline/registry/rejected_voice_ranges.json`: per range, the document, first and last anchor, the label pattern and the basis (the condemning act or the work's own reply), with no passage text.
-  - Passage-registry rows (2.1) for every passage in a range: `voice: "rejected"` and a `unit_label` override, in these forms, worded finally by Carter:
-    - Exsurge Domine: "Condemned proposition N (condemned by Leo X, Exsurge Domine)".
-    - Syllabus: "Condemned proposition N (Syllabus of Errors, Pius IX)".
-    - Constance: "Condemned article N of John Wyclif" or "of Jan Hus" (Council of Constance), on the anchors 1.2e lists; none if the council is retired at Phase 4.
+  - Passage-registry rows (2.1) for every passage in a range: `voice: "rejected"` and a `unit_label` override, in these forms (approved by Carter on 14 Nov 2026, Decision log "Rejected-voice ranges and labels (3.4)"):
+    - Exsurge Domine: "Condemned proposition N of Martin Luther (condemned by Leo X, Exsurge Domine)".
+    - Syllabus: "Condemned proposition N (condemned by Pius IX, Syllabus of Errors)".
+    - Constance: "Condemned articles of John Wyclif (Council of Constance)" or "Condemned articles of Jan Hus (Council of Constance)", on the anchors 1.2e lists; none if the council is retired at Phase 4.
     - Ephesus: "Letter of Nestorius, condemned by the Council of Ephesus".
     - Octavius: "Caecilius, pagan objection; answered by Octavius".
     - Acts of Archelaus: "Mani's teaching, refuted by Archelaus".
@@ -1227,5 +1227,27 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - The PR lists each range with its passage count and saved rows.
   - After the Phase 4 apply (4.2's targeted questions, on staging first): "in every good work the just man sins" returns Exsurge Domine §31 with its label, and the explanation says Leo X condemned it; a question on the Octavius's arguments against providence returns Caecilius's speech labelled as a pagan objection.
 - **Production safety:** Values only; nothing changes before the Phase 4 apply. At the apply, 2.2w writes `voice` and the labels into Postgres and the Qdrant payload together, and 2.4d shows them. Rollback restores the previous labels with everything else.
-- **Needs Carter:** Approve the ranges and each label text (NEEDS-CARTER section B, 3.4).
+- **As built (14 Nov 2026):**
+  - Ranges. `datapipeline/registry/rejected_voice_ranges.json`, 15 ranges, each with `collection`, `document_id`, `title`, `first_anchor`, `last_anchor`, `label` and `basis`, sorted by collection and document, a document's ranges in reading order. A label may hold `{n}`, the number that ends the passage's unit anchor (`exsurge-domine/10` → 10). `registry/rejected_voice.py` loads, validates and expands them.
+  - Rows. `scripts/rejected_voice_rows.py` builds each listed collection, expands every range and writes `voice` and `unit_label` onto the passage-registry rows; it refuses a range that does not resolve, a passage with no row, and a row of a listed document with the role outside every range. Rerun it after a merge that changes these documents' anchors or rows.
+  - The check. `roles.rejected_voice:<collection>` in `checks/content.py`, run on every collection with the registry's overrides applied (the stage's view): every range resolves, every passage in a range carries the role and its label, and no other passage carries the role but a Summa objection. Unit tests in `tests/test_rejected_voice.py`; on the build, `tests/source_checks/test_rejected_voice_sources.py` pins each range's passage count.
+  - The list, on the master build of 14 Nov 2026, with saved rows from the 31 Oct snapshot:
+
+    | Document | Ranges | Passages | Saved rows |
+    |---|---|---|---|
+    | Exsurge Domine | `exsurge-domine/1` to `/41` | 41 | 6 retrievals |
+    | Syllabus of Errors | `/1`–`/14`, `/15`–`/18`, `/19`–`/74`, `/75`–`/76`, `/77`–`/80` | 80 | 0 |
+    | Council of Constance | `session-8/wyclif-articles` to `/from-p35`; `session-15/hus-articles` to `/from-p18` | 4 | 0 |
+    | Council of Ephesus | `nestorius-second-letter` to `/from-p6-2` | 4 | 0 |
+    | The Octavius | `iv.iii.v` to `iv.iii.xiii` (chapters V–XIII) | 10 | 0 |
+    | The Acts of Archelaus | `vii.iii.v`; `vii.iii.vi/from-p5` to `vii.iii.x`; `vii.iii.xii` to `/from-p1-2`; `vii.iii.xiii/from-p1-2`; `vii.iii.xlvi/from-p1-3` | 11 | 0 |
+
+  - Fewer passages than the "about 270" estimate: 1.2e-5 packed Constance's 75 articles into four passages, one article to a paragraph (Tanner's text had about 120), and Chrystal's Nestorius letter is 4 pieces. So Constance's label carries no article number; each article's number is printed in the text.
+  - The Syllabus's three N.B. notes and section IV's heading (`text-2`, `text-4`, `text-8`, `text-9`) are Pius IX's own words and stand between the ranges, which is why the Syllabus has five.
+  - The Acts of Archelaus, read on the build. Mani's letter (chapter 5, after one sentence of narration); Turbo's account of his teaching, from the narration that introduces it (chapter 6, part 2) to the end of chapter 11; Mani's opening speech (chapter 13, both parts); and two pieces that continue a speech of his without naming him, chapter 14 part 2 and chapter 47 part 3 (the second found by this reading: the reviewers read the passages as cut before 1.10c). Chapter 13 is Mani's speech, as Sol A-011 read it. Passages that say "Manes said" or "Manes replied" mark themselves and are not labelled, nor is the Fragment of the same disputation, or Diodorus's letter (chapter 40), which reports Mani's claims as "he told us".
+  - The Octavius: Caecilius's case is chapters V to XIII; chapter XIV opens "Thus far Caecilius", and his short protest in chapter XV names him.
+  - Not labelled, for the council's own voice: Vienne's Ad nostrum (`council-of-vienne/series-1/canon/6`, 1.2e-2), whose eight Beghard errors are quoted inside the council's condemnation, and Constance's tyrannicide sentence (`council-of-constance/session-15/tyrannicide`, 1.2e-5), which quotes the proposition inside the council's sentence.
+  - Agreement with earlier items: Exsurge Domine's 41 rows (1.3d-6) and Nestorius's 4 (1.2c) already carried the role; they gain the label and keep their notes. No Summa row is touched.
+  - `registry.validate()` is empty.
+- **Needs Carter:** Answered 14 Nov 2026: the ranges and each label text, approved as drafted (Decision log "Rejected-voice ranges and labels (3.4)").
 - **Out of scope:** Summa objections (1.7 sets them). Removing any of these texts. Speakers the text already names. Firmilian's letter (1.8c).
