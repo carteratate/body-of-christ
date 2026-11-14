@@ -1,0 +1,902 @@
+[
+ {
+  "document_id": "003835b1-4a8b-54d1-bf6b-95845fb53ab9",
+  "anchor": "laudato-si/1",
+  "collection": "encyclicals",
+  "title": "Laudato Si",
+  "language": "it",
+  "words": 5,
+  "starts": "laudato si mi signore praise",
+  "sha1": "d26d087eb8b6043a4b6e9ea42966e6f16941b997"
+ },
+ {
+  "document_id": "1d826226-c98a-5fd0-8aff-14da0ab48f75",
+  "anchor": "spe-salvi/2",
+  "collection": "encyclicals",
+  "title": "Spe Salvi",
+  "language": "la",
+  "words": 6,
+  "starts": "nihil ab nihilo quam cito recidimus",
+  "sha1": "1ddf88590047dd8a345f761750880e7384d43f37"
+ },
+ {
+  "document_id": "1d826226-c98a-5fd0-8aff-14da0ab48f75",
+  "anchor": "spe-salvi/39",
+  "collection": "encyclicals",
+  "title": "Spe Salvi",
+  "language": "la",
+  "words": 11,
+  "starts": "marvellous expression impassibilis est deus sed",
+  "sha1": "93b0632fbabc193cd0e3641296c7ccffd4bc2b42"
+ },
+ {
+  "document_id": "1d826226-c98a-5fd0-8aff-14da0ab48f75",
+  "anchor": "spe-salvi/7",
+  "collection": "encyclicals",
+  "title": "Spe Salvi",
+  "language": "la",
+  "words": 14,
+  "starts": "early church therefore reads est autem",
+  "sha1": "4f61e5db5a7a18b63ae26cc410187434f6fa61b9"
+ },
+ {
+  "document_id": "237081c4-64d8-52d2-a19e-66d6e5f01f1f",
+  "anchor": "second-council-of-lyons/canon/10",
+  "collection": "councils",
+  "title": "Second Council of Lyons",
+  "language": "la",
+  "words": 6,
+  "starts": "evidens scientiae vel alius personae defectus",
+  "sha1": "bbcf3d3c098a221099e1de6664c238afb0bc0157"
+ },
+ {
+  "document_id": "26061458-4ab7-54ae-822c-2fcb9e434591",
+  "anchor": "sacramentum-caritatis/15",
+  "collection": "apostolic-exhortations",
+  "title": "Sacramentum Caritatis",
+  "language": "la",
+  "words": 10,
+  "starts": "quibus et ex quibus una et",
+  "sha1": "5476be2b221b5f77942f2da803e251457eedfa3e"
+ },
+ {
+  "document_id": "26061458-4ab7-54ae-822c-2fcb9e434591",
+  "anchor": "sacramentum-caritatis/66",
+  "collection": "apostolic-exhortations",
+  "title": "Sacramentum Caritatis",
+  "language": "la",
+  "words": 11,
+  "starts": "nemo autem illam carnem manducat nisi",
+  "sha1": "230d773941493e300388f0aa3cc3e7e3651ca1c6"
+ },
+ {
+  "document_id": "2b203418-38ab-5ae0-982a-0ce7ef1af3fb",
+  "anchor": "inter-praecipuas/1",
+  "collection": "encyclicals",
+  "title": "Inter Praecipuas",
+  "language": "fr",
+  "words": 7,
+  "starts": "faith les saints enseignemens de la",
+  "sha1": "4ecb37b717135e81259d11a06b0d8dc9f75c4fbc"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/FS_Q7_A3/p6",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "language": "la",
+  "words": 9,
+  "starts": "verse quis quid ubi quibus auxiliis",
+  "sha1": "b83fb4cf13b2f0a959e5858b491c48488c033df2"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/SS_Q185_A4/p6",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "language": "la",
+  "words": 11,
+  "starts": "hence innocent iii says extra de",
+  "sha1": "c3b054d9d22f93ca278658ad0831e670b08b1705"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/SS_Q188_A2/p3",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "language": "la",
+  "words": 7,
+  "starts": "extra de renuntiatione cap nisi cum",
+  "sha1": "7ab94de402c9a737da75e29c8d11d5dce2741f48"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/TP_Q51_A3/p6",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "language": "la",
+  "words": 13,
+  "starts": "continue incorrupt hence chrysostom says cont",
+  "sha1": "7c6b0da0fdc973960c4f7ab9b4ca31c68192399c"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/TP_Q77_A1/p5",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "language": "la",
+  "words": 5,
+  "starts": "essence quod est therefore even",
+  "sha1": "8250c06710016a5753788443a33671f2ed93b6c7"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/XP_Q35_A3/p7",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "language": "la",
+  "words": 11,
+  "starts": "reordained extra de presbyt non bapt",
+  "sha1": "1161e9e141263c219453a9ca45a3cc8b7440c605"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/XP_Q47_A1/p4",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "language": "la",
+  "words": 6,
+  "starts": "ff de eo quod vi metusve",
+  "sha1": "48a27177b5191bc69db40658680da9185bfa1593"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/XP_Q47_A2/p4",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "language": "la",
+  "words": 9,
+  "starts": "law vii ff de eo quod",
+  "sha1": "e8f6d0b293488d371f849e4228be3f7bb9269f8d"
+ },
+ {
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/XP_Q55_A9/p8",
+  "collection": "summa",
+  "title": "Summa Theologiae",
+  "language": "la",
+  "words": 8,
+  "starts": "cap non debent de consang et",
+  "sha1": "cf6e354b511d25c529280a2c3ace800957964800"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "anchor": "pastores-gregis/1",
+  "collection": "apostolic-exhortations",
+  "title": "Pastores Gregis",
+  "language": "la",
+  "words": 8,
+  "starts": "name nisi per caritate efficiatur unum",
+  "sha1": "21a7079fda380ae47d27e5fea9dd27da917e3e3d"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "anchor": "pastores-gregis/57",
+  "collection": "apostolic-exhortations",
+  "title": "Pastores Gregis",
+  "language": "la",
+  "words": 6,
+  "starts": "communion cum petro et sub petro",
+  "sha1": "e156b13b808a54bdb7e16229d42e09f4c542597f"
+ },
+ {
+  "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
+  "anchor": "pastores-gregis/64",
+  "collection": "apostolic-exhortations",
+  "title": "Pastores Gregis",
+  "language": "la",
+  "words": 5,
+  "starts": "disciples ut unum sint jn",
+  "sha1": "ee1c2b5a3e88f646223f62deca393332fbfdf659"
+ },
+ {
+  "document_id": "453ec4c8-6094-519d-8a06-2b2041f19d72",
+  "anchor": "dives-in-misericordia/4/from-e44",
+  "collection": "encyclicals",
+  "title": "Dives in Misericordia",
+  "language": "la",
+  "words": 6,
+  "starts": "himself nihil odisti eorum quae fecisti",
+  "sha1": "c382a8bf10652d5217ce564fb8ec2d88bfc484de"
+ },
+ {
+  "document_id": "453ec4c8-6094-519d-8a06-2b2041f19d72",
+  "anchor": "dives-in-misericordia/7",
+  "collection": "encyclicals",
+  "title": "Dives in Misericordia",
+  "language": "la",
+  "words": 8,
+  "starts": "man qui talem ac tantum meruit",
+  "sha1": "71252bd05413113d12afe367db0b1a87c080c5d1"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "anchor": "fourth-lateran-council/canon/62",
+  "collection": "councils",
+  "title": "Fourth Lateran Council",
+  "language": "la",
+  "words": 9,
+  "starts": "terris quod reddente domino cum multiplicato",
+  "sha1": "06d6d28b911ca213fc934650e1edb5071896ff4a"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "anchor": "fourth-lateran-council/canon/62",
+  "collection": "councils",
+  "title": "Fourth Lateran Council",
+  "language": "la",
+  "words": 15,
+  "starts": "caelis firmam spem fiduciamque tenentes quoniam",
+  "sha1": "27890a041891de7f6d0a87756c95892434b67393"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "anchor": "fourth-lateran-council/canon/62",
+  "collection": "councils",
+  "title": "Fourth Lateran Council",
+  "language": "la",
+  "words": 19,
+  "starts": "corpore gessimus sive bonum sive malum",
+  "sha1": "449685e4636e1916f7f0306c1abe5e4ef0a45df0"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "anchor": "fourth-lateran-council/canon/62",
+  "collection": "councils",
+  "title": "Fourth Lateran Council",
+  "language": "la",
+  "words": 22,
+  "starts": "vitam aeternam cum igitur ad sustentationem",
+  "sha1": "a88378a422e5fc205ace6abb9e5a3dae04da8991"
+ },
+ {
+  "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
+  "anchor": "fourth-lateran-council/canon/62",
+  "collection": "councils",
+  "title": "Fourth Lateran Council",
+  "language": "la",
+  "words": 35,
+  "starts": "deo vobis collatis pias eleemosynas et",
+  "sha1": "b91c5447f19b8ebf34221c3b4e58d26f93f49ce0"
+ },
+ {
+  "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
+  "anchor": "iii.iv.ii.v.vi",
+  "collection": "church-fathers",
+  "title": "The Extant Works and Fragments of Hippolytus",
+  "language": "la",
+  "words": 8,
+  "starts": "wit non origination non generation infinitude",
+  "sha1": "a053c7c42b44680ba694f408de956a94b80bb1eb"
+ },
+ {
+  "document_id": "525de087-4df5-5c7a-9629-4f9f0d2ce42f",
+  "anchor": "patris-corde/4/from-e49",
+  "collection": "papal-documents",
+  "title": "Patris Corde",
+  "language": "la",
+  "words": 7,
+  "starts": "called evil etiam illud quod malum",
+  "sha1": "85ff4adf064896b42c808e84e173c14bf6baae86"
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": "v.IV_1.10",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "language": "la",
+  "words": 7,
+  "starts": "saying non congregabo conventicula eorum de",
+  "sha1": "ee5877f4b8d12e379b0cf98adaddb3c917f4d710"
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": "v.v.xiii/from-p3",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "language": "la",
+  "words": 16,
+  "starts": "apostle quod stultum est dei sapientius",
+  "sha1": "5fb758b266af52df2da301da9f8c0086487b164d"
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": "v.v.xiii/from-p3",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "language": "la",
+  "words": 16,
+  "starts": "say quod stultum est dei sapientius",
+  "sha1": "717d420933939af4b3cfa96f94babf2bfcf8ae32"
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": "v.v.xiii/from-p3",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "language": "la",
+  "words": 5,
+  "starts": "nequam et quae sunt civitates",
+  "sha1": "770caed5c39fc5146a6e1b6cfb486331369bc8fd"
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": "v.v.xiii/from-p3",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "language": "la",
+  "words": 5,
+  "starts": "say sapientius est quam homines",
+  "sha1": "9e75b67fda0b900494a199e417201b2363fae70c"
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": "v.v.xiii/from-p3",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "language": "la",
+  "words": 8,
+  "starts": "quo isti insidunt super eam si",
+  "sha1": "adac49b122a8b7dfe1541ba127f193052cd801d9"
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": "v.v.xiii/from-p3",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "language": "la",
+  "words": 7,
+  "starts": "following passage thus expressed quae est",
+  "sha1": "ee7d7b96acceed4df388fa2e7a88244983b86a11"
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": "v.vi.ii",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "language": "la",
+  "words": 10,
+  "starts": "point follows concupiscentiam habens dissolvi et",
+  "sha1": "545c31e0d728a2809fb0640147c8164432d7f120"
+ },
+ {
+  "document_id": "5e3992d5-a8bb-583b-aaf9-41fedcd890d3",
+  "anchor": "v.vi.ii",
+  "collection": "church-fathers",
+  "title": "On Christian Doctrine",
+  "language": "la",
+  "words": 9,
+  "starts": "add concupiscentiam habens dissolvi et esse",
+  "sha1": "6bc04505716e7e899b815dd48deed650915a22e9"
+ },
+ {
+  "document_id": "5fd6eb63-c7e8-5103-9ec3-21bede3c100d",
+  "anchor": "ecclesia-in-africa/137",
+  "collection": "apostolic-exhortations",
+  "title": "Ecclesia in Africa",
+  "language": "la",
+  "words": 6,
+  "starts": "encyclical letter ut unum sint certainly",
+  "sha1": "35066ef3ad27579e05f3723ff4bc38412dcd2ec3"
+ },
+ {
+  "document_id": "651697d9-8c30-5204-be8e-beb54b80a68b",
+  "anchor": "iv.iv.x/from-p11",
+  "collection": "church-fathers",
+  "title": "A Treatise on Faith and the Creed",
+  "language": "la",
+  "words": 8,
+  "starts": "peer eidem patri aequalis aut par",
+  "sha1": "a53089c670025e3f1e799fce6eac68007b28a29f"
+ },
+ {
+  "document_id": "6bafb4a7-2d6e-55cc-92b8-cdc221bea175",
+  "anchor": "syllabus-of-errors/text-4",
+  "collection": "encyclicals",
+  "title": "Syllabus of Errors",
+  "language": "la",
+  "words": 26,
+  "starts": "encyclical qui pluribus nov th allocution",
+  "sha1": "9d696e366d3122c29151f35bc8523128a938b14d"
+ },
+ {
+  "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
+  "anchor": "first-council-of-lyons/series-1/canon/3",
+  "collection": "councils",
+  "title": "First Council of Lyons",
+  "language": "la",
+  "words": 9,
+  "starts": "definitely voce illorum qui non pure",
+  "sha1": "4a3e4218c48e8d7affb28860ab91d9ba9da360bf"
+ },
+ {
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "anchor": "council-of-basel-ferrara-florence/basel-session-20/decree/2",
+  "collection": "councils",
+  "title": "Council of Basel-Ferrara-Florence",
+  "language": "la",
+  "words": 5,
+  "starts": "general form ab homine vel",
+  "sha1": "03ecb513a3742a7b4987c41c173bec12ea3a5aeb"
+ },
+ {
+  "document_id": "7855cbe8-58e5-544b-a6f9-628cc22ba212",
+  "anchor": "lumen-fidei/19",
+  "collection": "encyclicals",
+  "title": "Lumen Fidei",
+  "language": "la",
+  "words": 12,
+  "starts": "striking way ab eo qui fecit",
+  "sha1": "373967f84b9931a22962c9dc388bc64e33acabca"
+ },
+ {
+  "document_id": "7855cbe8-58e5-544b-a6f9-628cc22ba212",
+  "anchor": "lumen-fidei/27",
+  "collection": "encyclicals",
+  "title": "Lumen Fidei",
+  "language": "la",
+  "words": 5,
+  "starts": "amor ipse notitia est love",
+  "sha1": "33305ddfd3ddebd91aee914f3509a28bc3de3d06"
+ },
+ {
+  "document_id": "7b14f9f4-f2e0-5295-b5ad-1923a625a1b2",
+  "anchor": "veritatis-splendor/116",
+  "collection": "encyclicals",
+  "title": "Veritatis Splendor",
+  "language": "la",
+  "words": 6,
+  "starts": "communion cum petro et sub petro",
+  "sha1": "e156b13b808a54bdb7e16229d42e09f4c542597f"
+ },
+ {
+  "document_id": "7b14f9f4-f2e0-5295-b5ad-1923a625a1b2",
+  "anchor": "veritatis-splendor/24",
+  "collection": "encyclicals",
+  "title": "Veritatis Splendor",
+  "language": "la",
+  "words": 9,
+  "starts": "prayer da quod iubes et iube",
+  "sha1": "b3b5f015ebdde7d942109af650fe4b5c5d839216"
+ },
+ {
+  "document_id": "7b14f9f4-f2e0-5295-b5ad-1923a625a1b2",
+  "anchor": "veritatis-splendor/81",
+  "collection": "encyclicals",
+  "title": "Veritatis Splendor",
+  "language": "la",
+  "words": 15,
+  "starts": "themselves sins cum iam opera ipsa",
+  "sha1": "214cdcc7a46241576d18231981f0487597a1b489"
+ },
+ {
+  "document_id": "82d38756-6fba-5af7-9905-fd508a620f38",
+  "anchor": "vi.ii.vii/from-p3-2",
+  "collection": "medieval",
+  "title": "Cur Deus Homo",
+  "language": "la",
+  "words": 8,
+  "starts": "returning est enim spiritus vadens et",
+  "sha1": "28919ce7b01bcd51cfc2461a80dc0bd098989643"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "anchor": "council-of-vienne/series-1/canon/14",
+  "collection": "councils",
+  "title": "Council of Vienne",
+  "language": "la",
+  "words": 10,
+  "starts": "extorted nullis privilegiis pactis aut remissionibus",
+  "sha1": "3e84353eb70e6d356ee1d2e017c39cd02b249491"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "anchor": "council-of-vienne/series-1/canon/18",
+  "collection": "councils",
+  "title": "Council of Vienne",
+  "language": "la",
+  "words": 5,
+  "starts": "apostolic see ab homine vel",
+  "sha1": "2ea6507ed3b97315c4bcad6390f37b6de622fb1a"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "anchor": "council-of-vienne/series-1/canon/2/from-p4",
+  "collection": "councils",
+  "title": "Council of Vienne",
+  "language": "la",
+  "words": 13,
+  "starts": "per se aut per fratres quos",
+  "sha1": "e7c8cfb3ce12318c3d41651fb797e8b5f27275f1"
+ },
+ {
+  "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
+  "anchor": "council-of-vienne/series-1/canon/21/from-p6-2",
+  "collection": "councils",
+  "title": "Council of Vienne",
+  "language": "la",
+  "words": 12,
+  "starts": "bound eo obligationis modo sub quo",
+  "sha1": "02e355811f036e73e2af718dcb5c7ec80bb00aa5"
+ },
+ {
+  "document_id": "85e7153f-b45d-5eb6-9f5b-e87967da6f29",
+  "anchor": "xii.iii.i.lix",
+  "collection": "church-fathers",
+  "title": "The Seven Books of Arnobius Against the Heathen. (Adversus Gentes.)",
+  "language": "la",
+  "words": 6,
+  "starts": "hoc pane andhic panis hic sanguis",
+  "sha1": "188ea9d5d03c756e5707a18a90f77b99ee6a1073"
+ },
+ {
+  "document_id": "85e7153f-b45d-5eb6-9f5b-e87967da6f29",
+  "anchor": "xii.iii.v.xxi",
+  "collection": "church-fathers",
+  "title": "The Seven Books of Arnobius Against the Heathen. (Adversus Gentes.)",
+  "language": "la",
+  "words": 18,
+  "starts": "means arietem nobilem bene grandibus cum",
+  "sha1": "ada43246f4131e383d2fc51c33a7776ec84188cd"
+ },
+ {
+  "document_id": "85e7153f-b45d-5eb6-9f5b-e87967da6f29",
+  "anchor": "xii.iii.v.xxviii",
+  "collection": "church-fathers",
+  "title": "The Seven Books of Arnobius Against the Heathen. (Adversus Gentes.)",
+  "language": "la",
+  "words": 29,
+  "starts": "penis figit super aggerem tumuli et",
+  "sha1": "81872d0ac619e8089ad0f7118f6a2a539e416755"
+ },
+ {
+  "document_id": "889699a4-4e87-59e9-aa73-7fa036b82a7f",
+  "anchor": "ecclesia-de-eucharistia/44",
+  "collection": "encyclicals",
+  "title": "Ecclesia de Eucharistia",
+  "language": "la",
+  "words": 5,
+  "starts": "encyclical letter ut unum sint",
+  "sha1": "b8fc4a73b652914cc48908505a3e1a32404b296b"
+ },
+ {
+  "document_id": "889699a4-4e87-59e9-aa73-7fa036b82a7f",
+  "anchor": "ecclesia-de-eucharistia/61",
+  "collection": "encyclicals",
+  "title": "Ecclesia de Eucharistia",
+  "language": "la",
+  "words": 5,
+  "starts": "jesus ut unum sint jn",
+  "sha1": "6389582c2973634ba67e9a3f365a25162ba13188"
+ },
+ {
+  "document_id": "92c7ab9f-fe71-5247-8669-44fbc67085a4",
+  "anchor": "fides-et-ratio/14",
+  "collection": "encyclicals",
+  "title": "Fides et Ratio",
+  "language": "la",
+  "words": 8,
+  "starts": "conceived non solum es quo maius",
+  "sha1": "865da599b0119d9a28abbaea2aa0e17f8ea7c205"
+ },
+ {
+  "document_id": "9679c400-d314-5394-b916-f6fc27b50104",
+  "anchor": "ccc/1384",
+  "collection": "catechism",
+  "title": "Catechism of the Catholic Church",
+  "language": "la",
+  "words": 19,
+  "starts": "centurion domine non sum dignus ut",
+  "sha1": "11d77caa60e7600ffd9162fd97bd6ba59dea1a40"
+ },
+ {
+  "document_id": "9679c400-d314-5394-b916-f6fc27b50104",
+  "anchor": "ccc/1548",
+  "collection": "catechism",
+  "title": "Catechism of the Catholic Church",
+  "language": "la",
+  "words": 8,
+  "starts": "christ himself virtute ac persona ipsius",
+  "sha1": "a1562a61a2cc7e8f9bb401712b4b16fd363f97ae"
+ },
+ {
+  "document_id": "9a3661e6-dc89-509f-b191-ec2adbf5c695",
+  "anchor": "iv.vi.i/retractations",
+  "collection": "church-fathers",
+  "title": "On the Profit of Believing",
+  "language": "la",
+  "words": 11,
+  "starts": "book begins thus si mihi honorate",
+  "sha1": "73380759e8226994e47351099b310423cc2e62cf"
+ },
+ {
+  "document_id": "9c331b8c-1f07-5c5a-8375-d70d7ca92ee8",
+  "anchor": "quas-primas/17",
+  "collection": "encyclicals",
+  "title": "Quas Primas",
+  "language": "la",
+  "words": 7,
+  "starts": "non eripit mortalia qui regna dat",
+  "sha1": "596223ae2cf916fc3543712a39bba24c00322b85"
+ },
+ {
+  "document_id": "9e93f3ef-cd33-598f-9aac-f2a5886d3e21",
+  "anchor": "iv.iii.xxviii/from-p2-2",
+  "collection": "church-fathers",
+  "title": "The Octavius of Minucius Felix",
+  "language": "la",
+  "words": 47,
+  "starts": "himself ista enim impudicitae eorum forsitan",
+  "sha1": "8ed1f8e7eb3d4aeefd50a6fa1d77b39e68dfa5c9"
+ },
+ {
+  "document_id": "a7d81ceb-501f-5b85-97ce-8c26e6168a45",
+  "anchor": "nostis-et-nobiscum/19",
+  "collection": "encyclicals",
+  "title": "Nostis Et Nobiscum",
+  "language": "la",
+  "words": 49,
+  "starts": "written subjecti estote omni humanae creaturae",
+  "sha1": "40204dcd70e9376c68cf37bb255808bbd14a9ace"
+ },
+ {
+  "document_id": "a7d81ceb-501f-5b85-97ce-8c26e6168a45",
+  "anchor": "nostis-et-nobiscum/19",
+  "collection": "encyclicals",
+  "title": "Nostis Et Nobiscum",
+  "language": "la",
+  "words": 35,
+  "starts": "again omnis anima potestatibus sublimioribus subdita",
+  "sha1": "70e09420a01df6036dd14e15488ef87d4a1f97fa"
+ },
+ {
+  "document_id": "a7d81ceb-501f-5b85-97ce-8c26e6168a45",
+  "anchor": "nostis-et-nobiscum/4",
+  "collection": "encyclicals",
+  "title": "Nostis Et Nobiscum",
+  "language": "la",
+  "words": 23,
+  "starts": "mere nothing quid enim prodest homini",
+  "sha1": "fdad7b3fb1d72f82cfbf9d89d0863405d9604740"
+ },
+ {
+  "document_id": "aff19604-39c5-5a31-abfa-05b01e21495c",
+  "anchor": "vita-consecrata/14",
+  "collection": "apostolic-exhortations",
+  "title": "Vita Consecrata",
+  "language": "la",
+  "words": 8,
+  "starts": "hoc semper esse ad fratres de",
+  "sha1": "300143d6a80c91157006ab3e390401343b79acf5"
+ },
+ {
+  "document_id": "aff19604-39c5-5a31-abfa-05b01e21495c",
+  "anchor": "vita-consecrata/14",
+  "collection": "apostolic-exhortations",
+  "title": "Vita Consecrata",
+  "language": "la",
+  "words": 20,
+  "starts": "mountain ab ipso domino familiarissime celebrata",
+  "sha1": "b191739a4b3e9b3f174f1afcf1fb9e492119b1a1"
+ },
+ {
+  "document_id": "c254a3b6-c2cd-5425-8205-a447b91c0bdb",
+  "anchor": "deus-caritas-est/17",
+  "collection": "encyclicals",
+  "title": "Deus Caritas Est",
+  "language": "la",
+  "words": 6,
+  "starts": "itself idem velle atque idem nolle",
+  "sha1": "7966943c91dc3aa16c787c78fe0a58a4293cfb1b"
+ },
+ {
+  "document_id": "c254a3b6-c2cd-5425-8205-a447b91c0bdb",
+  "anchor": "deus-caritas-est/28",
+  "collection": "encyclicals",
+  "title": "Deus Caritas Est",
+  "language": "la",
+  "words": 11,
+  "starts": "thieves remota itaque iustitia quid sunt",
+  "sha1": "e2863b4e30008daabb13a684396fa737d88ed60b"
+ },
+ {
+  "document_id": "c254a3b6-c2cd-5425-8205-a447b91c0bdb",
+  "anchor": "deus-caritas-est/30/from-e77",
+  "collection": "encyclicals",
+  "title": "Deus Caritas Est",
+  "language": "la",
+  "words": 5,
+  "starts": "encyclical ut unum sint emphasized",
+  "sha1": "9ec3b08d02590559e30195b813779af4f250381a"
+ },
+ {
+  "document_id": "c254a3b6-c2cd-5425-8205-a447b91c0bdb",
+  "anchor": "deus-caritas-est/38",
+  "collection": "encyclicals",
+  "title": "Deus Caritas Est",
+  "language": "la",
+  "words": 6,
+  "starts": "sufferings si comprehendis non est deus",
+  "sha1": "bb361028d1f5c293c8ccb61e5cad7d06d54b0d92"
+ },
+ {
+  "document_id": "c3bfda64-97c2-56d3-8091-eb24c93e7931",
+  "anchor": "casti-connubii/36",
+  "collection": "encyclicals",
+  "title": "Casti Connubii",
+  "language": "la",
+  "words": 8,
+  "starts": "church sacramentum hoc magnum est ego",
+  "sha1": "36a52583b687bafad6d8d78e2f22e37acea3959f"
+ },
+ {
+  "document_id": "c7a1cced-c7f1-57aa-b0ea-da3a99edcc33",
+  "anchor": "iii.iii.v.xi",
+  "collection": "church-fathers",
+  "title": "The Refutation of All Heresies",
+  "language": "la",
+  "words": 7,
+  "starts": "non existent god became anything non",
+  "sha1": "5595b26496e7532f63579ccc9f861cd5089edfe8"
+ },
+ {
+  "document_id": "c7ef22ce-17e4-5b8a-b915-9470f19eebe4",
+  "anchor": "ix.vi.xxxviii/from-p26",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book IV",
+  "language": "la",
+  "words": 5,
+  "starts": "accord sed non ultro coalitam",
+  "sha1": "5daa3bd5ee5ae874a8059aefb8ab81123e6f8745"
+ },
+ {
+  "document_id": "cc81769d-2c6a-5735-9562-a4cb600edb41",
+  "anchor": "respicientes/12",
+  "collection": "encyclicals",
+  "title": "Respicientes",
+  "language": "la",
+  "words": 21,
+  "starts": "st paul quae participatio injustitiae cum",
+  "sha1": "9d65c7036783362f37a112aa24aa928003fc43ba"
+ },
+ {
+  "document_id": "ceaf39ca-5c62-5860-8db3-a5d91ea0cdec",
+  "anchor": "pastores-dabo-vobis/25/from-e158",
+  "collection": "apostolic-exhortations",
+  "title": "Pastores Dabo Vobis",
+  "language": "la",
+  "words": 5,
+  "starts": "desire aut effectu aut affectu",
+  "sha1": "5c552a1a52b860333661953f38cab89961c29b6f"
+ },
+ {
+  "document_id": "ceb6f6b0-f8bc-5a11-95c5-ac52f6bfce3f",
+  "anchor": "dilexit-nos/209",
+  "collection": "encyclicals",
+  "title": "Dilexit Nos",
+  "language": "it",
+  "words": 27,
+  "starts": "love io dico che pensando al",
+  "sha1": "3fdbeee66bfdee10c14ad84ed13e7b6fb5f0c85b"
+ },
+ {
+  "document_id": "d318fc4d-d118-50ff-ac03-f90e4d149c01",
+  "anchor": "ix.vii.xiv/from-p9",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book V",
+  "language": "la",
+  "words": 5,
+  "starts": "able ita ut possit according",
+  "sha1": "34fefe7bd3c4de0f34529196f198477339226a57"
+ },
+ {
+  "document_id": "d318fc4d-d118-50ff-ac03-f90e4d149c01",
+  "anchor": "ix.vii.xx",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book V",
+  "language": "la",
+  "words": 10,
+  "starts": "human nature inscii ejus quae est",
+  "sha1": "47f047bd0021b83a90ab5b31639fce558cf7410a"
+ },
+ {
+  "document_id": "d318fc4d-d118-50ff-ac03-f90e4d149c01",
+  "anchor": "ix.vii.xxi/from-p5",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book V",
+  "language": "la",
+  "words": 6,
+  "starts": "human nature secundum hominem est dispositio",
+  "sha1": "6b455bde2de4c6ea3151855508c23f2a89bc4b04"
+ },
+ {
+  "document_id": "d318fc4d-d118-50ff-ac03-f90e4d149c01",
+  "anchor": "ix.vii.xxii",
+  "collection": "church-fathers",
+  "title": "Against Heresies: Book V",
+  "language": "la",
+  "words": 11,
+  "starts": "fashioned ex quo ea quae secundum",
+  "sha1": "bf44de564a243c6b2de3131c544ff4157b939e76"
+ },
+ {
+  "document_id": "d5938437-edde-503d-8c58-95b74bd276f3",
+  "anchor": "v.vi.xxv",
+  "collection": "church-fathers",
+  "title": "Against Lying",
+  "language": "la",
+  "words": 9,
+  "starts": "sour lucus quod non luceat parcae",
+  "sha1": "55eee23a2ff1c8767520103c7c73db67c381be91"
+ },
+ {
+  "document_id": "dac28881-f92b-5c94-991a-5b244e2d49c3",
+  "anchor": "iv.XIV.26",
+  "collection": "church-fathers",
+  "title": "City of God",
+  "language": "la",
+  "words": 130,
+  "starts": "tanta facilitate rerum et felicitate hominum",
+  "sha1": "c33258e0b7155a0e5c2f4637a22cf75efda28827"
+ },
+ {
+  "document_id": "dddc9eb5-4c5a-55a2-9202-f93453fe900e",
+  "anchor": "inter-multiplices/7",
+  "collection": "encyclicals",
+  "title": "Inter Multiplices",
+  "language": "fr",
+  "words": 13,
+  "starts": "work entitled sur la situation presente",
+  "sha1": "cbca284b42c2fca66153dfcaaddf55e0bd94e796"
+ },
+ {
+  "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
+  "anchor": "council-of-trent/session-23/decree-on-reformation/chapter-6",
+  "collection": "councils",
+  "title": "Council of Trent",
+  "language": "la",
+  "words": 5,
+  "starts": "begins clerici qui cum unicis",
+  "sha1": "8333882171f7a60abdf93b6080e9c62690f7e5bc"
+ },
+ {
+  "document_id": "eb423a0c-1058-5124-ac7e-c5ab377b9ed4",
+  "anchor": "ut-unum-sint/1",
+  "collection": "encyclicals",
+  "title": "Ut Unum Sint",
+  "language": "la",
+  "words": 5,
+  "starts": "ecumenism introduction ut unum sint",
+  "sha1": "f8d2ac4d16a87aa4b0a9d9f82b68ba43d9580109"
+ },
+ {
+  "document_id": "eb423a0c-1058-5124-ac7e-c5ab377b9ed4",
+  "anchor": "ut-unum-sint/9",
+  "collection": "encyclicals",
+  "title": "Ut Unum Sint",
+  "language": "la",
+  "words": 5,
+  "starts": "christ's prayer ut unum sint",
+  "sha1": "1fec8a1b56db7fa66d4bfd7505e1da3fb5803d68"
+ },
+ {
+  "document_id": "f6de8a59-c641-53fa-9eb9-c8c151619125",
+  "anchor": "c-est-la-confiance/1",
+  "collection": "apostolic-exhortations",
+  "title": "C'est la confiance",
+  "language": "fr",
+  "words": 14,
+  "starts": "c’est la confiance et rien que",
+  "sha1": "d4de2676b09bd7504277f9dc1645541ed85e0bdb"
+ }
+]

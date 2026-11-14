@@ -16,17 +16,20 @@ from __future__ import annotations
 
 import os
 import re
+from dataclasses import replace
 from glob import glob
 from xml.etree.ElementTree import Element, tostring
 
 import defusedxml.ElementTree as ET
 
 from model import Document, Work
+from registry import drop_removed
 from normalize.caps import smart_title_case
 from normalize.text import fold_ligatures
 from ingest.common import (_block_text, _build_parent_map, _cf_skippable, _strip_tags,
                            direct_blocks, iter_chapters)
-from ingest.editorial import PLAIN_CALLERS, Editor, Removed, _norm, strip_editorial_lines
+from ingest.editorial import (PLAIN_CALLERS, Editor, Removed, _norm, span_sha1,
+                               strip_editorial_lines)
 from ingest.editorial_keep import QuoteEdit, kept_quotes
 from ingest.thml_doc import ChapterPlan, _chapter_label, distinct_titles, make_doc
 
@@ -585,10 +588,98 @@ def build_documents(path: str) -> list[Document]:
     return docs
 
 
+# ------------------------------------------------------------------ 3.3: rule E
+
+# Paragraphs the ANF translators left in Latin inside passages that are otherwise English,
+# by (document ID, passage anchor): the sha1 of each paragraph (`editorial.span_sha1`),
+# never its text. They are cut and the passage keeps its ID (Carter, 14 Nov 2026); each
+# has a `span` entry in the removal registry. The wholly Latin passages are `passage`
+# entries, which `build_all` skips through `registry.drop_removed`, as the papal adapters
+# do, so the release report's raw build agrees with the stage.
+NON_ENGLISH_PARAGRAPHS = {
+    ("96584290-90c2-50bc-9d3d-c353b8969e1f", "vi.iii.ii.x"):
+        frozenset({"1028a38462d03a8677a6d83b71afffc696f2af6a"}),
+    ("96584290-90c2-50bc-9d3d-c353b8969e1f", "vi.iii.ii.x/from-p30"):
+        frozenset({"33b265ad15540da891491b2b4cb3b47488fbd422"}),
+    ("f913305f-b259-578b-a5ca-532fac927aab", "iii.iv.xiii"):
+        frozenset({"0e4c520e29733fbcd27902da4661a375fd97d8c3"}),
+}
+# The works that lose passages to rule E and keep the rest: the Stromata, the Instructor,
+# the Divine Institutes and On the Workmanship of God (3.3's note, approved 14 Nov 2026).
+NON_ENGLISH_OMITTED = frozenset({
+    "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38", "96584290-90c2-50bc-9d3d-c353b8969e1f",
+    "9e03c96d-8295-5e5e-a4d3-3570ddcf0415", "f913305f-b259-578b-a5ca-532fac927aab"})
+NON_ENGLISH_NOTE = ("Some passages are omitted: the translators left them in Latin and no "
+                    "public-domain English translation exists.")
+
+
+def _without_paragraphs(passage, cut: frozenset[str]):
+    """The passage without the paragraphs whose sha1 is in `cut`. Each must be found, so
+    a source change that moves one fails the build instead of leaving Latin in place.
+    A split piece's `source_units` and its footnotes' offsets move with the text they
+    point at; a unit that opens a cut paragraph, or a note placed in one, is dropped and
+    the notes left are renumbered."""
+    parts = passage.content.split("\n\n")
+    found = {span_sha1(p) for p in parts} & cut
+    if found != cut:
+        raise ValueError(f"{passage.anchor}: rule-E paragraphs not found: "
+                         f"{sorted(cut - found)}")
+    kept, spans, starts, at = [], [], [], 0   # spans: (start, end) of each cut
+    for p in parts:
+        end = at + len(p)
+        starts.append(at)
+        if span_sha1(p) in cut:
+            spans.append((at, min(end + 2, len(passage.content))))
+        else:
+            kept.append(p)
+        at = end + 2
+
+    def moved(offset: int) -> int:
+        return offset - sum(end - start for start, end in spans if offset >= end)
+
+    # A unit's offset is measured before the text is cleaned, so it lands near, not on,
+    # the start of its paragraph: it belongs to the paragraph whose start is nearest.
+    # One in a cut paragraph has no text left in the piece; the rest move to the start
+    # of their paragraph in the new text.
+    units = []
+    for loc, off in passage.source_units:
+        start = min(starts, key=lambda a: abs(a - off))
+        if not any(a == start for a, _ in spans):
+            units.append((loc, moved(start)))
+    units = tuple(units)
+    metadata = passage.metadata
+    if metadata and metadata.get("footnotes"):
+        # A note sits after the character at `at`; one inside a cut paragraph goes with it.
+        notes = [n for n in metadata["footnotes"]
+                 if not any(start < n["at"] <= end for start, end in spans)]
+        metadata = {**metadata, "footnotes": [
+            {**n, "n": i, "at": moved(n["at"])} for i, n in enumerate(notes, 1)]}
+        if not metadata["footnotes"]:
+            del metadata["footnotes"]
+    return replace(passage, content="\n\n".join(kept), source_units=units,
+                   metadata=metadata)
+
+
+def _rule_e(document: Document) -> Document:
+    passages = [_without_paragraphs(p, NON_ENGLISH_PARAGRAPHS[(document.id, p.anchor)])
+                if (document.id, p.anchor) in NON_ENGLISH_PARAGRAPHS else p
+                for p in document.passages]
+    if document.id in NON_ENGLISH_OMITTED:
+        if document.notes:
+            raise ValueError(f"{document.title} already has notes")
+        return replace(document, passages=passages, notes=NON_ENGLISH_NOTE)
+    return replace(document, passages=passages)
+
+
 def build_all() -> list[Document]:
     docs: list[Document] = []
     for path in sorted(glob(os.path.join(_SRC_DIR, "*.xml"))):
         if path.endswith(".Zone.Identifier"):
             continue
         docs.extend(build_documents(path))
-    return distinct_titles(docs)
+    docs = [drop_removed(_rule_e(d)) for d in distinct_titles(docs)]
+    built = {(d.id, p.anchor) for d in docs for p in d.passages}
+    missing = sorted(set(NON_ENGLISH_PARAGRAPHS) - built)
+    if missing:
+        raise ValueError(f"rule-E passages not built: {missing}")
+    return docs

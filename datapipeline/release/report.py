@@ -26,6 +26,10 @@ An excerpt-only document whose rights row records an `excerpt_basis` (5.2) must 
 within its limits, as release.excerpt_basis checks: no passage over the basis's word
 limit, and the text taken from the site it names.
 
+Every staged passage is English (rule E, 3.3), as release.english_only checks: no
+`language` other than English, and no Latin, Italian or French run that
+checks/language_approved.json does not list (`checks.language.english_only`).
+
 report.md also lists each build document's contents tree (#250): its node count, the
 chapters no node opens, or the reason the tree breaks the contract.
 
@@ -54,6 +58,7 @@ import contents  # noqa: E402
 import health  # noqa: E402
 import rights_inventory  # noqa: E402
 from checks import health as health_cli  # noqa: E402
+from checks import language  # noqa: E402
 from checks import report as checks_report  # noqa: E402
 from model import Document  # noqa: E402
 from release import outline  # noqa: E402
@@ -106,6 +111,13 @@ def excerpt_failures(built: list[Document]) -> list[R.Failure]:
                       p.anchor if p is not None else None, None, detail)
             for d, p, detail in rights_inventory.excerpt_failures(built,
                                                                   rights_inventory.load())]
+
+
+def english_failures(built: list[Document]) -> list[R.Failure]:
+    """`release.english_only` (3.3): each staged passage that is not English."""
+    return [R.Failure("english_only", d.collection, d.id, R.default_passage_id(d, p),
+                      p.anchor, None, detail)
+            for d, p, detail in language.english_only(built)]
 
 
 def old_passages(snapshot: dict[str, list[Document]]) -> list[R.OldPassage]:
@@ -522,6 +534,8 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
         result.failures.extend(outline_checks)
     # 5.2: an excerpt-only document stays within its allowed-use basis's limits.
     result.failures.extend(excerpt_failures(built))
+    # 3.3: rule E, every staged passage is English.
+    result.failures.extend(english_failures(built))
     references = {}
     references_path = os.path.join(snapshot_dir, "references.json")
     if os.path.exists(references_path):
