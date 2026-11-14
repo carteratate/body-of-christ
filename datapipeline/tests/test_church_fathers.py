@@ -389,3 +389,70 @@ def test_confessions_plain_callers_removed(fathers):
     assert "remains immutably. It is good" in p.content
     assert "my gooodness." in p.content
     assert not re.search(r"[a-z][.,]\d", p.content)
+
+
+# ------------------------------------------------------------------ 1.8d: On the Incarnation
+
+_INCARNATION = "cf235300-e37d-5a7a-a421-f50efff38355"
+
+
+@pytest.fixture(scope="module")
+def incarnation():
+    docs = build_documents(os.path.join(_SRC, "npnf204.xml"))
+    assert len(docs) == 1, [d.title for d in docs]      # the rest of the volume is 5.6a's
+    return docs[0]
+
+
+def test_incarnation_is_robertson(incarnation):
+    d = incarnation
+    assert (d.id, d.author, d.title) == (_INCARNATION, "Athanasius",
+                                         "On the Incarnation of the Word")
+    assert d.metadata["source_key"] == "church-fathers/npnf204.xml#vii.ii"
+    assert "Whereas in what precedes we have drawn out" in d.passages[0].content
+    assert not [p.anchor for p in d.passages if "In our former book" in p.content]
+    keys = list(dict.fromkeys(p.chapter_key for p in d.passages))
+    assert len(keys) == 57
+    assert [next(p.chapter_label for p in d.passages if p.chapter_key == k) for k in keys] \
+        == [f"Section {n}" for n in range(1, 58)]
+    assert d.passages[0].reference == "On the Incarnation of the Word, Section 1"
+
+
+def test_incarnation_section_summaries_stripped(incarnation):
+    assert not [p.anchor for p in incarnation.passages if p.content.startswith("Introductory")]
+    # No section number or analytical heading is left, nor the title and rule over §1.
+    assert not [p.anchor for p in incarnation.passages if "§" in p.content]
+    assert not incarnation.passages[0].content.startswith("On the Incarnation")
+    second = next(p for p in incarnation.passages if p.chapter_key == "vii.ii.ii")
+    assert second.content.startswith("Of the making of the universe")
+
+
+def test_incarnation_section_five_keeps_its_opening(incarnation):
+    # §5 prints no analytical heading: its div title is Athanasius's own first sentence,
+    # which stays; only "§5." goes.
+    five = next(p for p in incarnation.passages if p.chapter_key == "vii.ii.v")
+    assert five.content.startswith("For God has not only made us out of nothing; but He "
+                                   "gave us freely")
+
+
+def test_incarnation_removals_recorded():
+    from ingest import editorial
+    with editorial.recording() as log:
+        build_documents(os.path.join(_SRC, "npnf204.xml"))
+    removed = [r for _, _, edit in log if hasattr(edit, "removed") for r in edit.removed]
+    summaries = [r for r in removed if r.kind == "section-summary"]
+    assert len(summaries) == 56
+    assert all(r.text.startswith("§") for r in summaries)
+    # The work's title and rule line over §1, and §5's number.
+    headings = [r.text for r in removed if r.kind == "heading"]
+    assert len(headings) == 3 and "§5." in headings
+    assert "On the Incarnation of the Word." in headings
+
+
+def test_volume_scope_matches_the_adapter():
+    assert source_text.VOLUME_SCOPE == {f: tuple(works) for f, works in cf.VOLUME_WORKS.items()}
+
+
+def test_incarnation_coverage_reads_only_its_work():
+    units = source_text.thml_units(os.path.join(_SRC, "npnf204.xml"))
+    assert units and all(u.unit_id == "vii.ii" or u.unit_id.startswith("vii.ii.")
+                         for u in units)
