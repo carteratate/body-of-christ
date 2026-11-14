@@ -63,6 +63,14 @@ def test_a_fix_must_match_exactly_once():
         apply_fixes(blocks, [{"find": "absent", "replace": "x"}])
 
 
+def test_a_printings_brackets_are_text_not_note_callers():
+    """The site's page marks its notes "[39]"; a printing's notes are kept out by the
+    builder, so its brackets stay (The Catholic Mind's "AAS [39] 1947")."""
+    text = "with Christ (AAS [39] 1947, 552)."
+    assert papal_common._clean(text, "test", callers=False) == text
+    assert "[39]" not in papal_common._clean(text, "test")
+
+
 def test_citations_become_source_lines_and_ibid_names_its_source():
     from ingest.papal_printings import mark_sources
 

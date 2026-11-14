@@ -1,0 +1,38 @@
+{
+ "work": "catholic-mind-1951-menti-nostrae",
+ "title": "Menti Nostrae, \"Unofficial English text of the Apostolic Exhortation dated September 23, 1950\" (the N.C.W.C. News Service translation), in The Catholic Mind, vol. 49 no. 1057 (New York: The America Press, January 1951), pp. 37–64",
+ "scan": "sim_catholic-mind_1951-01_49_1057",
+ "djvu_xml": "apostolic-exhortations/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_djvu.xml",
+ "page_numbers": "apostolic-exhortations/sim_catholic-mind_1951-01_49_1057/sim_catholic-mind_1951-01_49_1057_page_numbers.json",
+ "pages": [
+  "37",
+  "64"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "menti-nostrae",
+   "first": "^VENERABLE BRETHREN",
+   "last": "^PIUS PP",
+   "keep_quotes": true
+  }
+ ],
+ "names": [],
+ "edge_strip": 0.02,
+ "edge_strip_words": true
+}

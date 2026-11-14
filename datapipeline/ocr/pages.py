@@ -30,6 +30,8 @@ class Line:
     numbered: bool = False
     # The source's reading of a line whose letter forms were written out (the long s).
     source: str | None = None
+    # Each word's left and right edge, as the djvu XML gives them (`edge_strip`).
+    edges: tuple[tuple[int, int], ...] = ()
 
     @property
     def reading(self) -> str:
@@ -71,7 +73,8 @@ def _line(el, column: int) -> Line | None:
     if not words:
         return None
     return Line(" ".join(words), min(b[0] for b in boxes), min(b[1] for b in boxes),
-                max(b[2] for b in boxes), max(b[3] for b in boxes), column)
+                max(b[2] for b in boxes), max(b[3] for b in boxes), column,
+                edges=tuple((b[0], b[2]) for b in boxes))
 
 
 def read_djvu_xml(path: str | Path, leaves: range | None = None) -> list[Page]:
