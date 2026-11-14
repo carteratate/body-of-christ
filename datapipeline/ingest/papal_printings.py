@@ -288,7 +288,9 @@ def mark_sources(texts: list[str]) -> list[str]:
             if not rest:
                 cited = f"Ibid., {last}"
             elif rest.startswith("and "):
-                cited = f"Ibid., {last}, {rest}"
+                # "Ibid., and Encyclical ...": both, and a later bare "Ibid." means both.
+                last = f"{last}, {rest}"
+                cited = f"Ibid., {last}"
             elif re.match(_MONTH, rest):
                 # "Ibid, Dec. 11th, 1862": the same letters, this one; a later bare
                 # "Ibid." means it.

@@ -69,12 +69,15 @@ def test_citations_become_source_lines_and_ibid_names_its_source():
     texts = ["Error one.\n\nAllocution Maxima quidem, June 9th, 1862.",
              "Error two. Ibid.",
              "Error three.\n\nIbid., and Encyclical Qui pluribus, Nov. 9th, 1846, etc.",
+             "Error three b.\n\nIbid.",
              "Error four.\n\nLetters to the Archbishop of Munich, Dec. 11th, 1862, and Dec. 21st, 1863.",
              "Error five.\n\nIbid, Dec. 21st, 1863.", "Error six.\n\nIbid.",
              "A note naming the Encyclical Noscitis, Dec. 8th, 1849; Allocution Novos, Sept. 28th, 1860."]
     assert [t.split("\n\n")[-1] for t in mark_sources(texts)] == [
         "[Source: Allocution Maxima quidem, June 9th, 1862]",
         "[Source: Ibid., Allocution Maxima quidem, June 9th, 1862]",
+        "[Source: Ibid., Allocution Maxima quidem, June 9th, 1862, and Encyclical Qui pluribus, "
+        "Nov. 9th, 1846, etc]",
         "[Source: Ibid., Allocution Maxima quidem, June 9th, 1862, and Encyclical Qui pluribus, "
         "Nov. 9th, 1846, etc]",
         "[Source: Letters to the Archbishop of Munich, Dec. 11th, 1862, and Dec. 21st, 1863]",
