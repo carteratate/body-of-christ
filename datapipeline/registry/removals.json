@@ -4982,7 +4982,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 1992
+   "count": 1761
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -7916,7 +7916,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 760
+   "count": 748
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -8456,7 +8456,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 1580
+   "count": 1579
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -18104,7 +18104,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 140
+   "count": 139
   },
   "judgment": null,
   "added_by": "1.10b",

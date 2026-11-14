@@ -13,7 +13,11 @@ Writes, in place of the entries 3.3 added before (`added_by`), the list Carter a
 - where 1.10b or 1.10c redirected an earlier live piece into one of those passages, the
   redirect is closed and that piece is retired too, since its text is the same Latin;
 - a `span` entry for each Latin paragraph cut from a passage that is otherwise English
-  (`ingest.church_fathers.NON_ENGLISH_PARAGRAPHS`), by its sha1.
+  (`ingest.church_fathers.NON_ENGLISH_PARAGRAPHS`), by its sha1;
+- and it keeps 1.10b's per-document note counts (`class` entries of rule
+  `common._p_text_without_notes`) in step with the build for the four works that lose
+  passages, as `scripts/editorial_removals.py` does, since a retired passage's notes
+  leave with it.
 
 Every entry has reason `translation-in-preparation`; the `document` and `passage` entries
 carry rule E's tombstone, and a passage entry names the row's live anchor (2.1). No entry
@@ -32,7 +36,9 @@ if DATAPIPELINE not in sys.path:
     sys.path.insert(0, DATAPIPELINE)
 
 import registry  # noqa: E402
-from ingest.church_fathers import NON_ENGLISH_PARAGRAPHS  # noqa: E402
+from ingest.church_fathers import (NON_ENGLISH_OMITTED,  # noqa: E402
+                                   NON_ENGLISH_PARAGRAPHS)
+NOTE_RULE = "common._p_text_without_notes"
 
 ITEM = "3.3"
 FIRST_ID = 4001
@@ -132,6 +138,18 @@ def apply(reg: registry.WorkRegistry, entries: list[dict], today: str) -> None:
             r["status"] = "retired"
 
 
+def sync_note_counts(reg: registry.WorkRegistry, documents) -> None:
+    """Set each noted work's note-count entry to the notes its built passages still
+    count (`editor_note_count`). `documents`: the Church Fathers build, retired
+    passages dropped."""
+    counts = {d.id: sum((p.metadata or {}).get("editor_note_count", 0) for p in d.passages)
+              for d in documents if d.id in NON_ENGLISH_OMITTED}
+    for e in reg.removals:
+        if e["scope"] == "class" and (e.get("span") or {}).get("rule") == NOTE_RULE \
+                and e["document_id"] in counts and not e.get("closed_by"):
+            e["span"]["count"] = counts[e["document_id"]]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--today", default=date.today().isoformat())
@@ -148,6 +166,9 @@ def main() -> None:
     if args.dry_run:
         return
     apply(reg, entries, args.today)
+    registry.activate(reg)        # the build drops what these entries retire
+    from ingest.church_fathers import build_all
+    sync_note_counts(reg, build_all())
     problems = registry.validate(reg)
     if problems:
         raise SystemExit("registry invalid:\n" + "\n".join(problems[:20]))
