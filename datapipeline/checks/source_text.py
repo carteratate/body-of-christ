@@ -11,7 +11,8 @@ belongs to:
 - "apparatus": page furniture that is none of the above (title pages, indexes, language
   bars, site footers, the editor's introduction to a Bible book);
 - "withheld": the work's own text that rule E keeps out of the corpus because it has no
-  English (1.5b): Latin, and the canons the removal registry retires for it.
+  English (1.5b): Latin, and the canons the removal registry retires for it; in ThML, a
+  paragraph mostly in another language, which a translator left untranslated (3.3).
 
 Nothing here imports from `ingest/`, so a parser defect cannot hide itself by being
 shared. Where a sentence of body text is interrupted by a note, the note's position is
@@ -31,7 +32,7 @@ from typing import NamedTuple
 import defusedxml.ElementTree as ET
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
-from checks.language import latin_runs
+from checks.language import latin_runs, mostly_foreign
 from ingest.editorial import PLAIN_CALLERS
 from ingest.editorial_keep import kept_quotes, quoted_text
 
@@ -162,6 +163,40 @@ def withheld_canons(path: str = REMOVALS_PATH) -> frozenset[str]:
     return _withheld_canons[path]
 
 
+_withheld_chapters: dict[str, frozenset[tuple[str, str]]] = {}
+
+
+def withheld_chapters(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
+    """(ThML file, div id) of each chapter every passage of which the removal registry
+    retires because no English exists (rule E, 3.3): Stromata III ch. 3, Divine
+    Institutes VI.23, On the Workmanship of God 12. A chapter that keeps a passage is
+    not listed; its Latin paragraphs are `mostly_foreign`. Read from the registry files
+    beside `path`: a passage row's anchor is `<div>` or `<div>/<piece>`, and its work's
+    `source_key` names the file."""
+    if path not in _withheld_chapters:
+        folder = os.path.dirname(path)
+        with open(path, encoding="utf-8") as f:
+            retired = {e["passage_id"] for e in json.load(f)
+                       if e.get("collection") == "church-fathers"
+                       and e.get("scope") == "passage" and not e.get("closed_by")
+                       and e.get("reason") == "translation-in-preparation"}
+        with open(os.path.join(folder, "works.json"), encoding="utf-8") as f:
+            files = {w["document_id"]: w["source_key"].split("/", 1)[1].split("#")[0]
+                     for w in json.load(f) if w["collection"] == "church-fathers"}
+        rows_path = os.path.join(folder, "passages", "church-fathers.jsonl")
+        chapters: dict[tuple[str, str], bool] = {}     # → every row retired for rule E
+        if os.path.exists(rows_path):
+            with open(rows_path, encoding="utf-8") as f:
+                for line in f:
+                    r = json.loads(line)
+                    if r["status"] == "redirected" or r["document_id"] not in files:
+                        continue
+                    key = (files[r["document_id"]], r["anchor"].split("/")[0])
+                    chapters[key] = chapters.get(key, True) and r["passage_id"] in retired
+        _withheld_chapters[path] = frozenset(k for k, v in chapters.items() if v)
+    return _withheld_chapters[path]
+
+
 # Volumes only some works of which are built, by file: the work divs measured. Text outside
 # them is not part of any built work (NPNF2-04's other works wait for 5.6a), so it is not
 # read. The adapter names the same divs (`ingest.church_fathers.VOLUME_WORKS`).
@@ -188,7 +223,9 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     carry no text and are ignored. unit_id is the nearest ancestor div's id. Divs
     listed in editorial_divs.json, and everything inside them, are "apparatus", and so
     is a paragraph a removal registry span entry records (`removed_paragraphs`), and the
-    own paragraphs of a div `editorial_own_text` lists. A quotation of the author that
+    own paragraphs of a div `editorial_own_text` lists. A body paragraph mostly in another
+    language (`checks.language.mostly_foreign`), or in a chapter the removal registry
+    retires whole for rule E (`withheld_chapters`), is "withheld" (3.3). A quotation of the author that
     `ingest.editorial_keep` keeps from an editorial div is body under its passage's
     chapter key (`<div>/retractations`), and a footnote caller printed as a plain digit
     (`ingest.editorial.PLAIN_CALLERS`) is read without it, as the adapter reads it. Of a
@@ -199,6 +236,7 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     editorial = editorial_divs(source_file)
     own_text = editorial_own_text(source_file)
     removed = removed_paragraphs()
+    withheld = withheld_chapters()
     quotes = {}
     for q in kept_quotes(source_file):
         quotes.setdefault(q.first, []).append(q)
@@ -230,6 +268,9 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                         text = text.replace(printed, without)
                     own = "apparatus" if region == "body" and (
                         _paragraph_sha1(text) in removed or div_id in own_text) else region
+                    if own == "body" and (mostly_foreign(text)
+                                          or (source_file, div_id) in withheld):
+                        own = "withheld"
                     for q in quotes.get(child.get("id"), [])[:1]:
                         a, b = quoted_text(text, q, child.get("id"))
                         units.append(SourceUnit(source_file, q.anchor, text[a:b], "body"))
