@@ -10,7 +10,6 @@ from app import corpus_lifecycle, corpus_schema
 from app.auth.verify import verify_supabase_jwt
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.catechism_contents import catechism_contents
-from app.derived_contents import derive_summa_contents
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.corpus_lifecycle import CorpusLifecycleError
@@ -452,11 +451,7 @@ async def get_document_toc(
     chapters = [TocEntry(chapter_key=r["chapter_key"], chapter_label=r["chapter_label"])
                 for r in chapter_rows]
     contents = _contents_tree(doc_uuid, contents_rows, [c.chapter_key for c in chapters])
-    if not contents_rows and doc_row["collection"] == "summa":
-        # Stopgap until the Summa is published with a stored tree (#254): derive
-        # Part > Question > Article from today's chapter keys and labels.
-        contents = derive_summa_contents([(c.chapter_key, c.chapter_label) for c in chapters])
-    elif not contents_rows and doc_row["collection"] == "catechism":
+    if not contents_rows and doc_row["collection"] == "catechism":
         # Stopgap until the Catechism is published with a stored tree (#253): its
         # headings from the source, pointed at today's passages by paragraph number.
         contents = catechism_contents(
