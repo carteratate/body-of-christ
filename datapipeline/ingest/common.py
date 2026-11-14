@@ -387,13 +387,7 @@ def _build_parent_map(root) -> dict:
 
 
 def _detect_chunk_level(root) -> int:
-    """Detect deepest div level (1-4) where most divs have direct <p> children.
-    Special case: if any div1 carries type='chapter', return 1 (incarnation.xml).
-    """
-    for d in root.iter("div1"):
-        if d.get("type") == "chapter":
-            return 1
-
+    """Detect deepest div level (1-4) where most divs have direct <p> children."""
     level_total: dict[int, int] = {1: 0, 2: 0, 3: 0, 4: 0}
     level_with_p: dict[int, int] = {1: 0, 2: 0, 3: 0, 4: 0}
 

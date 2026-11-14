@@ -162,6 +162,21 @@ def withheld_canons(path: str = REMOVALS_PATH) -> frozenset[str]:
     return _withheld_canons[path]
 
 
+# Volumes only some works of which are built, by file: the work divs measured. Text outside
+# them is not part of any built work (NPNF2-04's other works wait for 5.6a), so it is not
+# read. The adapter names the same divs (`ingest.church_fathers.VOLUME_WORKS`).
+VOLUME_SCOPE = {"npnf204.xml": ("vii.ii",)}
+
+
+def _in_scope(div_id: str | None, scope: tuple[str, ...] | None) -> bool:
+    return scope is None or (div_id is not None
+                             and any(div_id == d or div_id.startswith(d + ".") for d in scope))
+
+
+def _leads_to_scope(div_id: str | None, scope: tuple[str, ...]) -> bool:
+    return div_id is not None and any(d.startswith(div_id + ".") for d in scope)
+
+
 def _paragraph_sha1(text: str) -> str:
     return hashlib.sha1(" ".join(text.replace(SEGMENT_BREAK, " ").split())
                         .encode("utf-8")).hexdigest()
@@ -176,9 +191,11 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     own paragraphs of a div `editorial_own_text` lists. A quotation of the author that
     `ingest.editorial_keep` keeps from an editorial div is body under its passage's
     chapter key (`<div>/retractations`), and a footnote caller printed as a plain digit
-    (`ingest.editorial.PLAIN_CALLERS`) is read without it, as the adapter reads it."""
+    (`ingest.editorial.PLAIN_CALLERS`) is read without it, as the adapter reads it. Of a
+    volume `VOLUME_SCOPE` lists, only the listed work divs are read."""
     source_file = source_file or os.path.basename(path)
     root = _read_thml(path)
+    scope = VOLUME_SCOPE.get(source_file)
     editorial = editorial_divs(source_file)
     own_text = editorial_own_text(source_file)
     removed = removed_paragraphs()
@@ -192,10 +209,15 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
         for child in el:
             tag = child.tag if isinstance(child.tag, str) else ""
             if tag in _THML_DIVS:
+                if not (_in_scope(child.get("id"), scope)
+                        or _leads_to_scope(child.get("id"), scope)):
+                    continue
                 child_region = _thml_div_region(child.get("title") or "", region)
                 if child.get("id") in editorial:
                     child_region = "apparatus"
                 walk(child, child.get("id") or div_id, child_region, True)
+            elif in_div and not _in_scope(div_id, scope):
+                continue
             elif tag == "note":
                 if in_div:
                     units.append(SourceUnit(source_file, div_id,

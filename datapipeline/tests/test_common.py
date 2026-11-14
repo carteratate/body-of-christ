@@ -214,7 +214,8 @@ def test_detect_chunk_level_city_of_god():
     assert _detect_chunk_level(_root(_CITY_THML)) == 3
 
 
-def test_detect_chunk_level_incarnation_special_case():
+def test_detect_chunk_level_flat_div1s():
+    # Chapters straight under the body need no special case: div1 is where the text is.
     assert _detect_chunk_level(_root(_INCARNATION_THML)) == 1
 
 

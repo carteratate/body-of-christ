@@ -2796,24 +2796,6 @@
   "planned_for": "5.6a"
  },
  {
-  "work": "On the Incarnation of the Word",
-  "author": "Athanasius",
-  "collection": "church-fathers",
-  "source_path": "church-fathers/incarnation.xml",
-  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://ccel.org/ccel/a/athanasius/incarnation.xml",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Chrysostom: On the Priesthood, Ascetic Treatises, Select Homilies and Letters, Homilies on the Statues (NPNF1-09)",
   "author": "John Chrysostom",
   "collection": "church-fathers",
@@ -2926,7 +2908,7 @@
   "author": "Athanasius",
   "collection": "church-fathers",
   "source_path": "church-fathers/npnf204.xml",
-  "document_id": null,
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
   "edition": "Nicene and Post-Nicene Fathers, 2nd series, vol. 4, Athanasius: Select Works and Letters, ed. Archibald Robertson (New York: Christian Literature Company; Oxford: Parker, 1892). The volume says this translation was first printed in 1885 (D. Nutt; 2nd ed. 1891)",
   "translator": "Archibald Robertson",
   "first_published": 1885,
@@ -2937,7 +2919,7 @@
   "credit_line": "Sourced via CCEL.org",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "1.8d"
+  "planned_for": null
  },
  {
   "work": "Cyril of Jerusalem: Catechetical Lectures (NPNF2-07)",
