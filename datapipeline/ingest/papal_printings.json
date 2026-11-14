@@ -1620,5 +1620,1316 @@
     "unit": 13
    }
   ]
+ },
+ "encyclicals/in-supremo-apostolatus": {
+  "source": "ocr",
+  "work": "england-1844-in-supremo-apostolatus",
+  "file": "lettersoflatebis00engl_0/",
+  "url": "https://archive.org/details/lettersoflatebis00engl_0",
+  "translation": "Letters of the Late Bishop England to the Hon. John Forsyth (Baltimore, 1844)",
+  "editorial": [
+   {
+    "opens": "GREGORY XVI, POPE.",
+    "why": "The pope's name set as a heading over the letter, as Mirari Vos's \"POPE GREGORY XVI\"."
+   }
+  ],
+  "units": [
+   {
+    "opens": "For the future memory",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Placed at the supreme height",
+    "unit": 1
+   },
+   {
+    "opens": "When, indeed, the light",
+    "unit": "+"
+   },
+   {
+    "opens": "Universally, however",
+    "unit": 2,
+    "until": "To which refer the apostolic letter"
+   },
+   {
+    "opens": "To which refer the apostolic letter",
+    "unit": 3,
+    "until": "These ordinances of the said pontiffs"
+   },
+   {
+    "opens": "These ordinances of the said pontiffs",
+    "unit": 4,
+    "until": "And, in our times, also, Pius VII"
+   },
+   {
+    "opens": "And, in our times, also, Pius VII",
+    "unit": 5,
+    "until": "We, indeed, with apostolic authority"
+   },
+   {
+    "opens": "We, indeed, with apostolic authority",
+    "unit": 6
+   }
+  ]
+ },
+ "encyclicals/qui-pluribus": {
+  "source": "ocr",
+  "work": "uscm-1847-qui-pluribus",
+  "file": "USCatholicMagazineMonthlyReviewV6/",
+  "url": "https://archive.org/details/USCatholicMagazineMonthlyReviewV6",
+  "translation": "The United States Catholic Magazine and Monthly Review, vol. 6 (Baltimore, 1847)",
+  "editorial": [
+   {
+    "opens": "ENCYCLICAL LETTER OF POPE PIUS IX,",
+    "why": "The magazine's title over the letter, not the letter (rule G)."
+   },
+   {
+    "opens": "TO THE CATHOLIC HIERARCHY THROUGHOUT",
+    "why": "The rest of the magazine's title (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brethren,",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Health and Apostolic Benediction.",
+    "unit": "preamble"
+   },
+   {
+    "opens": "We who, during many years",
+    "unit": 1
+   },
+   {
+    "opens": "Hence, fully conscious",
+    "unit": 2
+   },
+   {
+    "opens": "Our consolation is that",
+    "unit": "+"
+   },
+   {
+    "opens": "Hence, when first",
+    "unit": 3
+   },
+   {
+    "opens": "Wherefore, scarcely have we",
+    "unit": "+"
+   },
+   {
+    "opens": "None of you, venerable brethren",
+    "unit": 4
+   },
+   {
+    "opens": "We shudder indeed",
+    "unit": "+"
+   },
+   {
+    "opens": "For you know, venerable brethren",
+    "unit": "+",
+    "until": "And the more easily to delude"
+   },
+   {
+    "opens": "And the more easily to delude",
+    "unit": 5
+   },
+   {
+    "opens": "Hence, with a preposterous",
+    "unit": 6
+   },
+   {
+    "opens": "Nor is the fallacy",
+    "unit": 7
+   },
+   {
+    "opens": "For who is ignorant",
+    "unit": "+"
+   },
+   {
+    "opens": "But how numerous",
+    "unit": 8,
+    "until": "all which shine forth"
+   },
+   {
+    "opens": "all which shine forth",
+    "unit": 9
+   },
+   {
+    "opens": "Hence, too, plainly appears",
+    "unit": 10,
+    "until": "For this is the chief of churches"
+   },
+   {
+    "opens": "For this is the chief of churches",
+    "unit": 11,
+    "until": "We, therefore, who, by the inscrutable"
+   },
+   {
+    "opens": "We, therefore, who, by the inscrutable",
+    "unit": 12
+   },
+   {
+    "opens": "You are already well acquainted",
+    "unit": 13,
+    "until": "This, also, is the tendency"
+   },
+   {
+    "opens": "This, also, is the tendency",
+    "unit": 14,
+    "until": "Still, to the same point"
+   },
+   {
+    "opens": "Still, to the same point",
+    "unit": 15,
+    "until": "To this point tends that infamous"
+   },
+   {
+    "opens": "To this point tends that infamous",
+    "unit": 16,
+    "until": "Again, to this same point"
+   },
+   {
+    "opens": "Again, to this same point",
+    "unit": 17
+   },
+   {
+    "opens": "Lastly, to this point tends",
+    "unit": "+"
+   },
+   {
+    "opens": "From this overflow",
+    "unit": 18
+   },
+   {
+    "opens": "Therefore, in such vicissitudes",
+    "unit": 19
+   },
+   {
+    "opens": "That it becomes you",
+    "unit": "+",
+    "until": "In order, therefore, to preserve"
+   },
+   {
+    "opens": "In order, therefore, to preserve",
+    "unit": 20
+   },
+   {
+    "opens": "And with equal constancy",
+    "unit": "+"
+   },
+   {
+    "opens": "And “as it is great piety",
+    "unit": 21
+   },
+   {
+    "opens": "And as you know that your ministry",
+    "unit": "+"
+   },
+   {
+    "opens": "This also, venerable brothers",
+    "unit": 22
+   },
+   {
+    "opens": "Apply yourselves to inculcate",
+    "unit": "+"
+   },
+   {
+    "opens": "Now, as there is nothing",
+    "unit": 23
+   },
+   {
+    "opens": "Therefore, as you very well know",
+    "unit": 24
+   },
+   {
+    "opens": "You are not ignorant that you ought",
+    "unit": "+"
+   },
+   {
+    "opens": "You know that the clergy",
+    "unit": 25,
+    "until": "That rightly treating"
+   },
+   {
+    "opens": "That rightly treating",
+    "unit": 26
+   },
+   {
+    "opens": "In your episcopal solicitude",
+    "unit": 27
+   },
+   {
+    "opens": "As you are not ignorant",
+    "unit": 28
+   },
+   {
+    "opens": "Moreover, understanding",
+    "unit": 29,
+    "until": "If we have spoken at length"
+   },
+   {
+    "opens": "If we have spoken at length",
+    "unit": 30
+   },
+   {
+    "opens": "Finally, most dear brethren",
+    "unit": 31
+   },
+   {
+    "opens": "Advance with all your power",
+    "unit": 32
+   },
+   {
+    "opens": "As we love you all",
+    "unit": 33
+   },
+   {
+    "opens": "We confidently hope",
+    "unit": 34
+   },
+   {
+    "opens": "To obtain the happy",
+    "unit": 35
+   },
+   {
+    "opens": "And that the most merciful God",
+    "unit": 36
+   },
+   {
+    "opens": "Finally, as the presage",
+    "unit": 37
+   }
+  ]
+ },
+ "encyclicals/inter-praecipuas": {
+  "source": "ocr",
+  "work": "catholic-cabinet-1845-inter-praecipuas",
+  "file": "catholiccabinet01unkngoog/",
+  "url": "https://archive.org/details/catholiccabinet01unkngoog",
+  "translation": "The Catholic Cabinet, and Chronicle of Religious Intelligence, vol. 1 (St. Louis, 1845)",
+  "editorial": [
+   {
+    "opens": "CIRCULAR LETTER FROM HIS HOLINESS",
+    "why": "The magazine's title over the letter, not the letter (rule G)."
+   },
+   {
+    "opens": "TO ALL PATRIARCHS",
+    "why": "The magazine's subtitle in capitals naming the addressees; the greeting below is the letter's own address."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brothers, health",
+    "unit": "preamble",
+    "until": "Amongst the many"
+   },
+   {
+    "opens": "Amongst the many",
+    "unit": 1
+   },
+   {
+    "opens": "You are but too well aware",
+    "unit": 2
+   },
+   {
+    "opens": "After having quoted",
+    "unit": "+"
+   },
+   {
+    "opens": "You see what was even",
+    "unit": "+",
+    "until": "This is the reason why"
+   },
+   {
+    "opens": "This is the reason why",
+    "unit": 3
+   },
+   {
+    "opens": "In the first place",
+    "unit": "+"
+   },
+   {
+    "opens": "The same disposition",
+    "unit": "+"
+   },
+   {
+    "opens": "But, to return to Bibles",
+    "unit": 4
+   },
+   {
+    "opens": "Hence the warning",
+    "unit": "+",
+    "until": "Notwithstanding this, some new"
+   },
+   {
+    "opens": "Notwithstanding this, some new",
+    "unit": 5
+   },
+   {
+    "opens": "But we find this audacious",
+    "unit": "+"
+   },
+   {
+    "opens": "Consequently, even before",
+    "unit": 6
+   },
+   {
+    "opens": "We have good cause",
+    "unit": 7
+   },
+   {
+    "opens": "The partisans of the Bible",
+    "unit": 8,
+    "until": "Amongst the sectarians of whom"
+   },
+   {
+    "opens": "Amongst the sectarians of whom",
+    "unit": 9
+   },
+   {
+    "opens": "This is why, determined",
+    "unit": "+"
+   },
+   {
+    "opens": "They hope to obtain",
+    "unit": "+"
+   },
+   {
+    "opens": "Scarcely were we made aware",
+    "unit": 10
+   },
+   {
+    "opens": "Wherefore, having consulted",
+    "unit": 11
+   },
+   {
+    "opens": "Let all know then",
+    "unit": "+"
+   },
+   {
+    "opens": "As for yourselves",
+    "unit": 12
+   },
+   {
+    "opens": "Be more careful",
+    "unit": "+"
+   },
+   {
+    "opens": "Finally, as it is the part",
+    "unit": "+"
+   },
+   {
+    "opens": "We are bound not to exclude",
+    "unit": "+"
+   },
+   {
+    "opens": "Moreover, venerable brothers",
+    "unit": 13
+   },
+   {
+    "opens": "Let us not doubt",
+    "unit": 14
+   },
+   {
+    "opens": "But, above all",
+    "unit": 15
+   },
+   {
+    "opens": "We conclude with giving",
+    "unit": 16
+   },
+   {
+    "opens": "Given at Rome from the basilic",
+    "unit": "+"
+   },
+   {
+    "opens": "(Signed) Gregory",
+    "unit": "+",
+    "why": "The signature, printed in small capitals after \"(Signed)\", which the closing rule does not read as one; it closes the letter as other signatures do."
+   }
+  ]
+ },
+ "encyclicals/etsi-multa": {
+  "source": "ocr",
+  "work": "philadelphia-1874-etsi-multa",
+  "file": "encyclicalletter00cath_6/",
+  "url": "https://archive.org/details/encyclicalletter00cath_6",
+  "translation": "Encyclical Letter of Our Most Holy Lord Pius IX (Philadelphia: McLaughlin Brothers, [1874])",
+  "units": [
+   {
+    "opens": "Venerable Brethren;",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Health and the Apostolic",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Although many grievous",
+    "unit": 1
+   },
+   {
+    "opens": "Of late, indeed",
+    "unit": "+",
+    "until": "There ring still"
+   },
+   {
+    "opens": "There ring still",
+    "unit": 2
+   },
+   {
+    "opens": "We have now seen",
+    "unit": "+"
+   },
+   {
+    "opens": "It is not however",
+    "unit": 3
+   },
+   {
+    "opens": "You are well aware",
+    "unit": 4
+   },
+   {
+    "opens": "In Our Allocution",
+    "unit": "+"
+   },
+   {
+    "opens": "After the forcible banishment",
+    "unit": 5,
+    "until": "Moreover, parish priests"
+   },
+   {
+    "opens": "Moreover, parish priests",
+    "unit": 6
+   },
+   {
+    "opens": "We, therefore, as required",
+    "unit": 7
+   },
+   {
+    "opens": "These are sad and sorrowful",
+    "unit": 8,
+    "until": "In the meantime, by a decree"
+   },
+   {
+    "opens": "In the meantime, by a decree",
+    "unit": 9
+   },
+   {
+    "opens": "We thank God",
+    "unit": 10
+   },
+   {
+    "opens": "This noble constancy",
+    "unit": 11
+   },
+   {
+    "opens": "Beside many grievous wrongs",
+    "unit": 12,
+    "until": "Moreover, in order to subvert"
+   },
+   {
+    "opens": "Moreover, in order to subvert",
+    "unit": 13
+   },
+   {
+    "opens": "Thus the Holy Church",
+    "unit": 14
+   },
+   {
+    "opens": "No wonder, therefore",
+    "unit": 15,
+    "until": "Of a truth, Venerable Brothers"
+   },
+   {
+    "opens": "Of a truth, Venerable Brothers",
+    "unit": 16,
+    "until": "From this divine command"
+   },
+   {
+    "opens": "From this divine command",
+    "unit": 17
+   },
+   {
+    "opens": "Since these things are so, you will",
+    "unit": 18,
+    "until": "For that cause they are now"
+   },
+   {
+    "opens": "For that cause they are now",
+    "unit": 19
+   },
+   {
+    "opens": "We should indeed have gladly",
+    "unit": "+"
+   },
+   {
+    "opens": "The things which We have",
+    "unit": 20
+   },
+   {
+    "opens": "Nor is this the end",
+    "unit": 21
+   },
+   {
+    "opens": "The attempts, indeed",
+    "unit": 22
+   },
+   {
+    "opens": "Nevertheless, those unhappy",
+    "unit": 23
+   },
+   {
+    "opens": "But these men, going on",
+    "unit": 24
+   },
+   {
+    "opens": "Hence the holy martyr",
+    "unit": 25
+   },
+   {
+    "opens": "We, therefore, who have been placed",
+    "unit": 26
+   },
+   {
+    "opens": "From these facts",
+    "unit": 27
+   },
+   {
+    "opens": "Neither are matters",
+    "unit": "+"
+   },
+   {
+    "opens": "Some of you may perhaps",
+    "unit": 28,
+    "until": "From their first beginnings"
+   },
+   {
+    "opens": "From their first beginnings",
+    "unit": 29
+   },
+   {
+    "opens": "Since these things are so, do you",
+    "unit": 30
+   },
+   {
+    "opens": "To conclude",
+    "unit": 31
+   },
+   {
+    "opens": "Disturbed, therefore",
+    "unit": "+"
+   },
+   {
+    "opens": "Meanwhile, in testimony",
+    "unit": 32
+   }
+  ]
+ },
+ "encyclicals/cum-sancta-mater-ecclesia": {
+  "source": "ocr",
+  "work": "horan-1859-cum-sancta-mater-ecclesia",
+  "file": "cihm_51176/",
+  "url": "https://archive.org/details/cihm_51176",
+  "translation": "Pastoral letter of Edward John Horan, Bishop of Kingston ([Kingston, 1859])",
+  "editorial": [
+   {
+    "opens": "ENCYCLICAL LETTER OF HIS HOLINESS",
+    "why": "The pastoral's heading over the letter, not the letter (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "To our venerable Brethren",
+    "unit": "preamble"
+   },
+   {
+    "opens": "VENERABLE BRETHREN, HEALTH",
+    "unit": "preamble"
+   },
+   {
+    "opens": "At a time when",
+    "unit": 1,
+    "until": "And with these words of peace"
+   },
+   {
+    "opens": "And with these words of peace",
+    "unit": 2,
+    "until": "We do not doubt"
+   },
+   {
+    "opens": "We do not doubt",
+    "unit": 3,
+    "until": "Lastly, there is nothing"
+   },
+   {
+    "opens": "Lastly, there is nothing",
+    "unit": 4
+   }
+  ]
+ },
+ "encyclicals/exultavit-cor-nostrum": {
+  "source": "ocr",
+  "work": "quebec-1852-exultavit-cor-nostrum",
+  "file": "cihm_52209/",
+  "url": "https://archive.org/details/cihm_52209",
+  "translation": "Pastoral Letter of His Grace the Archbishop of Quebec ([Quebec, 1852])",
+  "editorial": [
+   {
+    "opens": "ENCYCLICAL LETTER",
+    "why": "The pastoral's heading over the letter, not the letter (rule G)."
+   },
+   {
+    "opens": "OF OUR HOLY FATHER POPE PIUS IX., ORDERING",
+    "why": "The rest of the pastoral's heading (rule G)."
+   },
+   {
+    "opens": "AND ANNOUNCING A NEW JUBILEE.",
+    "why": "The rest of the pastoral's heading (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brothers—Health",
+    "unit": "preamble",
+    "until": "Our heart rejoiced"
+   },
+   {
+    "opens": "Our heart rejoiced",
+    "unit": 1
+   },
+   {
+    "opens": "But if, on the one",
+    "unit": 2
+   },
+   {
+    "opens": "In the midst of so many",
+    "unit": 3
+   },
+   {
+    "opens": "For he who asks",
+    "unit": "+"
+   },
+   {
+    "opens": "Let us come, then",
+    "unit": "+"
+   },
+   {
+    "opens": "And that God may be made",
+    "unit": "+"
+   },
+   {
+    "opens": "Moreover, Venerable Brethren",
+    "unit": 4
+   },
+   {
+    "opens": "And in order that the Faithful",
+    "unit": "+"
+   },
+   {
+    "opens": "We entertain this firm hope",
+    "unit": 5
+   },
+   {
+    "opens": "Finally, as an anticipatory",
+    "unit": 6
+   }
+  ]
+ },
+ "encyclicals/ubi-primum-1824": {
+  "source": "ocr",
+  "work": "dublin-1824-ubi-primum",
+  "file": "TheEncyclicalLetterOfPopeLeoTheXI/",
+  "url": "https://archive.org/details/TheEncyclicalLetterOfPopeLeoTheXI",
+  "translation": "The Encyclical Letter of Pope Leo the XII. ... with an English Translation of the Same (Dublin: Richard Coyne, 1824)",
+  "editorial": [
+   {
+    "opens": "TRANSLATION.",
+    "why": "The pamphlet's heading over the English, which faces nothing: the Latin precedes it (rule G)."
+   },
+   {
+    "opens": "TO OUR VENERABLE BRETHREN",
+    "why": "The address set in capitals as a heading; the parser drops a capitals heading at the head of a preamble (papal_common.strip_leading_caps), as for every papal document, and the greeting below opens the letter."
+   },
+   {
+    "opens": "LEO THE XII. POPE",
+    "why": "The pope's name set as a heading, as Mirari Vos's \"POPE GREGORY XVI\"."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble"
+   },
+   {
+    "opens": "As soon as we had been raised",
+    "unit": 1
+   },
+   {
+    "opens": "We desired, Venerable",
+    "unit": 2
+   },
+   {
+    "opens": "You know, Venerable Brethren, that the apostle Peter",
+    "unit": 3
+   },
+   {
+    "opens": "From this you will easily",
+    "unit": "+"
+   },
+   {
+    "opens": "We would wish to remind",
+    "unit": 4
+   },
+   {
+    "opens": "The things relating to those",
+    "unit": 5
+   },
+   {
+    "opens": "You know, Venerable Brethren, how important",
+    "unit": 6
+   },
+   {
+    "opens": "The foregoing terrific",
+    "unit": 7
+   },
+   {
+    "opens": "Those bishops, moreover",
+    "unit": 8
+   },
+   {
+    "opens": "It is to themselves",
+    "unit": 9
+   },
+   {
+    "opens": "It would be sufficient",
+    "unit": 10
+   },
+   {
+    "opens": "But how numerous",
+    "unit": 11
+   },
+   {
+    "opens": "Attend closely",
+    "unit": "+",
+    "until": "But wherefore these remarks?"
+   },
+   {
+    "opens": "But wherefore these remarks?",
+    "unit": 12
+   },
+   {
+    "opens": "Truly this error",
+    "unit": 13
+   },
+   {
+    "opens": "There have not been wanting",
+    "unit": 14
+   },
+   {
+    "opens": "But, oh! the depth",
+    "unit": 15
+   },
+   {
+    "opens": "Shall we dwell further",
+    "unit": 16
+   },
+   {
+    "opens": "You are aware, Venerable Brethren, that a certain Society",
+    "unit": 17
+   },
+   {
+    "opens": "To avert this plague",
+    "unit": 18
+   },
+   {
+    "opens": "We also, Venerable Brethren",
+    "unit": 19,
+    "until": "Which truth is not only proved"
+   },
+   {
+    "opens": "Which truth is not only proved",
+    "unit": 20
+   },
+   {
+    "opens": "Behold then",
+    "unit": 21
+   },
+   {
+    "opens": "But if any person",
+    "unit": 22
+   },
+   {
+    "opens": "Do ye therefore",
+    "unit": 23
+   },
+   {
+    "opens": "Be not disheartened",
+    "unit": "+"
+   },
+   {
+    "opens": "Again, therefore",
+    "unit": 24
+   },
+   {
+    "opens": "The duty of our servitude",
+    "unit": "+"
+   },
+   {
+    "opens": "Lastly, we beseech you",
+    "unit": 25
+   }
+  ]
+ },
+ "encyclicals/ubi-primum-1849": {
+  "source": "ocr",
+  "work": "uscm-1849-ubi-primum",
+  "file": "sim_united-states-catholic-magazine_1849-03-31_8_13/",
+  "url": "https://archive.org/details/sim_united-states-catholic-magazine_1849-03-31_8_13",
+  "translation": "The United States Catholic Magazine, vol. 8 no. 13 (Baltimore, 1849)",
+  "editorial": [
+   {
+    "opens": "ENCYCLICAL LETTER OF OUR HOLY FATHER",
+    "why": "The magazine's title over the letter (rule G)."
+   },
+   {
+    "opens": "IN LATIN, WITH A TRANSLATION",
+    "why": "The magazine's note on its Latin and English columns (rule G)."
+   },
+   {
+    "opens": "TO OUR VENERABLE BROTHERS THE PATRIARCHS",
+    "why": "The address set in capitals as a heading across both columns; the parser drops a capitals heading at the head of a preamble (papal_common.strip_leading_caps), as for every papal document, and the greeting below opens the letter."
+   },
+   {
+    "opens": "POPE PIUS IX.",
+    "why": "The pope's name set as a heading over the English column, as Mirari Vos's \"POPE GREGORY XVI\"."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brethren, health",
+    "unit": "preamble"
+   },
+   {
+    "opens": "When, by no merit",
+    "unit": 1,
+    "until": "This most pious wish"
+   },
+   {
+    "opens": "This most pious wish",
+    "unit": 2,
+    "until": "Moreover, Venerable Brethren, a great many"
+   },
+   {
+    "opens": "Moreover, Venerable Brethren, a great many",
+    "unit": 3,
+    "until": "To us these wishes"
+   },
+   {
+    "opens": "To us these wishes",
+    "unit": 4,
+    "until": "For you all know"
+   },
+   {
+    "opens": "For you all know",
+    "unit": 5
+   },
+   {
+    "opens": "For these reasons",
+    "unit": "+"
+   },
+   {
+    "opens": "Wherefore, Venerable Brethren",
+    "unit": 6,
+    "until": "And, as we have already granted"
+   },
+   {
+    "opens": "And, as we have already granted",
+    "unit": 7
+   },
+   {
+    "opens": "We have no doubt",
+    "unit": "+",
+    "until": "In the meantime, receive"
+   },
+   {
+    "opens": "In the meantime, receive",
+    "unit": 8
+   }
+  ]
+ },
+ "encyclicals/diu-satis": {
+  "source": "ocr",
+  "work": "rayment-1800-diu-satis",
+  "file": "bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/",
+  "url": "https://archive.org/details/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800",
+  "translation": "An Encyclical Letter of Our Most Holy Father Pope Pius VII., translated by the Rev. Benedict Rayment (London, 1800)",
+  "editorial": [
+   {
+    "opens": "TO ALL OUR VENERABLE BRETHREN,",
+    "why": "The address set in capitals as a heading; the parser drops a capitals heading at the head of a preamble (papal_common.strip_leading_caps), as for every papal document, and the greeting below opens the letter."
+   },
+   {
+    "opens": "PATRIARCHS, PRIMATES, ARCHBISHOPS",
+    "why": "The rest of the address in capitals (as above)."
+   },
+   {
+    "opens": "POPE PIUS VII.",
+    "why": "The pope's name set as a heading, as Mirari Vos's \"POPE GREGORY XVI\"."
+   },
+   {
+    "opens": "GREETING.",
+    "why": "The heading's last line in capitals, before the greeting itself (as above)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Venerable Brethren, Health",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Our silence, as it appears",
+    "unit": 1
+   },
+   {
+    "opens": "Never was Satan",
+    "unit": 2
+   },
+   {
+    "opens": "The wisdom, the magnanimity",
+    "unit": "+",
+    "until": "His bright example"
+   },
+   {
+    "opens": "His bright example",
+    "unit": 3
+   },
+   {
+    "opens": "Driven in a most inhuman",
+    "unit": "+"
+   },
+   {
+    "opens": "But with what feeling",
+    "unit": 4
+   },
+   {
+    "opens": "But where is the man",
+    "unit": 5,
+    "until": "What more convincing"
+   },
+   {
+    "opens": "What more convincing",
+    "unit": 6
+   },
+   {
+    "opens": "To this day there",
+    "unit": "+"
+   },
+   {
+    "opens": "Thus in our age",
+    "unit": 7,
+    "until": "This, Venerable Brethren, we mention"
+   },
+   {
+    "opens": "This, Venerable Brethren, we mention",
+    "unit": 8
+   },
+   {
+    "opens": "It is, in a more particular",
+    "unit": 9,
+    "until": "The towns, cities"
+   },
+   {
+    "opens": "The towns, cities",
+    "unit": 10
+   },
+   {
+    "opens": "It is therefore our duty",
+    "unit": 11
+   },
+   {
+    "opens": "We therefore, Venerable Brethren, pray",
+    "unit": "+",
+    "until": "Admit no one"
+   },
+   {
+    "opens": "Admit no one",
+    "unit": 12,
+    "until": "I could wish"
+   },
+   {
+    "opens": "I could wish",
+    "unit": 13
+   },
+   {
+    "opens": "You must also attend",
+    "unit": "+",
+    "until": "Do not then suffer"
+   },
+   {
+    "opens": "Do not then suffer",
+    "unit": 14
+   },
+   {
+    "opens": "To leave nothing short",
+    "unit": "+",
+    "until": "But you are not only"
+   },
+   {
+    "opens": "But you are not only",
+    "unit": 15
+   },
+   {
+    "opens": "“To discriminate",
+    "unit": "+"
+   },
+   {
+    "opens": "In this cause",
+    "unit": 16
+   },
+   {
+    "opens": "Is there amongst us",
+    "unit": 17
+   },
+   {
+    "opens": "We have still another",
+    "unit": 18
+   },
+   {
+    "opens": "Nor can we remain silent",
+    "unit": 19
+   },
+   {
+    "opens": "All christian kings",
+    "unit": "+"
+   },
+   {
+    "opens": "We hope to see them",
+    "unit": "+"
+   },
+   {
+    "opens": "I cannot conclude",
+    "unit": 20,
+    "until": "There is not a nation"
+   },
+   {
+    "opens": "There is not a nation",
+    "unit": 21
+   },
+   {
+    "opens": "It only remains",
+    "unit": "+",
+    "until": "In the mean time we are"
+   },
+   {
+    "opens": "In the mean time we are",
+    "unit": 22
+   }
+  ]
+ },
+ "encyclicals/ineffabilis-deus": {
+  "source": "ocr",
+  "work": "official-documents-1855-ineffabilis-deus",
+  "file": "officialdocumen00ixgoog/",
+  "url": "https://archive.org/details/officialdocumen00ixgoog",
+  "translation": "Official Documents Connected with the Definition of the Dogma of the Immaculate Conception (Baltimore, 1855)",
+  "editorial": [
+   {
+    "opens": "LETTERS APOSTOLIC OF OUR MOST HOLY",
+    "why": "The book's heading over the English (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "Pius, Bishop, Servant",
+    "unit": "preamble"
+   },
+   {
+    "opens": "For a perpetual remembrance",
+    "unit": "preamble"
+   },
+   {
+    "opens": "God who is ineffable",
+    "unit": 1,
+    "until": "And indeed it was most becoming"
+   },
+   {
+    "opens": "And indeed it was most becoming",
+    "unit": 3
+   },
+   {
+    "opens": "Which original innocence",
+    "unit": 5,
+    "until": "And, therefore, the very words"
+   },
+   {
+    "opens": "And, therefore, the very words",
+    "unit": 6
+   },
+   {
+    "opens": "But though all those things",
+    "unit": 8,
+    "until": "Thus the same Roman Church had"
+   },
+   {
+    "opens": "Thus the same Roman Church had",
+    "unit": 9
+   },
+   {
+    "opens": "Indeed, Our predecessors vehemently",
+    "unit": 11
+   },
+   {
+    "opens": "But since those things which pertain",
+    "unit": 13
+   },
+   {
+    "opens": "Our predecessors thought it their duty",
+    "unit": 14,
+    "until": "all which things Our illustrious"
+   },
+   {
+    "opens": "all which things Our illustrious",
+    "unit": 16
+   },
+   {
+    "opens": "\"Considering that the Holy",
+    "unit": "+"
+   },
+   {
+    "opens": "\"And against all and each",
+    "unit": 17,
+    "until": "likewise we wish to subject"
+   },
+   {
+    "opens": "likewise we wish to subject",
+    "unit": 18
+   },
+   {
+    "opens": "\"And We prohibit",
+    "unit": 19
+   },
+   {
+    "opens": "All are aware",
+    "unit": 21,
+    "until": "To which, lastly, is added"
+   },
+   {
+    "opens": "To which, lastly, is added",
+    "unit": 23
+   },
+   {
+    "opens": "And, in truth, illustrious",
+    "unit": 25
+   },
+   {
+    "opens": "The Fathers and writers of the Church, taught",
+    "unit": 27
+   },
+   {
+    "opens": "This illustrious and singular",
+    "unit": 28
+   },
+   {
+    "opens": "To describe the same totality",
+    "unit": 29,
+    "until": "But when the same Fathers"
+   },
+   {
+    "opens": "But when the same Fathers",
+    "unit": 31
+   },
+   {
+    "opens": "Hence it is the clear",
+    "unit": 33
+   },
+   {
+    "opens": "And therefore to vindicate",
+    "unit": "+"
+   },
+   {
+    "opens": "Wherefore they have never ceased",
+    "unit": 35,
+    "until": "But as if these encomiums"
+   },
+   {
+    "opens": "But as if these encomiums",
+    "unit": 37
+   },
+   {
+    "opens": "To these things are added",
+    "unit": 39
+   },
+   {
+    "opens": "Far more, it was right",
+    "unit": "+",
+    "until": "And this doctrine, indeed"
+   },
+   {
+    "opens": "And this doctrine, indeed",
+    "unit": 40,
+    "until": "No one is ignorant"
+   },
+   {
+    "opens": "No one is ignorant",
+    "unit": 41
+   },
+   {
+    "opens": "It is no wonder",
+    "unit": 43
+   },
+   {
+    "opens": "Therefore with singular joy",
+    "unit": 44,
+    "until": "But wishing to bring"
+   },
+   {
+    "opens": "But wishing to bring",
+    "unit": 45,
+    "until": "And, although from the entreaties"
+   },
+   {
+    "opens": "And, although from the entreaties",
+    "unit": 47
+   },
+   {
+    "opens": "Certainly we were filled",
+    "unit": 48
+   },
+   {
+    "opens": "Afterwards treading",
+    "unit": 49
+   },
+   {
+    "opens": "Therefore, having full trust",
+    "unit": 50
+   },
+   {
+    "opens": "Wherefore, after we had",
+    "unit": 52,
+    "until": "Wherefore if any shall dare"
+   },
+   {
+    "opens": "Wherefore if any shall dare",
+    "unit": 53
+   },
+   {
+    "opens": "Our mouth is filled",
+    "unit": 55
+   },
+   {
+    "opens": "Let all the children",
+    "unit": 56
+   },
+   {
+    "opens": "Finally, in order that this Our definition",
+    "unit": 59
+   },
+   {
+    "opens": "Let no man presume",
+    "unit": 60
+   }
+  ]
  }
 }

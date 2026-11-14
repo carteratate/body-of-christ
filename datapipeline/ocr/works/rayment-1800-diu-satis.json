@@ -1,0 +1,60 @@
+{
+ "work": "rayment-1800-diu-satis",
+ "title": "Diu Satis, in An Encyclical Letter of Our Most Holy Father Pope Pius VII. to All the Catholic Bishops, translated by the Rev. Benedict Rayment (London: Keating, Brown and Keating, 1800), pp. 5–25",
+ "scan": "bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800",
+ "djvu_xml": "encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800_djvu.xml",
+ "page_numbers": "",
+ "pages": [
+  "5",
+  "25"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "diu-satis",
+   "first": "TO ALL OUR VENERABLE BRETHREN",
+   "last": "[Pp]ontificate",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "leaf_pages": {
+  "4": "5",
+  "5": "6",
+  "6": "7",
+  "7": "8",
+  "8": "9",
+  "9": "10",
+  "10": "11",
+  "11": "12",
+  "12": "13",
+  "13": "14",
+  "14": "15",
+  "15": "16",
+  "16": "17",
+  "17": "18",
+  "18": "19",
+  "19": "20",
+  "20": "21",
+  "21": "22",
+  "22": "23",
+  "23": "24",
+  "24": "25"
+ }
+}

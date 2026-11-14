@@ -1,0 +1,608 @@
+[
+ {
+  "passage": "qui-pluribus-01",
+  "find": " weighty\n\nduties ",
+  "replace": " weighty duties ",
+  "why": "p. 151: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "qui-pluribus-01",
+  "find": "solicitude— and",
+  "replace": "solicitude—and",
+  "why": "p. 151: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-01",
+  "find": "pal charge — that\n\n>",
+  "replace": "episcopal charge—that charge",
+  "why": "p. 151: misread on the page; the print reads \"episcopal charge—that charge\""
+ },
+ {
+  "passage": "qui-pluribus-01",
+  "find": "the >f our",
+  "replace": "the best of our",
+  "why": "p. 151: misread on the page; the print reads \"best of\""
+ },
+ {
+  "passage": "qui-pluribus-01",
+  "find": "•dpoetoHe Benediction.\n\nduring many years vere striving toge-rith you, venerable m,",
+  "replace": "Apostolic Benediction.\n\nWe who, during many years past, were striving together with you, venerable brethren,",
+  "why": "p. 151: the opening under the engraved initial \"WE\", which the OCR read in pieces; the print reads \"Apostolic Benediction. / WE WHO, during many years past, were striving together with you, venerable brethren,\" (the initial and small capitals set as \"We who\")"
+ },
+ {
+  "passage": "qui-pluribus-01",
+  "find": "to the catholic hiebaecht throughout the world.",
+  "replace": "TO THE CATHOLIC HIERARCHY THROUGHOUT THE WORLD.",
+  "why": "p. 151: the heading in small capitals, misread; the print reads \"TO THE CATHOLIC HIERARCHY THROUGHOUT THE WORLD.\""
+ },
+ {
+  "passage": "qui-pluribus-02",
+  "find": "a tierce and",
+  "replace": "a fierce and",
+  "why": "pp. 151–152: misread on the page; the print reads \"fierce\""
+ },
+ {
+  "passage": "qui-pluribus-02",
+  "find": "Istael. 99",
+  "replace": "Israel.”",
+  "why": "pp. 151–152: misread on the page; the print reads \"Israel.”\""
+ },
+ {
+  "passage": "qui-pluribus-02",
+  "find": "Laleran,",
+  "replace": "Lateran,",
+  "why": "pp. 151–152: misread on the page; the print reads \"Lateran,\""
+ },
+ {
+  "passage": "qui-pluribus-02",
+  "find": "predeces-ENCYCLICAL LETT EE OP POPE PITTS IX.\n\n•ore,",
+  "replace": "predecessors,",
+  "why": "pp. 151–152: the running head read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-03",
+  "find": "into errors they",
+  "replace": "into error, they",
+  "why": "p. 152: misread on the page; the print reads \"error,\""
+ },
+ {
+  "passage": "qui-pluribus-03",
+  "find": "* Apocalyp. xiii, 6.\n\n",
+  "replace": "",
+  "why": "p. 152: the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-03",
+  "find": "against God,”* they",
+  "replace": "against God,” they",
+  "why": "p. 152: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-04",
+  "find": " obedience.” f",
+  "replace": " obedience.”",
+  "why": "pp. 152–153: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-04",
+  "find": "Christianity.”*",
+  "replace": "Christianity.”",
+  "why": "pp. 152–153: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-04",
+  "find": "fiuingness:",
+  "replace": "fittingness:",
+  "why": "pp. 152–153: misread on the page; the print reads \"fittingness:\""
+ },
+ {
+  "passage": "qui-pluribus-04",
+  "find": "\n\nDigitized by\n\nGoogle\n\nSJTCTCLICAI* X.BTTEB OF FOP* PIUS IX.\n\n",
+  "replace": " ",
+  "why": "pp. 152–153: the scanner's stamp (\"Digitized by Google\"), the running head read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-04",
+  "find": "God, — and",
+  "replace": "God,—and",
+  "why": "pp. 152–153: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-04",
+  "find": "truth, — the",
+  "replace": "truth,—the",
+  "why": "pp. 152–153: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-05",
+  "find": "\n\n•Tertnli. de Praeseript. cap. viii. f Ad Rom. xiii, 1. $S. Joaa. ChryMMt. Homil. 1, in Isai.\n\nYov. VI.— No. 3. 14",
+  "replace": "",
+  "why": "p. 153: the printer's signature line, the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-05",
+  "find": "virtues — confirmed",
+  "replace": "virtues—confirmed",
+  "why": "p. 153: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-05",
+  "find": "in-structress",
+  "replace": "instructress",
+  "why": "p. 153: misread on the page; the print reads \"instructress\""
+ },
+ {
+  "passage": "qui-pluribus-05",
+  "find": "heartens on high; ” $",
+  "replace": "heavens on high;”",
+  "why": "p. 153: misread on the page; the print reads \"heavens on high;”\""
+ },
+ {
+  "passage": "qui-pluribus-05",
+  "find": "and ** that every",
+  "replace": "and “that every",
+  "why": "p. 153: misread on the page; the print reads \"“that\""
+ },
+ {
+  "passage": "qui-pluribus-05",
+  "find": "which hum&n reason",
+  "replace": "which human reason",
+  "why": "p. 153: misread on the page; the print reads \"human\""
+ },
+ {
+  "passage": "qui-pluribus-05",
+  "find": "who qan be",
+  "replace": "who can be",
+  "why": "p. 153: misread on the page; the print reads \"can\""
+ },
+ {
+  "passage": "qui-pluribus-06",
+  "find": "\n\nDigitized by\n\nGoogle SITCYCLICIL LSTTSB OF FOP* * * § PIUS IX. 154",
+  "replace": "",
+  "why": "pp. 153–154: the scanner's stamp (\"Digitized by Google\"), the running head read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-06",
+  "find": "fail — has",
+  "replace": "fail—has",
+  "why": "pp. 153–154: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-06",
+  "find": "tidings — has",
+  "replace": "tidings—has",
+  "why": "pp. 153–154: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-06",
+  "find": "and — announcing",
+  "replace": "and—announcing",
+  "why": "pp. 153–154: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "“ progress,”",
+  "replace": "“progress,”",
+  "why": "p. 154: spacing"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "gathered not, scattered.}}",
+  "replace": "gathereth not, scattereth.",
+  "why": "p. 154: misread on the page, with the note marks after it; the print reads \"gathereth not, scattereth.\""
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "faithful — wheresoever found, should repair",
+  "replace": "faithful—wheresoever found, should repair;",
+  "why": "p. 154: misread on the page; the print reads \"faithful—wheresoever found, should repair;\""
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "churches — that",
+  "replace": "churches—that",
+  "why": "p. 154: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "flourished;ff",
+  "replace": "flourished;",
+  "why": "p. 154: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": " perfect\n\nwhich ",
+  "replace": " perfect solidity of the Christian religion; in which ",
+  "why": "p. 154: the line \"solidity of the Christian religion; in\" restored to its place (the clean-up had read it into \"successors\")"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "arisen.1",
+  "replace": "arisen.",
+  "why": "p. 154: a note mark (¶) calling one of the magazine's footnotes, read as \"1\", removed"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "churches,|",
+  "replace": "churches,",
+  "why": "p. 154: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "therefore^",
+  "replace": "therefore",
+  "why": "p. 154: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "suc-solidity of the Christian religion;** * * §§ in\n\ncessors,^",
+  "replace": "successors,",
+  "why": "p. 154: a line from further down the column, and its note marks, read into \"suc-cessors\"; the print reads \"successors,\" (the note mark after it removed)"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "ponliff,t and ever litres",
+  "replace": "pontiff, and ever lives",
+  "why": "p. 154: misread on the page; the print reads \"pontiff, and ever lives\""
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "if, there if the church,”*",
+  "replace": "is, there is the church,”",
+  "why": "p. 154: misread on the page; the print reads \"is, there is the church,”\""
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "find": "chair — heirs",
+  "replace": "chair—heirs",
+  "why": "p. 154: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-08",
+  "find": "* S. Ambros. in Pial. 40. t Concil. Chalccd. Act. 2. $ Synod. Ephes. Act. 3. § S. Petr. Chryaol. Epist. nd Eutich. || Coocil. Trid. Sets. VII, de Baptist. V S. Cyprian. Epiat. 65, ad Cornel, Pontif. •* Litter. Synod. Joann. Conatantinop. ad Hormiad. Pontif. et Sozom. Hiator. Lib. 3, cap. 8. ft 8* Anguat. Epiat. 162. ±i S. Irencus, Lib. 3, contra haereaea, cap. 3. §§ 8. Hieronym. Epiat. ad Damas. Pontif.\n\n",
+  "replace": "",
+  "why": "p. 154: the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-09",
+  "find": "\n\n• Clement. XII, Const. In eminent!, Benetl. XIV, Constit. Providas, Piut VII, Ecciesiam a Jean Christo, Leo XII, Const. Quo gravion.\n\nDigitized by\n\nGoogle\n\nKlfOYCLICAL LBTTBE OF POP* PIUS IX.",
+  "replace": "",
+  "why": "pp. 154–155: the scanner's stamp (\"Digitized by Google\"), the running head, the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-09",
+  "find": "letters,*",
+  "replace": "letters,",
+  "why": "pp. 154–155: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-09",
+  "find": "irremove-able",
+  "replace": "irremoveable",
+  "why": "pp. 154–155: misread on the page; the print reads \"irremoveable\""
+ },
+ {
+  "passage": "qui-pluribus-10",
+  "find": "\n\n* Gregor. XVI. In Litteria Enoyclieia ad oaanea Episcopoa, qturam initiom. Inter praeei-pnaa mnehinntionca.",
+  "replace": "",
+  "why": "p. 155: the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-10",
+  "find": "theoutside",
+  "replace": "the outside",
+  "why": "p. 155: spacing"
+ },
+ {
+  "passage": "qui-pluribus-10",
+  "find": "this tame point",
+  "replace": "this same point",
+  "why": "p. 155: misread on the page; the print reads \"same\""
+ },
+ {
+  "passage": "qui-pluribus-10",
+  "find": "iscalled",
+  "replace": "is called",
+  "why": "p. 155: spacing"
+ },
+ {
+  "passage": "qui-pluribus-10",
+  "find": "clergy, which. Oh!",
+  "replace": "clergy, which, Oh!",
+  "why": "p. 155: misread on the page; the print reads \"which,\""
+ },
+ {
+  "passage": "qui-pluribus-10",
+  "find": "system,extremely",
+  "replace": "system, extremely",
+  "why": "p. 155: spacing"
+ },
+ {
+  "passage": "qui-pluribus-10",
+  "find": "letter,*",
+  "replace": "letter,",
+  "why": "p. 155: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-11",
+  "find": "pierced.\n\nDigitized by\n\nGoogle\n\nENCYCLICAL LETTER OF POPE PIUS IX.",
+  "replace": "pierced,",
+  "why": "pp. 155–156: the scanner's stamp (\"Digitized by Google\"), the running head read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-12",
+  "find": "\n\n* S. Leo Serm. VIII, cap. 4. † Ex Symbolo Quicumque.",
+  "replace": "",
+  "why": "p. 156: the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-12",
+  "find": "serve,”*",
+  "replace": "serve,”",
+  "why": "p. 156: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-13",
+  "find": "\n\n• Concil. Triden. Sew. XIII, Cap. I, de Reformat. | Ad Roman, xiii, 1, 9.\n\nDigitized by\n\nGoogle\n\nENCYCLICAL LETTER OF POPE PIUS IX.",
+  "replace": "",
+  "why": "pp. 156–157: the scanner's stamp (\"Digitized by Google\"), the running head, the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-13",
+  "find": "apostle,+",
+  "replace": "apostle,",
+  "why": "pp. 156–157: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-13",
+  "find": "than power.*\n\nThis",
+  "replace": "than power.\n\nThis",
+  "why": "pp. 156–157: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-13",
+  "find": "oflenity",
+  "replace": "of lenity",
+  "why": "pp. 156–157: spacing"
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "said, “ to have",
+  "replace": "said, “to have",
+  "why": "p. 157: spacing"
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "** it i9",
+  "replace": "“it is",
+  "why": "p. 157: misread on the page; the print reads \"“it is\""
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "chastity;f",
+  "replace": "chastity;",
+  "why": "p. 157: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "diocesses both of U9e",
+  "replace": "dioceses both of use",
+  "why": "p. 157: misread on the page; the print reads \"dioceses both of use\""
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "examin ed a nd p ro ved,",
+  "replace": "examined and proved,",
+  "why": "p. 157: spacing"
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "ad ministration",
+  "replace": "administration",
+  "why": "p. 157: spacing"
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "initiate ioto holy",
+  "replace": "initiate into holy",
+  "why": "p. 157: misread on the page; the print reads \"into\""
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "integrity o'f life,",
+  "replace": "integrity of life,",
+  "why": "p. 157: misread on the page (a speck over \"of\"); the print reads \"of\""
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "also — you",
+  "replace": "also—you",
+  "why": "p. 157: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "find": "ministry/",
+  "replace": "ministry,",
+  "why": "p. 157: misread on the page; the print reads \"ministry,\""
+ },
+ {
+  "passage": "qui-pluribus-15",
+  "find": "con-EJfCYCLtCAL LETTER O T POPE PIUS TX.",
+  "replace": "con-",
+  "why": "pp. 157–158: the running head read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-15",
+  "find": "trealiog",
+  "replace": "treating",
+  "why": "pp. 157–158: misread on the page; the print reads \"treating\""
+ },
+ {
+  "passage": "qui-pluribus-15",
+  "find": "sword,”f",
+  "replace": "sword,”",
+  "why": "pp. 157–158: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-15",
+  "find": "which, “ full of",
+  "replace": "which, “full of",
+  "why": "pp. 157–158: spacing"
+ },
+ {
+  "passage": "qui-pluribus-15",
+  "find": "* Condi. Trid. 8et>. XXII, Cap. 4, da 1U-fana. t Ad Timoth. 4, 12.\n\n14*\n\n",
+  "replace": "",
+  "why": "pp. 157–158: the printer's signature line, the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-16",
+  "find": "io-\n\n* Concil. Trid. Sess. XXIII. Cap. 18 de Reform.",
+  "replace": "in-",
+  "why": "p. 158: the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-16",
+  "find": "of Trent,* where",
+  "replace": "of Trent, where",
+  "why": "p. 158: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-17",
+  "find": "faithful,having",
+  "replace": "faithful, having",
+  "why": "p. 158: spacing"
+ },
+ {
+  "passage": "qui-pluribus-18",
+  "find": "of live blessed",
+  "replace": "of the blessed",
+  "why": "p. 159: misread on the page; the print reads \"the\""
+ },
+ {
+  "passage": "qui-pluribus-18",
+  "find": "conquer.*",
+  "replace": "conquer.",
+  "why": "p. 159: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-18",
+  "find": "ENCYCLICAL LETTER OF FOP1 PFtJS «.\n\n",
+  "replace": "",
+  "why": "p. 159: the running head read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-19",
+  "find": "\n\nCELEBRATED PA Ilf TEES.",
+  "replace": "",
+  "why": "pp. 159–160: the running head read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-19",
+  "find": "of lb* kingdom",
+  "replace": "of the kingdom",
+  "why": "pp. 159–160: misread on the page; the print reads \"the\""
+ },
+ {
+  "passage": "qui-pluribus-19",
+  "find": "our mos* sweet",
+  "replace": "our most sweet",
+  "why": "pp. 159–160: misread on the page; the print reads \"most\""
+ },
+ {
+  "passage": "qui-pluribus-19",
+  "find": "provinces,!",
+  "replace": "provinces,",
+  "why": "pp. 159–160: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-19",
+  "find": "church,*",
+  "replace": "church,",
+  "why": "pp. 159–160: a note mark calling one of the magazine's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "qui-pluribus-19",
+  "find": "* 8. Cyprian. Epist. 77, ad N ernes iaoom et ecteroa martyrea.\n\n",
+  "replace": "",
+  "why": "pp. 159–160: the magazine's footnotes (citations, left out as apparatus) read into the text, removed"
+ },
+ {
+  "passage": "qui-pluribus-20",
+  "find": " year\n\nof ",
+  "replace": " year of ",
+  "why": "p. 160: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "qui-pluribus-20",
+  "find": "of St Mary",
+  "replace": "of St. Mary",
+  "why": "p. 160: misread on the page; the print reads \"St.\""
+ },
+ {
+  "passage": "qui-pluribus-20",
+  "find": " love\n\ntowards ",
+  "replace": " love towards ",
+  "why": "p. 160: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "qui-pluribus-06",
+  "continues": true,
+  "why": "pp. 153–154: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-07",
+  "continues": true,
+  "why": "p. 154: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-08",
+  "continues": true,
+  "why": "p. 154: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-10",
+  "continues": true,
+  "why": "pp. 154–155: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-12",
+  "continues": true,
+  "why": "pp. 155–156: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-13",
+  "continues": true,
+  "why": "p. 156: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-15",
+  "continues": true,
+  "why": "p. 157: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-16",
+  "continues": true,
+  "why": "pp. 157–158: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-17",
+  "continues": true,
+  "why": "p. 158: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-18",
+  "continues": true,
+  "why": "pp. 158–159: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-20",
+  "continues": true,
+  "why": "pp. 159–160: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ },
+ {
+  "passage": "qui-pluribus-14",
+  "continues": true,
+  "why": "pp. 156–157: the paragraph runs on from the passage before; the footnotes or the page turn made the clean-up read a break"
+ }
+]

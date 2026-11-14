@@ -6,9 +6,9 @@
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.8d-incarnation-robertson f5b7d83",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
-  "encyclicals": "feat/1.3d-4-appletons-metropolitan d2be279",
+  "encyclicals": "feat/1.3d-5-scans 7216d28",
   "medieval": "worktree-bridge-cse_01A8fdmnk6Vfpyf8yTndcQNH 047867d",
-  "papal-documents": "feat/1.3d-4-appletons-metropolitan d2be279",
+  "papal-documents": "feat/1.3d-5-scans 7216d28",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
@@ -897,11 +897,6 @@
    "covered_chars": 152382,
    "pct": 99.76
   },
-  "encyclicals/cum-sancta-mater-ecclesia.html": {
-   "body_chars": 3361,
-   "covered_chars": 3361,
-   "pct": 100.0
-  },
   "encyclicals/cum-summi.html": {
    "body_chars": 11449,
    "covered_chars": 11449,
@@ -915,11 +910,6 @@
   "encyclicals/dilexit-nos.html": {
    "body_chars": 151910,
    "covered_chars": 151910,
-   "pct": 100.0
-  },
-  "encyclicals/diu-satis.html": {
-   "body_chars": 16635,
-   "covered_chars": 16635,
    "pct": 100.0
   },
   "encyclicals/dives-in-misericordia.html": {
@@ -937,11 +927,6 @@
    "covered_chars": 92752,
    "pct": 99.76
   },
-  "encyclicals/etsi-multa.html": {
-   "body_chars": 31063,
-   "covered_chars": 31063,
-   "pct": 100.0
-  },
   "encyclicals/evangelii-gaudium.html": {
    "body_chars": 274839,
    "covered_chars": 271504,
@@ -956,11 +941,6 @@
    "body_chars": 259696,
    "covered_chars": 259532,
    "pct": 99.94
-  },
-  "encyclicals/exultavit-cor-nostrum.html": {
-   "body_chars": 7286,
-   "covered_chars": 7286,
-   "pct": 100.0
   },
   "encyclicals/fides-et-ratio.html": {
    "body_chars": 191503,
@@ -1087,21 +1067,6 @@
    "covered_chars": 57816,
    "pct": 99.56
   },
-  "encyclicals/in-supremo-apostolatus.html": {
-   "body_chars": 6938,
-   "covered_chars": 6938,
-   "pct": 100.0
-  },
-  "encyclicals/ineffabilis-deus.html": {
-   "body_chars": 37464,
-   "covered_chars": 37464,
-   "pct": 100.0
-  },
-  "encyclicals/inter-praecipuas.html": {
-   "body_chars": 17859,
-   "covered_chars": 17859,
-   "pct": 100.0
-  },
   "encyclicals/laborem-exercens.html": {
    "body_chars": 126585,
    "covered_chars": 126283,
@@ -1152,11 +1117,6 @@
    "covered_chars": 2811,
    "pct": 100.0
   },
-  "encyclicals/qui-pluribus.html": {
-   "body_chars": 31186,
-   "covered_chars": 31186,
-   "pct": 100.0
-  },
   "encyclicals/redemptor-hominis.html": {
    "body_chars": 120429,
    "covered_chars": 120088,
@@ -1200,16 +1160,6 @@
   "encyclicals/ubi-lutetiam.html": {
    "body_chars": 17041,
    "covered_chars": 17041,
-   "pct": 100.0
-  },
-  "encyclicals/ubi-primum-1824.html": {
-   "body_chars": 16636,
-   "covered_chars": 16636,
-   "pct": 100.0
-  },
-  "encyclicals/ubi-primum-1849.html": {
-   "body_chars": 7223,
-   "covered_chars": 7223,
    "pct": 100.0
   },
   "encyclicals/ut-unum-sint.html": {
@@ -1720,13 +1670,6 @@
    "covered_chars": 24524,
    "pct": 100.0
   },
-  "25fb09e6-6c9b-56ce-b50b-e9dc03bc79a7": {
-   "collection": "encyclicals",
-   "source_file": "exultavit-cor-nostrum.html",
-   "body_chars": 7286,
-   "covered_chars": 7286,
-   "pct": 100.0
-  },
   "26061458-4ab7-54ae-822c-2fcb9e434591": {
    "collection": "apostolic-exhortations",
    "source_file": "sacramentum-caritatis.html",
@@ -1760,13 +1703,6 @@
    "source_file": "third-century-3.xml",
    "body_chars": 20004,
    "covered_chars": 20004,
-   "pct": 100.0
-  },
-  "2b203418-38ab-5ae0-982a-0ce7ef1af3fb": {
-   "collection": "encyclicals",
-   "source_file": "inter-praecipuas.html",
-   "body_chars": 17859,
-   "covered_chars": 17859,
    "pct": 100.0
   },
   "2b63e99e-01d6-5d8e-8b7b-8d3e24b6695a": {
@@ -2042,13 +1978,6 @@
    "covered_chars": 222897,
    "pct": 99.99
   },
-  "49227f30-0b32-544c-adda-9180a888fc2b": {
-   "collection": "encyclicals",
-   "source_file": "cum-sancta-mater-ecclesia.html",
-   "body_chars": 3361,
-   "covered_chars": 3361,
-   "pct": 100.0
-  },
   "49437294-5526-5a1b-b2df-3022c0c36e56": {
    "collection": "church-fathers",
    "source_file": "third-fourth-century.xml",
@@ -2062,13 +1991,6 @@
    "body_chars": 152748,
    "covered_chars": 152382,
    "pct": 99.76
-  },
-  "4b3489b7-1fa4-530a-9d2b-af1513f6030d": {
-   "collection": "encyclicals",
-   "source_file": "in-supremo-apostolatus.html",
-   "body_chars": 6938,
-   "covered_chars": 6938,
-   "pct": 100.0
   },
   "4b66fa28-684a-5e79-8596-6029d5de1a48": {
    "collection": "church-fathers",
@@ -2216,13 +2138,6 @@
    "body_chars": 25225,
    "covered_chars": 25185,
    "pct": 99.84
-  },
-  "5cdd313f-f68e-5a9b-abfe-ca9b5660ae3d": {
-   "collection": "encyclicals",
-   "source_file": "etsi-multa.html",
-   "body_chars": 31063,
-   "covered_chars": 31063,
-   "pct": 100.0
   },
   "5d75dc92-df2c-5421-904f-4249590ff48a": {
    "collection": "church-fathers",
@@ -2553,13 +2468,6 @@
    "covered_chars": 168846,
    "pct": 100.0
   },
-  "82e3ba38-e236-5d0b-bf1f-30a7a50b209f": {
-   "collection": "encyclicals",
-   "source_file": "ubi-primum-1824.html",
-   "body_chars": 16636,
-   "covered_chars": 16636,
-   "pct": 100.0
-  },
   "82e56c74-062f-5e8b-9da3-38f2c168fec2": {
    "collection": "encyclicals",
    "source_file": "hf_p-xi_enc_14031937_mit-brennender-sorge.html",
@@ -2805,13 +2713,6 @@
    "covered_chars": 34848,
    "pct": 99.43
   },
-  "9cef439f-e906-5eb4-b096-ad30e27be3b7": {
-   "collection": "encyclicals",
-   "source_file": "qui-pluribus.html",
-   "body_chars": 31186,
-   "covered_chars": 31186,
-   "pct": 100.0
-  },
   "9df0b246-febf-52e3-b56f-fa7bf1c002de": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/23-SNGeng-web-c.usfm",
@@ -2894,13 +2795,6 @@
    "source_file": "nostis-et-nobiscum.html",
    "body_chars": 33398,
    "covered_chars": 33398,
-   "pct": 100.0
-  },
-  "a9956e54-3212-501d-96b4-51c14137b8b1": {
-   "collection": "encyclicals",
-   "source_file": "ineffabilis-deus.html",
-   "body_chars": 37464,
-   "covered_chars": 37464,
    "pct": 100.0
   },
   "a9c1215f-d6e9-5cfb-9cd3-4f11376cc2c3": {
@@ -3097,13 +2991,6 @@
    "source_file": "hf_j-xxiii_enc_15051961_mater.html",
    "body_chars": 121418,
    "covered_chars": 121418,
-   "pct": 100.0
-  },
-  "bc50283d-09b3-542c-90ce-6154851c64be": {
-   "collection": "encyclicals",
-   "source_file": "diu-satis.html",
-   "body_chars": 16635,
-   "covered_chars": 16635,
    "pct": 100.0
   },
   "bd4adb5d-500e-5995-ab95-3f61fdc92067": {
@@ -3398,13 +3285,6 @@
    "source_file": "city-of-god.xml",
    "body_chars": 2405465,
    "covered_chars": 2405409,
-   "pct": 100.0
-  },
-  "db3c5936-fd8e-5113-b60a-bd21373b3918": {
-   "collection": "encyclicals",
-   "source_file": "ubi-primum-1849.html",
-   "body_chars": 7223,
-   "covered_chars": 7223,
    "pct": 100.0
   },
   "dc813ae3-8f50-5dde-b4b3-430e20eb1fd7": {

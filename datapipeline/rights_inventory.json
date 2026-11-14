@@ -5697,7 +5697,7 @@
   "author": "Pope Leo XII",
   "collection": "encyclicals",
   "source_path": "encyclicals/TheEncyclicalLetterOfPopeLeoTheXI/",
-  "document_id": null,
+  "document_id": "82e3ba38-e236-5d0b-bf1f-30a7a50b209f",
   "edition": "The Encyclical Letter of Pope Leo the XII. to His Venerable Brethren ... with an English Translation of the Same; to which are annexed Pastoral Instructions by the R.C. Archbishops and Bishops ... throughout Ireland (Dublin: Richard Coyne, publisher to the Roman Catholic Bishops of Ireland, 1824). A different translation from papalencyclicals.net's. Internet Archive scan TheEncyclicalLetterOfPopeLeoTheXI",
   "translator": null,
   "first_published": 1824,
@@ -5708,7 +5708,7 @@
   "credit_line": "Translation published by the Catholic bishops of Ireland (Dublin, 1824)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Syllabus of Errors",
@@ -5733,8 +5733,8 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/USCatholicMagazineMonthlyReviewV6/",
-  "document_id": null,
-  "edition": "The United States Catholic Magazine and Monthly Review, vol. 6 (Baltimore: John Murphy, 1847), 'Encyclical letter of Pope Pius IX, to the Catholic hierarchy throughout the world', about pp. 150-160. A different translation from papalencyclicals.net's. Internet Archive scan USCatholicMagazineMonthlyReviewV6",
+  "document_id": "9cef439f-e906-5eb4-b096-ad30e27be3b7",
+  "edition": "The United States Catholic Magazine and Monthly Review, vol. 6 (Baltimore: John Murphy, 1847), 'Encyclical letter of Pope Pius IX, to the Catholic hierarchy throughout the world', pp. 151-160. A different translation from papalencyclicals.net's. Internet Archive scan USCatholicMagazineMonthlyReviewV6",
   "translator": null,
   "first_published": 1847,
   "source_url": "https://archive.org/details/USCatholicMagazineMonthlyReviewV6",
@@ -5744,7 +5744,7 @@
   "credit_line": "Translation from The United States Catholic Magazine (1847)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "A Quo Die",
@@ -6003,7 +6003,7 @@
   "author": "Pope Pius VII",
   "collection": "encyclicals",
   "source_path": "encyclicals/bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800/",
-  "document_id": null,
+  "document_id": "bc50283d-09b3-542c-90ce-6154851c64be",
   "edition": "An Encyclical Letter of Our Most Holy Father Pope Pius VII. to All the Catholic Bishops. Translated from the Latin original, by the Rev. Benedict Rayment (London: Keating, Brown and Keating, MDCCC), ending 'Given at Venice ... the 15th day of May, in the year of the Lord 1800'. A different translation from papalencyclicals.net's. Internet Archive scan (ECCO) bim_eighteenth-century_an-encyclical-letter-of-_catholic-church-pope-1_1800",
   "translator": "Benedict Rayment",
   "first_published": 1800,
@@ -6014,7 +6014,7 @@
   "credit_line": "Translated by Benedict Rayment (1800)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Respicientes",
@@ -6057,8 +6057,8 @@
   "author": "Pope Gregory XVI",
   "collection": "encyclicals",
   "source_path": "encyclicals/catholiccabinet01unkngoog/",
-  "document_id": null,
-  "edition": "The Catholic Cabinet, and Chronicle of Religious Intelligence (St. Louis, 1845; published with the approbation of Bishop Peter Richard Kenrick), 'Circular letter of Pope Gregory XVI', pp. 230 ff. A different translation from papalencyclicals.net's. Internet Archive scan catholiccabinet01unkngoog",
+  "document_id": "2b203418-38ab-5ae0-982a-0ce7ef1af3fb",
+  "edition": "The Catholic Cabinet, and Chronicle of Religious Intelligence (St. Louis, 1845; published with the approbation of Bishop Peter Richard Kenrick), 'Circular letter from His Holiness the Pope', pp. 230-237 (p. 230 misprinted 240). A different translation from papalencyclicals.net's. Internet Archive scan catholiccabinet01unkngoog",
   "translator": null,
   "first_published": 1845,
   "source_url": "https://archive.org/details/catholiccabinet01unkngoog",
@@ -6068,7 +6068,7 @@
   "credit_line": "Translation from The Catholic Cabinet (St. Louis, 1845)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Centesimus Annus",
@@ -6147,7 +6147,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/cihm_51176/",
-  "document_id": null,
+  "document_id": "49227f30-0b32-544c-adda-9180a888fc2b",
   "edition": "Edward John [Horan], by the Grace of God and the Favor of the Apostolic See, Bishop of Kingston: to the Clergy and Laity of our Diocess ([Kingston, 1859]), pastoral letter printing the Encyclical Letter of His Holiness Pope Pius IX in full, ending Given at Rome, at St. Peters, this 27th day of April. CIHM microfiche. A different translation from papalencyclicals.net's. Internet Archive scan cihm_51176",
   "translator": null,
   "first_published": 1859,
@@ -6158,14 +6158,14 @@
   "credit_line": "Translation published by the Bishop of Kingston (1859)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Exultavit Cor Nostrum",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/cihm_52209/",
-  "document_id": null,
+  "document_id": "25fb09e6-6c9b-56ce-b50b-e9dc03bc79a7",
   "edition": "Pastoral Letter of His Grace the Archbishop of Quebec on the Occasion of the Jubilee Granted by Our Holy Father Pope Pius IX by His Apostolic Letters Bearing Date the 21 November 1851 ([Quebec, 1852]; caption title; given at the Archiepiscopal Palace of Quebec, 23 April 1852), which includes the Encyclical Letter in full, from 'Our heart rejoiced in the Lord, Venerable Brothers' to 'of Our Pontificate the sixth. Pius IX, Pope'. CIHM microfiche of the copy in the Library of the Seminary of Quebec. A different translation from papalencyclicals.net's. (An 1851 Canadian printing, cihm_43402, omits the opening paragraph.) Internet Archive scan cihm_52209",
   "translator": null,
   "first_published": 1852,
@@ -6176,7 +6176,7 @@
   "credit_line": "Translation published by the Archbishop of Quebec (1852)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Commissum Divinitus",
@@ -6269,24 +6269,6 @@
   "planned_for": null
  },
  {
-  "work": "Cum Sancta Mater Ecclesia",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/cum-sancta-mater-ecclesia.html",
-  "document_id": "49227f30-0b32-544c-adda-9180a888fc2b",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9cumsan.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Cum Summi",
   "author": "Pope Clement XIV",
   "collection": "encyclicals",
@@ -6359,24 +6341,6 @@
   "planned_for": null
  },
  {
-  "work": "Diu Satis",
-  "author": "Pope Pius VII",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/diu-satis.html",
-  "document_id": "bc50283d-09b3-542c-90ce-6154851c64be",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius07/p7diusat.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Dives in Misericordia",
   "author": "Pope John Paul II",
   "collection": "encyclicals",
@@ -6435,8 +6399,8 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/encyclicalletter00cath_6/",
-  "document_id": null,
-  "edition": "Encyclical Letter of Our Most Holy Lord Pius IX ... examined by the Rt. Rev. Bishop of Philadelphia, and published with his approbation (Philadelphia: McLaughlin Brothers, printers, [1874]). The title page carries no year: the catalogue dates it 1874, and the approbation of Bishop James F. Wood (d. 1883) places it before 1884. A different translation from papalencyclicals.net's. Internet Archive scan encyclicalletter00cath_6",
+  "document_id": "5cdd313f-f68e-5a9b-abfe-ca9b5660ae3d",
+  "edition": "Encyclical Letter of Our Most Holy Lord Pius IX ... examined by the Rt. Rev. Bishop of Philadelphia, and published with his approbation (Philadelphia: McLaughlin Brothers, printers, [1874]). The title page carries no year: the catalogue dates it 1874, and its Rt. Rev. Bishop of Philadelphia, James F. Wood, held that title only until he became archbishop in February 1875. A different translation from papalencyclicals.net's. Internet Archive scan encyclicalletter00cath_6",
   "translator": null,
   "first_published": 1874,
   "source_url": "https://archive.org/details/encyclicalletter00cath_6",
@@ -6446,24 +6410,6 @@
   "credit_line": "Translation published with the approbation of the Bishop of Philadelphia ([1874])",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
- },
- {
-  "work": "Etsi Multa",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/etsi-multa.html",
-  "document_id": "5cdd313f-f68e-5a9b-abfe-ca9b5660ae3d",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9etsimu.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
   "planned_for": null
  },
  {
@@ -6548,24 +6494,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/ben14/b14exquo.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Exultavit Cor Nostrum",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/exultavit-cor-nostrum.html",
-  "document_id": "25fb09e6-6c9b-56ce-b50b-e9dc03bc79a7",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9exulta.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,
@@ -7342,24 +7270,6 @@
   "planned_for": null
  },
  {
-  "work": "In Supremo Apostolatus",
-  "author": "Pope Gregory XVI",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/in-supremo-apostolatus.html",
-  "document_id": "4b3489b7-1fa4-530a-9d2b-af1513f6030d",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/greg16/g16sup.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Incredibili",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
@@ -7369,24 +7279,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/pius09/p9incred.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Ineffabilis Deus",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/ineffabilis-deus.html",
-  "document_id": "a9956e54-3212-501d-96b4-51c14137b8b1",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9ineff.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,
@@ -7423,24 +7315,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/clem14/c14inscr.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Inter Praecipuas",
-  "author": "Pope Gregory XVI",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/inter-praecipuas.html",
-  "document_id": "2b203418-38ab-5ae0-982a-0ce7ef1af3fb",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/greg16/g16inter.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,
@@ -7526,7 +7400,7 @@
   "author": "Pope Gregory XVI",
   "collection": "encyclicals",
   "source_path": "encyclicals/lettersoflatebis00engl_0/",
-  "document_id": null,
+  "document_id": "4b3489b7-1fa4-530a-9d2b-af1513f6030d",
   "edition": "Letters of the Late Bishop England to the Hon. John Forsyth, on the Subject of Domestic Slavery: to which are prefixed copies, in Latin and English, of the Pope's apostolic letter (Baltimore: John Murphy, 1844), English section 'The same in English'. A different, deliberately literal translation from papalencyclicals.net's. Internet Archive scan lettersoflatebis00engl_0",
   "translator": null,
   "first_published": 1844,
@@ -7537,7 +7411,7 @@
   "credit_line": "Translation from Letters of the Late Bishop England to the Hon. John Forsyth (Baltimore, 1844)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Levate",
@@ -7760,8 +7634,8 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/officialdocumen00ixgoog/",
-  "document_id": null,
-  "edition": "Official Documents Connected with the Definition of the Dogma of the Immaculate Conception, in Latin and English (Baltimore: John Murphy; London: Charles Dolman, 1855), pp. 59-98. A different translation from papalencyclicals.net's, which is modern. Internet Archive scan officialdocumen00ixgoog",
+  "document_id": "a9956e54-3212-501d-96b4-51c14137b8b1",
+  "edition": "Official Documents Connected with the Definition of the Dogma of the Immaculate Conception, in Latin and English (Baltimore: John Murphy; London: Charles Dolman, 1855), pp. 59-100 (the English). A different translation from papalencyclicals.net's, which is modern. Internet Archive scan officialdocumen00ixgoog",
   "translator": null,
   "first_published": 1855,
   "source_url": "https://archive.org/details/officialdocumen00ixgoog",
@@ -7771,7 +7645,7 @@
   "credit_line": "Translation from Official Documents Connected with the Definition of the Dogma of the Immaculate Conception (Baltimore, 1855)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Omnem Sollicitudinem",
@@ -8017,24 +7891,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/pius09/p9quinup.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Qui Pluribus",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/qui-pluribus.html",
-  "document_id": "9cef439f-e906-5eb4-b096-ad30e27be3b7",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9quiplu.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,
@@ -8336,7 +8192,7 @@
   "author": "Pope Pius IX",
   "collection": "encyclicals",
   "source_path": "encyclicals/sim_united-states-catholic-magazine_1849-03-31_8_13/",
-  "document_id": null,
+  "document_id": "db3c5936-fd8e-5113-b60a-bd21373b3918",
   "edition": "The United States Catholic Magazine (Baltimore), vol. 8, no. 13, 31 March 1849, 'Encyclical letter of Our Holy Father Pope Pius IX, in Latin, with a translation for this magazine', ending 'Given at Gaeta, February 2, 1849'. A different translation from papalencyclicals.net's (from Papal Documents on Mary, 1954). Internet Archive scan sim_united-states-catholic-magazine_1849-03-31_8_13",
   "translator": null,
   "first_published": 1849,
@@ -8347,7 +8203,7 @@
   "credit_line": "Translation from The United States Catholic Magazine (1849)",
   "checked_by": "Carter",
   "checked_on": "2026-11-01",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Singulari Nos",
@@ -8512,24 +8368,6 @@
   "planned_for": null
  },
  {
-  "work": "Ubi Primum (1824)",
-  "author": "Pope Leo XII",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/ubi-primum-1824.html",
-  "document_id": "82e3ba38-e236-5d0b-bf1f-30a7a50b209f",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/leo12/l12ubipr.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Ubi Primum (1847)",
   "author": "Pope Pius IX",
   "collection": "encyclicals",
@@ -8539,24 +8377,6 @@
   "translator": null,
   "first_published": null,
   "source_url": "https://www.papalencyclicals.net/pius09/p9ubipr1.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Ubi Primum (1849)",
-  "author": "Pope Pius IX",
-  "collection": "encyclicals",
-  "source_path": "encyclicals/ubi-primum-1849.html",
-  "document_id": "db3c5936-fd8e-5113-b60a-bd21373b3918",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius09/p9ubipr2.htm",
   "status": "unknown",
   "rights_holder": null,
   "renewal_search": null,

@@ -87,7 +87,7 @@ class Removal:
     leaf: int
     page: str | None
     kind: str        # running_head | page_number | signature | catchword | speck |
-                     # margin_number | note_call (`pdf.py`) | rule | watermark
+                     # margin_number | note_call (`pdf.py`) | rule | watermark | edge_strip
     text: str
 
 
@@ -363,6 +363,10 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     layout = layout or SingleColumn()
     result = CleanResult()
     ordered = [layout.reading_order(p) for p in pages]
+    # The long s is a letter form of s, not a letter: a printing set before about 1800
+    # (Diu Satis, 1.3d) is read with it written out, as the ligatures are.
+    ordered = [[replace(ln, text=ln.text.replace("ſ", "s"), source=ln.reading)
+                if "ſ" in ln.text else ln for ln in lines] for lines in ordered]
     if watermark:
         stamp = re.compile(watermark)
         for k, page in enumerate(pages):
@@ -550,6 +554,14 @@ def clean_work(workdir, sources=None, force: bool = False,
         first, last = (int(n) + config.pdf_page_offset for n in config.pages)
         pages = read_pdf(sources / config.pdf, range(first, last + 1), config.pdf_page_offset,
                          note_calls)
+    elif config.leaf_pages:
+        # A scan with no page map, or one that leaves out a page the work needs: the
+        # work names each leaf's printed page itself (1.3d).
+        numbers = {int(leaf): page for leaf, page in config.leaf_pages.items()}
+        leaves = leaves_for_pages(numbers, *config.pages)
+        pages = load_pages(sources / config.djvu_xml, None, leaves)
+        for page in pages:
+            page.number = numbers.get(page.leaf)
     else:
         numbers_path = sources / config.page_numbers
         leaves = leaves_for_pages(read_page_numbers(numbers_path, config.leaf_offset), *config.pages)
@@ -561,15 +573,27 @@ def clean_work(workdir, sources=None, force: bool = False,
         if missing:
             raise ValueError(f"{config.work}: only_pages {sorted(missing)} are not in its pages")
         pages = [p for p in pages if p.number in config.only_pages]
+    strips: list[Removal] = []
+    if config.edge_strip:
+        # The cut-off lines of the page before, which the frame caught at its left edge
+        # (the Archbishop of Quebec's pastoral on microfiche, 1.3d).
+        for page in pages:
+            edge = config.edge_strip * page.width
+            strips += [Removal(page.leaf, page.number, "edge_strip", ln.text)
+                       for ln in page.lines if ln.x0 < edge]
+            page.lines = [ln for ln in page.lines if ln.x0 >= edge]
     result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
                          config.max_paragraph_words, config.margin_numbers,
                          config.paragraph_opens, config.rule_lines, config.note_opens,
                          config.watermark)
+    result.removals.extend(strips)
     number = {p.leaf: p.number for p in pages}
     result.removals.extend(Removal(c.leaf, number[c.leaf], "note_call", f"{c.after}|{c.text}")
                            for c in note_calls)
     agree, read = page_map_agreement(result.removals)
-    if read and agree * 2 < read:
+    # A work that names its leaves' pages itself (`leaf_pages`) was set from the images;
+    # small page numbers in parentheses the OCR misreads do not overrule it (Diu Satis).
+    if read and agree * 2 < read and not config.leaf_pages:
         raise RuntimeError(
             f"{config.work}: the page numbers printed on the pages agree with "
             f"{config.page_numbers} on only {agree} of {read} pages; the scan's images and "
@@ -591,7 +615,7 @@ def clean_work(workdir, sources=None, force: bool = False,
             id=passage_id, leaves=leaves_, pages=[number[x] for x in leaves_],
             raw_ocr=_joined([(para.raw, para.continues) for para in group]),
             cleaned=_joined([(para.text, para.continues) for para in group]),
-            continues=group[0].continues))
+            continues=group[0].continues, cut=group[0].continues))
     workdir.save_passages(passages)
     workdir.save_cleanup({
         "pages": [{"leaf": p.leaf, "page": p.number} for p in pages],

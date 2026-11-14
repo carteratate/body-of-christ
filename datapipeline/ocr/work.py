@@ -81,11 +81,17 @@ class WorkConfig:
     margin_numbers: bool = False   # numbers printed in the margins are furniture
     layout: str = "single-column"
     leaf_offset: int = 0         # scan leaves the XML leaves out before its first page
+    # Each leaf's printed page, given by the work where the scan has no page map or its
+    # map leaves out a page the work reads (1.3d); used instead of `page_numbers`.
+    leaf_pages: dict[str, str] = field(default_factory=dict)
     broken_words_continue: bool = False   # a broken word's rest never opens a paragraph
     max_paragraph_words: int | None = None   # cut longer paragraphs at a sentence end
     paragraph_opens: tuple[str, ...] = ()   # lines that open a paragraph the clean-up misses
     rule_lines: tuple[str, ...] = ()   # printed rules the OCR reads as letters, one line each
     watermark: str | None = None   # a scanner's stamp on every page ("Digitized by Google")
+    # A microfilm frame that also catches the previous page's right edge: lines starting
+    # within this fraction of the image's width from its left edge are that strip (1.3d).
+    edge_strip: float = 0.0
     note_opens: tuple[str, ...] = ()   # the line opening each page's notes, where the measure misses
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints
@@ -150,6 +156,8 @@ class OcrPassage:
     correction: Correction = field(default_factory=Correction)
     fixed: str | None = None     # `base` with the work's tracked fixes applied
     continues: bool = False      # opens inside the paragraph the passage before it ends
+    cut: bool | None = False     # the clean-up cut it from that paragraph (`continues` is this
+                                 # or a tracked fix's `continues: true`); None: not recorded
 
     @property
     def base(self) -> str:
@@ -171,6 +179,7 @@ class OcrPassage:
     def from_dict(cls, d: dict) -> "OcrPassage":
         d = dict(d)
         d["correction"] = Correction(**d.get("correction", {}))
+        d.setdefault("cut", None)   # cleaned before `cut` was recorded: `fix` finds it again
         return cls(**d)
 
 

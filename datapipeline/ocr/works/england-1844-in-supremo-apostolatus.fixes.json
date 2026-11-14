@@ -1,0 +1,136 @@
+[
+ {
+  "passage": "in-supremo-apostolatus-01",
+  "find": "§ Nor were wanting\n\nAPOSTOLIC LETTER.\n\nX",
+  "replace": "Nor were wanting",
+  "why": "pp. ix–x: the running head \"APOSTOLIC LETTER.\" and page number, read as text, removed (and the note marks before them)"
+ },
+ {
+  "passage": "in-supremo-apostolatus-01",
+  "find": "brethren.t",
+  "replace": "brethren,",
+  "why": "pp. ix–x: a note mark calling one of the book's footnotes, read as \"t\", removed"
+ },
+ {
+  "passage": "in-supremo-apostolatus-01",
+  "find": "the poor,t it",
+  "replace": "the poor, it",
+  "why": "pp. ix–x: a note mark calling one of the book's footnotes, read as \"t\", removed"
+ },
+ {
+  "passage": "in-supremo-apostolatus-01",
+  "find": "or mercv might",
+  "replace": "or mercy might",
+  "why": "pp. ix–x: misread on the page; the print reads \"mercy\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-01",
+  "find": "the lav/ of",
+  "replace": "the law of",
+  "why": "pp. ix–x: misread on the page; the print reads \"law\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-01",
+  "find": "persons.*",
+  "replace": "persons.",
+  "why": "pp. ix–x: a note mark calling one of the book's footnotes (citations, and the translator's note), left out as apparatus"
+ },
+ {
+  "passage": "in-supremo-apostolatus-01",
+  "find": "vouch.^afed",
+  "replace": "vouchsafed",
+  "why": "pp. ix–x: misread on the page; the print reads \"vouchsafed\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-01",
+  "find": "Christ, ihe Son",
+  "replace": "Christ, the Son",
+  "why": "pp. ix–x: misread on the page; the print reads \"the\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-01",
+  "find": "of tlie Apostolate,",
+  "replace": "of the Apostolate,",
+  "why": "pp. ix–x: misread on the page; the print reads \"the\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-02",
+  "continues": true,
+  "why": "p. x: \"Nor were wanting some who\" runs on from p. ix"
+ },
+ {
+  "passage": "in-supremo-apostolatus-02",
+  "find": "who hail been",
+  "replace": "who had been",
+  "why": "p. x: misread on the page; the print reads \"had\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-02",
+  "find": "basely-blinded",
+  "replace": "basely blinded",
+  "why": "p. x: misread on the page; the print reads \"basely blinded\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-02",
+  "find": "it, lijere were",
+  "replace": "it, there were",
+  "why": "p. x: misread on the page; the print reads \"there\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-02",
+  "find": "ciiarity, the niaiter progressed so",
+  "replace": "charity, the matter progressed sc",
+  "why": "p. x: misread on the page; the print reads \"charity, the matter progressed sc\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-02",
+  "find": "nation's",
+  "replace": "nations",
+  "why": "p. x: misread on the page; the print reads \"nations\""
+ },
+ {
+  "passage": "in-supremo-apostolatus-02",
+  "find": "known many.f Therefore,",
+  "replace": "known many. Therefore,",
+  "why": "p. x: a note mark calling one of the book's footnotes (citations, and the translator's note, left out as apparatus), removed"
+ },
+ {
+  "passage": "in-supremo-apostolatus-02",
+  "find": "others,*",
+  "replace": "others,",
+  "why": "p. x: a note mark calling one of the book's footnotes (citations, and the translator's note), left out as apparatus"
+ },
+ {
+  "passage": "in-supremo-apostolatus-03",
+  "continues": true,
+  "why": "p. x: one paragraph with the passage before"
+ },
+ {
+  "passage": "in-supremo-apostolatus-03",
+  "find": "§ Still earlier, more-APOSTOLIC LETTER.",
+  "replace": "Still earlier, more-",
+  "why": "pp. x–xi: the running head \"APOSTOLIC LETTER.\" and page number, read as text, removed (and the note marks before them)"
+ },
+ {
+  "passage": "in-supremo-apostolatus-03",
+  "find": "premises.^",
+  "replace": "premises.",
+  "why": "pp. x–xi: a note mark calling one of the book's footnotes (citations, and the translator's note, left out as apparatus), removed"
+ },
+ {
+  "passage": "in-supremo-apostolatus-04",
+  "continues": true,
+  "why": "p. xi: \"more-over\" runs on from p. x, the word broken at the page's end"
+ },
+ {
+  "passage": "in-supremo-apostolatus-04",
+  "find": "slavery.*",
+  "replace": "slavery.",
+  "why": "p. xi: a note mark calling one of the book's footnotes (citations, and the translator's note), left out as apparatus"
+ },
+ {
+  "passage": "in-supremo-apostolatus-05",
+  "continues": true,
+  "why": "p. xi: one paragraph with the passage before"
+ }
+]

@@ -1,0 +1,37 @@
+{
+ "work": "uscm-1849-ubi-primum",
+ "title": "Ubi Primum (Pius IX, 1849), in The United States Catholic Magazine, vol. 8 no. 13 (Baltimore, 31 March 1849), \"Encyclical letter of Our Holy Father Pope Pius IX, in Latin, with a translation for this magazine\", pp. 198–201, the English column",
+ "scan": "sim_united-states-catholic-magazine_1849-03-31_8_13",
+ "djvu_xml": "encyclicals/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_djvu.xml",
+ "page_numbers": "encyclicals/sim_united-states-catholic-magazine_1849-03-31_8_13/sim_united-states-catholic-magazine_1849-03-31_8_13_page_numbers.json",
+ "pages": [
+  "198",
+  "201"
+ ],
+ "layout": "parallel-right",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "ubi-primum-1849",
+   "first": "^ENCYCLICAL LETTER OF OUR HOLY FATHER",
+   "last": "Given at Gaeta",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true
+}

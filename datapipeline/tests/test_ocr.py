@@ -727,6 +727,23 @@ def test_bounded_units_refuse_a_missing_bound_or_a_start_inside_a_paragraph():
         SchroederCanons().split(_paras("Text. One."), bounds=({"id": "x"},))
 
 
+def test_a_run_without_recorded_cuts_finds_them_again(tmp_path, sources):
+    """A run cleaned before `cut` was recorded: a join its fixes no longer make goes."""
+    w = WorkDir(make_config(work="w"), root=tmp_path / "work")
+    clean_work(w, sources=sources, passage_words=20)
+    data = json.loads(w.file("passages.json").read_text())
+    assert not data[1]["continues"]
+    for d in data:
+        d.pop("cut")
+    data[1]["continues"] = True          # joined by a fix since taken out
+    w.file("passages.json").write_text(json.dumps(data))
+    (tmp_path / "w.fixes.json").write_text("[]")
+    apply_fixes(w, tmp_path, sources=sources, passage_words=20)
+    assert [p.continues for p in w.passages()] == [p["cut"] for p in json.loads(
+        w.file("passages.json").read_text())]
+    assert not w.passages()[1].continues
+
+
 def test_a_fix_can_join_a_passage_to_the_paragraph_before_it(tmp_path):
     config = make_config(work="w")
     wd = WorkDir(config, tmp_path / "work")
@@ -736,6 +753,9 @@ def test_a_fix_can_join_a_passage_to_the_paragraph_before_it(tmp_path):
         [{"passage": "a-02", "continues": True, "why": "one sentence over the page"}]))
     apply_fixes(wd, tmp_path)
     assert [p.continues for p in wd.passages()] == [False, True]
+    (tmp_path / "w.fixes.json").write_text("[]")   # the join taken out again no longer holds
+    apply_fixes(wd, tmp_path)
+    assert [p.continues for p in wd.passages()] == [False, False]
     (tmp_path / "w.fixes.json").write_text(json.dumps(
         [{"passage": "a-02", "why": "no find and no join"}]))
     with pytest.raises(ValueError, match="continues"):
@@ -1032,6 +1052,26 @@ def test_only_pages_reads_the_pages_named(tmp_path, sources):
                    sources=sources, passage_words=20)
 
 
+def test_leaf_pages_name_the_pages_without_a_page_map(tmp_path, sources):
+    """A work that names each leaf's printed page reads them without the scan's map."""
+    w = WorkDir(make_config(page_numbers="", leaf_pages={"0": "10", "1": "11", "2": "12"}),
+                root=tmp_path / "w")
+    clean_work(w, sources=sources, passage_words=20)
+    assert {p for passage in w.passages() for p in passage.pages} <= {"10", "11", "12"}
+    assert w.passages()
+
+
+def test_edge_strip_drops_the_previous_pages_cut_off_lines(tmp_path, sources):
+    """A microfilm frame that also caught the page before's edge reads only its own
+    page: lines starting within the strip go, logged as `edge_strip`."""
+    w = WorkDir(make_config(edge_strip=0.09), root=tmp_path / "w")   # 180 of 2000 pixels
+    clean_work(w, sources=sources, passage_words=20)
+    dropped = [r for r in w.cleanup()["removals"] if r["kind"] == "edge_strip"]
+    assert dropped
+    kept = " ".join(p.cleaned for p in w.passages())
+    assert all(r["text"] not in kept for r in dropped)
+
+
 def test_parallel_right_keeps_the_right_column_and_lines_across_the_page():
     from ocr.layout import ParallelRight
 
@@ -1042,6 +1082,15 @@ def test_parallel_right_keeps_the_right_column_and_lines_across_the_page():
     kept = [ln.text for ln in ParallelRight().reading_order(Page(0, 2500, 3800, lines))]
     assert kept == ["The text of the Bull runs thus:"] + [f"English line {k}" for k in range(8)]
     assert get_layout("parallel-right").name == "parallel-right"
+
+
+def test_long_s_is_written_out():
+    body = [Line(f"Ordinary words on line {k} of this page run on", 150, 300 + 75 * k, 1850, 360 + 75 * k)
+            for k in range(6)] + [Line("moſt ſolicitude, which theſe times require.", 150, 760, 1850, 820)]
+    paras = clean_pages([Page(0, 2000, 3000, body)]).paragraphs
+    text = "\n".join(p.text for p in paras)
+    assert "most solicitude, which these times require." in text and "ſ" not in text
+    assert "moſt ſolicitude" in "\n".join(p.raw for p in paras)    # the scan's own reading
 
 
 def test_watermark_is_taken_out_of_the_line_it_was_read_into():

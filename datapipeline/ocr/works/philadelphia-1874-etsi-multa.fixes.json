@@ -1,0 +1,943 @@
+[
+ {
+  "passage": "etsi-multa-01",
+  "find": "monks “and virgins",
+  "replace": "monks and virgins",
+  "why": "pp. 3–4: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-01",
+  "find": "devil “ hates ",
+  "replace": "devil hates ",
+  "why": "pp. 3–4: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-01",
+  "find": " poverty\n\n4\n\nand ",
+  "replace": " poverty and ",
+  "why": "pp. 3–4: the page number \"4\" read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-01",
+  "find": "“ saints.”*",
+  "replace": "saints.”",
+  "why": "pp. 3–4: the printer's repeated opening quotation mark and a note mark calling a footnote (left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-01",
+  "find": "cry, “ It is",
+  "replace": "cry, “It is",
+  "why": "pp. 3–4: spacing"
+ },
+ {
+  "passage": "etsi-multa-01",
+  "find": " Pontificate,\n\nhave ",
+  "replace": " Pontificate, have ",
+  "why": "pp. 3–4: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "etsi-multa-01",
+  "find": " sufferings,\n\nfrom ",
+  "replace": " sufferings, from ",
+  "why": "pp. 3–4: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "etsi-multa-01",
+  "find": "V rnf£attlf[ ^Brctfjrcn;\n\n‘fealty antr tfjc Jfposlolk J^u^tdton:\n\nLTHOUGH",
+  "replace": "Venerable Brethren;\n\nHealth and the Apostolic Benediction:\n\nAlthough",
+  "why": "pp. 3–4: the greeting in black letter and the opening under the engraved initial \"A\", misread; the print reads \"Venerable Brethren; / Health and the Apostolic Benediction: / ALTHOUGH many grievous and bitter sufferings,\" (the initial and capitals set as \"Although\")"
+ },
+ {
+  "passage": "etsi-multa-03",
+  "find": "riMit of reforming-\n\n6",
+  "replace": "right of reforming",
+  "why": "pp. 5–6: misread on the page, and the page number \"6\" read into the text; the print reads \"right of reforming\""
+ },
+ {
+  "passage": "etsi-multa-03",
+  "find": "Vicar- Apostolic",
+  "replace": "Vicar-Apostolic",
+  "why": "pp. 5–6: spacing"
+ },
+ {
+  "passage": "etsi-multa-03",
+  "find": "“concerning",
+  "replace": "concerning",
+  "why": "pp. 5–6: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-03",
+  "find": "power — have",
+  "replace": "power—have",
+  "why": "pp. 5–6: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-03",
+  "find": "Federation — not",
+  "replace": "Federation—not",
+  "why": "pp. 5–6: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-04",
+  "find": "destroy.”*",
+  "replace": "destroy.”",
+  "why": "pp. 6–7: a note mark calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-04",
+  "find": "“ as strangers and “",
+  "replace": "“as strangers and",
+  "why": "pp. 6–7: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-04",
+  "find": "permission — withdrawn at pleasure — of",
+  "replace": "permission—withdrawn at pleasure—of",
+  "why": "pp. 6–7: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-05",
+  "find": " clergy and\n\n8",
+  "replace": " clergy and",
+  "why": "pp. 7–8: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-05",
+  "find": "cantons, — having",
+  "replace": "cantons,—having",
+  "why": "pp. 7–8: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-05",
+  "find": "of Bale, in",
+  "replace": "of Bâle, in",
+  "why": "pp. 7–8: misread on the page; the print reads \"Bâle,\""
+ },
+ {
+  "passage": "etsi-multa-05",
+  "find": "Bale-Campagne,",
+  "replace": "Bâle-Campagne,",
+  "why": "pp. 7–8: misread on the page; the print reads \"Bâle-Campagne,\""
+ },
+ {
+  "passage": "etsi-multa-05",
+  "find": "of Bale, viz.:",
+  "replace": "of Bâle, viz.:",
+  "why": "pp. 7–8: misread on the page; the print reads \"Bâle,\""
+ },
+ {
+  "passage": "etsi-multa-06",
+  "find": "Mar-\n\n\"\"Ezech. xi ii., 5.\n\n9\n\ntyrs,",
+  "replace": "Martyrs,",
+  "why": "pp. 8–9: the page number \"9\" read into the text, removed, and a footnote (a citation, left out as apparatus)"
+ },
+ {
+  "passage": "etsi-multa-06",
+  "find": "the Lord,”* and",
+  "replace": "the Lord,” and",
+  "why": "pp. 8–9: a note mark calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-06",
+  "find": "Israel “ to stand",
+  "replace": "Israel “to stand",
+  "why": "pp. 8–9: spacing"
+ },
+ {
+  "passage": "etsi-multa-06",
+  "find": "martvrs,",
+  "replace": "martyrs,",
+  "why": "pp. 8–9: misread on the page; the print reads \"martyrs,\""
+ },
+ {
+  "passage": "etsi-multa-06",
+  "find": "inviolate — has",
+  "replace": "inviolate—has",
+  "why": "pp. 8–9: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-06",
+  "find": "district — which",
+  "replace": "district—which",
+  "why": "pp. 8–9: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-06",
+  "find": "of Bale to",
+  "replace": "of Bâle to",
+  "why": "pp. 8–9: misread on the page; the print reads \"Bâle\""
+ },
+ {
+  "passage": "etsi-multa-07",
+  "find": " with\n\n10",
+  "replace": " with",
+  "why": "pp. 9–10: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-08",
+  "find": " like\n\n11",
+  "replace": " like",
+  "why": "pp. 10–11: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "find": " sovereign\n\na",
+  "replace": " sovereign",
+  "why": "pp. 11–12: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "find": "im-P\n\nf< press",
+  "replace": "impress",
+  "why": "pp. 11–12: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "find": " turned\n\nst\n\naside, ",
+  "replace": " turned aside, ",
+  "why": "pp. 11–12: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "find": "creature.”*",
+  "replace": "creature.”",
+  "why": "pp. 11–12: a note mark calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "find": "\n\n12\n\n“belong",
+  "replace": " belong",
+  "why": "pp. 11–12: the page number \"12\" read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "find": " less “ than",
+  "replace": " less than",
+  "why": "pp. 11–12: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "find": "Caesar, who is “ therefore",
+  "replace": "Cæsar, who is “therefore",
+  "why": "pp. 11–12: the print sets the ligature (æ), which the correction spelled out (and the quotation mark set close)"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "find": "of Caesar should",
+  "replace": "of Cæsar should",
+  "why": "pp. 11–12: the print sets the ligature (æ), which the correction spelled out"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "find": "earth — the",
+  "replace": "earth—the",
+  "why": "pp. 11–12: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": " name.” J",
+  "replace": " name.”",
+  "why": "p. 12: a note mark calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": "be “ ashamed, ",
+  "replace": "be ashamed, ",
+  "why": "p. 12: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": "other “ men’s ",
+  "replace": "other men’s ",
+  "why": "p. 12: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": " a “ murderer,",
+  "replace": " a murderer,",
+  "why": "p. 12: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": "faithful: “ Let none",
+  "replace": "faithful: “Let none",
+  "why": "p. 12: spacing"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": "of God.”j' This",
+  "replace": "of God.” This",
+  "why": "p. 12: a note mark calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": "be- “ cause",
+  "replace": "because",
+  "why": "p. 12: a word broken at a line end, joined, with the printer's repeated quotation mark left out"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": "for “ him ",
+  "replace": "for him ",
+  "why": "p. 12: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": " because “ the",
+  "replace": " because the",
+  "why": "p. 12: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": "the “ faithful ",
+  "replace": "the faithful ",
+  "why": "p. 12: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": " terror “ to",
+  "replace": " terror to",
+  "why": "p. 12: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": "“ Princes",
+  "replace": "“Princes",
+  "why": "p. 12: spacing"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "find": " has\n\nc\n\ntaught ",
+  "replace": " has taught ",
+  "why": "p. 12: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-11",
+  "find": "thing's,\n\no o 7",
+  "replace": "things,",
+  "why": "pp. 12–13: misread on the page, with marks from the facing page's margin; the print reads \"things,\""
+ },
+ {
+  "passage": "etsi-multa-11",
+  "find": "themselves, ”§",
+  "replace": "themselves,”",
+  "why": "pp. 12–13: a note mark calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-11",
+  "find": "“ count- “ ing",
+  "replace": "“counting",
+  "why": "pp. 12–13: a word broken at a line end, joined, with the printer's repeated quotation mark left out"
+ },
+ {
+  "passage": "etsi-multa-12",
+  "find": " the\n\na seminaries",
+  "replace": " the seminaries",
+  "why": "pp. 13–14: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-12",
+  "find": "socie-P ties",
+  "replace": "societies",
+  "why": "pp. 13–14: misread on the page; the print reads \"societies\""
+ },
+ {
+  "passage": "etsi-multa-12",
+  "find": "whole-ai some",
+  "replace": "wholesome",
+  "why": "pp. 13–14: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-12",
+  "find": "edu-v cated,",
+  "replace": "educated,",
+  "why": "pp. 13–14: misread on the page; the print reads \"educated,\""
+ },
+ {
+  "passage": "etsi-multa-12",
+  "find": " harshness;\n\nlie while",
+  "replace": " harshness; while",
+  "why": "pp. 13–14: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-12",
+  "find": " and\n\nal) Virgins",
+  "replace": " and Virgins",
+  "why": "pp. 13–14: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-12",
+  "find": " are\n\nro before",
+  "replace": " are before",
+  "why": "pp. 13–14: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-12",
+  "find": " Emperor. The ",
+  "replace": " Emperor.\n\nThe ",
+  "why": "pp. 13–14: two paragraphs on the page, which the clean-up ran together"
+ },
+ {
+  "passage": "etsi-multa-14",
+  "find": " and\n\nii\n\ntheir ",
+  "replace": " and their ",
+  "why": "pp. 15–16: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-14",
+  "find": " are\n\ni.\n\nnot ",
+  "replace": " are not ",
+  "why": "pp. 15–16: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-14",
+  "find": "col-\n\n1C\n\nlected",
+  "replace": "collected",
+  "why": "pp. 15–16: the page number \"16\" read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-14",
+  "find": "CEcumeni-cal",
+  "replace": "Œcumenical",
+  "why": "pp. 15–16: misread on the page; the print reads \"Œcumenical\""
+ },
+ {
+  "passage": "etsi-multa-14",
+  "find": "aims ol these",
+  "replace": "aims of these",
+  "why": "pp. 15–16: misread on the page; the print reads \"of\""
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "are not.*",
+  "replace": "are not.",
+  "why": "pp. 16–17: a note mark calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": " all “ nations.”",
+  "replace": " all nations.”",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": " Therefore, “ until",
+  "replace": " Therefore, until",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": " testimony\n\n17\n\n“ to",
+  "replace": " testimony to",
+  "why": "pp. 16–17: the page number \"17\" read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": " He “ says,",
+  "replace": " He says,",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "the “world. Let",
+  "replace": "the world. Let",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "is “ said ",
+  "replace": "is said ",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "all “the nations.”",
+  "replace": "all the nations.”",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": " believed, “ but",
+  "replace": " believed, but",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "Scrip- “ tures",
+  "replace": "Scriptures",
+  "why": "pp. 16–17: a word broken at a line end, joined, with the printer's repeated quotation mark left out"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "she “ is ",
+  "replace": "she is ",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "for “ the ",
+  "replace": "for the ",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": " days: “ how",
+  "replace": " days: how",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "have “ perished? ",
+  "replace": "have perished? ",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "Why “do those",
+  "replace": "Why do those",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "those “ who ",
+  "replace": "those who ",
+  "why": "pp. 16–17: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "find": "tl Catholicity. ",
+  "replace": "Catholicity. ",
+  "why": "pp. 16–17: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-16",
+  "find": "unity. ’’f\n\n18",
+  "replace": "unity.”",
+  "why": "pp. 17–18: misread on the page; the print reads \"unity.”\""
+ },
+ {
+  "passage": "etsi-multa-16",
+  "find": " Lord “ speak:",
+  "replace": " Lord speak:",
+  "why": "pp. 17–18: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-16",
+  "find": "indeed, “ to Peter",
+  "replace": "indeed, “to Peter",
+  "why": "pp. 17–18: spacing"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "Episcopate.”*",
+  "replace": "Episcopate.”",
+  "why": "pp. 18–19: a note mark calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "honor, “ unity ",
+  "replace": "honor, unity ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": " can “ possess",
+  "replace": " can possess",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "of the “ Church and ",
+  "replace": "of the Church and ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "of “ peace, ",
+  "replace": "of peace, ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": " maintains\n\n19\n\n“ neither",
+  "replace": " maintains neither",
+  "why": "pp. 18–19: the page number \"19\" read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "make “ the ",
+  "replace": "make the ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "com- “ pacted",
+  "replace": "compacted",
+  "why": "pp. 18–19: a word broken at a line end, joined, with the printer's repeated quotation mark left out"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "of “ the ",
+  "replace": "of the ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": " the “ manifold",
+  "replace": " the manifold",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "also “ one ",
+  "replace": "also one ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "into “ many ",
+  "replace": "into many ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": " possessed. “ Since",
+  "replace": " possessed. Since",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "ecciesi- “ astical",
+  "replace": "ecclesiastical",
+  "why": "pp. 18–19: a word broken at a line end, joined, with the printer's repeated quotation mark left out"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "he “who has",
+  "replace": "he who has",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": " talk “ of",
+  "replace": " talk of",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "the “ Church ",
+  "replace": "the Church ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "what- “ ever",
+  "replace": "whatever",
+  "why": "pp. 18–19: a word broken at a line end, joined, with the printer's repeated quotation mark left out"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "“ Whoever",
+  "replace": "“Whoever",
+  "why": "pp. 18–19: spacing"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "“ union. ”§",
+  "replace": "union.”",
+  "why": "pp. 18–19: the printer's repeated opening quotation mark and a note mark calling a footnote (left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": " the “ Christian",
+  "replace": " the Christian",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "cuts “ himself ",
+  "replace": "cuts himself ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": " world “ as",
+  "replace": " world as",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "is “ to the",
+  "replace": "is “to the",
+  "why": "pp. 18–19: spacing"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "that i; this ",
+  "replace": "that this ",
+  "why": "pp. 18–19: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "to all;”J and",
+  "replace": "to all;” and",
+  "why": "pp. 18–19: a note mark calling one of the pamphlet's footnotes (citations, left out as apparatus), removed"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "it,”*)* “ the rights of “holy",
+  "replace": "it,” “the rights of holy",
+  "why": "pp. 18–19: note marks calling footnotes (left out as apparatus) and the printer's repeated quotation mark, removed"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "and “ dispenses ",
+  "replace": "and dispenses ",
+  "why": "pp. 18–19: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "\"j “been given.”*",
+  "replace": "been given.”",
+  "why": "pp. 18–19: letters from the facing page's margin, read into the text, removed; the printer's repeated quotation marks left out; a note mark removed"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "Him \"( “and other",
+  "replace": "Him and other",
+  "why": "pp. 18–19: letters from the facing page's margin, read into the text, removed; the printer's repeated quotation marks left out"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "authority “f “ has ",
+  "replace": "authority has ",
+  "why": "pp. 18–19: a letter from the facing page's margin and the printer's repeated quotation marks, removed"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": " and \"n “ wonderful",
+  "replace": " and wonderful",
+  "why": "pp. 18–19: letters from the facing page's margin, read into the text, removed"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "find": "Peter “ the Divine",
+  "replace": "Peter “the Divine",
+  "why": "pp. 18–19: spacing"
+ },
+ {
+  "passage": "etsi-multa-18",
+  "find": "consent — excommunicated,",
+  "replace": "consent—excommunicated,",
+  "why": "pp. 19–20: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-18",
+  "find": "Herbert, — together",
+  "replace": "Herbert,—together",
+  "why": "pp. 19–20: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-19",
+  "find": "places — they",
+  "replace": "places—they",
+  "why": "pp. 20–21: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-19",
+  "find": "hankered — the",
+  "replace": "hankered—the",
+  "why": "pp. 20–21: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-19",
+  "find": "known — and",
+  "replace": "known—and",
+  "why": "pp. 20–21: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-19",
+  "find": "societies — be",
+  "replace": "societies—be",
+  "why": "pp. 20–21: the print sets its dashes close, without spaces"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "shall “ pass ",
+  "replace": "shall pass ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "you “ be ",
+  "replace": "you be ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": " how, “ when",
+  "replace": " how, when",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "there “ were ",
+  "replace": "there were ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "have “ perished; ",
+  "replace": "have perished; ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": " Church? “ She",
+  "replace": " Church? She",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "her “foes? They",
+  "replace": "her foes? They",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "much “ have ",
+  "replace": "much have ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "many “ swords ",
+  "replace": "many swords ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": " gridirons, “ how",
+  "replace": " gridirons, how",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "have “ tried ",
+  "replace": "have tried ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "believe “ in ",
+  "replace": "believe in ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "of “ hell ",
+  "replace": "of hell ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": " and “ upon",
+  "replace": " and upon",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "pass “ away. ",
+  "replace": "pass away. ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": " and “ earth",
+  "replace": " and earth",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "The “ Church ",
+  "replace": "The Church ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "Jesus. “ There ",
+  "replace": "Jesus. There ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": " though “ the",
+  "replace": " though the",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": " rock. “ Though",
+  "replace": " rock. Though",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "afraid “ of ",
+  "replace": "afraid of ",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-21",
+  "find": "“ Many “",
+  "replace": "“Many",
+  "why": "pp. 21–22: the printer repeats the opening quotation mark at the start of each line of a quotation; only the first is kept"
+ },
+ {
+  "passage": "etsi-multa-22",
+  "find": " 1873, in\n\nthe twenty-eighth ",
+  "replace": " 1873, in the twenty-eighth ",
+  "why": "pp. 22–23: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "etsi-multa-22",
+  "find": " twenty-first day\n\nof November, ",
+  "replace": " twenty-first day of November, ",
+  "why": "pp. 22–23: one paragraph; the clean-up broke it at a line end"
+ },
+ {
+  "passage": "etsi-multa-04",
+  "continues": true,
+  "why": "the paragraph runs on from the passage before; the passage was cut at a page's end"
+ },
+ {
+  "passage": "etsi-multa-06",
+  "continues": true,
+  "why": "the paragraph runs on from the passage before; the passage was cut at a page's end"
+ },
+ {
+  "passage": "etsi-multa-08",
+  "continues": true,
+  "why": "the paragraph runs on from the passage before; the passage was cut at a page's end"
+ },
+ {
+  "passage": "etsi-multa-09",
+  "continues": true,
+  "why": "the paragraph runs on from the passage before; the passage was cut at a page's end"
+ },
+ {
+  "passage": "etsi-multa-10",
+  "continues": true,
+  "why": "the paragraph runs on from the passage before; the passage was cut at a page's end"
+ },
+ {
+  "passage": "etsi-multa-15",
+  "continues": true,
+  "why": "the paragraph runs on from the passage before; the passage was cut at a page's end"
+ },
+ {
+  "passage": "etsi-multa-17",
+  "continues": true,
+  "why": "p. 18 opens flush left, not indented: the paragraph runs on from p. 17 (\"to Peter did the Lord speak … To Peter …\")"
+ }
+]

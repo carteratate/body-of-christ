@@ -1,0 +1,82 @@
+{
+ "work": "official-documents-1855-ineffabilis-deus",
+ "title": "Ineffabilis Deus, in Official Documents Connected with the Definition of the Dogma of the Immaculate Conception, in Latin and English (Baltimore: John Murphy, 1855), \"Letters Apostolic\", pp. 59–100",
+ "scan": "officialdocumen00ixgoog",
+ "djvu_xml": "encyclicals/officialdocumen00ixgoog/officialdocumen00ixgoog_djvu.xml",
+ "page_numbers": "",
+ "pages": [
+  "59",
+  "100"
+ ],
+ "layout": "single-column",
+ "watermark": "Digitized\\s*(by)?\\s*\\S*",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "ineffabilis-deus",
+   "first": "^LETTERS APOSTOLIC",
+   "last": "^PIUS PP\\. IX",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "leaf_pages": {
+  "68": "59",
+  "69": "60",
+  "70": "61",
+  "71": "62",
+  "72": "63",
+  "73": "64",
+  "74": "65",
+  "75": "66",
+  "76": "67",
+  "77": "68",
+  "78": "69",
+  "79": "70",
+  "80": "71",
+  "81": "72",
+  "82": "73",
+  "83": "74",
+  "84": "75",
+  "85": "76",
+  "86": "77",
+  "87": "78",
+  "88": "79",
+  "89": "80",
+  "90": "81",
+  "91": "82",
+  "92": "83",
+  "93": "84",
+  "94": "85",
+  "95": "86",
+  "96": "87",
+  "97": "88",
+  "98": "89",
+  "99": "90",
+  "100": "91",
+  "101": "92",
+  "102": "93",
+  "103": "94",
+  "104": "95",
+  "105": "96",
+  "106": "97",
+  "107": "98",
+  "108": "99",
+  "109": "100"
+ }
+}
