@@ -12,8 +12,6 @@ from app import catechism_pages, reader_access
 from app.catechism_pages import COVER_URL, FLIPBOOK, _publication, check_publication, page_url
 
 TABLE = json.loads(Path(catechism_pages.__file__).with_name("catechism_pages.json").read_text())
-CONTENTS = json.loads(
-    Path(catechism_pages.__file__).with_name("catechism_contents.json").read_text())
 DOC = "11111111-1111-1111-1111-111111111111"
 
 
@@ -25,17 +23,6 @@ def test_the_table_places_every_paragraph_in_reading_order():
     # The Prologue starts on index 27 and Part Four ends before the indexes at 709.
     assert values[0] == 27 and values[-1] < 709
     assert len(TABLE["guid"]) == 32 and TABLE["numeration_offset"] == 18
-
-
-def test_each_heading_and_its_first_paragraph_share_a_page_order():
-    """The contents tree's headings are in paragraph order, so their pages must be too."""
-    def walk(nodes):
-        for node in nodes:
-            yield node["first"]
-            yield from walk(node["children"])
-
-    pages = [TABLE["flipbook_page"][str(first)] for first in walk(CONTENTS)]
-    assert pages == sorted(pages)
 
 
 def test_a_passage_links_to_its_paragraphs_page():

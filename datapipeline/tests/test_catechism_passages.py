@@ -91,3 +91,70 @@ def test_every_passage_finds_its_flipbook_page(doc):
         pages = json.load(f)["flipbook_page"]
     assert all(re.fullmatch(r"§\d+", p.unit_label or "") and p.unit_label[1:] in pages
                for p in doc.passages)
+
+
+# The contents tree (#253), on the full source.
+
+def _range(node) -> tuple[int, int]:
+    numbers = [int(n) for n in re.findall(r"\d+", node.range_label)]
+    return numbers[0], numbers[-1]
+
+
+def _nodes(doc):
+    import contents
+    return list(contents.walk(doc.contents))
+
+
+def test_contents_tree_roots(doc):
+    assert [n.short_label for n in doc.contents] == [
+        "Prologue",
+        "Part One · The Profession of Faith",
+        "Part Two · The Celebration of the Christian Mystery",
+        "Part Three · Life in Christ",
+        "Part Four · Christian Prayer",
+    ]
+
+
+def test_contents_tree_passes_the_contract_and_reaches_every_chapter(doc):
+    import contents
+    assert contents.check(doc) == []
+
+
+def test_contents_tree_labels_are_us_headings():
+    from ingest.catechism import build
+    assert build(_DEFAULT_SRC).unlabelled == []
+
+
+def test_contents_tree_ranges_cover_every_paragraph_once(doc):
+    # The places a node opens (the leaves), in order, run §1 to §2865 with no gap or
+    # overlap, and every node spans exactly its children.
+    leaves = [_range(n) for n, _, _ in _nodes(doc) if not n.children]
+    assert leaves[0][0] == 1 and leaves[-1][1] == 2865
+    for (_, last), (first, _) in zip(leaves, leaves[1:]):
+        assert first == last + 1
+    for node, _, _ in _nodes(doc):
+        if node.children:
+            assert _range(node) == (_range(node.children[0])[0], _range(node.children[-1])[1])
+
+
+def test_contents_tree_penance_and_indulgences(doc):
+    by_label = {n.short_label: n for n, _, _ in _nodes(doc)}
+    penance = by_label["Article 4 · The Sacrament of Penance and Reconciliation"]
+    assert penance.range_label == "§§1422–1498"
+    holding = [c for c in penance.children if _range(c)[0] <= 1471 <= _range(c)[1]]
+    assert [c.short_label for c in holding] == ["X. Indulgences"]
+    assert holding[0].anchor == "ccc/1471"
+
+
+def test_contents_tree_labels_match_the_text(doc):
+    # A node opens the passage printing its heading, in the same words. The one
+    # exception is the colon catechism_headings.TITLE_FIXES restores to toc-207's title
+    # ("Man's Vocation: Life in the Spirit"), which the text prints without.
+    by_anchor = {p.anchor: p for p in doc.passages}
+
+    def fold(text):
+        return " ".join(text.casefold().replace(":", "").split())
+    for node, _, _ in _nodes(doc):
+        if node.label != "Introduction":
+            assert fold(node.label) in fold(by_anchor[node.anchor].content), node.key
+    assert not any(n.short_label.upper() == n.short_label for n, _, _ in _nodes(doc))

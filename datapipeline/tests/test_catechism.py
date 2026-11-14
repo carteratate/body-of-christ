@@ -576,7 +576,7 @@ def test_footnote_offsets_survive_split(us_build):
 
 def test_every_paragraph_keeps_its_ccc_paragraphs(us_build):
     numbers = sorted(n for p in us_build.document.passages for n in p.metadata["ccc_paragraphs"])
-    assert sorted(set(numbers)) == [1, 2, 3, 4, 5, 6, 7, 2267, 2268, 2269]
+    assert sorted(set(numbers)) == [1, 2, 3, 4, 5, 6, 7, 2267, 2268, 2269, 2568, 2569, 2589]
 
 
 def test_report_reconstructs_and_classifies(us_build):
@@ -959,7 +959,7 @@ def test_references_match_markers(us_build):
 
 def test_every_numbered_paragraph_opens_with_its_marker(us_build):
     markers = [int(n) for p in _current(us_build) for n in _MARKER.findall(p.content)]
-    assert markers == [1, 2, 3, 4, 5, 6, 7, 2267, 2268, 2269]
+    assert markers == [1, 2, 3, 4, 5, 6, 7, 2267, 2268, 2269, 2568, 2569, 2589]
 
 
 def test_footnotes_still_follow_their_words(us_build):
@@ -988,7 +988,8 @@ def test_chapter_labels_are_headings(us_build):
     assert list(dict.fromkeys(chapters)) == [
         ("ccc/prologue", "Prologue"),
         ("ccc/part-3", "Part Three, Life in Christ"),
-        ("ccc/part-3/article-5", "Part Three, Article 5, The Fifth Commandment")]
+        ("ccc/part-3/article-5", "Part Three, Article 5, The Fifth Commandment"),
+        ("ccc/part-4/article-1", "Part Four, Article 1, In the Old Testament")]
 
 
 def _toc(*nodes):
@@ -1070,3 +1071,85 @@ def test_titles_capitalize_each_phrase():
     assert t('"HE DESCENDED INTO HELL. ON THE THIRD DAY HE ROSE AGAIN"') == \
         '"He Descended into Hell. On the Third Day He Rose Again"'
     assert t("YOU SHALL LOVE YOUR NEIGHBOR AS YOURSELF") == "You Shall Love Your Neighbor as Yourself"
+
+
+# ---------------------------------------------------------------------------
+# Contents tree (#253)
+# ---------------------------------------------------------------------------
+
+def _tree(build):
+    import contents
+    return [(depth, node) for node, _, depth in contents.walk(build.document.contents)]
+
+
+def test_contents_tree_shape(us_build):
+    import contents
+    assert contents.check(us_build.document) == []      # every chapter reached
+    got = [(depth, n.kind, n.key, n.short_label, n.range_label, n.chapter_key, n.anchor)
+           for depth, n in _tree(us_build)]
+    assert got == [
+        (0, "prologue", "ccc/prologue", "Prologue", "§§1–3", "ccc/prologue", "ccc/1"),
+        (1, "heading", "ccc/prologue/toc-2", "I. The Life of Man — To Know and Love God",
+         "§§1–2", "ccc/prologue", "ccc/1"),
+        # A US sub-head the source's contents leave out, placed where the text prints it.
+        (1, "heading", "ccc/prologue/g2.0", "II. Handing on the Faith", "§3",
+         "ccc/prologue", "ccc/1"),
+        (0, "part", "ccc/part-3", "Part Three · Life in Christ", "§§4–2269", "ccc/part-3", "ccc/4"),
+        (1, "heading", "ccc/part-3/introduction", "Introduction", "§§4–5", "ccc/part-3", "ccc/4"),
+        (1, "heading", "ccc/part-3/g5.0", "In Brief", "§6", "ccc/part-3", "ccc/4"),
+        (1, "article", "ccc/part-3/article-5", "Article 5 · The Fifth Commandment", "§§7–2269",
+         "ccc/part-3/article-5", "ccc/7"),
+        (2, "heading", "ccc/part-3/article-5/introduction", "Introduction", "§§7–2267",
+         "ccc/part-3/article-5", "ccc/7"),
+        (2, "heading", "ccc/part-3/article-5/g2267.0", "In Brief", "§2268",
+         "ccc/part-3/article-5", "ccc/7"),
+        (2, "heading", "ccc/part-3/article-5/toc-5", "I. Respect for Human Life", "§2269",
+         "ccc/part-3/article-5", "ccc/2269"),
+        # The Part's title is printed in its first Article's page: it opens that chapter.
+        (0, "part", "ccc/part-4", "Part Four · Christian Prayer", "§§2568–2589",
+         "ccc/part-4/article-1", "ccc/2568"),
+        (1, "article", "ccc/part-4/article-1", "Article 1 · In the Old Testament", "§§2568–2589",
+         "ccc/part-4/article-1", "ccc/2568"),
+        (2, "heading", "ccc/part-4/article-1/introduction", "Introduction", "§2568",
+         "ccc/part-4/article-1", "ccc/2568"),
+        (2, "heading", "ccc/part-4/article-1/toc-8", "I. Creation — Source of Prayer", "§2569",
+         "ccc/part-4/article-1", "ccc/2569"),
+        (2, "heading", "ccc/part-4/article-1/toc-9", "In Brief", "§2589",
+         "ccc/part-4/article-1", "ccc/2589"),
+    ]
+    labels = {n.key: n.label for _, n in _tree(us_build)}
+    assert labels["ccc/part-4"] == "Christian Prayer"
+    assert labels["ccc/part-4/article-1/toc-8"] == "I. Creation — Source of Prayer"
+
+
+def test_contents_labels_come_from_the_printed_us_heading(us_build):
+    # toc-8 reads "Creation - Source" in the source's contents; the text prints the US
+    # "CREATION — SOURCE", and the tree follows the text.
+    passage = next(p for p in us_build.document.passages if p.anchor == "ccc/2569")
+    assert passage.content.startswith("I. CREATION — SOURCE OF PRAYER")
+    # The fixture prints neither Part Three's title nor toc-5's heading, so those two
+    # fall back to the source's contents (the full source has none).
+    assert us_build.unlabelled == ["toc-3", "toc-5"]
+
+
+def test_contents_heading_labels():
+    label = _catechism._heading_label
+    assert label("IN BRIEF") == "In Brief"
+    assert label("I. WHAT IS THIS SACRAMENT CALLED?") == "I. What Is This Sacrament Called?"
+    assert label('I. GOD REVEALS HIS "PLAN OF LOVING GOODNESS"') == \
+        'I. God Reveals His "Plan of Loving Goodness"'
+    assert label('III. GOD, "HE WHO IS", IS TRUTH AND LOVE') == 'III. God, "He Who Is", Is Truth and Love'
+    assert label("XI. THE CELEBRATION OF THE SACRAMENT") == "XI. The Celebration of the Sacrament"
+    assert label("HE DESCENDED INTO HELL; ON THE THIRD DAY") == "He Descended into Hell; On the Third Day"
+    assert label('IV. "YOU SHALL NOT MAKE FOR YOURSELF A GRAVEN IMAGE . . ."') == \
+        'IV. "You Shall Not Make for Yourself a Graven Image …"'
+
+
+def test_contents_heading_with_no_paragraph_is_refused(tmp_path):
+    source = json.load(open(_SRC, encoding="utf-8"))
+    source["toc_link_tree"][0]["children"].append({"id": "toc-99", "children": []})
+    source["toc_nodes"]["toc-99"] = {"id": "toc-99", "indent_level": 2, "text": "VII. Empty"}
+    path = tmp_path / "ccc.json"
+    path.write_text(json.dumps(source))
+    with pytest.raises(ValueError, match="toc-99.*holds no paragraphs"):
+        _catechism.build(str(path), _US)

@@ -20,8 +20,9 @@ The build writes nothing unless every check passes:
   * each paragraph §1–§2865 is found exactly once, on pages that never go backwards;
   * the words after each number match the paragraph's opening;
   * each heading in the flipbook's own contents (workspace.js) whose title matches one of
-    ours (app/catechism_contents.json) sits on the page of its first paragraph or the one
-    before (a heading can end a page whose next paragraph starts overleaf).
+    the US edition's headings (ccc-us.json, each with its first paragraph) sits on the page
+    of its first paragraph or the one before (a heading can end a page whose next
+    paragraph starts overleaf).
 Failures name the pages to look at (pageNNNN_4.png in the cache). A paragraph whose
 number is misread or misprinted is placed from its opening words alone, and printed.
 
@@ -52,7 +53,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 TEXT_SOURCE = ROOT / "datapipeline" / "sources" / "catechism" / "us-edition" / "ccc-us.json"
-CONTENTS = Path(__file__).resolve().parents[1] / "app" / "catechism_contents.json"
 OUTPUT = Path(__file__).resolve().parents[1] / "app" / "catechism_pages.json"
 
 BASE = "https://www.usccb.org/sites/default/files/flipbooks/catechism"
@@ -251,14 +251,15 @@ def check_contents(table: dict[int, int], toc: dict) -> tuple[list[str], int]:
     """Each flipbook heading that names one of our headings uniquely must sit on its
     first paragraph's page or the page before."""
     ours: dict[str, list[int]] = {}
-    for node in _flatten(json.loads(CONTENTS.read_text())):
-        ours.setdefault(_title(node["label"]), []).append(node["first"])
+    for item in json.loads(TEXT_SOURCE.read_text(encoding="utf-8"))["items"]:
+        if item["kind"] != "paragraph" and "first" in item:
+            ours.setdefault(_title(item["text"]), []).append(item["first"])
     errors, checked = [], 0
     for entry in _flatten(toc["children"]):
         firsts = ours.get(_title(entry["title"]))
         if (not firsts or len(firsts) != 1 or firsts[0] not in table
                 or (entry["title"], entry["page"]) in _CONTENTS_EXCEPTIONS):
-            continue  # unmatched, or a title used twice ("In Brief", "Introduction")
+            continue  # unmatched, or a title used twice ("In Brief")
         checked += 1
         page = table[firsts[0]]
         if entry["page"] not in (page, page - 1):

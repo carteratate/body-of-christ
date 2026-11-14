@@ -3,7 +3,7 @@
   "source": "fixture",
   "fetched_at": "2026-10-28T00:00:00+00:00",
   "query": "fixture",
-  "count": 10
+  "count": 13
  },
  "items": [
   {
@@ -162,6 +162,50 @@
      "at": 2109
     }
    ]
+  },
+  {
+   "kind": "structure",
+   "text": "Part 4: Christian Prayer",
+   "first": 2568,
+   "last": 2589,
+   "footnotes": []
+  },
+  {
+   "kind": "structure",
+   "text": "Article 1: In the Old Testament",
+   "first": 2568,
+   "last": 2589,
+   "footnotes": []
+  },
+  {
+   "kind": "paragraph",
+   "n": 2568,
+   "text": "In the Old Testament, the revelation of prayer comes between the fall and the restoration of man.",
+   "footnotes": []
+  },
+  {
+   "kind": "heading",
+   "style": "head",
+   "text": "I. CREATION — SOURCE OF PRAYER",
+   "footnotes": []
+  },
+  {
+   "kind": "paragraph",
+   "n": 2569,
+   "text": "Prayer is lived in the first place beginning with the realities of creation.",
+   "footnotes": []
+  },
+  {
+   "kind": "heading",
+   "style": "head",
+   "text": "IN BRIEF",
+   "footnotes": []
+  },
+  {
+   "kind": "paragraph",
+   "n": 2589,
+   "text": "From creation onward, God calls every being from nothingness into existence.",
+   "footnotes": []
   }
  ]
 }
