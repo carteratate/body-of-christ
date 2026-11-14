@@ -5,7 +5,7 @@
   "text_source": "ocr",
   "scan_id": "sim_dublin-review_1859-09_47"
  },
- "gate": "pending",
+ "gate": "pass",
  "passages": [
   {
    "id": "qui-nuper",
