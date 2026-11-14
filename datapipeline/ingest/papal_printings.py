@@ -82,6 +82,9 @@ class Printing:
     notes: str | None = None
     # A reader note on every passage (Deferrari's extracts, R9: "Extract, in ...").
     passage_note: str | None = None
+    # The printing ends each unit with the letter it was condemned in (the Syllabus):
+    # each citation becomes its own "[Source: ...]" paragraph (`mark_sources`).
+    marks_sources: bool = False
 
     @property
     def folder(self) -> str:
@@ -110,7 +113,8 @@ def printings() -> dict[str, Printing]:
                             fixes=tuple(d.get("fixes", ())),
                             numbered=d.get("numbered", True),
                             omits=tuple(d.get("omits", ())), notes=d.get("notes"),
-                            passage_note=d.get("passage_note"))
+                            passage_note=d.get("passage_note"),
+                            marks_sources=d.get("marks_sources", False))
     return out
 
 
@@ -240,7 +244,10 @@ def blocks_of(p: Printing, src_dir: str) -> list[tuple[str, str]]:
 
 
 def build_document(entry: dict, collection: str, src_dir: str) -> Document:
-    p = printing(collection, entry["slug"])
+    return build_printed(printing(collection, entry["slug"]), entry, collection, src_dir)
+
+
+def build_printed(p: Printing, entry: dict, collection: str, src_dir: str) -> Document:
     toks = printed_tokens(p, blocks_of(p, src_dir))
     # A scanned printing's passages carry its label (`text_source`, `scan_id`; 1.2f).
     label = read_text(p.work)["metadata"] if p.source == "ocr" else None
@@ -261,4 +268,59 @@ def build_document(entry: dict, collection: str, src_dir: str) -> Document:
     doc.notes = p.notes
     if p.passage_note:
         doc.passages = [replace(x, note=p.passage_note) for x in doc.passages]
+    if p.marks_sources:
+        marked = mark_sources([x.content for x in doc.passages])
+        doc.passages = [replace(x, content=c) for x, c in zip(doc.passages, marked)]
     return doc
+
+
+# A citation of the letter a proposition was condemned in, as the Syllabus prints them:
+# a line of its own, or the end of the proposition's paragraph.
+_CITED = r"(?:Allocution|Apostolic(?:al)? Letters?|Letters?|Encyclical|Epistle)\b[^\n]*?\b1[78]\d\d\b(?:, etc)?\."
+_CITATION_LINE = re.compile(rf"^(?:Ibid\b[^\n]*|{_CITED})$")
+_CITATION_END = re.compile(rf"(?<=[.?!])\s+(Ibid[.,]?|{_CITED})$")
+_IBID = re.compile(r"^Ibid[.,]*\s*(.*?)\.?$")
+_MONTH = r"(?:Jan|Feb|March|Mar|April|Apr|May|June|July|Aug|Sept|Sep|Oct|Nov|Dec)\b"
+
+
+def mark_sources(texts: list[str]) -> list[str]:
+    """Each passage's closing citation as its own paragraph, "[Source: ...]", so a reader
+    sees it is a citation (Carter, 13 Nov 2026). The printed words stay; an "Ibid." also
+    names the source it stands for, the last citation before it that names one."""
+    last = None
+    out = []
+    for text in texts:
+        paras = text.split("\n\n")
+        printed = None
+        if _CITATION_LINE.match(paras[-1]) and len(paras) > 1:
+            printed = paras.pop()
+        else:
+            m = _CITATION_END.search(paras[-1])
+            if m:
+                printed, paras[-1] = m.group(1), paras[-1][:m.start()]
+        if printed is None:
+            out.append(text)
+            continue
+        m = _IBID.match(printed)
+        if m is None:
+            last = re.sub(r"(?:, etc)?\.$", "", printed)
+            cited = printed.rstrip(".")
+        else:
+            if last is None:
+                raise ValueError(f"no source before {printed!r}")
+            rest = m.group(1)
+            if not rest:
+                cited = f"Ibid., {last}"
+            elif rest.startswith("and "):
+                # "Ibid., and Encyclical ...": both, and a later bare "Ibid." means both.
+                last = f"{last}, {rest}"
+                cited = f"Ibid., {last}"
+            elif re.match(_MONTH, rest):
+                # "Ibid, Dec. 11th, 1862": the same letters, this one; a later bare
+                # "Ibid." means it.
+                last = f"{re.split(rf',\s*{_MONTH}', last)[0]}, {rest}"
+                cited = f"Ibid., {last}"
+            else:
+                raise ValueError(f"cannot read {printed!r}")
+        out.append("\n\n".join(paras + [f"[Source: {cited}]"]))
+    return out

@@ -170,3 +170,39 @@ def test_verse_block_is_a_named_paragraph():
            "<verse id='iii.ii-p1.2'><l>Among the gods</l><l>Rose laughter.</l></verse></div3>")
     assert [(s.locator, s.text) for s in paragraph_segments(ET.fromstring(xml))] == \
         [("p1", "Homer says:"), ("p1.2", "Among the gods\nRose laughter.")]
+
+
+def test_long_title_label_kept_whole_up_to_140_characters():
+    from ingest.thml_doc import _chapter_label
+    import defusedxml.ElementTree as ET
+    short = "Chapter I. Why we should love God and the measure of that love"
+    assert _chapter_label(ET.fromstring(f"<div1 id='iii' title='{short}'/>")) == short
+    long = "Chapter II. " + "word " * 40
+    label = _chapter_label(ET.fromstring(f"<div1 id='iv' title='{long}'/>"))
+    assert len(label) <= 140 and label.endswith("word")
+
+
+def test_book_without_chapters_labelled_by_its_name():
+    chapters = _chapters("<root><div1 id='ii' title='Book I'><p>" + "word " * 40
+                         + "</p></div1></root>")
+    doc = make_doc(collection="medieval", filename="f.xml", author="Boethius",
+                   title="Consolation", chapters=chapters, source_key="medieval/f.xml")
+    assert doc.passages[0].chapter_label == "Book I"
+
+
+def test_book_text_above_its_chapters_is_its_introduction():
+    import defusedxml.ElementTree as ET
+    book = ET.fromstring("<div1 id='FOUR' type='Book' shorttitle='Book IV'><p>"
+                         + "word " * 40 + "</p><div2 id='FOUR.1' title='One'><p>"
+                         + "word " * 40 + "</p></div2></div1>")
+    doc = make_doc(collection="medieval", filename="f.xml", author="Thomas",
+                   title="Imitation", chapters=[(None, book), ("Book IV", book[1])],
+                   source_key="medieval/f.xml")
+    assert doc.passages[0].chapter_label == "Book IV · Introduction"
+
+
+def test_roman_capitals():
+    from normalize.caps import roman_capitals
+    assert roman_capitals("Ii.") == "II."
+    assert roman_capitals("Book XII · Chapter Xi") == "Book XII · Chapter XI"
+    assert roman_capitals("Civil Law, Ill Health, Lil") == "Civil Law, Ill Health, Lil"

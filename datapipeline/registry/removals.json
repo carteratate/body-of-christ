@@ -5373,7 +5373,7 @@
   "church_act": null,
   "span": {
    "rule": "ingest.editorial.classify_lines (heading)",
-   "count": 11
+   "count": 12
   },
   "judgment": null,
   "added_by": "1.8a",
@@ -5475,7 +5475,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 715
+   "count": 714
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -5494,7 +5494,7 @@
   "church_act": null,
   "span": {
    "rule": "ingest.editorial.classify_lines (heading)",
-   "count": 72
+   "count": 73
   },
   "judgment": "Doubtful Fragments on the Pentateuch.",
   "added_by": "1.8a",
@@ -14665,11 +14665,1094 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 71
+   "count": 160
   },
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-3072",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Heading lines above the text that repeat the chapter label: rule lines, number lines and title lines",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.editorial.classify_lines (heading)",
+   "count": 3
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3016",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "81efcf733fbf56bc60472cdf54260f5c55987da6",
+   "excerpt": "§1. Introductory.—The subject of this treatise: the humiliation and incarnation of the Word. Presupposes the doctrine o…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3017",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "123e66408908fa447aeb4e1ac2e8b4effca8da30",
+   "excerpt": "§2. Erroneous views of Creation rejected. (1) Epicurean (fortuitous generation). But diversity of bodies and parts argu…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3018",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c1941d13c57e5eed82a579bcce2fecd46c3e4383",
+   "excerpt": "§3. The true doctrine. Creation out of nothing, of God’s lavish bounty of being. Man created above the rest, but incapa…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3019",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f9ac10bf262d02cfdb0f55dc707fd29e38574f97",
+   "excerpt": "§4. Our creation and God’s Incarnation most intimately connected. As by the Word man was called from non-existence into…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3023",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.ix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "fc9bd6a94e9e6d8a22885e7fd694d3a6d3b74fb0",
+   "excerpt": "§9. The Word, since death alone could stay the plague, took a mortal body which, united with Him, should avail for all,…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3064",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.l",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "bf81f077d9e5f5e527871ac6a769a2b868fa64fe",
+   "excerpt": "§50. Impotence and rivalries of the Sophists put to shame by the Death of Christ. His Resurrection unparalleled even in…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3065",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.li",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "889f5c79296d5d9e1aa9354c3c4183bb68a84e70",
+   "excerpt": "§51. The new virtue of continence. Revolution of Society, purified and pacified by Christianity."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3066",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.lii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1631fa5d71ceb1084298a732c2473c26f9de323d",
+   "excerpt": "§52. Wars, &c., roused by demons, lulled by Christianity."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3067",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.liii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "19ff763eab9569f439fd8b6b20cf00cc005cb799",
+   "excerpt": "§53. The whole fabric of Gentilism levelled at a blow by Christ secretly addressing the conscience of Man."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3068",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.liv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ba22503c736e9bfcf15e98ad9a2091524bf938de",
+   "excerpt": "§54. The Word Incarnate, as is the case with the Invisible God, is known to us by His works. By them we recognise His d…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3069",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.lv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "70e47c6dfeb36db7188ad33eadc7c667b2dae492",
+   "excerpt": "§55. Summary of foregoing. Cessation of pagan oracles, &c.: propagation of the faith. The true King has come forth and…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3070",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.lvi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a8a1c8068a9e9a1a4b57d38367e474267452ee2f",
+   "excerpt": "§56. Search then, the Scriptures, if you can, and so fill up this sketch. Learn to look for the Second Advent and Judgm…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3071",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.lvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "16d304afce1a44c551b27b6d79bdbb8230d62019",
+   "excerpt": "§57. Above all, so live that you may have the right to eat of this tree of knowledge and life, and so come to eternal j…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3020",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.vi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eb19a2ad8563941383a0e82e2458a93394b61d09",
+   "excerpt": "§6. The human race then was wasting, God’s image was being effaced, and His work ruined. Either, then, God must forego…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3021",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1e9d30d1cf892b226cf6d2faa6b1a2fe90b77a80",
+   "excerpt": "§7. On the other hand there was the consistency of God’s nature, not to be sacrificed for our profit. Were men, then, t…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3022",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.viii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "54aef3bd67d37114facd1039bdf24587d7fc18d0",
+   "excerpt": "§8. The Word, then, visited that earth in which He was yet always present ; and saw all these evils. He takes a body of…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3024",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.x",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "fe3dbccf4f9ffecd2679f3015bdae64fca556b28",
+   "excerpt": "§10. By a like simile, the reasonableness of the work of redemption is shewn. How Christ wiped away our ruin, and provi…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3025",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "62efe3374edb2099246da5a0f302b9f1015f4992",
+   "excerpt": "§11. Second reason for the Incarnation. God, knowing that man was not by nature sufficient to know Him, gave him, in or…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3026",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "28134864ff76e4029263030703167f5961048a1b",
+   "excerpt": "§12. For though man was created in grace, God, foreseeing his forgetfulness, provided also the works of creation to rem…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3027",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xiii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a8ff8114a2c083656b0a77c8e7f086f1f2311b99",
+   "excerpt": "§13. Here again, was God to keep silence? to allow to false gods the worship He made us to render to Himself? A king wh…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3028",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9f9c9dd6425b87420992c6980a41b452d1027165",
+   "excerpt": "§14. A portrait once effaced must be restored from the original. Thus the Son of the Father came to seek, save, and reg…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3033",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "05a541e3b7d06c4416560b19f17ec9452a3e7835",
+   "excerpt": "§19. Man, unmoved by nature, was to be taught to know God by that sacred Manhood, Whose deity all nature confessed, esp…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3054",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xl",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "fd8fac0ed27300c2e2ca5bd6e259c903f4652b45",
+   "excerpt": "§40. Argument (1) from the withdrawal of prophecy and destruction of Jerusalem, (2) from the conversion of the Gentiles…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3055",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xli",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0bd3c54e3efe86c30f602a99aad60cc1b783bca4",
+   "excerpt": "§41. Answer to the Greeks. Do they recognise the Logos? If He manifests Himself in the organism of the Universe, why no…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3056",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xlii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6a9f3f037f69f02a734fbc052ee0ce8b67278edb",
+   "excerpt": "§42. His union with the body is based upon His relation to Creation as a whole. He used a human body, since to man it w…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3057",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xliii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6ccb1ad9429b309c3ce046a586d6d45430623139",
+   "excerpt": "§43. He came in human rather than in any nobler form, because (I) He came to save, not to impress ; (2) man alone of cr…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3058",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xliv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e4362337725d51addc496bcea5a20021780b3db8",
+   "excerpt": "§44. As God made man by a word, why not restore him by a word? But (1) creation out of nothing is different from repara…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3063",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xlix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "009bb3b1211db8f14f1a2dd4358c2f550bb0c422",
+   "excerpt": "§49. His Birth and Miracles. You call Asclepius, Heracles, and Dionysus gods for their works. Contrast their works with…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3059",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xlv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6129d033041a95f105200a120cf94b75b9fdb9c3",
+   "excerpt": "§45. Thus once again every part of creation manifests the glory of God. Nature, the witness to her Creator, yields (by…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3060",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xlvi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1d00b643681be0e6965c1bd06dec28e7b8b583db",
+   "excerpt": "§46. Discredit, from the date of the Incarnation, of idol-cultus, oracles, mythologies, demoniacal energy, magic, and G…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3061",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xlvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a1ad6e015be1ed76c3e9a2ebcc731cc026db3b6e",
+   "excerpt": "§47. The numerous oracles,—fancied apparitions in sacred places, &c., dispelled by the sign of the Cross. The old gods…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3062",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xlviii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e3289be086f35bbd606eb1e2bdd0c667788f8a36",
+   "excerpt": "§48. Further facts. Christian continence of virgins and ascetics. Martyrs. The power of the Cross against demons and ma…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3029",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f65a5e2d961642734c0bccb891392644b641ce9f",
+   "excerpt": "§15. Thus the Word condescended to man’s engrossment in corporeal things, by even taking a body. All man’s superstition…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3030",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xvi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6f4afdd31fa354255ee52d268deea8ac62619dab",
+   "excerpt": "§16. He came then to attract man’s sense-bound attention to Himself as man, and so to lead him on to know Him as God."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3031",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6528a4b6d4606c775fe8554295d3d5af1b3880d6",
+   "excerpt": "§17. How the Incarnation did not limit the ubiquity of the Word, nor diminish His Purity. (Simile of the Sun.)"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3032",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xviii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5d4f9e1c5f18b8775b1e292b5e07ce9bcb651f38",
+   "excerpt": "§18. How the Word and Power of God works in His human actions: by casting out devils, by Miracles, by His Birth of the…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3034",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0f87d86dce79328eda5b5c184e2bc705d230e7c1",
+   "excerpt": "§20. None, then, could bestow incorruption, but He Who had made, none restore the likeness of God, save His Own Image,…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3035",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "18632bcc6ef7d499cb1de1aab54031db1ff0764b",
+   "excerpt": "§21. Death brought to nought by the death of Christ. Why then did not Christ die privately, or in a more honourable way…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3036",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b567f46d63cd50d6256ebd49f784206557ef5c6e",
+   "excerpt": "§22. But why did He not withdraw His body from the Jews, and so guard its immortality? (1) It became Him not to inflict…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3037",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxiii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "cdf6da55cfab26a1d7f49e5864313456a6d49653",
+   "excerpt": "§23. Necessity of a public death for the doctrine of the Resurrection."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3038",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "96ac64e3f12063046530c554721a1e3a573d880f",
+   "excerpt": "§24. Further objections anticipated. He did not choose His manner of death; for He was to prove Conqueror of death in a…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3043",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "7e9a3f94e0b31b47568a20ebc57d66e845c7f97f",
+   "excerpt": "§29. Here then are wonderful effects, and a sufficient cause, the Cross, to account for them, as sunrise accounts for d…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3039",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ca0ed9c439993641a511ba97a0c4f20bc4207db8",
+   "excerpt": "§25. Why the Cross, of all deaths? (1) He had to bear the curse for us. (2) On it He held out His hands to unite all, J…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3040",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxvi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "794963ff68ad43c6faf05e96a8861f431597714d",
+   "excerpt": "§26. Reasons for His rising on the Third Day. (1) Not sooner for else His real death would be denied, nor (2) later; to…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3041",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d6db8e7fc61d0e976cb5bab9933dde873df6147d",
+   "excerpt": "§27. The change wrought by the Cross in the relation of Death to Man."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3042",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxviii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5efe9f2c6eaa5aad8cf7d8734e60e844fb4bf052",
+   "excerpt": "§28. This exceptional fact must be tested by experience. Let those who doubt it become Christians."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3044",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b2b337406f1625284571959ded6718d29d80dbfe",
+   "excerpt": "§30. The reality of the resurrection proved by facts: (1) the victory over death described above: (2) the Wonders of Gr…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3045",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxxi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "62b7145dfbabb8338702e5810387486cf78ed754",
+   "excerpt": "§31. If Power is the sign of life, what do we learn from the impotence of idols, for good or evil, and the constraining…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3046",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "7f3ac274a9dc765b60e5caf9d1b98f4db7c82e0c",
+   "excerpt": "§32. But who is to see Him risen, so as to believe? Nay, God is ever invisible and known by His works only: and here th…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3047",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxxiii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f56001b21269f60c0373a55341b8f2e88a5e0cd4",
+   "excerpt": "§33. Unbelief of Jews and scoffing of Greeks. The former confounded by their own Scriptures. Prophecies of His coming a…"
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3048",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxxiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "05fa294a59c06855fbcb227b413e08ac497eaf43",
+   "excerpt": "§34. Prophecies of His passion and death in all its circumstances."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3053",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxxix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "7523b7576ae0cccbed27e360cb07022b4da7aa66",
+   "excerpt": "§39. Do you look for another? But Daniel foretells the exact time. Objections to this removed."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3049",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxxv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "47524a9975124b562fb699a32e4e2441e9e8d228",
+   "excerpt": "§35. Prophecies of the Cross. How these prophecies are satisfied in Christ alone."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3050",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxxvi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0460544a2b638e2a68390db775ed3cbf80e71fbb",
+   "excerpt": "§36. Prophecies of Christ’s sovereignty, flight into Egypt, &c."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3051",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxxvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "99ac57e942463215873ee224ca014e8aee757177",
+   "excerpt": "§37. Psalm xxii. 16, &c. Majesty of His birth and death. Confusion of oracles and demons in Egypt."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3052",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
+  "anchor": "vii.ii.xxxviii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The translator's analytical heading of the section (Robertson's italic summary, printed after its number), not the author's text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "4e5c3aa039c34b0f58c383a26333814b462ed9bf",
+   "excerpt": "§38. Other clear prophecies of the coming of God in the flesh. Christ’s miracles unprecedented."
+  },
+  "judgment": null,
+  "added_by": "1.8d",
+  "added_on": "2026-11-13"
  },
  {
   "id": "rm-0097",
@@ -16257,7 +17340,7 @@
   "church_act": null,
   "span": {
    "rule": "ingest.editorial.classify_lines (heading)",
-   "count": 1
+   "count": 2
   },
   "judgment": null,
   "added_by": "1.8a",
@@ -37070,6 +38153,22 @@
   "added_on": "2026-11-01"
  },
  {
+  "id": "rm-3073",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "807935f8-f62c-53b6-baae-0fd9f7a0aa20",
+  "anchor": "imitation-of-christ/foreword",
+  "passage_id": "30881b92-ae11-51c3-ac31-3b2c76cd4cb4",
+  "reason": "rule-g-editorial",
+  "detail": "Foreword, by an editor or translator, not the author (div ii)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": "Theories most popular at the moment ascribe the Imitation to two or three men, members of the Brethren of the Common Life, an association of priests organized in the Netherlands in the latter half of the fourteenth century.",
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
   "id": "rm-0128",
   "scope": "class",
   "collection": "medieval",
@@ -37087,6 +38186,86 @@
   "judgment": null,
   "added_by": "1.10b",
   "added_on": "2026-11-01"
+ },
+ {
+  "id": "rm-3076",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/a-note-on-the-translation",
+  "passage_id": "04924f5a-7e86-5eac-996c-52bda61bb9da",
+  "reason": "rule-g-editorial",
+  "detail": "A Note on the Translation, by an editor or translator, not the author (div vii)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3077",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/chronological-table",
+  "passage_id": "07dd7efc-da9e-5b08-95d3-563a43edcd8a",
+  "reason": "rule-g-editorial",
+  "detail": "Chronological Table, by an editor or translator, not the author (div x)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3074",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/editorial-note/p1",
+  "passage_id": "6edb56a3-f8d6-55c3-bae9-a4865e890bb0",
+  "reason": "rule-g-editorial",
+  "detail": "Editorial Note, by an editor or translator, not the author (div ix)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3075",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/editorial-note/p2",
+  "passage_id": "1b9631e4-341a-5f14-8e51-9e9478a7348c",
+  "reason": "rule-g-editorial",
+  "detail": "Editorial Note, by an editor or translator, not the author (div ix)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-3078",
+  "scope": "passage",
+  "collection": "medieval",
+  "document_id": "9a6599ee-ac40-5017-a2c6-7aad2cf14296",
+  "anchor": "consolation-of-philosophy/section",
+  "passage_id": "070fabfb-31d0-5ec0-9046-c52342f2c21f",
+  "reason": "rule-g-editorial",
+  "detail": "Chronological Table, by an editor or translator, not the author (div x)",
+  "tombstone": "This passage was an editor's note and was removed because TheoCorpus shows only the authors' own words.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "1.9",
+  "added_on": "2026-11-13"
  },
  {
   "id": "rm-0129",

@@ -4354,7 +4354,7 @@
   "work_id": "church-fathers/incarnation",
   "document_id": "cf235300-e37d-5a7a-a421-f50efff38355",
   "collection": "church-fathers",
-  "source_key": "church-fathers/incarnation.xml",
+  "source_key": "church-fathers/npnf204.xml#vii.ii",
   "title": "On the Incarnation of the Word",
   "author": "Athanasius",
   "frozen_on": "2026-10-30",
@@ -14075,7 +14075,15 @@
    "certainty": null,
    "clavis": null,
    "basis": null,
-   "editorial_judgments": []
+   "editorial_judgments": [
+    {
+     "source_file": "imitation-of-christ.xml",
+     "element_id": "ii",
+     "quote": "Theories most popular at the moment ascribe the Imitation to two or three men, members of the Brethren of the Common Life, an association of priests organized in the Netherlands in the latter half of the fourteenth century.",
+     "verdict": "dubious",
+     "overridden_by_plan": false
+    }
+   ]
   },
   "works": []
  },
@@ -14171,7 +14179,7 @@
   "document_id": "82d38756-6fba-5af7-9905-fd508a620f38",
   "collection": "medieval",
   "source_key": "medieval/proslogium-monologium-and-cur-deus-homo.xml#vi",
-  "title": "Anselm's Cur Deus Homo",
+  "title": "Cur Deus Homo",
   "author": "Anselm",
   "frozen_on": "2026-10-30",
   "status": "active",

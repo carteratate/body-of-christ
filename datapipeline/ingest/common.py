@@ -387,13 +387,7 @@ def _build_parent_map(root) -> dict:
 
 
 def _detect_chunk_level(root) -> int:
-    """Detect deepest div level (1-4) where most divs have direct <p> children.
-    Special case: if any div1 carries type='chapter', return 1 (incarnation.xml).
-    """
-    for d in root.iter("div1"):
-        if d.get("type") == "chapter":
-            return 1
-
+    """Detect deepest div level (1-4) where most divs have direct <p> children."""
     level_total: dict[int, int] = {1: 0, 2: 0, 3: 0, 4: 0}
     level_with_p: dict[int, int] = {1: 0, 2: 0, 3: 0, 4: 0}
 
@@ -673,7 +667,9 @@ def iter_works(root):
                 yield father, father, chapters
 
 
-_BOOK_RE = re.compile(r"^\s*Book\s+[IVXLCDM0-9]", re.IGNORECASE)
+# "Book I", "Book 3", and the ordinals Cur Deus Homo spells out ("Book First", 1.9).
+_BOOK_RE = re.compile(r"^\s*Book\s+([IVXLCDM0-9]+|First|Second|Third|Fourth|Fifth|Sixth"
+                      r"|Seventh|Eighth|Ninth|Tenth)\b", re.IGNORECASE)
 
 
 def _has_direct_p(elem) -> bool:
