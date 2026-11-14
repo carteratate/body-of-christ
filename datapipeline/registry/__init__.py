@@ -10,6 +10,8 @@ removals, as tracked files under `datapipeline/registry/`.
   (D1). `live_anchor` is the anchor the unit had when it was frozen.
 - `redirects.json`: units whose identity genuinely changed, by old passage ID (D1).
 - `removals.json`: everything any phase removes, by anchor (D4).
+  Each entry also carries the document facts (2.3), `FACT_FIELDS`, which the build sets
+  on the Document (`apply_document_facts`): `scripts/document_facts.py` derives them.
 - `kept_text.json`: passages a review found still hold their live text though the
   release report's stability score says otherwise, each with its reason (1.10b).
 
@@ -61,6 +63,14 @@ VERDICTS = ("genuine", "spurious", "dubious", "interpolated", "attributed")
 ACT_EFFECTS = ("condemn", "prohibit", "warn", "lift")
 RULE_A_DECISIONS = ("include", "exclude")
 TOMBSTONE_MAX = 300
+# Document facts (2.3, 2.2a's documents columns), flat on each works.json entry. The
+# build sets them on the Document, over whatever the adapter set (`apply_document_facts`).
+# `certainty` and `clavis_ref` are not among them: they are `attribution.certainty` and
+# `attribution.clavis`, which 3.2 fills, so no fact is held twice.
+FACT_FIELDS = ("genre", "issuer", "issuer_label", "year", "date_display", "translation",
+               "source_credit", "attribution_note", "notes", "superseded_by",
+               "superseded_note")
+_ISSUER = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 # Fields a passage-registry row may set over the adapter's value (3.3, 3.4).
 OVERRIDES = ("searchable", "language", "passage_author", "voice", "unit_label", "note")
 
@@ -85,6 +95,7 @@ class WorkRegistry:
                                 for w in self.works}
         self.row_by_anchor = {(r["document_id"], r["anchor"]): r for r in self.passages}
         self.frozen_ids = {r["passage_id"] for r in self.passages}
+        self.entry_by_document = {w["document_id"]: w for w in self.works}
 
 
 def load_registry(directory: str = REGISTRY_DIR) -> WorkRegistry:
@@ -216,6 +227,32 @@ def apply_overrides(document: Document, registry: WorkRegistry | None = None) ->
     return replace(document, passages=passages)
 
 
+def has_facts(entry: dict) -> bool:
+    return any(k in entry for k in FACT_FIELDS)
+
+
+def document_facts(entry: dict) -> dict:
+    """The Document fields a works.json entry sets (2.3): its facts, and `certainty` and
+    `clavis_ref` from its attribution. Empty for an entry with no facts yet."""
+    if not has_facts(entry):
+        return {}
+    attribution = entry.get("attribution") or {}
+    facts = {k: entry.get(k) for k in FACT_FIELDS}
+    facts["translation"] = facts["translation"] or ""
+    facts["certainty"] = attribution.get("certainty")
+    facts["clavis_ref"] = attribution.get("clavis")
+    return facts
+
+
+def apply_document_facts(document: Document, registry: WorkRegistry | None = None
+                         ) -> Document:
+    """The document with its registry facts set: the registry wins over the adapter (2.3).
+    A document whose entry has no facts is unchanged."""
+    entry = (registry or current()).entry_by_document.get(document.id)
+    facts = document_facts(entry) if entry else {}
+    return replace(document, **facts) if facts else document
+
+
 def removed_document_ids(registry: WorkRegistry | None = None) -> set[str]:
     """Documents an open `document` removal entry retires (D4)."""
     return {e["document_id"] for e in open_removals(registry or current())
@@ -273,6 +310,7 @@ def validate(registry: WorkRegistry) -> list[str]:
     """Every rule the registry files must hold; an empty list means valid."""
     problems: list[str] = []
     problems += _validate_works(registry.works)
+    problems += _validate_facts(registry)
     documents = {w["document_id"]: w for w in registry.works}
     problems += _validate_passages(registry, documents)
     problems += _validate_redirects(registry, documents)
@@ -334,6 +372,41 @@ def _validate_works(works: list[dict]) -> list[str]:
                 out.append(f"{name}: work {x.get('work_key')} genre {x['genre']!r}")
             if x.get("certainty") is not None and x["certainty"] not in CERTAINTIES:
                 out.append(f"{name}: work {x.get('work_key')} certainty {x['certainty']!r}")
+    return out
+
+
+def _validate_facts(registry: WorkRegistry) -> list[str]:
+    """2.3's rules for an entry that carries facts. Every entry an open `document`
+    removal does not retire must have a source credit; a held one shows nowhere."""
+    out = []
+    held = removed_document_ids(registry)
+    for w in registry.works:
+        if not has_facts(w):
+            continue
+        name = w.get("work_id")
+        missing = [k for k in FACT_FIELDS if k not in w]
+        if missing:
+            out.append(f"{name}: facts lack {', '.join(missing)}")
+        if w.get("genre") is not None and w["genre"] not in ALL_GENRES:
+            out.append(f"{name}: genre {w['genre']!r}")
+        issuer, label = w.get("issuer"), w.get("issuer_label")
+        if issuer is not None and not _ISSUER.match(str(issuer)):
+            out.append(f"{name}: issuer {issuer!r} is not a lowercase hyphenated slug")
+        if issuer is not None and not label:
+            out.append(f"{name}: issuer {issuer} has no issuer_label")
+        if label is not None and issuer is None:
+            out.append(f"{name}: issuer_label without an issuer")
+        year = w.get("year")
+        if year is not None and (isinstance(year, bool) or not isinstance(year, int)):
+            out.append(f"{name}: year {year!r} is not an integer")
+        if not isinstance(w.get("translation", ""), str):
+            out.append(f"{name}: translation is not a string")
+        if not w.get("source_credit") and w["document_id"] not in held:
+            out.append(f"{name}: no source_credit")
+        target = w.get("superseded_by")
+        if target is not None and (target not in registry.entry_by_document
+                                   or target == w["document_id"]):
+            out.append(f"{name}: superseded_by {target} is not another registered document")
     return out
 
 
