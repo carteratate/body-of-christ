@@ -92,6 +92,7 @@ def test_r12_note_caller(text):
     "as John 3:16. 2 And then",                             # chapter and verse
     "she sinneth not.” Ver. 28 Hence it is",                 # a verse in the same chapter
     "the depths tremble. 4 Esdr. iii. 8. Thou art",          # a number before a book
+    "the Cross (AAS [39] 1947, 552, 553). We",               # an AAS citation's volume
 ])
 def test_r12_skips_citations(text):
     assert "R12_note_caller" not in _rules(_doc(_p(text)))

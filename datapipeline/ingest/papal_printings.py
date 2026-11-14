@@ -264,7 +264,8 @@ def build_printed(p: Printing, entry: dict, collection: str, src_dir: str) -> Do
         metadata["held_text_url"] = entry["url"]
     doc = papal_common.document_from_tokens(
         entry, collection, toks, url=p.url, text_replaced=p.text_replaced,
-        translation=p.translation, metadata=metadata, passage_metadata=label)
+        translation=p.translation, metadata=metadata, passage_metadata=label,
+        callers=False)
     doc.notes = p.notes
     if p.passage_note:
         doc.passages = [replace(x, note=p.passage_note) for x in doc.passages]

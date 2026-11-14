@@ -92,6 +92,9 @@ class WorkConfig:
     # A microfilm frame that also catches the previous page's right edge: lines starting
     # within this fraction of the image's width from its left edge are that strip (1.3d).
     edge_strip: float = 0.0
+    # Strip only the words within it, not their whole lines: the OCR read the facing page's
+    # spilt edge into the page's own lines (Menti Nostrae in The Catholic Mind, 1.3d).
+    edge_strip_words: bool = False
     note_opens: tuple[str, ...] = ()   # the line opening each page's notes, where the measure misses
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints

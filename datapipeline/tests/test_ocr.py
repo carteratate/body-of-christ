@@ -1072,6 +1072,37 @@ def test_edge_strip_drops_the_previous_pages_cut_off_lines(tmp_path, sources):
     assert all(r["text"] not in kept for r in dropped)
 
 
+def test_edge_strip_words_keeps_the_pages_own_words_on_a_line():
+    """With `edge_strip_words`, a line the OCR read across the facing page's spilt edge
+    keeps its own words; without it, the whole line goes."""
+    from ocr.furniture import strip_edge
+
+    line = Line("is priests both", 20, 100, 900, 140, edges=((20, 60), (300, 520), (540, 900)))
+    edge = Line("nuary", 10, 40, 90, 70, edges=((10, 90),))
+    page = Page(0, 2000, 3000, [edge, line])
+    kept, removed = strip_edge(page, 0.1, words_only=True)
+    assert [(ln.text, ln.x0) for ln in kept] == [("priests both", 300)]
+    assert [r.text for r in removed] == ["nuary", "is"]
+    kept, removed = strip_edge(page, 0.1)
+    assert kept == [] and [r.text for r in removed] == ["nuary", "is priests both"]
+
+
+def test_stacked_lower_keeps_the_text_below_the_gap_between_the_two():
+    """Mercier's Retreat sets Haerent Animo's Latin over its English on each page: the
+    heading stays, and the English is the block after the widest gap near the middle."""
+    from ocr.layout import StackedLower
+
+    lines = [Line("EXHORTATION", 400, 150, 1800, 200)]
+    lines += [Line(f"Latin words of the exhortation on line {k}", 300, 300 + 70 * k, 2000, 350 + 70 * k)
+              for k in range(12)]
+    lines += [Line(f"English words of the exhortation on line {k}", 300, 1800 + 70 * k, 2000,
+                   1850 + 70 * k) for k in range(12)]
+    kept = [ln.text for ln in StackedLower().reading_order(Page(0, 2228, 3444, lines))]
+    assert kept == ["EXHORTATION"] + [
+        f"English words of the exhortation on line {k}" for k in range(12)]
+    assert get_layout("stacked-lower").name == "stacked-lower"
+
+
 def test_parallel_right_keeps_the_right_column_and_lines_across_the_page():
     from ocr.layout import ParallelRight
 

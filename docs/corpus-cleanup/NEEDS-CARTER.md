@@ -396,6 +396,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **3.2** [Phase 3]. Approve every attribution label and note for works that stay, such as "Pseudo-Justin" and the Apostolic Canons note.
 - **3.3** [Phase 3]. Approve the list of Latin and Italian passages that stay readable but leave search (about 59), and the note shown on them.
 - **3.4** [Phase 3]. Approve the list of rejected-voice ranges (about 270 passages) and each label text, for example "Condemned proposition 10 (condemned by Leo X, Exsurge Domine)" and "Caecilius, pagan objection; answered by Octavius".
+  Answered 2026-11-14: approved as drafted, 150 passages in 15 ranges, with Luther's name in Exsurge Domine's label, the Syllabus's label in Exsurge Domine's order, and Constance's labels without article numbers; Vienne's Ad nostrum and Constance's tyrannicide sentence stay unmarked (Decision log "Rejected-voice ranges and labels (3.4)").
 - **3.1** [Phase 3]. Approve the result of the rule A check on Cyprian's correspondents: Epistle XXIX (which some editors give to Novatian) and each other sender of a letter in Cyprian's Epistles (C-02).
 
 ### Phase 4

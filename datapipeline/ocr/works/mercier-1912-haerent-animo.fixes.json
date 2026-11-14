@@ -1,0 +1,752 @@
+[
+ {
+  "passage": "haerent-animo-01",
+  "find": "thanks.\n\n2° Scope",
+  "replace": "thanks.\n\n2do Scope",
+  "why": "pp. iii–vi: the heading reads \"2do\"; the reading gave \"2°\""
+ },
+ {
+  "passage": "haerent-animo-01",
+  "find": "how* ever,",
+  "replace": "however,",
+  "why": "pp. iii–vi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-01",
+  "find": " souls * »",
+  "replace": " souls »",
+  "why": "pp. iii–vi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-01",
+  "find": " the\n\nproper ",
+  "replace": " the proper ",
+  "why": "pp. iii–vi: one heading, set on two lines; the clean-up broke it in two"
+ },
+ {
+  "passage": "haerent-animo-03",
+  "find": "bles sing",
+  "replace": "blessing",
+  "why": "pp. vii–ix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-03",
+  "find": "pleasing » 2. It",
+  "replace": "pleasing ». It",
+  "why": "pp. vii–ix: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-03",
+  "find": "encour aging",
+  "replace": "encouraging",
+  "why": "pp. vii–ix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-03",
+  "find": "years pass ed in",
+  "replace": "years passed in",
+  "why": "pp. vii–ix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-03",
+  "find": "spirit » 1, we",
+  "replace": "spirit », we",
+  "why": "pp. vii–ix: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-03",
+  "find": "priest hood.",
+  "replace": "priesthood.",
+  "why": "pp. vii–ix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-03",
+  "find": "truth » 2. This",
+  "replace": "truth ». This",
+  "why": "pp. vii–ix: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-04",
+  "find": "» 2.\n\ndo",
+  "replace": "».\n\n2do",
+  "why": "pp. ix–xi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-04",
+  "find": "teach » J. Further,",
+  "replace": "teach ». Further,",
+  "why": "pp. ix–xi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-04",
+  "find": "Him » *; and",
+  "replace": "Him »; and",
+  "why": "pp. ix–xi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-04",
+  "find": "to God *. »",
+  "replace": "to God. »",
+  "why": "pp. ix–xi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-05",
+  "find": "invol ved",
+  "replace": "involved",
+  "why": "pp. xi–xiii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-05",
+  "find": "undefiled » *. Thus,",
+  "replace": "undefiled ». Thus,",
+  "why": "pp. xi–xiii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-05",
+  "find": "fruit » 5. We,",
+  "replace": "fruit ». We,",
+  "why": "pp. xi–xiii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-05",
+  "find": "ambassadors » 2. For",
+  "replace": "ambassadors ». For",
+  "why": "pp. xi–xiii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-05",
+  "find": "God » '. «",
+  "replace": "God ». «",
+  "why": "pp. xi–xiii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-05",
+  "find": "dis pensers",
+  "replace": "dispensers",
+  "why": "pp. xi–xiii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-05",
+  "find": "us, > says",
+  "replace": "us, » says",
+  "why": "pp. xi–xiii: a guillemet read as \"<\" or \">\""
+ },
+ {
+  "passage": "haerent-animo-06",
+  "find": "»\n\n5° The",
+  "replace": "»\n\n3° The",
+  "why": "pp. xiii–xv: misread on the page; the heading reads \"3°\""
+ },
+ {
+  "passage": "haerent-animo-06",
+  "find": "blood » *. St.",
+  "replace": "blood ». St.",
+  "why": "pp. xiii–xv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "Jesus » '.",
+  "replace": "Jesus ».",
+  "why": "pp. xv–xix: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "teach ing",
+  "replace": "teaching",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "example >. Most",
+  "replace": "example ». Most",
+  "why": "pp. xv–xix: a guillemet read as \"<\" or \">\""
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "still: € With",
+  "replace": "still: « With",
+  "why": "pp. xv–xix: the opening guillemet « read as \"€\""
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "rever ence",
+  "replace": "reverence",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "autho rity,",
+  "replace": "authority,",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "watch ful",
+  "replace": "watchful",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "inclin ed",
+  "replace": "inclined",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "receiv ed",
+  "replace": "received",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "abode > '. With",
+  "replace": "abode ». With",
+  "why": "pp. xv–xix: the mark of a note at the foot of the page (the note is kept apart) taken out of the text; the closing guillemet » read as \">\""
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "me » *. By",
+  "replace": "me ». By",
+  "why": "pp. xv–xix: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "remem brance!",
+  "replace": "remembrance!",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "care ful",
+  "replace": "careful",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "can didates",
+  "replace": "candidates",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-07",
+  "find": "semi naries",
+  "replace": "seminaries",
+  "why": "pp. xv–xix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-08",
+  "find": "wisdom: -",
+  "replace": "wisdom: —",
+  "why": "pp. xix–xxi: the dash read as a hyphen; the print reads \"wisdom : —\""
+ },
+ {
+  "passage": "haerent-animo-08",
+  "find": "becom-eth",
+  "replace": "becometh",
+  "why": "pp. xix–xxi: a word broken at a line end (\"becom- / eth\"), joined"
+ },
+ {
+  "passage": "haerent-animo-08",
+  "find": "grave » *; very",
+  "replace": "grave »; very",
+  "why": "pp. xix–xxi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-09",
+  "find": "concupiscences » '.",
+  "replace": "concupiscences ».",
+  "why": "pp. xxi–xxiii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-09",
+  "find": "death » *; and",
+  "replace": "death »; and",
+  "why": "pp. xxi–xxiii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-09",
+  "find": "obe dient",
+  "replace": "obedient",
+  "why": "pp. xxi–xxiii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-09",
+  "find": "heart » 3; nor",
+  "replace": "heart »; nor",
+  "why": "pp. xxi–xxiii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-09",
+  "find": "ever » '2. Therefore,",
+  "replace": "ever ». Therefore,",
+  "why": "pp. xxi–xxiii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-09",
+  "find": "Son » '. Christ",
+  "replace": "Son ». Christ",
+  "why": "pp. xxi–xxiii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-09",
+  "find": "conforma ble",
+  "replace": "conformable",
+  "why": "pp. xxi–xxiii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-10",
+  "find": "himself »[.\n\n2°",
+  "replace": "himself ».\n\n2°",
+  "why": "pp. xxiii–xxv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-10",
+  "find": "good >. And",
+  "replace": "good ». And",
+  "why": "pp. xxiii–xxv: a guillemet read as \"<\" or \">\""
+ },
+ {
+  "passage": "haerent-animo-11",
+  "find": "be will procure\n\n",
+  "replace": "he will procure ",
+  "why": "pp. xxv–xxvi: one heading, set on two lines; misread \"be\" for \"he\""
+ },
+ {
+  "passage": "haerent-animo-11",
+  "find": "» *.\n\n5°",
+  "replace": "».\n\n3°",
+  "why": "pp. xxv–xxvi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-11",
+  "find": "vineyard »f. It",
+  "replace": "vineyard ». It",
+  "why": "pp. xxv–xxvi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-12",
+  "find": "know ledge",
+  "replace": "knowledge",
+  "why": "pp. xxvi–xxviii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-12",
+  "find": "are » . There",
+  "replace": "are ». There",
+  "why": "pp. xxvi–xxviii: spacing"
+ },
+ {
+  "passage": "haerent-animo-12",
+  "find": "hand le.",
+  "replace": "handle.",
+  "why": "pp. xxvi–xxviii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-12",
+  "find": "neces sary",
+  "replace": "necessary",
+  "why": "pp. xxvi–xxviii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-12",
+  "find": "pro duce",
+  "replace": "produce",
+  "why": "pp. xxvi–xxviii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-12",
+  "find": "increase » . You",
+  "replace": "increase ». You",
+  "why": "pp. xxvi–xxviii: spacing"
+ },
+ {
+  "passage": "haerent-animo-12",
+  "find": "warn ing",
+  "replace": "warning",
+  "why": "pp. xxvi–xxviii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-13",
+  "find": "prayer.\n\ni° Necessity",
+  "replace": "prayer.\n\n1° Necessity",
+  "why": "pp. xxviii–xxx: the heading reads \"1°\"; the reading gave \"i°\""
+ },
+ {
+  "passage": "haerent-animo-13",
+  "find": "minis ters",
+  "replace": "ministers",
+  "why": "pp. xxviii–xxx: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-13",
+  "find": "San ctity",
+  "replace": "Sanctity",
+  "why": "pp. xxviii–xxx: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-13",
+  "find": "holi ness,",
+  "replace": "holiness,",
+  "why": "pp. xxviii–xxx: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-14",
+  "find": "rightly » 2. Christ",
+  "replace": "rightly ». Christ",
+  "why": "pp. xxx–xxxi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-14",
+  "find": "prayer » 1; And",
+  "replace": "prayer »; And",
+  "why": "pp. xxx–xxxi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-15",
+  "find": "adora ble",
+  "replace": "adorable",
+  "why": "pp. xxxi–xxxiv: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-15",
+  "find": "cle mency;",
+  "replace": "clemency;",
+  "why": "pp. xxxi–xxxiv: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-15",
+  "find": "addi tion.",
+  "replace": "addition.",
+  "why": "pp. xxxi–xxxiv: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-15",
+  "find": "ceasing » 3. How",
+  "replace": "ceasing ». How",
+  "why": "pp. xxxi–xxxiv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-15",
+  "find": "thanksgiving » 2; «",
+  "replace": "thanksgiving »; «",
+  "why": "pp. xxxi–xxxiv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-15",
+  "find": "pray » *; following",
+  "replace": "pray »; following",
+  "why": "pp. xxxi–xxxiv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-16",
+  "find": "prudence » *. Now,",
+  "replace": "prudence ». Now,",
+  "why": "pp. xxxiv–xxxv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-18",
+  "find": "days; » ' for then ",
+  "replace": "days; » for then ",
+  "why": "pp. xxxvii–xxxix: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-18",
+  "find": "cere monies!",
+  "replace": "ceremonies!",
+  "why": "pp. xxxvii–xxxix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-18",
+  "find": "dili gence",
+  "replace": "diligence",
+  "why": "pp. xxxvii–xxxix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-18",
+  "find": "medi tation",
+  "replace": "meditation",
+  "why": "pp. xxxvii–xxxix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-20",
+  "find": " Christ! *",
+  "replace": " Christ!",
+  "why": "pp. xl–xli: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-20",
+  "find": "looking clown in",
+  "replace": "looking down in",
+  "why": "pp. xl–xli: misread on the page; the print reads \"looking down\""
+ },
+ {
+  "passage": "haerent-animo-20",
+  "find": "them selves,",
+  "replace": "themselves,",
+  "why": "pp. xl–xli: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-21",
+  "find": "Christ > *.\n\nB.",
+  "replace": "Christ ».\n\nB.",
+  "why": "pp. xli–xliv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text; the closing guillemet » read as \">\""
+ },
+ {
+  "passage": "haerent-animo-21",
+  "find": "works? … ",
+  "replace": "works? « … ",
+  "why": "pp. xli–xliv: the opening guillemet « dropped in the reading"
+ },
+ {
+  "passage": "haerent-animo-21",
+  "find": " » 2 Therefore,",
+  "replace": " » Therefore,",
+  "why": "pp. xli–xliv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-21",
+  "find": "understand » *. If",
+  "replace": "understand ». If",
+  "why": "pp. xli–xliv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-21",
+  "find": "sing > says",
+  "replace": "sing » says",
+  "why": "pp. xli–xliv: a guillemet read as \"<\" or \">\""
+ },
+ {
+  "passage": "haerent-animo-21",
+  "find": "actions: < I",
+  "replace": "actions: « I",
+  "why": "pp. xli–xliv: a guillemet read as \"<\" or \">\""
+ },
+ {
+  "passage": "haerent-animo-21",
+  "find": "pray > 2. Nor",
+  "replace": "pray ». Nor",
+  "why": "pp. xli–xliv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text; the closing guillemet » read as \">\""
+ },
+ {
+  "passage": "haerent-animo-21",
+  "find": "pray » *. Labour",
+  "replace": "pray ». Labour",
+  "why": "pp. xli–xliv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "treasure » *. Now",
+  "replace": "treasure ». Now",
+  "why": "pp. xliv–xlvi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "friend » 2. He",
+  "replace": "friend ». He",
+  "why": "pp. xliv–xlvi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "pos sesses",
+  "replace": "possesses",
+  "why": "pp. xliv–xlvi: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "hands » *. Who",
+  "replace": "hands ». Who",
+  "why": "pp. xliv–xlvi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "pro gress",
+  "replace": "progress",
+  "why": "pp. xliv–xlvi: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "gainsay ers",
+  "replace": "gainsayers",
+  "why": "pp. xliv–xlvi: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "your hands*; adding",
+  "replace": "your hands »; adding",
+  "why": "pp. xliv–xlvi: the closing guillemet » dropped in the reading, and the mark of a note taken out"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "sacer dotal",
+  "replace": "sacerdotal",
+  "why": "pp. xliv–xlvi: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "reading » 2. On",
+  "replace": "reading ». On",
+  "why": "pp. xliv–xlvi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-22",
+  "find": "Timo thy:",
+  "replace": "Timothy:",
+  "why": "pp. xliv–xlvi: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-23",
+  "find": "fled » *. But,",
+  "replace": "fled ». But,",
+  "why": "pp. xlvi–xlviii: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-23",
+  "find": "whole some",
+  "replace": "wholesome",
+  "why": "pp. xlvi–xlviii: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-24",
+  "find": "thyself » 2.",
+  "replace": "thyself ».",
+  "why": "pp. xlviii–xlix: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-24",
+  "find": "dili gent",
+  "replace": "diligent",
+  "why": "pp. xlviii–xlix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-24",
+  "find": "coun sels",
+  "replace": "counsels",
+  "why": "pp. xlviii–xlix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-24",
+  "find": "pru dent teachers 'of",
+  "replace": "prudent teachers of",
+  "why": "pp. xlviii–xlix: a word broken at a line end, joined, and a speck before \"of\" read as an apostrophe"
+ },
+ {
+  "passage": "haerent-animo-24",
+  "find": "them » *. How",
+  "replace": "them ». How",
+  "why": "pp. xlviii–xlix: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-24",
+  "find": "excel lent",
+  "replace": "excellent",
+  "why": "pp. xlviii–xlix: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-25",
+  "find": "down » *. The",
+  "replace": "down ». The",
+  "why": "pp. l–li: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-25",
+  "find": "light » *. We",
+  "replace": "light ». We",
+  "why": "pp. l–li: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-26",
+  "find": "\n\nMeans of Sanctifications,\n\n",
+  "replace": " Means of Sanctifications, ",
+  "why": "pp. lii–liv: one heading, set on three lines; the clean-up broke it"
+ },
+ {
+  "passage": "haerent-animo-26",
+  "find": " order! The ",
+  "replace": " order!\n\nThe ",
+  "why": "pp. lii–liv: the heading starts a new paragraph; the clean-up ran it into the text"
+ },
+ {
+  "passage": "haerent-animo-26",
+  "find": "wound ed",
+  "replace": "wounded",
+  "why": "pp. lii–liv: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-26",
+  "find": "pen ance,",
+  "replace": "penance,",
+  "why": "pp. lii–liv: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-26",
+  "find": "self-ne glect",
+  "replace": "self-neglect",
+  "why": "pp. lii–liv: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-26",
+  "find": "detri ment",
+  "replace": "detriment",
+  "why": "pp. lii–liv: a word broken at a line end, read as two words; joined"
+ },
+ {
+  "passage": "haerent-animo-27",
+  "find": "Christ »!?",
+  "replace": "Christ »?",
+  "why": "pp. liv–lvi: the mark of a note read as \"!\"; the print reads \"Jesus Christ » ?\""
+ },
+ {
+  "passage": "haerent-animo-27",
+  "find": "them » *. May",
+  "replace": "them ». May",
+  "why": "pp. liv–lvi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-27",
+  "find": "heights » J. Woe",
+  "replace": "heights ». Woe",
+  "why": "pp. liv–lvi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-29",
+  "find": " OF\n\nSANCTITY.\n\n",
+  "replace": " OF SANCTITY.\n\n",
+  "why": "pp. lviii–lxi: one heading, set on two lines; the clean-up broke it"
+ },
+ {
+  "passage": "haerent-animo-29",
+  "find": "glory! »!\n\nIII.",
+  "replace": "glory! »\n\nIII.",
+  "why": "pp. lviii–lxi: the mark of a note read as \"!\"; the print reads \"glory ! »\""
+ },
+ {
+  "passage": "haerent-animo-29",
+  "find": "doing » *. Let",
+  "replace": "doing ». Let",
+  "why": "pp. lviii–lxi: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-31",
+  "find": "called » *, doing",
+  "replace": "called », doing",
+  "why": "pp. lxii–lxiv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-32",
+  "find": "them » 2. We",
+  "replace": "them ». We",
+  "why": "pp. lxiv–lxv: the mark of a note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "haerent-animo-21",
+  "find": "place of all",
+  "replace": "place af all",
+  "why": "p. xliii: the printer's misprint, which the model correction mended; the printing's own misprints stay"
+ },
+ {
+  "passage": "haerent-animo-27",
+  "find": "Our conscience obliges",
+  "replace": "Our consience obliges",
+  "why": "p. liv: the printer's misprint, which the model correction mended; the printing's own misprints stay"
+ }
+]

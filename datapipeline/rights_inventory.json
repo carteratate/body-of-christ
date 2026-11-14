@@ -40,8 +40,8 @@
   "author": "Pope Pius X",
   "collection": "apostolic-exhortations",
   "source_path": "apostolic-exhortations/cardinalmerc00mercuoft/",
-  "document_id": null,
-  "edition": "Exhortation to the Catholic Clergy of Our Most Holy Father, Pius X, on the Fiftieth Anniversary of his Priesthood: the Official English Version (Dublin: Browne and Nolan, 1908), reprinted 'by the kind permission of the publishers' in Latin and English as the appendix (pp. iii-lxv) to Cardinal Mercier's Retreat to his Priests (Bruges: Charles Beyaert, 1912); Internet Archive scan cardinalmerc00mercuoft (University of Toronto). A different translation from papalencyclicals.net's, which is modern (its introduction calls the pope Saint Pius X, canonized 1954)",
+  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
+  "edition": "Exhortation to the Catholic Clergy of Our Most Holy Father, Pius X, on the Fiftieth Anniversary of his Priesthood: the Official English Version (Dublin: Browne and Nolan, 1908), reprinted 'by the kind permission of the publishers' in Latin and English as the appendix (pp. iii-lxvi) to Cardinal Mercier's Retreat to his Priests (Bruges: Charles Beyaert, 1912); Internet Archive scan cardinalmerc00mercuoft (University of Toronto). A different translation from papalencyclicals.net's, which is modern (its introduction calls the pope Saint Pius X, canonized 1954)",
   "translator": null,
   "first_published": 1912,
   "source_url": "https://archive.org/details/cardinalmerc00mercuoft",
@@ -51,7 +51,7 @@
   "credit_line": "Official English version (Dublin, 1908), as printed in Cardinal Mercier's Retreat to his Priests (Bruges, 1912)",
   "checked_by": "Carter",
   "checked_on": "2026-11-12",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Catechesi Tradendae",
@@ -306,24 +306,6 @@
   "planned_for": null
  },
  {
-  "work": "Haerent Animo",
-  "author": "Pope Pius X",
-  "collection": "apostolic-exhortations",
-  "source_path": "apostolic-exhortations/haerent-animo.html",
-  "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius10/p10haer.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": "Text: papalencyclicals.net",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
   "work": "Laudate Deum",
   "author": "Pope Francis",
   "collection": "apostolic-exhortations",
@@ -355,24 +337,6 @@
   "rights_holder": "Libreria Editrice Vaticana",
   "renewal_search": null,
   "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": null
- },
- {
-  "work": "Menti Nostrae",
-  "author": "Pope Pius XII",
-  "collection": "apostolic-exhortations",
-  "source_path": "apostolic-exhortations/menti-nostrae.html",
-  "document_id": "83ef10a9-f7a6-594c-b29d-bf96bf9dccbd",
-  "edition": null,
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.papalencyclicals.net/pius12/p12clerg.htm",
-  "status": "unknown",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": "Text: papalencyclicals.net",
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
@@ -526,8 +490,8 @@
   "author": "Pope Pius XII",
   "collection": "apostolic-exhortations",
   "source_path": "apostolic-exhortations/sim_catholic-mind_1951-01_49_1057/",
-  "document_id": null,
-  "edition": "The Catholic Mind, vol. 49 no. 1057 (New York: The America Press, January 1951), pp. 37-63, 'Unofficial English text of the Apostolic Exhortation dated September 23, 1950': the N.C.W.C. News Service translation, before the final editing printed in NCWC's pamphlet (Washington, 1950), which is papalencyclicals.net's text; the issue's masthead carries no copyright notice; Internet Archive scan sim_catholic-mind_1951-01_49_1057",
+  "document_id": "83ef10a9-f7a6-594c-b29d-bf96bf9dccbd",
+  "edition": "The Catholic Mind, vol. 49 no. 1057 (New York: The America Press, January 1951), pp. 37-64, 'Unofficial English text of the Apostolic Exhortation dated September 23, 1950': the N.C.W.C. News Service translation, before the final editing printed in NCWC's pamphlet (Washington, 1950), which is papalencyclicals.net's text; the issue's masthead carries no copyright notice; Internet Archive scan sim_catholic-mind_1951-01_49_1057",
   "translator": null,
   "first_published": 1951,
   "source_url": "https://archive.org/details/sim_catholic-mind_1951-01_49_1057",
@@ -543,7 +507,7 @@
   "credit_line": "Translation by the N.C.W.C. News Service, from The Catholic Mind (1951)",
   "checked_by": "Carter",
   "checked_on": "2026-11-12",
-  "planned_for": "1.3d"
+  "planned_for": null
  },
  {
   "work": "Verbum Domini",

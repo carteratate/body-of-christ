@@ -1,0 +1,225 @@
+[
+ {
+  "passage": "menti-nostrae-01",
+  "find": "INTRODUCTION\n\nTHE words",
+  "replace": "INTRODUCTION\n\nThe words",
+  "why": "p. 37: the drop capital and small capitals of the opening, read as \"THE\"; the print reads \"The\""
+ },
+ {
+  "passage": "menti-nostrae-02",
+  "find": " 38\n\nTHE CATHOLIC MIND January",
+  "replace": "",
+  "why": "pp. 37–38: the page number and the running head of p. 38, read into the text"
+ },
+ {
+  "passage": "menti-nostrae-05",
+  "find": "dec-trine",
+  "replace": "doctrine",
+  "why": "p. 39: misread on the page; the print reads \"doctrine\""
+ },
+ {
+  "passage": "menti-nostrae-05",
+  "find": "Heart.\n\n~by\n\nIMITATION ",
+  "replace": "Heart.\n\nIMITATION ",
+  "why": "p. 39: a mark in the margin, read as \"~by\""
+ },
+ {
+  "passage": "menti-nostrae-09",
+  "find": " God”\n\n(Pont. ",
+  "replace": " God” (Pont. ",
+  "why": "p. 41: one paragraph; the clean-up broke it before the reference"
+ },
+ {
+  "passage": "menti-nostrae-12",
+  "find": "St. PauL",
+  "replace": "ST. PAUL",
+  "why": "p. 43: the heading is set in small capitals; the reading took \"PAUL\" as \"PauL\""
+ },
+ {
+  "passage": "menti-nostrae-15",
+  "find": "Christ.’”",
+  "replace": "Christ’”",
+  "why": "p. 44: the print has no full stop inside the closing quotation marks"
+ },
+ {
+  "passage": "menti-nostrae-17",
+  "find": "\n\nJanuary\n\nTHE CATHOLIC MIND",
+  "replace": "",
+  "why": "p. 46: the running head, read into the text"
+ },
+ {
+  "passage": "menti-nostrae-18",
+  "find": " on\n\nti the",
+  "replace": " on the",
+  "why": "p. 46: letters of the facing page caught at the left edge, read as \"ti\""
+ },
+ {
+  "passage": "menti-nostrae-18",
+  "find": "cycle.\n\nDatty MEDITATION",
+  "replace": "cycle.\n\nDAILY MEDITATION",
+  "why": "p. 46: the heading in small capitals, read as \"Datty\"; the print reads \"DAILY\""
+ },
+ {
+  "passage": "menti-nostrae-18",
+  "find": "more — and",
+  "replace": "more easily and",
+  "why": "p. 46: a word dropped in the reading; the print reads \"thus more easily and\""
+ },
+ {
+  "passage": "menti-nostrae-20",
+  "find": "(Cf. C.L.C., can.",
+  "replace": "(Cf. C.I.C., can.",
+  "why": "p. 47: misread on the page; the print reads \"C.I.C.\""
+ },
+ {
+  "passage": "menti-nostrae-22",
+  "find": "\n\n49 1951 MENTI NOSTRAE",
+  "replace": "",
+  "why": "p. 49: the page number and running head, read into the text"
+ },
+ {
+  "passage": "menti-nostrae-22",
+  "find": " God.\n\nd\n\nFinally,",
+  "replace": " God.\n\nFinally,",
+  "why": "p. 48: a mark in the margin, read as \"d\""
+ },
+ {
+  "passage": "menti-nostrae-24",
+  "find": " his a, be ministry",
+  "replace": " his ministry",
+  "why": "p. 49: letters of the facing page caught at the left edge, read as \"a, be\""
+ },
+ {
+  "passage": "menti-nostrae-28",
+  "find": "wis- 52\n\nTHE CATHOLIC MIND January",
+  "replace": "wisdom",
+  "why": "pp. 51–52: \"wisdom\", broken across the page turn, with p. 52's page number and running head between its halves"
+ },
+ {
+  "passage": "menti-nostrae-28",
+  "find": "necessary —and",
+  "replace": "necessary—and",
+  "why": "p. 51: spacing"
+ },
+ {
+  "passage": "menti-nostrae-29",
+  "find": "dom and discipline ",
+  "replace": "and discipline ",
+  "why": "p. 52: the rest of \"wisdom\", joined to p. 51"
+ },
+ {
+  "passage": "menti-nostrae-32",
+  "find": "diff. culties",
+  "replace": "difficulties",
+  "why": "p. 54: a word broken at a line end, misread; the print reads \"difficulties\""
+ },
+ {
+  "passage": "menti-nostrae-32",
+  "find": "apostolate,",
+  "replace": "apostolate.",
+  "why": "p. 54: misread on the page; the print reads \"apostolate. These\""
+ },
+ {
+  "passage": "menti-nostrae-32",
+  "find": "\n\nahaom se oo oa, GS Ge",
+  "replace": "",
+  "why": "p. 54: letters of the facing page caught at the left edge, read as a line of their own"
+ },
+ {
+  "passage": "menti-nostrae-32",
+  "find": " ideal\n\nfor ",
+  "replace": " ideal for ",
+  "why": "p. 53: one paragraph; the clean-up broke it at the last line of the page"
+ },
+ {
+  "passage": "menti-nostrae-32",
+  "find": " and f among",
+  "replace": " and among",
+  "why": "p. 53: a mark in the margin, read as \"f\""
+ },
+ {
+  "passage": "menti-nostrae-32",
+  "find": "example P of ",
+  "replace": "example of ",
+  "why": "p. 53: a mark in the margin, read as \"P\""
+ },
+ {
+  "passage": "menti-nostrae-35",
+  "find": "disorientated— a",
+  "replace": "disorientated—a",
+  "why": "p. 55: spacing"
+ },
+ {
+  "passage": "menti-nostrae-42",
+  "find": "Finally,.",
+  "replace": "Finally, it",
+  "why": "p. 59: a word dropped in the reading; the print reads \"Finally, it is\""
+ },
+ {
+  "passage": "menti-nostrae-42",
+  "find": "Community",
+  "replace": "COMMUNITY",
+  "why": "p. 59: the heading is set in small capitals; the print reads \"COMMUNITY LIFE\""
+ },
+ {
+  "passage": "menti-nostrae-47",
+  "find": "ccheus. “I",
+  "replace": "Zaccheus. “I",
+  "why": "p. 62: the first letters of the line dropped in the reading; the print reads \"Zaccheus.\""
+ },
+ {
+  "passage": "menti-nostrae-50",
+  "find": "and 24), “Be",
+  "replace": "and 24). “Be",
+  "why": "p. 64: misread on the page; the print reads \"24). “Be\""
+ },
+ {
+  "passage": "menti-nostrae-46",
+  "find": "capitalism],1 the",
+  "replace": "capitalism], the",
+  "why": "p. 61: the mark of the translator's note at the foot of the page (the note is kept apart) taken out of the text"
+ },
+ {
+  "passage": "menti-nostrae-21",
+  "find": "Let it never",
+  "replace": "Let is never",
+  "why": "p. 48: the printer's misprint, which the model correction mended; the printing's own misprints stay"
+ },
+ {
+  "passage": "menti-nostrae-40",
+  "find": "cultivated a sincere",
+  "replace": "cutlivated a sincere",
+  "why": "p. 58: the printer's misprint, which the model correction mended; the printing's own misprints stay"
+ },
+ {
+  "passage": "menti-nostrae-47",
+  "find": "society is concerned",
+  "replace": "society is concered",
+  "why": "p. 62: the printer's misprint, which the model correction mended; the printing's own misprints stay"
+ },
+ {
+  "passage": "menti-nostrae-23",
+  "continues": true,
+  "why": "pp. 48–49: the paragraph runs on across the page turn (\"this Mystical / Body\")"
+ },
+ {
+  "passage": "menti-nostrae-25",
+  "continues": true,
+  "why": "pp. 49–50: the paragraph runs on across the page turn (\"to be / able\")"
+ },
+ {
+  "passage": "menti-nostrae-29",
+  "continues": true,
+  "why": "pp. 51–52: the paragraph runs on across the page turn (\"wis- / dom\")"
+ },
+ {
+  "passage": "menti-nostrae-44",
+  "continues": true,
+  "why": "p. 60: the paragraph runs on (\"honest / men\"); the clean-up broke it where a passage ended"
+ },
+ {
+  "passage": "menti-nostrae-47",
+  "continues": true,
+  "why": "p. 62: the paragraph runs on (\"as did / Zaccheus\"); the clean-up broke it where a passage ended"
+ }
+]
