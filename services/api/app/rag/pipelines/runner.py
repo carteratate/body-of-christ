@@ -2,6 +2,7 @@
 """Sequences pipeline steps, measures timing, accumulates cost."""
 from __future__ import annotations
 
+import asyncio
 import logging
 import time
 import copy
@@ -367,21 +368,51 @@ async def run(
         and config.retrieval.hyde
     )
 
-    query_vec = await _timed_async("embed", embed.run(query, tracker))
-    overrides = hyde_overrides(config.retrieval) if config.retrieval.hyde else {}
-    hyde_call = (
-        hyde_s25.run(query, collections, tracker, all_bible_genres=True, **overrides)
-        if focused_bible_hyde
-        else hyde_module.run(query, collections, tracker, **overrides)
-    )
-    hyde_vecs = await _timed_async("hyde", hyde_call)
     k, top_n = _pool_sizes(config, quota)
-    vec_raw   = await _timed_async("retrieve_vector", retrieve_vector.run(query_vec, hyde_vecs, collections, quota, user_id, k=k))
+    # Keyword search needs only the question, so it runs alongside embed, HyDE and
+    # vector retrieval rather than after them, and is awaited where RRF needs it. Its
+    # StepTiming is its own run time. If an earlier step fails (or the run is
+    # cancelled), the finally below cancels it, so no query is left running.
+    fts_task: asyncio.Task | None = None
     if config.retrieval.fts:
-        fts_raw = await _timed_async("retrieve_fts", retrieve_fts.run(query, collections, quota, user_id, k=k))
-    else:
-        # Lexical ablation — dense only. RRF handles a missing path natively.
-        fts_raw = {}
+        async def _keyword_search() -> tuple[dict, float]:
+            t0 = time.perf_counter()
+            found = await retrieve_fts.run(
+                query, collections, quota, user_id, k=k, mode=config.retrieval.fts_mode,
+            )
+            return found, time.perf_counter() - t0
+
+        fts_task = asyncio.create_task(_keyword_search())
+    try:
+        query_vec = await _timed_async("embed", embed.run(query, tracker))
+        overrides = hyde_overrides(config.retrieval) if config.retrieval.hyde else {}
+        hyde_call = (
+            hyde_s25.run(query, collections, tracker, all_bible_genres=True, **overrides)
+            if focused_bible_hyde
+            else hyde_module.run(query, collections, tracker, **overrides)
+        )
+        hyde_vecs = await _timed_async("hyde", hyde_call)
+        vec_raw   = await _timed_async("retrieve_vector", retrieve_vector.run(query_vec, hyde_vecs, collections, quota, user_id, k=k))
+        if fts_task is not None:
+            try:
+                fts_raw, fts_s = await fts_task
+            except Exception as exc:
+                raise PipelineExecutionError(
+                    "retrieve_fts", tracker.breakdown(), tracker.cost_eligible,
+                ) from exc
+            timings.append(StepTiming(step="retrieve_fts", duration_s=fts_s))
+        else:
+            # Lexical ablation — dense only. RRF handles a missing path natively.
+            fts_raw = {}
+    finally:
+        if fts_task is not None:
+            if not fts_task.done():
+                fts_task.cancel()
+                await asyncio.wait({fts_task})
+            if not fts_task.cancelled():
+                # Retrieves a failure an earlier step's exception superseded, so
+                # asyncio does not log it as never retrieved.
+                fts_task.exception()
     merged    = _timed_sync("rrf", lambda: rrf.run(
         vec_raw, fts_raw, quota, top_n=top_n, k=config.retrieval.rrf_k,
     ))

@@ -1,10 +1,11 @@
 # services/api/app/rag/pipelines/registry.py
 """Named pipeline configurations.
 
-Naming: `<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>][_seats<min>[t<total>]]`. The
-axes configured here — which retrieval paths run, which rerankers (and, for Luna, which
-model and reasoning effort), how the paths are fused, and how many candidates reach the
-terminal listwise call — let the eval harness (`scripts/run_eval_suite.py`) A/B
+Naming:
+`<hyde|nohyde|hyde6>[_nolex]_<rerank>[_rrf<k>][_seats<min>[t<total>]][_ftsminmatch]`.
+The axes configured here — which retrieval paths run and how keyword search matches,
+which rerankers (and, for Luna, which model and reasoning effort), how the paths are
+fused, and how many candidates reach the terminal listwise call — let the eval harness (`scripts/run_eval_suite.py`) A/B
 any two by name.
 
 Enrichment is deliberately NOT an axis: whether a candidate has an annotation is a
@@ -16,6 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from app.rag.steps.budget import TerminalSeats
+from app.rag.steps.retrieve_fts import FTS_MODES, FtsMode
 from app.rag.steps.rerank import RerankConfig
 
 
@@ -54,6 +56,10 @@ class RetrievalConfig:
     # noise: the floor a HyDE-model change has to clear. No effect on live search,
     # where every run samples fresh.
     hyde_sample: int = 0
+    # How the question is matched against `search_vector` (issue #233; modes in
+    # `retrieve_fts`). "and" is today's plainto_tsquery, which finds nothing for
+    # most questions; "min_match" keeps passages holding at least half the terms.
+    fts_mode: FtsMode = "and"
 
     def __post_init__(self) -> None:
         # `settings.rrf_k` is validated by pydantic and no request field reaches
@@ -64,6 +70,8 @@ class RetrievalConfig:
         # running an ablation, and would read that as a result.
         if self.rrf_k is not None and self.rrf_k <= 0:
             raise ValueError(f"rrf_k must be positive, got {self.rrf_k}")
+        if self.fts_mode not in FTS_MODES:
+            raise ValueError(f"unknown fts_mode {self.fts_mode!r}")
 
 
 @dataclass(frozen=True)
@@ -77,7 +85,7 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
        cohere: bool = False, llm: str | None = None,
        k: int | None = None, rrf_k: int | None = None,
        hyde_model: str | None = None, genre_model: str | None = None,
-       hyde_sample: int = 0,
+       hyde_sample: int = 0, fts_mode: FtsMode = "and",
        llm_model: str | None = None, effort: str | None = None,
        seats: TerminalSeats | None = None) -> PipelineConfig:
     return PipelineConfig(
@@ -85,7 +93,7 @@ def _p(name: str, *, hyde: bool = True, fts: bool = True,
         retrieval=RetrievalConfig(
             hyde=hyde, fts=fts, retrieval_k_override=k, rrf_k=rrf_k,
             hyde_luna_model=hyde_model, hyde_genre_luna_model=genre_model,
-            hyde_sample=hyde_sample,
+            hyde_sample=hyde_sample, fts_mode=fts_mode,
         ),
         rerank=RerankConfig(
             use_cohere=cohere, llm_provider=llm,
@@ -151,10 +159,24 @@ PIPELINES: dict[str, PipelineConfig] = {
         "hyde_cohere_luna_seats10t80", cohere=True, llm="luna",
         seats=TerminalSeats(minimum=10, total=80, maximum=25),
     ),
-    # Production (seats10t80) with its own HyDE draw: the noise floor any change to
-    # production must clear. hyde_cohere_luna_hydesample is the pre-#235 equivalent.
+    # seats10t80 with its own HyDE draw: production's noise floor until #233.
+    # hyde_cohere_luna_hydesample is the pre-#235 equivalent.
     "hyde_cohere_luna_seats10t80_hydesample": _p(
         "hyde_cohere_luna_seats10t80_hydesample", cohere=True, llm="luna",
         seats=TerminalSeats(minimum=10, total=80, maximum=25), hyde_sample=1,
+    ),
+    # Issue #233, production since: seats10t80 with keyword search matching at least
+    # half a question's terms instead of all of them. Made production without a judged
+    # run (Carter, 13 Nov 2026); the coverage measurement is on the issue.
+    "hyde_cohere_luna_seats10t80_ftsminmatch": _p(
+        "hyde_cohere_luna_seats10t80_ftsminmatch", cohere=True, llm="luna",
+        seats=TerminalSeats(minimum=10, total=80, maximum=25), fts_mode="min_match",
+    ),
+    # Production with its own HyDE draw: the noise floor any change to production
+    # must clear. The two seats10t80 arms above are the pre-#233 pair.
+    "hyde_cohere_luna_seats10t80_ftsminmatch_hydesample": _p(
+        "hyde_cohere_luna_seats10t80_ftsminmatch_hydesample", cohere=True, llm="luna",
+        seats=TerminalSeats(minimum=10, total=80, maximum=25), fts_mode="min_match",
+        hyde_sample=1,
     ),
 }
