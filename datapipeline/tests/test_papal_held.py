@@ -63,3 +63,57 @@ def test_held_documents_keep_their_unknown_rights_rows():
         row = rows[e["document_id"]]
         assert row["status"] == "unknown", row["work"]
         assert "papalencyclicals.net" in row["source_url"], row["work"]
+
+
+_HELD_PART = re.compile(r";\s*(?:the (?P<parts>introduction and closing)|(?P<address>the address)?"
+                        r"(?: and |, )?(?:paragraphs? (?P<numbers>[\d–, and]+?))?) held for permission$")
+
+
+def _numbers(text: str) -> list[str]:
+    out = []
+    for part in re.split(r",\s*|\s+and\s+", text.strip()):
+        if "–" in part:
+            a, b = part.split("–")
+            out += [str(n) for n in range(int(a), int(b) + 1)]
+        elif part:
+            out.append(part)
+    return out
+
+
+def test_extracts_hold_exactly_what_the_adr_names():
+    """A "Partial only" or "Abridged only" row names what is held; the registry holds
+    exactly those passages, one `passage`-scope entry each (1.3d step 6)."""
+    from ingest import papal_common
+
+    works = _works()
+    entries = [e for e in registry.open_removals(registry.current())
+               if e["scope"] == "passage" and e["reason"] == "awaiting-permission"]
+    rows = {s: o for s, o in _adr_rows().items() if o.startswith(("Partial only", "Abridged only"))}
+    assert len(rows) == 11
+    for slug, outcome in rows.items():
+        held = {e["anchor"].split("/", 1)[1] for e in entries
+                if e["document_id"] == works[slug]["document_id"]}
+        assert held, slug
+        for e in entries:
+            if e["document_id"] == works[slug]["document_id"]:
+                assert e["tombstone"] == TOMBSTONE and e["added_by"] == "1.3d", e["id"]
+        m = _HELD_PART.search(outcome)
+        assert m, slug
+        if m.group("parts"):      # Exsurge Domine: every passage but the 41 propositions
+            assert not any(a.isdigit() for a in held), slug
+            continue
+        expected = ({"preamble"} if m.group("address") else set()) | {
+            papal_common._anchor(slug, n).split("/", 1)[1] for n in _numbers(m.group("numbers") or "")}
+        assert {a.split("/")[0] for a in held} == expected, slug
+
+
+def test_exsurge_domine_propositions_are_labelled_rejected():
+    """Exsurge Domine is published only in its 41 condemned propositions, which are
+    Deferrari's translation (R9): each row keeps its ID and says whose words they are."""
+    doc = _works()["exsurge-domine"]["document_id"]
+    rows = {r["anchor"]: r for r in registry.current().passages if r["document_id"] == doc}
+    for n in range(1, 42):
+        row = rows[f"exsurge-domine/{n}"]
+        assert row["status"] == "active" and row.get("voice") == "rejected", n
+        assert row.get("note", "").startswith("Propositions of Martin Luther that the bull "
+                                              "condemned"), n

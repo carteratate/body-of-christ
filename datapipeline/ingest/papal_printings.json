@@ -2931,5 +2931,644 @@
     "unit": 60
    }
   ]
+ },
+ "encyclicals/nostis-et-nobiscum": {
+  "source": "ocr",
+  "work": "rambler-1850-nostis-et-nobiscum",
+  "file": "sim_rambler-a-catholic-journal-and-review_1850-02_5_part-xxvi/",
+  "url": "https://archive.org/details/sim_rambler-a-catholic-journal-and-review_1850-02_5_part-xxvi",
+  "translation": "The Rambler, vol. 5 (London, February 1850)",
+  "units": [
+   {
+    "opens": "Venerable Brothers,—",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Health and Apostolical Benediction",
+    "unit": "preamble"
+   },
+   {
+    "opens": "You know and you see",
+    "unit": 1
+   },
+   {
+    "opens": "Although since then the city",
+    "unit": 2
+   },
+   {
+    "opens": "Among the numberless frauds",
+    "unit": 3
+   },
+   {
+    "opens": "The spiritual good whereby",
+    "unit": 4
+   },
+   {
+    "opens": "This singular privilege",
+    "unit": 5
+   },
+   {
+    "opens": "Such, then, is that holy religion",
+    "unit": "+"
+   },
+   {
+    "opens": "But you are not ignorant",
+    "unit": 6
+   },
+   {
+    "opens": "Therefore have they formed the design",
+    "unit": "+"
+   },
+   {
+    "opens": "God forbid, Venerable Brothers",
+    "unit": 7,
+    "until": "As for us and you"
+   },
+   {
+    "opens": "As for us and you",
+    "unit": 8
+   },
+   {
+    "opens": "To arrive at this end",
+    "unit": 9
+   },
+   {
+    "opens": "It is necessary to take care",
+    "unit": 10
+   },
+   {
+    "opens": "You will, however, especially",
+    "unit": 11
+   },
+   {
+    "opens": "We doubt not but that the curés",
+    "unit": 12
+   },
+   {
+    "opens": "For the rest, in all these things",
+    "unit": 13
+   },
+   {
+    "opens": "Among the divers kinds of frauds",
+    "unit": 14
+   },
+   {
+    "opens": "But to restrain the contagion",
+    "unit": 15
+   },
+   {
+    "opens": "But all who labour with you",
+    "unit": 16
+   },
+   {
+    "opens": "And it is assuredly in the maintenance",
+    "unit": 17
+   },
+   {
+    "opens": "And as regards these wicked doctrines",
+    "unit": 18
+   },
+   {
+    "opens": "Let, therefore, the Faithful",
+    "unit": 19
+   },
+   {
+    "opens": "Let them know, moreover",
+    "unit": 20
+   },
+   {
+    "opens": "But if the same faithful",
+    "unit": 25
+   },
+   {
+    "opens": "The Church of God draws from monasteries",
+    "unit": 27
+   },
+   {
+    "opens": "After having thus spoken",
+    "unit": 28
+   },
+   {
+    "opens": "But as you will not be able",
+    "unit": 29
+   },
+   {
+    "opens": "It is for this reason",
+    "unit": 30
+   },
+   {
+    "opens": "It is, then, our duty",
+    "unit": 34
+   },
+   {
+    "opens": "But every excellent good",
+    "unit": 35
+   },
+   {
+    "opens": "Lastly, Venerable Brothers",
+    "unit": "+"
+   },
+   {
+    "opens": "Datum Neapoli",
+    "unit": "+"
+   },
+   {
+    "opens": "Pius PP. IX.",
+    "unit": "+"
+   }
+  ],
+  "omits": [
+   21,
+   22,
+   23,
+   24,
+   26,
+   31,
+   32,
+   33
+  ],
+  "notes": "This English printing (The Rambler, 1850) omits paragraphs 21–24, 26 and 31–33; they are not available on TheoCorpus at present."
+ },
+ "encyclicals/qui-nuper": {
+  "source": "ocr",
+  "work": "dublin-review-1859-qui-nuper",
+  "file": "sim_dublin-review_1859-09_47/",
+  "url": "https://archive.org/details/sim_dublin-review_1859-09_47",
+  "translation": "The Dublin Review, new series vol. 47 (London, September 1859)",
+  "editorial": [
+   {
+    "opens": "And then the Holy Father exhorted",
+    "why": "The Review's own words between its two quotations (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "The seditious movement",
+    "unit": 1
+   },
+   {
+    "opens": "For the rest we openly declare",
+    "unit": 3
+   }
+  ],
+  "omits": [
+   "preamble",
+   2
+  ],
+  "notes": "This English printing (The Dublin Review, 1859) quotes paragraph 1 and part of paragraph 3; the address, paragraph 2 and the rest of paragraph 3 are not available on TheoCorpus at present."
+ },
+ "encyclicals/nullis-certe-verbis": {
+  "source": "ocr",
+  "work": "rambler-1860-nullis-certe-verbis",
+  "file": "sim_rambler-a-catholic-journal-and-review_1860-03_2_6/",
+  "url": "https://archive.org/details/sim_rambler-a-catholic-journal-and-review_1860-03_2_6",
+  "translation": "The Rambler, new series vol. 2 (London, March 1860)",
+  "units": [
+   {
+    "opens": "From every part of the Catholic",
+    "unit": 3,
+    "until": "In his letter, the exalted"
+   },
+   {
+    "opens": "In his letter, the exalted",
+    "unit": 5
+   },
+   {
+    "opens": "Every one of you",
+    "unit": 6,
+    "until": "And, among other things"
+   },
+   {
+    "opens": "And, among other things",
+    "unit": 7,
+    "until": "And we did not omit"
+   },
+   {
+    "opens": "And we did not omit",
+    "unit": 8
+   }
+  ],
+  "omits": [
+   "preamble",
+   1,
+   2,
+   4,
+   9,
+   10,
+   11,
+   12,
+   13
+  ],
+  "notes": "This English printing (The Rambler, 1860) quotes paragraph 6 and parts of paragraphs 3, 5, 7 and 8; the address and paragraphs 1–2, 4 and 9–13 are not available on TheoCorpus at present."
+ },
+ "encyclicals/levate": {
+  "source": "ocr",
+  "work": "appletons-1867-levate",
+  "file": "americanannualcyv7dapp/",
+  "url": "https://archive.org/details/americanannualcyv7dapp",
+  "translation": "The American Annual Cyclopaedia and Register of Important Events of the Year 1867 (New York, 1868)",
+  "editorial": [
+   {
+    "opens": "The Garibaldian revolution",
+    "why": "The Cyclopaedia's words introducing the quotation (rule G)."
+   }
+  ],
+  "units": [
+   {
+    "opens": "We adore the inscrutable",
+    "unit": 1
+   },
+   {
+    "opens": "By ruffians of this sort",
+    "unit": 2
+   }
+  ],
+  "omits": [
+   "preamble",
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "notes": "This English printing (The American Annual Cyclopaedia, 1868) quotes most of paragraph 1 and the first part of paragraph 2; the address, the rest of paragraph 2 and paragraphs 3–10 are not available on TheoCorpus at present."
+ },
+ "encyclicals/cum-summi": {
+  "source": "ocr",
+  "work": "interesting-letters-1777-cum-summi",
+  "file": "interestinglett00xivgoog/",
+  "url": "https://archive.org/details/interestinglett00xivgoog",
+  "translation": "Interesting Letters of the Late Pope Clement XIV. (Ganganelli.), translated from the French (Newcastle, 1777)",
+  "units": [
+   {
+    "opens": "To all the Patriarchs",
+    "unit": "preamble"
+   },
+   {
+    "opens": "CLEMENT XIV",
+    "unit": "preamble"
+   },
+   {
+    "opens": "To our Venerable Brethren",
+    "unit": "preamble"
+   },
+   {
+    "opens": "WHEN we consider the duties",
+    "unit": 1
+   },
+   {
+    "opens": "But it is the work of the Lord",
+    "unit": "+"
+   },
+   {
+    "opens": "While we cast our eyes",
+    "unit": 2
+   },
+   {
+    "opens": "In the first place",
+    "unit": 3
+   },
+   {
+    "opens": "Intrusted, as his Vicar",
+    "unit": "+"
+   },
+   {
+    "opens": "There never was a time",
+    "unit": 4
+   },
+   {
+    "opens": "A fresh motive this",
+    "unit": "+"
+   },
+   {
+    "opens": "You will succeed in this glorious",
+    "unit": "+",
+    "until": "Let us draw only from scripture"
+   },
+   {
+    "opens": "Let us draw only from scripture",
+    "unit": 5
+   },
+   {
+    "opens": "Such is the connection",
+    "unit": "+"
+   },
+   {
+    "opens": "We therefore exhort you",
+    "unit": 6
+   },
+   {
+    "opens": "When you have by your application",
+    "unit": "+"
+   },
+   {
+    "opens": "By thus labouring",
+    "unit": "+"
+   },
+   {
+    "opens": "It would undoubtedly be superfluous",
+    "unit": 7
+   },
+   {
+    "opens": "If you have an ardent desire",
+    "unit": "+"
+   },
+   {
+    "opens": "When people are convinced",
+    "unit": "+"
+   },
+   {
+    "opens": "Since therefore, Venerable",
+    "unit": "+",
+    "until": "And think not, Venerable"
+   },
+   {
+    "opens": "And think not, Venerable",
+    "unit": 8
+   },
+   {
+    "opens": "Ah! What can appear",
+    "unit": "+"
+   },
+   {
+    "opens": "Oh that we could",
+    "unit": "+"
+   },
+   {
+    "opens": "As a pledge of our love",
+    "unit": 10
+   },
+   {
+    "opens": "Rome, at St. Mary-Major",
+    "unit": "+"
+   }
+  ],
+  "omits": [
+   9
+  ],
+  "notes": "This English printing (Interesting Letters of Clement XIV, 1777, translated from the French) omits paragraph 9; it is not available on TheoCorpus at present."
+ },
+ "encyclicals/salutis-nostrae": {
+  "source": "ocr",
+  "work": "interesting-letters-1777-salutis-nostrae",
+  "file": "interestinglett00xivgoog/",
+  "url": "https://archive.org/details/interestinglett00xivgoog",
+  "translation": "Interesting Letters of the Late Pope Clement XIV. (Ganganelli.), translated from the French (Newcastle, 1777)",
+  "units": [
+   {
+    "opens": "Clement, Bishop, servant",
+    "unit": "preamble"
+   },
+   {
+    "opens": "THE Author of our salvation",
+    "unit": 1,
+    "until": "As this is the only thing"
+   },
+   {
+    "opens": "As this is the only thing",
+    "unit": 2
+   },
+   {
+    "opens": "Although in the exercise",
+    "unit": "+"
+   },
+   {
+    "opens": "In conformity, therefore",
+    "unit": "+"
+   },
+   {
+    "opens": "Now nothing can contribute",
+    "unit": "+"
+   },
+   {
+    "opens": "We invite you, therefore",
+    "unit": "+"
+   },
+   {
+    "opens": "O all ye, who are children",
+    "unit": 5
+   },
+   {
+    "opens": "Come, run therefore",
+    "unit": "+"
+   },
+   {
+    "opens": "But the most affecting",
+    "unit": "+"
+   },
+   {
+    "opens": "As to you, our Venerable",
+    "unit": 6
+   },
+   {
+    "opens": "If there be any among you",
+    "unit": "+"
+   },
+   {
+    "opens": "Neither can we doubt",
+    "unit": 7
+   },
+   {
+    "opens": "But to the end that these presents",
+    "unit": 8
+   },
+   {
+    "opens": "Given at Rome, at St. Mary-Major",
+    "unit": "+"
+   }
+  ],
+  "omits": [
+   3,
+   4,
+   9
+  ],
+  "notes": "This English printing (Interesting Letters of Clement XIV, 1777, translated from the French) omits paragraphs 3, 4 and 9 and shortens paragraphs 2 and 8 to \"&c.\"; what it leaves out is not available on TheoCorpus at present."
+ },
+ "encyclicals/traditi-humilitati": {
+  "source": "ocr",
+  "work": "jesuit-1829-traditi-humilitati",
+  "file": "sim_jesuit-or-catholic-sentinel_1829-11-14_1_11/",
+  "url": "https://archive.org/details/sim_jesuit-or-catholic-sentinel_1829-11-14_1_11",
+  "translation": "The Jesuit, or Catholic Sentinel (Boston), vol. 1 (14 November 1829)",
+  "units": [
+   {
+    "opens": "To our Brothers, the Patriarchs",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Pius VIII. Pope",
+    "unit": "preamble"
+   },
+   {
+    "opens": "Ready to take possession",
+    "unit": 1
+   },
+   {
+    "opens": "However, notwithstanding the consolation",
+    "unit": 3
+   },
+   {
+    "opens": "We are speaking to you of evils",
+    "unit": "+"
+   },
+   {
+    "opens": "Sacred things are unworthily",
+    "unit": "+"
+   },
+   {
+    "opens": "This is the object of the dark",
+    "unit": 4
+   },
+   {
+    "opens": "Venerable brothers, the people must",
+    "unit": "+"
+   },
+   {
+    "opens": "Another object of our vigilance",
+    "unit": 5
+   },
+   {
+    "opens": "It is, besides your duty",
+    "unit": 6
+   },
+   {
+    "opens": "Among these secret societies",
+    "unit": 7
+   },
+   {
+    "opens": "There is still, regard being had",
+    "unit": 10
+   },
+   {
+    "opens": "May the kings and princes",
+    "unit": 12
+   }
+  ],
+  "omits": [
+   2,
+   8,
+   9,
+   11,
+   13
+  ],
+  "notes": "This English printing (The Jesuit, Boston, 1829) is abridged: it shortens several paragraphs and omits paragraphs 2, 8, 9, 11 and 13; what it leaves out is not available on TheoCorpus at present."
+ },
+ "encyclicals/vix-pervenit": {
+  "source": "ocr",
+  "file": "../councils/sources-of-catholic-dogma/",
+  "url": "https://archive.org/details/sourcesofcatholi00denz",
+  "translation": "R. J. Deferrari, The Sources of Catholic Dogma (St. Louis, 1957), from Denzinger's Enchiridion",
+  "passage_note": "Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic Dogma (1957).",
+  "work": "deferrari-vix-pervenit",
+  "units": [
+   {
+    "opens": "1. That species of sin",
+    "unit": 3
+   },
+   {
+    "opens": "2. Nor may any defense",
+    "unit": "+"
+   },
+   {
+    "opens": "3. But by this",
+    "unit": "+"
+   },
+   {
+    "opens": "4. But, just as",
+    "unit": "+"
+   },
+   {
+    "opens": "5. But this must be",
+    "unit": "+"
+   }
+  ],
+  "omits": [
+   "preamble",
+   1,
+   2,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11
+  ],
+  "notes": "Only an extract of this encyclical is given, in R. J. Deferrari's translation of Denzinger (1957): the five teachings on usury in paragraph 3. The rest is not available on TheoCorpus at present."
+ },
+ "encyclicals/singulari-nos": {
+  "source": "ocr",
+  "file": "../councils/sources-of-catholic-dogma/",
+  "url": "https://archive.org/details/sourcesofcatholi00denz",
+  "translation": "R. J. Deferrari, The Sources of Catholic Dogma (St. Louis, 1957), from Denzinger's Enchiridion",
+  "passage_note": "Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic Dogma (1957).",
+  "work": "deferrari-singulari-nos",
+  "units": [
+   {
+    "opens": "But it is a very mournful thing",
+    "unit": 8
+   }
+  ],
+  "omits": [
+   "preamble",
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   9
+  ],
+  "notes": "Only an extract of this encyclical is given, in R. J. Deferrari's translation of Denzinger (1957): paragraph 8. The rest is not available on TheoCorpus at present."
+ },
+ "encyclicals/quanto-conficiamur-moerore": {
+  "source": "ocr",
+  "file": "../councils/sources-of-catholic-dogma/",
+  "url": "https://archive.org/details/sourcesofcatholi00denz",
+  "translation": "R. J. Deferrari, The Sources of Catholic Dogma (St. Louis, 1957), from Denzinger's Enchiridion",
+  "passage_note": "Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic Dogma (1957).",
+  "work": "deferrari-quanto-conficiamur-moerore",
+  "units": [
+   {
+    "opens": "And here, beloved Sons",
+    "unit": 7,
+    "until": "But, the Catholic dogma"
+   },
+   {
+    "opens": "But, the Catholic dogma",
+    "unit": 8
+   },
+   {
+    "opens": "But, God forbid",
+    "unit": 9
+   }
+  ],
+  "omits": [
+   "preamble",
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21
+  ],
+  "notes": "Only extracts of this encyclical are given, in R. J. Deferrari's translation of Denzinger (1957): paragraph 7, the first part of paragraph 8, and paragraph 9. The rest is not available on TheoCorpus at present."
  }
 }

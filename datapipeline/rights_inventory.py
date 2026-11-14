@@ -29,6 +29,7 @@ Item 0.2 in docs/corpus-cleanup/P0-checks-identity-research.md.
 from __future__ import annotations
 
 import json
+import posixpath
 from pathlib import Path
 
 DATAPIPELINE = Path(__file__).resolve().parent
@@ -120,7 +121,10 @@ def work_keys(documents_by_collection: dict[str, list],
         for doc in documents:
             meta = doc.metadata or {}
             if meta.get("source_file"):
-                path = f"{collection}/{meta['source_file']}"
+                # A source in another collection's folder ("../councils/...", Deferrari's
+                # Denzinger for three encyclicals, 1.3d) is named where it is.
+                path = posixpath.normpath(f"{collection}/{meta['source_file']}")
+                path += "/" if meta["source_file"].endswith("/") else ""
             elif meta.get("url") in by_url:
                 path = f"{collection}/{by_url[meta['url']]}"
             elif collection in _COLLECTION_SOURCE:

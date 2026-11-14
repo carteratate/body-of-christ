@@ -73,6 +73,15 @@ class Printing:
     # False where the site's page prints no paragraph numbers either (Sublimis Deus): its
     # units keep their places as anchors and cite no number (1.3a).
     numbered: bool = True
+    # An extract or abridgement (1.3d step 6): the site's paragraphs the printing lacks, by
+    # number, or "preamble" where it lacks the site's address (Qui Nuper).
+    # They are held for permission (a `passage`-scope `awaiting-permission` removal each),
+    # the site's page stays the document's `held_text_url`, and `notes` say what is
+    # missing, for the reader's overview.
+    omits: tuple[int | str, ...] = ()
+    notes: str | None = None
+    # A reader note on every passage (Deferrari's extracts, R9: "Extract, in ...").
+    passage_note: str | None = None
     # The printing ends each unit with the letter it was condemned in (the Syllabus):
     # each citation becomes its own "[Source: ...]" paragraph (`mark_sources`).
     marks_sources: bool = False
@@ -103,6 +112,8 @@ def printings() -> dict[str, Printing]:
                             editorial=tuple(d.get("editorial", ())),
                             fixes=tuple(d.get("fixes", ())),
                             numbered=d.get("numbered", True),
+                            omits=tuple(d.get("omits", ())), notes=d.get("notes"),
+                            passage_note=d.get("passage_note"),
                             marks_sources=d.get("marks_sources", False))
     return out
 
@@ -243,10 +254,20 @@ def build_printed(p: Printing, entry: dict, collection: str, src_dir: str) -> Do
     # `source_file` names the printing's folder, as its rights row does (`source_path`).
     # 0.1a's coverage does not measure it (the site's page is not this document's source;
     # `tests/test_papal_printings.py` measures the printing).
+    built = {t.number if t.number is not None else t.kind for t in toks}
+    if built & set(p.omits):
+        raise ValueError(f"{p.key}: units both printed and omitted: {sorted(built & set(p.omits))}")
+    if bool(p.omits) != bool(p.notes):
+        raise ValueError(f"{p.key}: an extract names its omitted paragraphs and its notes together")
+    metadata = {"source_file": p.folder}
+    if p.omits:
+        metadata["held_text_url"] = entry["url"]
     doc = papal_common.document_from_tokens(
         entry, collection, toks, url=p.url, text_replaced=p.text_replaced,
-        translation=p.translation, metadata={"source_file": p.folder},
-        passage_metadata=label)
+        translation=p.translation, metadata=metadata, passage_metadata=label)
+    doc.notes = p.notes
+    if p.passage_note:
+        doc.passages = [replace(x, note=p.passage_note) for x in doc.passages]
     if p.marks_sources:
         marked = mark_sources([x.content for x in doc.passages])
         doc.passages = [replace(x, content=c) for x, c in zip(doc.passages, marked)]

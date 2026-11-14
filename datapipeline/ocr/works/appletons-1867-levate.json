@@ -1,0 +1,41 @@
+{
+ "work": "appletons-1867-levate",
+ "title": "Levate, quoted in The American Annual Cyclopaedia and Register of Important Events of the Year 1867 (New York: D. Appleton, 1868), Roman Catholic Church, p. 681, extract",
+ "scan": "americanannualcyv7dapp",
+ "djvu_xml": "encyclicals/americanannualcyv7dapp/americanannualcyv7dapp_djvu.xml",
+ "page_numbers": "encyclicals/americanannualcyv7dapp/americanannualcyv7dapp_page_numbers.json",
+ "pages": [
+  "681",
+  "681"
+ ],
+ "layout": "two-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "levate",
+   "first": "The Garibaldian revolution",
+   "last": "conduct of the Subalpine",
+   "keep_quotes": false
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "names": [],
+ "leaf_pages": {
+  "700": "681"
+ }
+}

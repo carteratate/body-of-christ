@@ -1,0 +1,20 @@
+[
+ {
+  "passage": "qui-nuper",
+  "find": "liberty,’",
+  "replace": "liberty,”",
+  "why": "p. 199: misread on the page; the print closes the quotation with \"liberty,”\""
+ },
+ {
+  "passage": "qui-nuper",
+  "find": "zeal for the",
+  "replace": "zeal “for the",
+  "why": "p. 199: the Review's opening quotation mark, dropped in the reading; the print reads \"zeal “for the\""
+ },
+ {
+  "passage": "qui-nuper",
+  "find": "**The seditious",
+  "replace": "The seditious",
+  "why": "p. 198: the Review's opening quotation mark, read as \"**\"; the quotation marks round the quoted letter are the Review's, not the letter's"
+ }
+]

@@ -1,0 +1,40 @@
+{
+ "work": "deferrari-quanto-conficiamur-moerore",
+ "title": "Quanto Conficiamur Moerore, \"Indifferentism\", n. 1677–1678, from Deferrari, The Sources of Catholic Dogma (1957), pp. 424–425, Loreto reprint",
+ "scan": "sources-of-catholic-dogma-loreto-reprint",
+ "pdf": "councils/sources-of-catholic-dogma/the-sources-of-catholic-dogma-loreto-reprint.pdf",
+ "pdf_page_offset": 31,
+ "margin_numbers": true,
+ "pages": [
+  "424",
+  "425"
+ ],
+ "layout": "single-column",
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "quanto-conficiamur-moerore",
+   "first": "^\\W{0,2}And here, beloved Sons",
+   "last": "may attain eternal salvation\\W*$",
+   "keep_quotes": true
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

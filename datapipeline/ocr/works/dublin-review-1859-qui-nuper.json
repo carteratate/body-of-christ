@@ -1,0 +1,36 @@
+{
+ "work": "dublin-review-1859-qui-nuper",
+ "title": "Qui Nuper, quoted in The Dublin Review, new series vol. 47 (London, September 1859), \"The Massacre of Perugia\", pp. 198–199, extract",
+ "scan": "sim_dublin-review_1859-09_47",
+ "djvu_xml": "encyclicals/sim_dublin-review_1859-09_47/sim_dublin-review_1859-09_47_djvu.xml",
+ "page_numbers": "encyclicals/sim_dublin-review_1859-09_47/sim_dublin-review_1859-09_47_page_numbers.json",
+ "pages": [
+  "198",
+  "199"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "qui-nuper",
+   "first": "The seditious movement",
+   "last": "Catholic faith",
+   "keep_quotes": false
+  }
+ ]
+}

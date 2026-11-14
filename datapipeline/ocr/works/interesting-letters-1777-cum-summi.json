@@ -1,0 +1,49 @@
+{
+ "work": "interesting-letters-1777-cum-summi",
+ "title": "Cum Summi, in Interesting Letters of the Late Pope Clement XIV. (Ganganelli.) Translated from the French edition published at Paris (Newcastle: T. Saint, for W. Charnley, 1777), Appendix, \"An Encyclical Letter of Clement XIV\", pp. 379–386",
+ "scan": "interestinglett00xivgoog",
+ "djvu_xml": "encyclicals/interestinglett00xivgoog/interestinglett00xivgoog_djvu.xml",
+ "page_numbers": "",
+ "pages": [
+  "379",
+  "386"
+ ],
+ "layout": "single-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "cum-summi",
+   "first": "^To all the Patriarchs",
+   "last": "^Pontificate",
+   "keep_quotes": true
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "leaf_pages": {
+  "391": "379",
+  "392": "380",
+  "393": "381",
+  "394": "382",
+  "395": "383",
+  "396": "384",
+  "397": "385",
+  "398": "386"
+ },
+ "names": [],
+ "watermark": "Digitized by \\S+"
+}

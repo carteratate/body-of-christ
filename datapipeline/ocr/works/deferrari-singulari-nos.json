@@ -1,0 +1,40 @@
+{
+ "work": "deferrari-singulari-nos",
+ "title": "Singulari Nos, \"The False Doctrines of Felicite de Lamennais\", n. 1617, from Deferrari, The Sources of Catholic Dogma (1957), pp. 404–405, Loreto reprint",
+ "scan": "sources-of-catholic-dogma-loreto-reprint",
+ "pdf": "councils/sources-of-catholic-dogma/the-sources-of-catholic-dogma-loreto-reprint.pdf",
+ "pdf_page_offset": 31,
+ "margin_numbers": true,
+ "pages": [
+  "404",
+  "405"
+ ],
+ "layout": "single-column",
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "singulari-nos",
+   "first": "^\\W{0,2}But it is a very mournful thing",
+   "last": "supported and\\s+sustained\\W*$",
+   "keep_quotes": true
+  }
+ ],
+ "baseline": {
+  "path": "councils/fordham-lateran4.html",
+  "start": "^Text: We firmly believe",
+  "end": "^From H\\. J\\. Schroeder",
+  "drop": "^Note \\d+\\.",
+  "opens": "^Text\\b",
+  "closes": "^(?:Comment|Summary|SUMMARY|CANON|Canon|Note\\s*\\d+\\.|\\[Note)",
+  "strip": "\\[Schroeder Introduction\\]|\\[\\[\\d+\\]\\]"
+ },
+ "names": [],
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ }
+}

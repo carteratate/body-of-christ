@@ -1,0 +1,23 @@
+{
+ "work": "dublin-review-1859-qui-nuper",
+ "title": "Qui Nuper, quoted in The Dublin Review, new series vol. 47 (London, September 1859), \"The Massacre of Perugia\", pp. 198–199, extract",
+ "metadata": {
+  "text_source": "ocr",
+  "scan_id": "sim_dublin-review_1859-09_47"
+ },
+ "gate": "pass",
+ "passages": [
+  {
+   "id": "qui-nuper",
+   "pages": [
+    "198",
+    "199"
+   ],
+   "leaves": [
+    205,
+    206
+   ],
+   "text": "The seditious movement which has lately broken out in Italy, against the authority of the legitimate Princes, has passed like a flame of fire from the States adjoining our Pontifical Dominions, even into some of Our provinces. Moved by the sad example of others, and excited by foreign influence, these provinces have withdrawn from Our paternal rule, and at the instigation of a few, have even sought to place themselves under that Italian Government, which during these last years has shown itself the enemy of the legitimate rights of the Church and of her Sacred Ministers. While We reprobate and grieve for these acts of rebellion, by which a part only of the people in those disturbed provinces so unjustly corresponded to Our fatherly solicitude and care, and while We openly declare that the ‘civil power is necessary to this Holy See, in order that without impediment it may exercise its sacred authority for the good of religion,’ (which civil power the crafty enemies of the Church of Christ endeavour to tear away;) to you, Venerable Brethren, We have recourse by letter, that We may find some comfort for Our grief.\n\nAnd then the Holy Father exhorted them by their zeal “for the Apostolic See, and its liberty,” to exert their influence and their intercessions on its behalf.\n\nFor the rest we openly declare, that clothed with strength from on high, which Almighty God, moved by the prayers of the faithful, will grant us in our weakness, we are ready to undergo every danger and every bitterness rather than abandon in the least part our Apostolic duty, or permit anything to be done contrary to the sanctity of the oath by which we bound ourselves, when, God so willing, we mounted, although unworthy, this Supreme Chair of the Prince of the Apostles, the rock and defence of the Catholic faith."
+  }
+ ]
+}

@@ -855,10 +855,15 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
         if collection in PAPAL_COLLECTIONS:
             # A document held for permission (1.3d, ADR 0001) is not built from its page,
             # nor is one built from a public-domain printing, whose coverage of the
-            # printing `tests/test_papal_printings.py` checks.
+            # printing `tests/test_papal_printings.py` checks. One published only in part
+            # from its page (Exsurge Domine's propositions, R9) is not measured either:
+            # its build leaves out the passages held for permission.
             from ingest.papal_printings import printing
-            from registry import removed_document_ids, resolve_document_id
-            held = removed_document_ids()
+            from registry import current, open_removals, removed_document_ids, \
+                resolve_document_id
+            held = removed_document_ids() | {
+                e["document_id"] for e in open_removals(current())
+                if e["scope"] == "passage" and e["reason"] == "awaiting-permission"}
             entries = [e for e in entries if resolve_document_id(
                 collection, f"{collection}/{e['slug']}", (collection, e["slug"])) not in held
                 and printing(collection, e["slug"]) is None]

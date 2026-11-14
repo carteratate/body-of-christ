@@ -1,0 +1,23 @@
+{
+ "work": "deferrari-singulari-nos",
+ "title": "Singulari Nos, \"The False Doctrines of Felicite de Lamennais\", n. 1617, from Deferrari, The Sources of Catholic Dogma (1957), pp. 404–405, Loreto reprint",
+ "metadata": {
+  "text_source": "ocr",
+  "scan_id": "sources-of-catholic-dogma-loreto-reprint"
+ },
+ "gate": "pass",
+ "passages": [
+  {
+   "id": "singulari-nos",
+   "pages": [
+    "404",
+    "405"
+   ],
+   "leaves": [
+    435,
+    436
+   ],
+   "text": "But it is a very mournful thing, by which the ravings of human reason go to ruin when someone is eager for revolution and, against the advice of the Apostle, strives \"to be more wise than it behooveth to be wise\", and trusting too much in himself, affirms that truth must be sought outside of the Catholic Church in which truth itself is found far from even the slightest defilement of error, and which therefore, is called and is \"the pillar and ground of the truth\". But you well understand, Venerable Brothers, that We are here speaking in open disapproval of that false system of philosophy, not so long ago introduced, by which, because of an extended and unbridled desire of novelty, truth is not sought where it truly resides, and, with a disregard for the holy and apostolic traditions, other vain, futile, uncertain doctrines, not approved by the Church are accepted as true, on which very vain men mistakenly think that truth itself is supported and sustained."
+  }
+ ]
+}

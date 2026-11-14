@@ -1,0 +1,32 @@
+[
+ {
+  "passage": "quanto-conficiamur-moerore-01",
+  "find": "Savior,\" 1 cannot ",
+  "replace": "Savior,\" cannot ",
+  "why": "pp. 424–425: the call of footnote 1, read into the text, taken out"
+ },
+ {
+  "passage": "quanto-conficiamur-moerore-01",
+  "find": "of PETER, to",
+  "replace": "of Peter, to",
+  "why": "pp. 424–425: the name set in small capitals, written in ordinary case"
+ },
+ {
+  "passage": "quanto-conficiamur-moerore-01",
+  "find": "\n\nPius IX, 1846-1878\n\n",
+  "replace": " ",
+  "why": "pp. 424–425: the running head of the page, read into the text, taken out"
+ },
+ {
+  "passage": "quanto-conficiamur-moerore-01",
+  "find": "life [see n. 1717].",
+  "replace": "life.",
+  "why": "pp. 424–425: Denzinger's cross-reference [see n. 1717] taken out (R9: his numbers are not used)"
+ },
+ {
+  "passage": "quanto-conficiamur-moerore-02",
+  "find": "work\" [Col. 1: 10],",
+  "replace": "work\",",
+  "why": "p. 425: Deferrari's bracketed Bible reference, an editor's addition, taken out, as in the earlier Deferrari works"
+ }
+]

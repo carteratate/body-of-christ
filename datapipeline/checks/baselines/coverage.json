@@ -6,9 +6,9 @@
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "feat/1.8d-incarnation-robertson f5b7d83",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
-  "encyclicals": "feat/1.3d-5-scans 7216d28",
+  "encyclicals": "feat/1.3d-6-extracts d276b44",
   "medieval": "worktree-bridge-cse_01A8fdmnk6Vfpyf8yTndcQNH 047867d",
-  "papal-documents": "feat/1.3d-5-scans 7216d28",
+  "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
@@ -897,11 +897,6 @@
    "covered_chars": 152382,
    "pct": 99.76
   },
-  "encyclicals/cum-summi.html": {
-   "body_chars": 11449,
-   "covered_chars": 11449,
-   "pct": 100.0
-  },
   "encyclicals/deus-caritas-est.html": {
    "body_chars": 87720,
    "covered_chars": 87720,
@@ -1077,11 +1072,6 @@
    "covered_chars": 224842,
    "pct": 99.98
   },
-  "encyclicals/levate.html": {
-   "body_chars": 10107,
-   "covered_chars": 10107,
-   "pct": 100.0
-  },
   "encyclicals/lumen-fidei.html": {
    "body_chars": 100548,
    "covered_chars": 100548,
@@ -1092,29 +1082,9 @@
    "covered_chars": 232209,
    "pct": 100.0
   },
-  "encyclicals/nostis-et-nobiscum.html": {
-   "body_chars": 33398,
-   "covered_chars": 33398,
-   "pct": 100.0
-  },
-  "encyclicals/nullis-certe-verbis.html": {
-   "body_chars": 9169,
-   "covered_chars": 9169,
-   "pct": 100.0
-  },
   "encyclicals/populorum-progressio.html": {
    "body_chars": 67648,
    "covered_chars": 67648,
-   "pct": 100.0
-  },
-  "encyclicals/quanto-conficiamur-moerore.html": {
-   "body_chars": 16555,
-   "covered_chars": 16555,
-   "pct": 100.0
-  },
-  "encyclicals/qui-nuper.html": {
-   "body_chars": 2811,
-   "covered_chars": 2811,
    "pct": 100.0
   },
   "encyclicals/redemptor-hominis.html": {
@@ -1132,16 +1102,6 @@
    "covered_chars": 178067,
    "pct": 99.92
   },
-  "encyclicals/salutis-nostrae.html": {
-   "body_chars": 9908,
-   "covered_chars": 9908,
-   "pct": 100.0
-  },
-  "encyclicals/singulari-nos.html": {
-   "body_chars": 9485,
-   "covered_chars": 9485,
-   "pct": 100.0
-  },
   "encyclicals/sollicitudo-rei-socialis.html": {
    "body_chars": 120392,
    "covered_chars": 120206,
@@ -1150,11 +1110,6 @@
   "encyclicals/spe-salvi.html": {
    "body_chars": 104940,
    "covered_chars": 104940,
-   "pct": 100.0
-  },
-  "encyclicals/traditi-humilitati.html": {
-   "body_chars": 12521,
-   "covered_chars": 12521,
    "pct": 100.0
   },
   "encyclicals/ubi-lutetiam.html": {
@@ -1171,11 +1126,6 @@
    "body_chars": 239627,
    "covered_chars": 239555,
    "pct": 99.97
-  },
-  "encyclicals/vix-pervenit.html": {
-   "body_chars": 11261,
-   "covered_chars": 11261,
-   "pct": 100.0
   },
   "medieval/consolation-of-philosophy.xml": {
    "body_chars": 218421,
@@ -1201,11 +1151,6 @@
    "body_chars": 115646,
    "covered_chars": 115561,
    "pct": 99.93
-  },
-  "papal-documents/exsurge-domine.html": {
-   "body_chars": 20050,
-   "covered_chars": 20050,
-   "pct": 100.0
   },
   "papal-documents/misericordia-et-misera.html": {
    "body_chars": 40188,
@@ -1311,13 +1256,6 @@
    "source_file": "apostolic fathers.xml",
    "body_chars": 8202,
    "covered_chars": 8202,
-   "pct": 100.0
-  },
-  "0331a922-e070-507b-a723-88e5a832f491": {
-   "collection": "encyclicals",
-   "source_file": "cum-summi.html",
-   "body_chars": 11449,
-   "covered_chars": 11449,
    "pct": 100.0
   },
   "036371e3-0a24-58f2-a588-7c3be70dc924": {
@@ -1474,13 +1412,6 @@
    "covered_chars": 146056,
    "pct": 98.67
   },
-  "13215d9a-cc71-5ef0-a2c0-cd6da3319691": {
-   "collection": "encyclicals",
-   "source_file": "levate.html",
-   "body_chars": 10107,
-   "covered_chars": 10107,
-   "pct": 100.0
-  },
   "137ada7a-dc69-5a40-9fa1-24469f21dcbb": {
    "collection": "councils",
    "source_file": "vat2-nostra-aetate.html",
@@ -1563,13 +1494,6 @@
    "source_file": "vat2-apostolicam-actuositatem.html",
    "body_chars": 61350,
    "covered_chars": 61350,
-   "pct": 100.0
-  },
-  "1c341d85-24a7-5603-8f72-8fb20d25292b": {
-   "collection": "encyclicals",
-   "source_file": "nullis-certe-verbis.html",
-   "body_chars": 9169,
-   "covered_chars": 9169,
    "pct": 100.0
   },
   "1d496a39-f816-530f-9fa8-bb26d015ddce": {
@@ -1943,13 +1867,6 @@
    "covered_chars": 96285,
    "pct": 99.91
   },
-  "457a7c24-654c-5bc5-8133-7407874b8409": {
-   "collection": "encyclicals",
-   "source_file": "salutis-nostrae.html",
-   "body_chars": 9908,
-   "covered_chars": 9908,
-   "pct": 100.0
-  },
   "462aeb50-8fbb-5ac3-9ab2-60cdf8283d45": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/15-2CHeng-web-c.usfm",
@@ -2194,13 +2111,6 @@
    "body_chars": 21881,
    "covered_chars": 21831,
    "pct": 99.77
-  },
-  "616dfaea-6099-593e-951f-2b017a7ec938": {
-   "collection": "papal-documents",
-   "source_file": "exsurge-domine.html",
-   "body_chars": 20050,
-   "covered_chars": 20050,
-   "pct": 100.0
   },
   "61fbb9cb-7924-588f-82b1-f789439a2603": {
    "collection": "apostolic-exhortations",
@@ -2650,13 +2560,6 @@
    "covered_chars": 594,
    "pct": 100.0
   },
-  "98729a24-d078-591f-9290-407b43ed0ee1": {
-   "collection": "encyclicals",
-   "source_file": "traditi-humilitati.html",
-   "body_chars": 12521,
-   "covered_chars": 12521,
-   "pct": 100.0
-  },
   "995d76f9-c666-5c34-8bc3-89d495526ec9": {
    "collection": "church-fathers",
    "source_file": "apostolic fathers.xml",
@@ -2690,13 +2593,6 @@
    "source_file": "consolation-of-philosophy.xml",
    "body_chars": 218421,
    "covered_chars": 218421,
-   "pct": 100.0
-  },
-  "9ab89df1-f20a-55c8-ac34-b0fa53f39c40": {
-   "collection": "encyclicals",
-   "source_file": "quanto-conficiamur-moerore.html",
-   "body_chars": 16555,
-   "covered_chars": 16555,
    "pct": 100.0
   },
   "9c052574-ccbc-5aa6-8a1e-b582b7dd73e4": {
@@ -2788,13 +2684,6 @@
    "source_file": "eng-web-c_usfm/04-LEVeng-web-c.usfm",
    "body_chars": 117492,
    "covered_chars": 117492,
-   "pct": 100.0
-  },
-  "a7d81ceb-501f-5b85-97ce-8c26e6168a45": {
-   "collection": "encyclicals",
-   "source_file": "nostis-et-nobiscum.html",
-   "body_chars": 33398,
-   "covered_chars": 33398,
    "pct": 100.0
   },
   "a9c1215f-d6e9-5cfb-9cd3-4f11376cc2c3": {
@@ -2970,13 +2859,6 @@
    "source_file": "apostolic fathers.xml",
    "body_chars": 8177,
    "covered_chars": 8177,
-   "pct": 100.0
-  },
-  "bb9956d5-402b-5829-bd42-77d02a763007": {
-   "collection": "encyclicals",
-   "source_file": "qui-nuper.html",
-   "body_chars": 2811,
-   "covered_chars": 2811,
    "pct": 100.0
   },
   "bc0bcae7-57d9-5295-9590-75aa1b5f8213": {
@@ -3357,13 +3239,6 @@
    "covered_chars": 145242,
    "pct": 100.0
   },
-  "e6cdb4bb-5cdb-5506-82a0-4a9eaedaed7c": {
-   "collection": "encyclicals",
-   "source_file": "singulari-nos.html",
-   "body_chars": 9485,
-   "covered_chars": 9485,
-   "pct": 100.0
-  },
   "e73bb326-8ba6-5334-b79e-3a15c9892581": {
    "collection": "church-fathers",
    "source_file": "third-century.xml",
@@ -3516,13 +3391,6 @@
    "source_file": "on-the-holy-trinity.xml",
    "body_chars": 69627,
    "covered_chars": 69627,
-   "pct": 100.0
-  },
-  "f4987a29-60eb-5834-9cf0-045324a8f1b0": {
-   "collection": "encyclicals",
-   "source_file": "vix-pervenit.html",
-   "body_chars": 11261,
-   "covered_chars": 11261,
    "pct": 100.0
   },
   "f54576c1-723f-53b7-a6d0-f19945eb97c7": {

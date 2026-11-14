@@ -1,0 +1,38 @@
+{
+ "work": "rambler-1860-nullis-certe-verbis",
+ "title": "Nullis Certe Verbis, quoted in The Rambler, new series vol. 2 (London, March 1860), Contemporary Events, Foreign Affairs, p. 419, extract",
+ "scan": "sim_rambler-a-catholic-journal-and-review_1860-03_2_6",
+ "djvu_xml": "encyclicals/sim_rambler-a-catholic-journal-and-review_1860-03_2_6/sim_rambler-a-catholic-journal-and-review_1860-03_2_6_djvu.xml",
+ "page_numbers": "encyclicals/sim_rambler-a-catholic-journal-and-review_1860-03_2_6/sim_rambler-a-catholic-journal-and-review_1860-03_2_6_page_numbers.json",
+ "pages": [
+  "419",
+  "419"
+ ],
+ "layout": "two-column",
+ "baseline": {
+  "path": "encyclicals/wikisource-catholic-magazine-and-review-v3/gregory-xvi-encyclical-letter.html",
+  "start": "^We doubt not but",
+  "end": "^This work is a translation",
+  "strip": "\\[\\s*\\d+\\s*\\]"
+ },
+ "model": "claude-sonnet-5-5",
+ "ceiling_usd": 2.0,
+ "sample": {
+  "fraction": 0.25,
+  "minimum": 5,
+  "maximum": 20,
+  "unit": "work"
+ },
+ "units": "bounded",
+ "unit_bounds": [
+  {
+   "id": "nullis-certe-verbis",
+   "first": "From every part of the Catholic",
+   "last": "from his last letter",
+   "keep_quotes": false
+  }
+ ],
+ "max_paragraph_words": 250,
+ "broken_words_continue": true,
+ "names": []
+}

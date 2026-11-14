@@ -1,0 +1,85 @@
+[
+ {
+  "passage": "nullis-certe-verbis-01",
+  "find": "c! learly",
+  "replace": "clearly",
+  "why": "p. 419: misread on the page; the print reads \"clearly\""
+ },
+ {
+  "passage": "nullis-certe-verbis-01",
+  "find": "healed.\n\n‘** Every ",
+  "replace": "healed.\n\nEvery ",
+  "why": "p. 419: the Rambler's opening quotation mark, read as \"‘**\"; its quotation marks round the letter are the Rambler's"
+ },
+ {
+  "passage": "nullis-certe-verbis-01",
+  "find": "Pon-titical",
+  "replace": "Pontifical",
+  "why": "p. 419: misread on the page; the print reads \"Pontifical\""
+ },
+ {
+  "passage": "nullis-certe-verbis-01",
+  "find": "every wrong In",
+  "replace": "every wrong. In",
+  "why": "p. 419: the Rambler's ellipsis (. . . . .), marking words it leaves out, read as nothing; a full stop ends the sentence and the passage splits here between the site's paragraphs 3 and 5"
+ },
+ {
+  "passage": "nullis-certe-verbis-01",
+  "find": "p: atrimony",
+  "replace": "patrimony",
+  "why": "p. 419: misread on the page; the print reads \"patrimony\""
+ },
+ {
+  "passage": "nullis-certe-verbis-02",
+  "find": " letter. ’",
+  "replace": " letter.",
+  "why": "p. 419: the Rambler's closing quotation mark, removed with the opening one"
+ },
+ {
+  "passage": "nullis-certe-verbis-02",
+  "find": "introduced..",
+  "replace": "introduced.",
+  "why": "p. 419: the Rambler's ellipsis (. . .), marking words it leaves out; a full stop ends the sentence and the passage splits here between the site's paragraphs 7 and 8"
+ },
+ {
+  "passage": "nullis-certe-verbis-02",
+  "find": "who -have been",
+  "replace": "who have been",
+  "why": "p. 419: misread on the page; the print reads \"have\""
+ },
+ {
+  "passage": "nullis-certe-verbis-02",
+  "find": "Catholics, —and,",
+  "replace": "Catholics,—and,",
+  "why": "p. 419: spacing"
+ },
+ {
+  "passage": "nullis-certe-verbis-02",
+  "find": "inthe milia",
+  "replace": "in the Æmilia",
+  "why": "p. 419: misread on the page; the print reads \"in the Æmilia\""
+ },
+ {
+  "passage": "nullis-certe-verbis-02",
+  "find": "Emilia would be aspur",
+  "replace": "Æmilia would be a spur",
+  "why": "p. 419: misread on the page; the print reads \"Æmilia would be a spur\""
+ },
+ {
+  "passage": "nullis-certe-verbis-02",
+  "find": "Catholies, it was attende d by insurmountable difficulties,",
+  "replace": "Catholics, it was attended by insurmountable difficulties.",
+  "why": "p. 419: misread on the page; the print reads \"Catholics, it was attended by insurmountable difficulties.\""
+ },
+ {
+  "passage": "nullis-certe-verbis-02",
+  "find": "the 1 ights of",
+  "replace": "the rights of",
+  "why": "p. 419: misread on the page; the print reads \"rights\""
+ },
+ {
+  "passage": "nullis-certe-verbis-02",
+  "continues": true,
+  "why": "p. 419: the sentence runs on from the foot of the first column"
+ }
+]

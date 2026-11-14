@@ -71,12 +71,12 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | Year | Document | Pope | Slug | Outcome |
 |---|---|---|---|---|
 | 1302 | Unam Sanctam | Boniface VIII | `unam-sanctam` | Public-domain printing: Catholic Historical Review, 1927 |
-| 1520 | Exsurge Domine | Leo X | `exsurge-domine` | Partial only (Deferrari's *The Sources of Catholic Dogma*, 1957; R9): the 41 condemned propositions published, the rest held for permission |
+| 1520 | Exsurge Domine | Leo X | `exsurge-domine` | Partial only (Deferrari's *The Sources of Catholic Dogma*, 1957; R9): the 41 condemned propositions published; the introduction and closing held for permission |
 | 1537 | Sublimis Deus | Paul III | `sublimis-deus` | Public-domain printing: MacNutt, 1909 |
 | 1740 | Ubi Primum | Benedict XIV | `ubi-primum` | **Held for permission** |
 | 1741 | Quanta Cura | Benedict XIV | `quanta-cura` | **Held for permission** |
 | 1743 | Nimiam Licentiam | Benedict XIV | `nimiam-licentiam` | **Held for permission** |
-| 1745 | Vix Pervenit | Benedict XIV | `vix-pervenit` | Partial only (Deferrari, 1957; R9): sections on usury published, the rest held for permission |
+| 1745 | Vix Pervenit | Benedict XIV | `vix-pervenit` | Partial only (Deferrari, 1957; R9): the five teachings of paragraph 3 published; the address and paragraphs 1–2 and 4–11 held for permission |
 | 1748 | Magnae Nobis | Benedict XIV | `magnae-nobis` | **Held for permission** |
 | 1749 | Annus Qui Hunc | Benedict XIV | `annus-qui-hunc` | **Held for permission** |
 | 1749 | Apostolica Constitutio | Benedict XIV | `apostolica-constitutio` | **Held for permission** |
@@ -96,20 +96,20 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1769 | Cum Summi | Clement XIV | `cum-summi` | Abridged only (Interesting Letters of Pope Clement XIV, 1777, from the French): published; paragraph 9 held for permission |
 | 1769 | Decet Quam Maxime | Clement XIV | `decet-quam-maxime` | **Held for permission** |
 | 1769 | Inscrutabili Divinae Sapientiae | Clement XIV | `inscrutabili-divinae-sapientiae` | **Held for permission** |
-| 1774 | Salutis Nostrae | Clement XIV | `salutis-nostrae` | Abridged only (Interesting Letters of Pope Clement XIV, 1777, from the French): published; the proclamation of paragraph 2 and paragraphs 3–4 and 8–9 held for permission |
+| 1774 | Salutis Nostrae | Clement XIV | `salutis-nostrae` | Abridged only (Interesting Letters of Pope Clement XIV, 1777, from the French): published, paragraphs 2 and 8 in part; paragraphs 3–4 and 9 held for permission |
 | 1775 | Inscrutabile | Pius VI | `inscrutabile` | **Held for permission** |
 | 1791 | Charitas | Pius VI | `charitas` | **Held for permission** |
 | 1800 | Diu Satis | Pius VII | `diu-satis` | Public-domain printing: London: Keating, Brown and Keating, 1800 |
 | 1824 | Quod Hoc Ineunte | Leo XII | `quod-hoc-ineunte` | **Held for permission** |
 | 1824 | Ubi Primum (1824) | Leo XII | `ubi-primum-1824` | Public-domain printing: Dublin: Coyne, 1824 |
 | 1825 | Charitate Christi | Leo XII | `charitate-christi` | **Held for permission** |
-| 1826 | Quo Graviora | Leo XII | `quo-graviora` | **Held for permission** |
-| 1829 | Traditi Humilitati | Pius VIII | `traditi-humilitati` | Abridged only (The Jesuit, Boston, 1829): published; the paragraphs it lacks (at least 8–9, settled by 1.3d) held for permission |
+| 1825 | Quo Graviora | Leo XII | `quo-graviora` | **Held for permission** |
+| 1829 | Traditi Humilitati | Pius VIII | `traditi-humilitati` | Abridged only (The Jesuit, Boston, 1829): published, several paragraphs shortened; paragraphs 2, 8–9, 11 and 13 held for permission |
 | 1832 | Cum Primum (1832) | Gregory XVI | `cum-primum-1832` | **Held for permission** |
 | 1832 | Mirari Vos | Gregory XVI | `mirari-vos` | Public-domain printing: Catholic Magazine and Review, 1833 (Wikisource) |
 | 1832 | Summo Iugiter Studio | Gregory XVI | `summo-iugiter-studio` | **Held for permission** |
 | 1833 | Quo Graviora (1833) | Gregory XVI | `quo-graviora-1833` | **Held for permission** |
-| 1834 | Singulari Nos | Gregory XVI | `singulari-nos` | Partial only (Deferrari, 1957; R9): one passage published, the rest held for permission |
+| 1834 | Singulari Nos | Gregory XVI | `singulari-nos` | Partial only (Deferrari, 1957; R9): paragraph 8 published; the address and paragraphs 1–7 and 9 held for permission |
 | 1835 | Commissum Divinitus | Gregory XVI | `commissum-divinitus` | **Held for permission** |
 | 1839 | In Supremo Apostolatus | Gregory XVI | `in-supremo-apostolatus` | Public-domain printing: Bishop England's Letters to Forsyth, 1844 |
 | 1840 | Probe Nostis | Gregory XVI | `probe-nostis` | **Held for permission** |
@@ -118,7 +118,7 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1846 | Qui Pluribus | Pius IX | `qui-pluribus` | Public-domain printing: United States Catholic Magazine, 1847 |
 | 1847 | Praedecessores Nostros | Pius IX | `praedecessores-nostros` | **Held for permission** |
 | 1847 | Ubi Primum (1847) | Pius IX | `ubi-primum-1847` | **Held for permission** |
-| 1849 | Nostis Et Nobiscum | Pius IX | `nostis-et-nobiscum` | Abridged only (The Rambler, February 1850): published; paragraphs 21–24 and 31–33 held for permission |
+| 1849 | Nostis Et Nobiscum | Pius IX | `nostis-et-nobiscum` | Abridged only (The Rambler, February 1850): published; paragraphs 21–24, 26 and 31–33 held for permission |
 | 1849 | Ubi Primum (1849) | Pius IX | `ubi-primum-1849` | Public-domain printing: United States Catholic Magazine, 1849 |
 | 1851 | Exultavit Cor Nostrum | Pius IX | `exultavit-cor-nostrum` | Public-domain printing: Archbishop of Quebec's pastoral, 1852 (Canadiana microfiche) |
 | 1852 | Nemo Certe Ignorat | Pius IX | `nemo-certe-ignorat` | **Held for permission** |
@@ -133,16 +133,16 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | 1858 | Amantissimi Redemptoris | Pius IX | `amantissimi-redemptoris` | Public-domain printing: The Metropolitan (Baltimore), August 1858 |
 | 1858 | Cum Nuper | Pius IX | `cum-nuper` | **Held for permission** |
 | 1858 | Cum Sancta Mater Ecclesia | Pius IX | `cum-sancta-mater-ecclesia` | Public-domain printing: Bishop of Kingston's pastoral, 1859 |
-| 1859 | Qui Nuper | Pius IX | `qui-nuper` | Partial only (Dublin Review, September 1859): published; paragraph 2 and the lines of 3 it lacks held for permission |
-| 1860 | Nullis Certe Verbis | Pius IX | `nullis-certe-verbis` | Partial only (The Rambler, March 1860): published; the paragraphs it lacks (at least 9 and 11–13, settled by 1.3d) held for permission |
+| 1859 | Qui Nuper | Pius IX | `qui-nuper` | Partial only (Dublin Review, September 1859): paragraph 1 and part of 3 published; the address and paragraph 2 held for permission |
+| 1860 | Nullis Certe Verbis | Pius IX | `nullis-certe-verbis` | Partial only (The Rambler, March 1860): paragraph 6 and parts of 3, 5, 7 and 8 published; the address and paragraphs 1–2, 4 and 9–13 held for permission |
 | 1862 | Amantissimus | Pius IX | `amantissimus` | **Held for permission** |
 | 1863 | Incredibili | Pius IX | `incredibili` | **Held for permission** |
-| 1863 | Quanto Conficiamur Moerore | Pius IX | `quanto-conficiamur-moerore` | Partial only (Deferrari, 1957; R9): one passage published, the rest held for permission |
+| 1863 | Quanto Conficiamur Moerore | Pius IX | `quanto-conficiamur-moerore` | Partial only (Deferrari, 1957; R9): paragraphs 7 and 9 and part of 8 published; the address and paragraphs 1–6 and 10–21 held for permission |
 | 1864 | Maximae Quidem | Pius IX | `maximae-quidem` | **Held for permission** |
 | 1864 | Quanta Cura (1864) | Pius IX | `quanta-cura-1864` | Public-domain printing: Dublin Review, 1865 |
 | 1864 | Syllabus of Errors | Pius IX | `syllabus-of-errors` | Public-domain printing: The Syllabus for the People (New York, 1875), bound with Fessler's True and False Infallibility |
 | 1865 | Meridionali Americae | Pius IX | `meridionali-americae` | **Held for permission** |
-| 1867 | Levate | Pius IX | `levate` | Partial only (Appletons' Annual Cyclopaedia for 1867): published, about 400 words (the preamble and the start of paragraph 2); the rest held for permission |
+| 1867 | Levate | Pius IX | `levate` | Partial only (Appletons' Annual Cyclopaedia for 1867): most of paragraph 1 and part of 2 published; the address and paragraphs 3–10 held for permission |
 | 1870 | Respicientes | Pius IX | `respicientes` | Public-domain printing: Appletons' Annual Cyclopaedia for 1870, 1871 |
 | 1871 | Beneficia Dei | Pius IX | `beneficia-dei` | **Held for permission** |
 | 1871 | Saepe Venerabiles Fratres | Pius IX | `saepe-venerabiles-fratres` | **Held for permission** |

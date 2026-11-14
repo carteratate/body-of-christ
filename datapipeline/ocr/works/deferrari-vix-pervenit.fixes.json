@@ -1,0 +1,31 @@
+[
+ {
+  "passage": "vix-pervenit-01",
+  "find": "\n\nBenedict XIV} 1740-1758",
+  "replace": "",
+  "why": "pp. 361–362: the running head of the page, read into the text, taken out"
+ },
+ {
+  "passage": "vix-pervenit-01",
+  "find": "(Sec. 3), I.",
+  "replace": "1.",
+  "why": "pp. 361–362: Denzinger's \"(Sec. 3),\", which places the extract in the encyclical, taken out (R9: his headings and numbers are not used); the list's own number \"1.\" read from the page"
+ },
+ {
+  "passage": "vix-pervenit-02",
+  "find": "miserable\" [Prov. 14:34].",
+  "replace": "miserable\".",
+  "why": "p. 362: Deferrari's bracketed Bible reference, an editor's addition, taken out, as in the earlier Deferrari works"
+ },
+ {
+  "passage": "vix-pervenit-03",
+  "find": "away\" [Matt. 5:42];",
+  "replace": "away\";",
+  "why": "p. 362: Deferrari's bracketed Bible reference, an editor's addition, taken out, as in the earlier Deferrari works"
+ },
+ {
+  "passage": "vix-pervenit-02",
+  "continues": true,
+  "why": "p. 362: the sentence runs on from the passage before"
+ }
+]
