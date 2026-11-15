@@ -40,7 +40,7 @@ import defusedxml.ElementTree as ET
 
 from config import settings
 from identity import anchor as make_anchor
-from model import ContentsNode, Document, Passage
+from model import ContentsNode, Document, Passage, Work
 from normalize.text import clean_text
 from normalize.caps import roman_capitals, title_case_shouting
 from normalize.summa import expand_apparatus
@@ -60,6 +60,11 @@ PART_CITATION = {"FP": "I", "FS": "I-II", "SS": "II-II", "TP": "III", "XP": "Sup
 PART_NAME = {"FP": "First Part", "FS": "First Part of the Second Part",
              "SS": "Second Part of the Second Part", "TP": "Third Part",
              "XP": "Supplement to the Third Part", "vii": "Appendix"}
+# The Supplement and its appendix, compiled after Aquinas's death, are works of their own
+# inside the Summa (3.2, D6), keyed by their div1 id; the registry gives them their note.
+PART_WORKS = (Work(work_key="XP", ordinal=1, title=PART_NAME["XP"]),
+              Work(work_key="vii", ordinal=2, title="Appendix to the Supplement"))
+_PART_WORK_KEYS = frozenset(w.work_key for w in PART_WORKS)
 # Divs that hold the parts' text. The title page (`i`) and indexes (`viii`) do not.
 _PART_DIVS = tuple(PART_NAME)
 # Treatise-level divs written by editors, not Aquinas (rule G): the Supplement's
@@ -450,7 +455,8 @@ class _Build:
                     chapter_key=ch_key, chapter_label=ch_label,
                     position=len(self.passages), unit_label=part.label,
                     metadata=dict(metadata), voice=part.voice,
-                    note=part.note if first else None, source_units=source_units))
+                    note=part.note if first else None, source_units=source_units,
+                    work_key=part_code if part_code in _PART_WORK_KEYS else None))
                 self.chapters.setdefault(node, ch_key)
                 first = False
 
@@ -605,7 +611,9 @@ def build_document(path: str | None = None, corrections: dict | None = None,
         metadata["dropped_empty_parts"] = b.dropped
     return Document(id=resolve_document_id("summa", "summa", ("summa",)), collection="summa",
                     title="Summa Theologiae", author="Thomas Aquinas", metadata=metadata,
-                    passages=b.passages, contents=build_contents(root, b))
+                    passages=b.passages, contents=build_contents(root, b),
+                    works=[w for w in PART_WORKS
+                           if any(p.work_key == w.work_key for p in b.passages)])
 
 
 def _build_article(b: _Build, div4, code: str, part_title: str, q: str, articles: dict,

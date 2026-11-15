@@ -15603,7 +15603,9 @@
   "new_anchor": "iii.v.iii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.2",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc",

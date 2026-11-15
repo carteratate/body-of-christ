@@ -4,18 +4,6 @@
   "description": "The Epistles of Cyprian: Epistle XXX, which Novatian wrote for the Roman clergy, is credited to no sender; 3.1 removes it under rule A (C-02). 1.8c credits the other 15 letters by others to their senders",
   "units": ["iv.iv.xxx"]
  },
- "attribution.narrative_of_author_death:church-fathers/841b4e0a-225f-5090-a4c0-36d8bf1a2f63": {
-  "fixed_by": "3.2",
-  "description": "The Martyrdom of Ignatius is credited to its martyr with no note (C-15)"
- },
- "attribution.narrative_of_author_death:church-fathers/cf8278dd-3523-576c-b85a-1402077bdae3": {
-  "fixed_by": "3.2",
-  "description": "The Martyrdom of Justin Martyr is credited to its martyr with no note (C-15)"
- },
- "attribution.narrative_of_author_death:church-fathers/f8faac83-ebf5-5a3c-850e-b9620465bc3d": {
-  "fixed_by": "3.2",
-  "description": "The Martyrdom of Polycarp is credited to its martyr with no note (C-15)"
- },
  "coverage.church-fathers.third-century-3.xml": {
   "fixed_by": "1.8e",
   "description": "92.44% covered: whole works holding their text directly in a div dropped (1.8e)"
