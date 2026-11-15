@@ -31,20 +31,21 @@ from __future__ import annotations
 import json
 from collections import Counter
 from dataclasses import dataclass
+from difflib import SequenceMatcher
 import os
 import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from identity import PIECE_MARK, anchor as make_anchor  # noqa: E402
-from model import Document, Passage  # noqa: E402
+from model import ContentsNode, Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
 from config import settings  # noqa: E402
 from ingest.common import split_display_passage  # noqa: E402
 from ingest import catechism_us  # noqa: E402
-from ingest.catechism_headings import TEXT_FIXES, TITLE_FIXES  # noqa: E402
+from ingest.catechism_headings import TEXT_FIXES, TITLE_FIXES, UNNUMBERED  # noqa: E402
 from ingest.pieces import RANGE, piece_reference  # noqa: E402
-from normalize.caps import smart_title_case  # noqa: E402
+from normalize.caps import roman_capitals, smart_title_case  # noqa: E402
 from registry import ANCHOR_SCHEME, resolve_document_id  # noqa: E402
 
 _DEFAULT_SRC = os.path.join(
@@ -459,14 +460,21 @@ def _piece_names(unit: str, spans: list[tuple[int, int]],
 # Chapters: the source's Prologue, Parts, Sections, Chapters and Articles
 # ---------------------------------------------------------------------------
 
-_LEVEL = re.compile(r"^(PART|SECTION|CHAPTER|ARTICLE)\s+(ONE|TWO|THREE|FOUR|\d+)\b:?\s*(.*)$",
-                    re.I)
+_LEVEL = re.compile(
+    r"^(PART|SECTION|CHAPTER|ARTICLE|PARAGRAPH)\s+(ONE|TWO|THREE|FOUR|\d+)\b[.:]?\s*(.*)$", re.I)
 _NUMBER_WORDS = {"ONE": 1, "TWO": 2, "THREE": 3, "FOUR": 4}
 
 
+def heading_level(text: str) -> tuple[str, str, str] | None:
+    """(level, number word, title) of a Part, Section, Chapter, Article or Paragraph
+    heading ("part", "TWO", "THE CELEBRATION OF THE CHRISTIAN MYSTERY"), or None for any
+    other heading. One matcher for the chapters and the contents tree."""
+    m = _LEVEL.match(" ".join(text.split()))
+    return (m[1].lower(), m[2].upper(), m[3].strip()) if m else None
+
+
 def heading_text(node_id: str, text: str) -> str:
-    """A `toc_nodes` heading with the source's misprints corrected, from the table the
-    stopgap contents tree also reads (`catechism_headings`)."""
+    """A `toc_nodes` heading with the source's misprints corrected (`catechism_headings`)."""
     text = TITLE_FIXES.get(node_id, text)
     for wrong, right in TEXT_FIXES:
         text = text.replace(wrong, right)
@@ -497,16 +505,16 @@ def chapters(source: dict) -> dict[str, tuple[str, str]]:
               here: tuple[str, str] | None) -> None:
         node_id = link["id"]
         text = heading_text(node_id, toc[node_id]["text"])
-        m = _LEVEL.match(text)
+        level = heading_level(text)
         if text.upper() == "PROLOGUE":
             path, names = ("prologue",), ()
             here = (make_anchor("ccc", *path), "Prologue")
-        elif m:
-            level, word = m[1].lower(), m[2].upper()
+        elif level and level[0] != "paragraph":
+            level, word, title = level
             number = _NUMBER_WORDS.get(word) or int(word)
             path = path + (f"{level}-{number}",)
             names = names + (f"{level.capitalize()} {word.capitalize()}",)
-            title = _title(m[3].strip())
+            title = _title(title)
             here = (make_anchor("ccc", *path), ", ".join(names + ((title,) if title else ())))
         if here is None:
             raise ValueError(f"catechism: heading {node_id} ({text!r}) is under no part")
@@ -517,6 +525,232 @@ def chapters(source: dict) -> dict[str, tuple[str, str]]:
     for link in source["toc_link_tree"]:
         visit(link, (), (), None)
     return out
+
+
+# ---------------------------------------------------------------------------
+# Contents tree (#253): Prologue > Part > Section > Chapter > Article > sub-headings
+# ---------------------------------------------------------------------------
+
+_STRUCTURAL = ("prologue", "part", "section", "chapter", "article", "paragraph")
+_US_HEADS = ("head",)    # numbered sub-heads and "IN BRIEF"; not subheads or epigraphs ("headpre")
+
+
+@dataclass
+class _Heading:
+    """One node of the tree while it is built."""
+    kind: str
+    key: str
+    label: str
+    short_label: str
+    item: str | None          # the alignment item printing it, if any
+    first: int | None         # the CCC number of the first paragraph under it
+    order: float              # its place in reading order (index into alignment.order)
+    children: list["_Heading"]
+
+
+def _us_heading_keys(us_items: list[dict]) -> dict[str, dict]:
+    """Alignment item key ("g184.1", as `catechism_us.align` names them) -> US item, for
+    every heading and structural title."""
+    out, after, index = {}, 0, 0
+    for item in us_items:
+        if item["kind"] == "paragraph":
+            after, index = item["n"], 0
+            continue
+        out[f"g{after}.{index}"] = item
+        index += 1
+    return out
+
+
+def _heading_label(text: str) -> str:
+    """A heading's words as the tree shows them: `_title`'s title case, also opening a
+    quotation or a phrase after a semicolon inside the heading ('God, "He Who Is", Is
+    Truth and Love'), with Roman numerals kept. Cleaned as passage text is, so the
+    ellipses match."""
+    text = clean_text(" ".join(text.split()))
+    if text.upper() == "IN BRIEF":
+        return "In Brief"
+    text = re.sub(r"(^|\s|;\s+)([\"“‘]?)([a-z])", lambda m: m[1] + m[2] + m[3].upper()
+                  if m[2] or m[1].startswith(";") else m[0], _title(text))
+    return roman_capitals(text)
+
+
+def build_contents(source: dict, alignment: "catechism_us.Alignment", us_items: list[dict],
+                   passages: list[Passage], held: dict[str, list[str | None]],
+                   ) -> tuple[list[ContentsNode], list[str]]:
+    """The Catechism's contents tree, and the `toc_nodes` no US heading labels.
+
+    The shape is the source's `toc_link_tree`, the one `chapters` reads: Prologue, Parts,
+    Sections, Chapters and Articles, the Creed's "Paragraph" units and the numbered
+    sub-heads ("I. The Desire for God", "IN BRIEF"). Inside the Paragraph units the
+    source lists no sub-heads; the US edition's are added there, under the nearest unit
+    above them. Labels are the US headings as #279 put them into the passages
+    (`alignment.items`), title-cased, so the tree and the text spell a heading alike;
+    `catechism_headings.TITLE_FIXES` still corrects a title. A node opens the passage
+    printing its heading (or holding its first paragraph), in that passage's chapter.
+    A heading's own paragraphs before its first sub-heading are an "Introduction" child,
+    so every node with children only groups them. Ranges run to the next heading at the
+    same level or above.
+    """
+    toc = source["toc_nodes"]
+    pages = source["page_nodes"]
+    chapter_of = chapters(source)
+    position = {key: i for i, key in enumerate(alignment.order)}
+    paragraph_order = [int(key[1:]) for key in alignment.order if _PARAGRAPH_KEY.match(key)]
+    rank = {n: i for i, n in enumerate(paragraph_order)}
+    us_by_key = _us_heading_keys(us_items)
+
+    # Each heading the passages print: its next paragraph, and whether it is structural.
+    printed: list[tuple[str, int, bool]] = []      # (item key, next paragraph, structural)
+    pending: list[str] = []
+    for key in alignment.order:
+        m = _PARAGRAPH_KEY.match(key)
+        if m:
+            printed.extend((k, int(m[1]), alignment.items[k]["kind"] == "structure")
+                           for k in pending)
+            pending = []
+        elif key in alignment.items and alignment.items[key]["kind"] != "paragraph":
+            us = us_by_key.get(key, {})
+            if alignment.items[key]["kind"] == "structure" or us.get("style") in _US_HEADS:
+                pending.append(key)
+    used: set[str] = set()
+    unlabelled: list[str] = []
+
+    def own(node_id: str) -> list[int]:
+        return [el["ref_number"] for paragraph in pages.get(node_id, {}).get("paragraphs", [])
+                for el in paragraph.get("elements", [])
+                if el.get("type") == "ref-ccc" and el.get("ref_number") is not None]
+
+    def first_of(link: dict) -> int | None:
+        numbers = own(link["id"]) + [n for child in link["children"]
+                                     if (n := first_of(child)) is not None]
+        return min(numbers, key=rank.__getitem__) if numbers else None
+
+    def match(node_id: str, text: str, first: int, structural: bool) -> str | None:
+        """The printed heading of a `toc_nodes` entry: one before the same paragraph, of
+        the same class, with the same words (or, failing that, the closest words)."""
+        candidates = [k for k, n, s in printed if n == first and s == structural and k not in used]
+        want = catechism_us.structure_words(text)
+        exact = [k for k in candidates
+                 if catechism_us.structure_words(alignment.items[k]["text"]) == want]
+        if exact:
+            return exact[0]
+        scored = [(SequenceMatcher(None, want, catechism_us.structure_words(
+            alignment.items[k]["text"])).ratio(), k) for k in candidates]
+        best = max(scored, default=None)
+        return best[1] if best and best[0] >= 0.6 else None
+
+    def visit(link: dict) -> _Heading | None:
+        node_id = link["id"]
+        text = heading_text(node_id, toc[node_id]["text"])
+        first = first_of(link)
+        if first is None:
+            # "The Credo" (toc-44) prints the two creeds with no paragraph number: no
+            # passage holds it, so it has nothing to open.
+            if node_id not in UNNUMBERED:
+                raise ValueError(f"catechism: heading {node_id} ({text!r}) holds no paragraphs")
+            return None
+        level = heading_level(text)
+        prologue = text.upper() == "PROLOGUE"
+        structural = prologue or level is not None
+        item = match(node_id, text, first, structural)
+        if item is None:
+            unlabelled.append(node_id)
+        else:
+            used.add(item)
+        # The printed words, unless the corrections table gives the title.
+        words = text if item is None or node_id in TITLE_FIXES else alignment.items[item]["text"]
+        if prologue:
+            kind, label, short_label = "prologue", "Prologue", "Prologue"
+        elif level is not None:
+            kind, word, _ = level
+            title = _heading_label((heading_level(words) or level)[2])
+            label, short_label = title, f"{kind.capitalize()} {word.capitalize()} · {title}"
+        else:
+            kind = "heading"
+            label = short_label = _heading_label(words)
+        key = (chapter_of[node_id][0] if kind in _STRUCTURAL and kind != "paragraph"
+               else f"{chapter_of[node_id][0]}/{node_id}")
+        order = position[item] if item is not None else position[f"p{first}"] - 0.5
+        children = [node for node in map(visit, link["children"]) if node]
+        return _Heading(kind, key, label, short_label, item, first, order, children)
+
+    roots = [node for node in map(visit, source["toc_link_tree"]) if node]
+
+    # The US edition's sub-heads the source's contents leave out, under the nearest
+    # Prologue, Part, Section, Chapter, Article or Paragraph above them.
+    structural_nodes: list[_Heading] = []
+
+    def collect(nodes: list[_Heading]) -> None:
+        for node in nodes:
+            if node.kind in _STRUCTURAL:
+                structural_nodes.append(node)
+            collect(node.children)
+    collect(roots)
+    structural_nodes.sort(key=lambda node: node.order)
+    for key, first, structural in printed:
+        if structural or key in used:
+            continue
+        parent = None
+        for node in structural_nodes:
+            if node.order < position[key]:
+                parent = node
+        if parent is None:
+            raise ValueError(f"catechism: heading {key} comes before the Prologue")
+        label = _heading_label(alignment.items[key]["text"])
+        parent.children.append(_Heading("heading", f"{parent.key}/{key}", label, label, key,
+                                        first, position[key], []))
+        parent.children.sort(key=lambda node: node.order)
+
+    # Introductions, then ranges: a node runs to the paragraph before the next node at
+    # its depth or above, in reading order.
+    def introduce(nodes: list[_Heading]) -> None:
+        for node in nodes:
+            introduce(node.children)
+            if node.children and node.children[0].first != node.first:
+                node.children.insert(0, _Heading(
+                    "heading", f"{node.key}/introduction", "Introduction", "Introduction",
+                    None, node.first, node.order, []))
+    introduce(roots)
+
+    flat: list[tuple[_Heading, int]] = []
+
+    def walk(nodes: list[_Heading], depth: int) -> None:
+        for node in nodes:
+            flat.append((node, depth))
+            walk(node.children, depth + 1)
+    walk(roots, 0)
+    for (a, _), (b, _) in zip(flat, flat[1:]):
+        if rank[b.first] < rank[a.first]:
+            raise ValueError(f"catechism: contents node {b.key} starts before {a.key}")
+    last: dict[int, int] = {}
+    for i, (node, depth) in enumerate(flat):
+        following = next((n for n, d in flat[i + 1:] if d <= depth), None)
+        end = rank[following.first] - 1 if following else len(paragraph_order) - 1
+        if end < rank[node.first]:
+            raise ValueError(f"catechism: contents node {node.key} holds no paragraph")
+        last[id(node)] = paragraph_order[end]
+
+    # Each node opens the passage printing its heading, else the one its first paragraph
+    # starts in.
+    opens: dict[str, Passage] = {}
+    by_anchor = {p.anchor: p for p in passages}
+    for anchor, keys in held.items():
+        for key in keys:
+            if key is not None:
+                opens.setdefault(key, by_anchor[anchor])
+
+    def node(heading: _Heading) -> ContentsNode:
+        passage = opens.get(heading.item) or opens[f"p{heading.first}"]
+        end = last[id(heading)]
+        return ContentsNode(
+            key=heading.key, kind=heading.kind, label=heading.label,
+            short_label=heading.short_label, chapter_key=passage.chapter_key,
+            anchor=passage.anchor,
+            range_label=(f"§{heading.first}" if end == heading.first
+                         else f"§§{heading.first}{RANGE}{end}"),
+            children=[node(child) for child in heading.children])
+
+    return [node(root) for root in roots], unlabelled
 
 
 # The 1997 text of §2267, replaced on 2 August 2018, is kept as history (rule F, D11).
@@ -544,6 +778,7 @@ class Build:
     alignment: "catechism_us.Alignment"
     dropped: list[tuple[str | None, str]]   # units the chunker left out, for the report
     held: dict[str, list[str | None]]        # anchor -> item keys its text holds, in order
+    unlabelled: list[str]                    # toc nodes no US heading labels (`build_contents`)
 
 
 def build_document(source_path: str | None = None, us_path: str | None = None) -> Document:
@@ -557,7 +792,8 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
     src = source_path or _DEFAULT_SRC
     with open(src, encoding="utf-8") as f:
         data = json.load(f)
-    alignment = catechism_us.align(data, catechism_us.load_us(us_path or catechism_us.US_SOURCE))
+    us = catechism_us.load_us(us_path or catechism_us.US_SOURCE)
+    alignment = catechism_us.align(data, us)
     page_nodes = alignment.page_nodes
 
     ids = catechism_us.ordered_node_ids(page_nodes)
@@ -628,5 +864,6 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
                                             "(text and footnotes, us-edition/ccc-us.json)",
                                   "source_key": "catechism", "anchor_scheme": ANCHOR_SCHEME},
                         passages=passages)
-    return Build(document, alignment, placement.dropped, held_by)
+    document.contents, unlabelled = build_contents(data, alignment, us["items"], passages, held_by)
+    return Build(document, alignment, placement.dropped, held_by, unlabelled)
 

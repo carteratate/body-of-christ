@@ -17,6 +17,7 @@ from model import ContentsNode, Document
 
 KINDS = frozenset({
     "part", "treatise", "section", "chapter", "article", "question", "prologue", "heading",
+    "paragraph",   # the Catechism's "Paragraph" units inside an Article of the Creed
 })
 
 

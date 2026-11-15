@@ -22,6 +22,24 @@
      ]
     }
    ]
+  },
+  {
+   "id": "toc-6",
+   "children": [
+    {
+     "id": "toc-7",
+     "children": [
+      {
+       "id": "toc-8",
+       "children": []
+      },
+      {
+       "id": "toc-9",
+       "children": []
+      }
+     ]
+    }
+   ]
   }
  ],
  "toc_nodes": {
@@ -49,6 +67,26 @@
    "id": "toc-5",
    "indent_level": 5,
    "text": "I. Respect for Human Life"
+  },
+  "toc-6": {
+   "id": "toc-6",
+   "indent_level": 1,
+   "text": "PART FOUR: CHRISTIAN PRAYER"
+  },
+  "toc-7": {
+   "id": "toc-7",
+   "indent_level": 3,
+   "text": "Article 1 IN THE OLD TESTAMENT"
+  },
+  "toc-8": {
+   "id": "toc-8",
+   "indent_level": 4,
+   "text": "I. Creation - Source of Prayer"
+  },
+  "toc-9": {
+   "id": "toc-9",
+   "indent_level": 4,
+   "text": "IN BRIEF"
   }
  },
  "ccc_refs": {},
@@ -377,6 +415,141 @@
       {
        "type": "text",
        "text": "The second half carries the teaching on to its conclusion with care. The second half carries the teaching on to its conclusion with care. The second half carries the teaching"
+      }
+     ]
+    },
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "spacer"
+      }
+     ]
+    }
+   ]
+  },
+  "toc-7": {
+   "id": "toc-7",
+   "footnotes": {},
+   "paragraphs": [
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "text",
+       "text": "PART FOUR"
+      }
+     ]
+    },
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "text",
+       "text": "CHRISTIAN PRAYER"
+      }
+     ]
+    },
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "text",
+       "text": "Article 1"
+      }
+     ]
+    },
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "text",
+       "text": "IN THE OLD TESTAMENT"
+      }
+     ]
+    },
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "ref-ccc",
+       "ref_number": 2568
+      },
+      {
+       "type": "text",
+       "text": "In the Old Testament, the revelation of prayer comes between the fall and the restoration of man."
+      }
+     ]
+    },
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "spacer"
+      }
+     ]
+    }
+   ]
+  },
+  "toc-8": {
+   "id": "toc-8",
+   "footnotes": {},
+   "paragraphs": [
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "text",
+       "text": "I. Creation - Source of Prayer"
+      }
+     ]
+    },
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "ref-ccc",
+       "ref_number": 2569
+      },
+      {
+       "type": "text",
+       "text": "Prayer is lived in the first place beginning with the realities of creation."
+      }
+     ]
+    },
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "spacer"
+      }
+     ]
+    }
+   ]
+  },
+  "toc-9": {
+   "id": "toc-9",
+   "footnotes": {},
+   "paragraphs": [
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "text",
+       "text": "IN BRIEF"
+      }
+     ]
+    },
+    {
+     "attrs": {},
+     "elements": [
+      {
+       "type": "ref-ccc",
+       "ref_number": 2589
+      },
+      {
+       "type": "text",
+       "text": "From creation onward, God calls every being from nothingness into existence."
       }
      ]
     },

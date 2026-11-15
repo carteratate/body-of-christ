@@ -9,7 +9,6 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app import corpus_lifecycle, corpus_schema
 from app.auth.verify import verify_supabase_jwt
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
-from app.catechism_contents import catechism_contents
 from app.derived_contents import derive_summa_contents
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
@@ -349,15 +348,6 @@ async def get_document(
     return _document_response(doc_row, works)
 
 
-# The paragraph numbers each Catechism passage holds, for the stopgap tree.
-_CATECHISM_PARAGRAPHS_SQL = """
-SELECT chapter_key, anchor, metadata->'ccc_paragraphs' AS paragraphs
-FROM chunks c
-WHERE document_id = $1 AND jsonb_typeof(metadata->'ccc_paragraphs') = 'array'{visible}
-ORDER BY position
-"""
-
-
 async def _fetch_contents_rows(conn: asyncpg.Connection, doc_uuid: uuid.UUID,
                                schema: CorpusSchema = corpus_schema.LEGACY) -> list:
     try:
@@ -434,14 +424,10 @@ async def get_document_toc(
                            else _with_visible(_LEGACY_TOC_SQL, schema))
                 chapter_rows = await conn.fetch(toc_sql, doc_uuid)
                 contents_rows = await _fetch_contents_rows(conn, doc_uuid, schema)
-                catechism_passages = []
-                if not contents_rows and doc_row["collection"] == "catechism":
-                    catechism_passages = await conn.fetch(
-                        _with_visible(_CATECHISM_PARAGRAPHS_SQL, schema), doc_uuid)
                 works = await _fetch_works(conn, doc_uuid, schema)
-                return doc_row, chapter_rows, contents_rows, catechism_passages, works
+                return doc_row, chapter_rows, contents_rows, works
 
-            (doc_row, chapter_rows, contents_rows, catechism_passages,
+            (doc_row, chapter_rows, contents_rows,
              works) = await corpus_schema.run_with_fallback(load, conn)
     except HTTPException:
         raise
@@ -456,12 +442,6 @@ async def get_document_toc(
         # Stopgap until the Summa is published with a stored tree (#254): derive
         # Part > Question > Article from today's chapter keys and labels.
         contents = derive_summa_contents([(c.chapter_key, c.chapter_label) for c in chapters])
-    elif not contents_rows and doc_row["collection"] == "catechism":
-        # Stopgap until the Catechism is published with a stored tree (#253): its
-        # headings from the source, pointed at today's passages by paragraph number.
-        contents = catechism_contents(
-            [(r["chapter_key"], r["anchor"], r["paragraphs"]) for r in catechism_passages],
-            [c.chapter_key for c in chapters])
     return TocResponse(document=_document_response(doc_row, works), chapters=chapters,
                        contents=contents)
 

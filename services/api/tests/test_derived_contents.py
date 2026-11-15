@@ -136,7 +136,8 @@ def test_a_stale_stored_tree_is_not_replaced_by_a_derived_one():
 
 
 def test_other_collections_derive_nothing():
-    # The Catechism has its own stopgap (tests/test_catechism_contents.py).
+    # The Catechism's tree is stored by its adapter (#253); with none stored, it has none.
+    assert _toc("catechism", []).contents is None
     assert _toc("church-fathers", []).contents is None
 
 
