@@ -250,7 +250,8 @@ async def test_reading_position_in_a_retired_chapter_goes_to_the_first_live_chap
     await sql(world, """UPDATE chunks SET retired_at = now(), position = -1000000 - position
                         WHERE document_id = $1 AND chapter_key = 'c2'""", DOC_A)
     await sql(world, "UPDATE chunks SET chapter_key = 'c0' WHERE id = $1", A1)
-    counts = await forward(world, [], [chapter("c2", "c5")])
+    # A chapter removed outright has no successor, so no chapter redirect names it.
+    counts = await forward(world, [])
     assert await rows(world, "SELECT chapter_key, anchor FROM reading_progress") == [
         {"chapter_key": "c0", "anchor": None}]
     assert counts == {"reading_progress.first_chapter": 1}
@@ -600,3 +601,68 @@ async def test_full_apply_and_rollback_move_user_rows_and_back(world):
     assert back.remap == {"bookmarks.restored": 1, "reading_progress.restored": 1,
                           "retrievals.restored": 1}
     assert await digest(world) == before
+
+
+def _rename_a2(world, chapter_key="c1"):
+    """a/2 becomes a/2n (in `chapter_key`), with the registry's redirect."""
+    a = next(d for d in world.build if d.id == DOC_A)
+    a.passages[1] = passage("a/2n", chapter_key, a.passages[1].content, 1)
+    world.registry.redirects.append(
+        {"document_id": DOC_A, "old_passage_id": A2, "old_anchor": "a/2",
+         "new_passage_id": pid(DOC_A, "a/2n"), "new_anchor": "a/2n", "kind": "renumbered"})
+    next(r for r in world.registry.passages if r["passage_id"] == A2)["status"] = "redirected"
+
+
+async def test_removed_chapter_through_stage_and_apply_goes_to_the_first_chapter(world):
+    """Chapter c2 (a/3, a/4) is removed with no successor: 2.2w writes tombstones and no
+    chapter redirect, and the reading position in it still moves (step 2)."""
+    await sql(world, "DELETE FROM corpus_publishes")
+    a = next(d for d in world.build if d.id == DOC_A)
+    for anchor in ("a/3", "a/4"):
+        world.registry.removals.append(
+            {"collection": "medieval", "church_act": None, "id": f"rm-{anchor}",
+             "scope": "passage", "document_id": DOC_A, "anchor": anchor,
+             "passage_id": pid(DOC_A, anchor), "reason": "debris", "tombstone": "Removed."})
+    a.passages = a.passages[:2]
+    world.registry.__post_init__()
+    await sql(world, """INSERT INTO reading_progress (user_id, document_id, chapter_key, anchor)
+                        VALUES ($1, $2, 'c2', 'a/3')""", U1, DOC_A)
+    before = await digest(world)
+    await _stage_and_report(world, StageRequest(release="removed-chapter", collections=("medieval",)))
+    assert await val(world, "SELECT count(*) FROM staging.corpus_redirects WHERE entity = 'chapter'") == 0
+    conn = await world.connect()
+    try:
+        result = await A.apply(conn, "removed-chapter", root=world.snapshots, remap=world.remap)
+        assert result.remap == {"reading_progress.first_chapter": 1}
+        assert await rows(world, "SELECT chapter_key, anchor FROM reading_progress") == [
+            {"chapter_key": "c1", "anchor": None}]
+        await A.rollback(conn, world.qdrant, "removed-chapter", alias="chunks_live",
+                         root=world.snapshots, remap=world.remap)
+    finally:
+        await conn.close()
+    assert await digest(world) == before
+
+
+async def test_dry_run_plans_what_forward_then_does(world):
+    """The dry run reads the staged corpus: a/2n is only in staging and sits in a new
+    chapter, and the plan for the reading position equals what the apply writes."""
+    await sql(world, "DELETE FROM corpus_publishes")
+    _rename_a2(world, chapter_key="c1b")
+    world.registry.__post_init__()
+    await bookmark(world, A2)
+    await sql(world, """INSERT INTO reading_progress (user_id, document_id, chapter_key, anchor)
+                        VALUES ($1, $2, 'c1', 'a/2')""", U1, DOC_A)
+    await _stage_and_report(world, StageRequest(release="dry-run", collections=("medieval",)))
+    conn = await world.connect()
+    try:
+        plan = await R.dry_run(conn)
+        result = await A.apply(conn, "dry-run", root=world.snapshots, remap=world.remap)
+    finally:
+        await conn.close()
+    assert dict(plan.counts) == result.remap == {"bookmarks.repointed": 1,
+                                                 "reading_progress.rewritten": 1}
+    planned = [e["after"] for e in plan.entries if e["table"] == "reading_progress"]
+    assert [{k: p[k] for k in ("chapter_key", "anchor")} for p in planned] == [
+        {"chapter_key": "c1b", "anchor": "a/2n"}]
+    assert await rows(world, "SELECT chapter_key, anchor FROM reading_progress") == [
+        {"chapter_key": "c1b", "anchor": "a/2n"}]

@@ -272,33 +272,42 @@ async def _plan_chunk_table(conn, table: ChunkTable, redirects: Redirects, plan:
                 plan.count(table.name, "dropped")
 
 
-async def _live_chapter_of(conn, document: str, anchor: str) -> str | None:
+# The live passages as the apply leaves them. Forward runs after the apply has written
+# them; a dry run sees them before, so it reads the staged documents from staging.
+LIVE = "(SELECT id, document_id, chapter_key, anchor, position FROM public.chunks WHERE retired_at IS NULL)"
+AFTER_STAGE = """(SELECT id, document_id, chapter_key, anchor, position FROM staging.chunks
+                  UNION ALL
+                  SELECT id, document_id, chapter_key, anchor, position FROM public.chunks
+                  WHERE retired_at IS NULL
+                    AND document_id NOT IN (SELECT id FROM staging.documents))"""
+
+
+async def _live_chapter_of(conn, corpus: str, document: str, anchor: str) -> str | None:
     return await conn.fetchval(
-        """SELECT chapter_key FROM public.chunks WHERE document_id = $1::uuid
-           AND anchor = $2 AND retired_at IS NULL""", document, anchor)
+        f"SELECT chapter_key FROM {corpus} c WHERE document_id = $1::uuid AND anchor = $2",
+        document, anchor)
 
 
-async def _chapter_is_live(conn, document: str, chapter: str) -> bool:
+async def _chapter_is_live(conn, corpus: str, document: str, chapter: str) -> bool:
     return await conn.fetchval(
-        """SELECT EXISTS (SELECT 1 FROM public.chunks WHERE document_id = $1::uuid
-           AND chapter_key = $2 AND retired_at IS NULL)""", document, chapter)
+        f"""SELECT EXISTS (SELECT 1 FROM {corpus} c WHERE document_id = $1::uuid
+            AND chapter_key = $2)""", document, chapter)
 
 
-async def _first_live_chapter(conn, document: str) -> str | None:
+async def _first_live_chapter(conn, corpus: str, document: str) -> str | None:
     return await conn.fetchval(
-        """SELECT chapter_key FROM public.chunks WHERE document_id = $1::uuid
-           AND retired_at IS NULL AND chapter_key IS NOT NULL ORDER BY position LIMIT 1""",
-        document)
+        f"""SELECT chapter_key FROM {corpus} c WHERE document_id = $1::uuid
+            AND chapter_key IS NOT NULL ORDER BY position LIMIT 1""", document)
 
 
-async def _reading_target(conn, row: dict, redirects: Redirects) -> tuple[dict, str] | None:
-    """The row forward leaves for a reading position and its rule, or None if no redirect
-    names its chapter, anchor or document."""
+async def _reading_target(conn, corpus: str, row: dict,
+                          redirects: Redirects) -> tuple[dict, str] | None:
+    """The row forward leaves for a reading position and its rule, or None when no
+    redirect names its chapter, anchor or document and its chapter is still live."""
     document, chapter, anchor = row["document_id"], row["chapter_key"], row["anchor"]
-    moved = None
     if anchor is not None and (document, anchor) in redirects.anchors:
         new_document, new_anchor = redirects.anchors[(document, anchor)]
-        new_chapter = await _live_chapter_of(conn, new_document, new_anchor)
+        new_chapter = await _live_chapter_of(conn, corpus, new_document, new_anchor)
         if new_chapter is not None:
             moved = (new_document, new_chapter, new_anchor)
         else:
@@ -306,31 +315,41 @@ async def _reading_target(conn, row: dict, redirects: Redirects) -> tuple[dict, 
     elif (document, chapter) in redirects.chapters:
         new_document, new_chapter = redirects.chapters[(document, chapter)]
         keep = (anchor if anchor is not None and new_document == document
-                and await _live_chapter_of(conn, document, anchor) == new_chapter else None)
+                and await _live_chapter_of(conn, corpus, document, anchor) == new_chapter
+                else None)
         moved = (new_document, new_chapter, keep)
     elif document in redirects.documents:
         moved = (redirects.documents[document], None, None)
-    if moved is None:
-        return None
+    else:
+        # No redirect: a chapter retired with no successor (0.1c gives it no chapter
+        # redirect) still goes to its document's first live chapter (step 2).
+        moved = (document, chapter, anchor)
     new_document, new_chapter, new_anchor = moved
     rule = "rewritten"
-    if new_chapter is None or not await _chapter_is_live(conn, new_document, new_chapter):
-        new_chapter, new_anchor, rule = await _first_live_chapter(conn, new_document), None, "first_chapter"
+    if new_chapter is None or not await _chapter_is_live(conn, corpus, new_document, new_chapter):
+        new_chapter, new_anchor, rule = (await _first_live_chapter(conn, corpus, new_document),
+                                         None, "first_chapter")
         if new_chapter is None:
             raise RemapRefused(f"REFUSING: document {new_document} has no live chapter for "
                                "a reading position to move to")
-    return {**row, "document_id": new_document, "chapter_key": new_chapter,
-            "anchor": new_anchor}, rule
+    after = {**row, "document_id": new_document, "chapter_key": new_chapter,
+             "anchor": new_anchor}
+    return None if after == row else (after, rule)
 
 
-async def _plan_reading(conn, redirects: Redirects, plan: Plan) -> None:
+async def _plan_reading(conn, corpus: str, redirects: Redirects, plan: Plan) -> None:
     documents = sorted({d for d, _ in redirects.anchors} | {d for d, _ in redirects.chapters}
                        | set(redirects.documents))
-    if not documents:
-        return
+    # Rows on a redirect, and rows in a document that stays live whose chapter does not.
+    candidates = await _rows(
+        conn, READING,
+        f"""t.document_id = ANY($1::uuid[])
+            OR (EXISTS (SELECT 1 FROM {corpus} c WHERE c.document_id = t.document_id)
+                AND NOT EXISTS (SELECT 1 FROM {corpus} c WHERE c.document_id = t.document_id
+                                AND c.chapter_key = t.chapter_key))""", documents)
     moving = []
-    for r in await _rows(conn, READING, "t.document_id = ANY($1::uuid[])", documents):
-        target = await _reading_target(conn, r, redirects)
+    for r in candidates:
+        target = await _reading_target(conn, corpus, r, redirects)
         if target is not None:
             moving.append((r, *target))
     if not moving:
@@ -359,14 +378,13 @@ async def _plan_reading(conn, redirects: Redirects, plan: Plan) -> None:
                 plan.count(READING, "dropped")
 
 
-async def plan_forward(conn, redirects: Redirects, *, staged_targets: bool = False) -> Plan:
-    """What forward would do, read only. `staged_targets` also accepts a target that is
-    only in `staging.chunks` (a dry run before the apply has inserted it)."""
+async def plan_forward(conn, redirects: Redirects, *, staged: bool = False) -> Plan:
+    """What forward would do, read only. `staged` plans against the corpus the staged
+    publish will leave (a dry run before the apply), instead of the live tables."""
+    corpus = AFTER_STAGE if staged else LIVE
     targets = sorted(set(redirects.passages.values()))
-    sql = "SELECT id::text FROM public.chunks WHERE id = ANY($1::uuid[]) AND retired_at IS NULL"
-    if staged_targets:
-        sql += " UNION SELECT id::text FROM staging.chunks WHERE id = ANY($1::uuid[])"
-    found = {r[0] for r in await conn.fetch(sql, targets)}
+    found = {r[0] for r in await conn.fetch(
+        f"SELECT id::text FROM {corpus} c WHERE id = ANY($1::uuid[])", targets)}
     missing = [t for t in targets if t not in found]
     if missing:
         raise RemapRefused(f"REFUSING: {len(missing)} redirect targets are missing from "
@@ -375,7 +393,7 @@ async def plan_forward(conn, redirects: Redirects, *, staged_targets: bool = Fal
     for table in CHUNK_TABLES:
         if await _table_exists(conn, f"public.{table.name}"):
             await _plan_chunk_table(conn, table, redirects, plan)
-    await _plan_reading(conn, redirects, plan)
+    await _plan_reading(conn, corpus, redirects, plan)
     return plan
 
 
@@ -652,7 +670,7 @@ async def dry_run(conn, redirects_path: str | None = None, rows: bool = False) -
             chapters = [dict(r) for r in await conn.fetch(
                 "SELECT * FROM staging.corpus_redirects WHERE entity = 'chapter' ORDER BY id")]
         plan = await plan_forward(conn, Redirects.from_rows(redirects, chapters),
-                                  staged_targets=True)
+                                  staged=True)
     _print_plan(plan, rows)
     return plan
 
