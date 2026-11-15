@@ -503,7 +503,10 @@ def test_rule_removals_emit_none_of_the_removed_units(fathers):
 def test_book_viii_emits_only_its_canons(fathers):
     d = next(d for d in fathers if d.id.startswith("10d8d7c6"))
     assert {p.chapter_key for p in d.passages} == {"ix.ix.vi"}
-    assert d.passages[0].chapter_label == "The Ecclesiastical Canons of the Same Holy Apostles"
+    # 3.2 makes the canons a work of their own, "The Apostolic Canons", labelled "Canons".
+    assert d.passages[0].chapter_label == "Canons"
+    assert {p.work_key for p in d.passages} == {"ix.ix.vi"}
+    assert [w.title for w in d.works] == ["The Apostolic Canons"]
     assert len(d.passages) == 6 and [p.position for p in d.passages] == list(range(6))
 
 
