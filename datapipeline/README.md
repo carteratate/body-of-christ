@@ -115,25 +115,36 @@ which transaction mode (port 6543) could leave held on a pooled connection.
   rates, the document-facts diff, user impact, staging size), and records its hash for
   the apply. It writes to `releases/local/publish-<release>-<time>/`.
 - `apply` writes the before-snapshot to `releases/snapshots/<release>-before/` (corpus
-  text only, gitignored), then in one transaction updates, inserts and retires (it never
-  deletes), writes tombstones and redirects, and refreshes outlines. It then switches
-  `chunks_live` to the publish's collection, unless `--no-switch`. It refuses a staged
-  corpus that no longer matches the report's hash, and a publish with a redirect that a
-  user row points at, until 4.1a's remap exists. A redirect is only a record for now:
-  the API reads `corpus_redirects` from 2.4a on, and saved rows move with 4.1a.
+  text, gitignored), then in one transaction updates, inserts and retires (it never
+  deletes), writes tombstones and redirects, moves the user rows on redirected IDs
+  (4.1a, below), and refreshes outlines. It then switches `chunks_live` to the publish's
+  collection, unless `--no-switch`. It refuses a staged corpus that no longer matches the
+  report's hash. It prints the remap's public counts for the publish log.
   `--retire-only --collection <name>` retires the documents an open `document` removal
   entry names, with nothing staged.
 - `switch` moves the alias after `apply --no-switch`. Qdrant applies the move atomically.
 - `rollback` is the only rollback path (D11). Within the 14-day rollback window it undoes
   an applied publish from its before-snapshot in one transaction, retires every row the
-  publish inserted under a `rolled-back` tombstone, then points the alias back. Roll back
+  publish inserted under a `rolled-back` tombstone, moves user rows back from the remap's
+  ledger, then points the alias back. Roll back
   the latest publish first. It works after `cleanup`, and leaves staging loaded, so run
   `cleanup` again afterwards.
 - `cleanup` drops the staging tables and returns their space. Run it once the apply is
   checked.
 - `discard` drops the staging tables of a publish that was never applied.
 
-Deleting a Qdrant collection or a before-snapshot is a separate ops step, after the
+User rows on redirected IDs (4.1a, `remap_user_data.py`). Bookmarks, saved search
+results, labels, guest results, feedback and reading positions on an ID, anchor or
+chapter with a redirect move to its target inside the apply. Where two of a user's rows
+meet on one passage, one is kept by a fixed rule (the module docstring lists them) and
+the other is recorded. The record, the ledger, holds user IDs and note text: it is
+written to `user_remap_ledger.jsonl` in the before-snapshot folder, its sha256 joins the
+snapshot's, and it is never committed. `rollback` undoes only what the ledger recorded,
+keeps every change a user made since the apply, and counts each row it skips instead of
+failing. `python3 -m remap_user_data --dry-run [--rows]` prints what the apply would move
+for the staged publish, in a read-only transaction.
+
+Deleting a Qdrant collection or a before-snapshot (and its ledger) is a separate ops step, after the
 rollback window for a publish that was applied. A lock entry stays until that window
 closes, and a follow-up PR removes it.
 
