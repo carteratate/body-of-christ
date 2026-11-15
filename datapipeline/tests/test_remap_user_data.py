@@ -512,6 +512,7 @@ async def test_reverse_skip_never_aborts(world):
         "guest_trial_retrievals.skipped_guest_claimed": 1,
         "product_feedback.skipped_deleted_by_user": 1,
         "reading_progress.skipped_changed_by_user": 1,
+        "reading_progress.untouched_made_after_apply": 1,   # U1's other position, touched
         "retrieval_labels.skipped_parent_deleted": 1,   # the search was deleted
         "retrievals.skipped_parent_deleted": 1,
     }
@@ -666,3 +667,29 @@ async def test_dry_run_plans_what_forward_then_does(world):
         {"chapter_key": "c1b", "anchor": "a/2n"}]
     assert await rows(world, "SELECT chapter_key, anchor FROM reading_progress") == [
         {"chapter_key": "c1b", "anchor": "a/2n"}]
+
+
+async def test_reading_positions_swapping_documents_round_trip(world):
+    """Chapters move A to B and B to A: both of a user's positions move, and reverse puts
+    both back, though each one's old key is the other's new key."""
+    await sql(world, "UPDATE chunks SET chapter_key = 'k1' WHERE id = $1", A3)
+    await sql(world, "UPDATE chunks SET chapter_key = 'c2' WHERE id = $1", B1)
+    await sql(world, """INSERT INTO reading_progress (user_id, document_id, chapter_key)
+                        VALUES ($1, $2, 'c1'), ($1, $3, 'k9')""", U1, DOC_A, DOC_B)
+    before = await digest(world)
+    counts = await forward(world, [], [chapter("c1", "c2", new_document=DOC_B),
+                                       chapter("k9", "k1", document=DOC_B, new_document=DOC_A)])
+    assert counts == {"reading_progress.rewritten": 2}
+    assert await reverse(world) == {"reading_progress.restored": 2}
+    assert await digest(world) == before
+
+
+async def test_reading_position_saved_after_the_apply_is_counted(world):
+    await sql(world, """INSERT INTO reading_progress (user_id, document_id, chapter_key, anchor)
+                        VALUES ($1, $2, 'c1', 'a/2')""", U1, DOC_A)
+    await forward(world, EVERYTHING)
+    await sql(world, """INSERT INTO reading_progress (user_id, document_id, chapter_key, updated_at)
+                        VALUES ($1, $2, 'c1', '2099-01-01')""", U2, DOC_A)
+    counts = await reverse(world)
+    assert counts == {"reading_progress.restored": 1,
+                      "reading_progress.untouched_made_after_apply": 1}

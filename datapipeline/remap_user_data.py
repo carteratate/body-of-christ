@@ -579,22 +579,45 @@ class UserDataRemapImpl:
                     return True
             return False
 
+        reading = []
         for i, e in enumerate(entries):
             if e["action"] != "moved":
                 continue
             table = e["table"]
             reason = await skip_reason(e, current[i], e["after"])
+            if reason is None and table == READING:
+                reading.append(e)
+                continue
             if reason is None and await key_taken(e, current[i]):
                 reason = "unique_key_taken"
             if reason is not None:
                 counts[f"{table}.skipped_{reason}"] += 1
                 continue
-            if table == READING:
-                await _delete(conn, READING, READING_PK, e["after"])
-                await _insert(conn, READING, e["before"])
-            else:
-                await _update(conn, table, _pk(table), e["after"], e["before"])
+            await _update(conn, table, _pk(table), e["after"], e["before"])
             counts[f"{table}.restored"] += 1
+
+        # Reading positions move back together: a document's positions can have moved
+        # both ways (A to B and B to A), so a key another restored row vacates is free. A
+        # key still held by a row that stays (a user's own, or one skipped) is taken.
+        while True:
+            vacated = {_key(e["after"], READING_PK) for e in reading}
+            taken = []
+            for e in reading:
+                key = _key(e["before"], READING_PK)
+                holder = await _fetch(conn, READING, READING_PK, e["before"])
+                if holder is not None and key not in vacated:
+                    taken.append(e)
+            if not taken:
+                break
+            for e in taken:
+                reading.remove(e)
+                counts[f"{READING}.skipped_unique_key_taken"] += 1
+            # A skipped row stays where it is, so its key is no longer vacated: check again.
+        for e in reading:
+            await _delete(conn, READING, READING_PK, e["after"])
+        for e in reading:
+            await _insert(conn, READING, e["before"])
+            counts[f"{READING}.restored"] += 1
 
         for i, e in enumerate(entries):
             if e["action"] != "dropped":
@@ -640,6 +663,24 @@ class UserDataRemapImpl:
                 release, applied_at, sorted(named[table.name] - {None}))
             if n:
                 counts[f"{table.name}.untouched_made_after_apply"] += n
+        # Reading positions saved since the apply in a document this publish redirected
+        # into, or one the rollback has just retired, that the ledger does not name.
+        named_reading = [_key(e["after" if e["action"] == "moved" else "survivor"], READING_PK)
+                         for e in entries if e["table"] == READING]
+        n = await conn.fetchval(
+            """SELECT count(*) FROM public.reading_progress t
+               WHERE t.updated_at > $2
+                 AND (t.user_id, t.document_id) NOT IN (
+                     SELECT * FROM unnest($3::uuid[], $4::uuid[]))
+                 AND (t.document_id IN (SELECT new_document_id FROM public.corpus_redirects
+                                        WHERE publish_id = $1)
+                      OR t.document_id IN (SELECT id FROM public.documents
+                                           WHERE retired_at = transaction_timestamp())
+                      OR t.document_id IN (SELECT document_id FROM public.chunks
+                                           WHERE retired_at = transaction_timestamp()))""",
+            release, applied_at, [k[0] for k in named_reading], [k[1] for k in named_reading])
+        if n:
+            counts[f"{READING}.untouched_made_after_apply"] += n
 
 
 # --------------------------------------------------------------------------- CLI
