@@ -369,7 +369,7 @@ def test_removal_entries_validate():
 def test_rule_b_removal_may_rest_on_scholarship():
     """A rule-B removal needs no Church act when its detail states the scholarly basis
     (Carter, 11 Nov 2026), and its tombstone then renders no Church act. Rule A still
-    needs its act."""
+    needs its act or its stated basis."""
     import retirements
 
     w = work()
@@ -379,7 +379,7 @@ def test_rule_b_removal_may_rest_on_scholarship():
     entry = removal(reason="rule-b", detail=basis)
     assert registry.validate(valid_registry(passages=rows, removals=[entry])) == []
     for bad in ({"detail": "The long recension."}, {"detail": None},
-                {"reason": "rule-a", "detail": basis}):
+                {"reason": "rule-a", "detail": basis}):  # scholarship is not rule A's
         problems = registry.validate(valid_registry(passages=rows,
                                                     removals=[removal(**{**entry, **bad})]))
         assert any("Church act" in p for p in problems), bad
@@ -387,6 +387,29 @@ def test_rule_b_removal_may_rest_on_scholarship():
                                  document_id=w["document_id"], snapshot={}, release="r",
                                  at=None)
     assert row_["church_act"] is None and row_["rule"] == "B"
+
+
+def test_rule_a_removal_may_rest_on_dating_or_testimony():
+    """A rule-A removal with no Church act names its basis in its detail: the named
+    chronology, the testimony of the Fathers, or that the author was not a Christian
+    (Carter, 15 Nov 2026). Its tombstone then renders no Church act."""
+    import retirements
+
+    w = work()
+    rows = [row(w["document_id"], "ii.i", status="retired")]
+    for basis in ("Not shown to date before his break by the named chronology (Quasten).",
+                  "Left the Church, on the testimony of the Fathers (Irenaeus).",
+                  "Its author was not a Christian (van Oort 2012)."):
+        entry = removal(reason="rule-a", detail=basis)
+        assert registry.validate(valid_registry(passages=rows, removals=[entry])) == []
+        row_ = retirements.tombstone(entry, entity="passage", id=entry["passage_id"],
+                                     document_id=w["document_id"], snapshot={},
+                                     release="r", at=None)
+        assert row_["church_act"] is None and row_["rule"] == "A"
+    for bad in ("Tertullian.", None, "The majority of standard scholarship."):
+        problems = registry.validate(valid_registry(
+            passages=rows, removals=[removal(reason="rule-a", detail=bad)]))
+        assert any("Church act" in p for p in problems), bad
 
 
 def test_removal_entry_needs_anchor_not_position():

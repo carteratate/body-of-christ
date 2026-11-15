@@ -1,6 +1,7 @@
 """0.1a coverage: no source file loses coverage against the baseline, the baseline
 keeps up with fixes, and every file under the threshold is a known defect."""
 import json
+import os
 
 import pytest
 
@@ -54,3 +55,17 @@ def test_no_unexpected_coverage_failures(checks_run, collection):
 def test_known_coverage_defect(checks_run, check_id):
     # Strict xfail: once the file reaches COVERAGE_ENTRY_BELOW, delete its entry.
     assert check_id not in report.coverage_failing(checks_run)
+
+
+@pytest.mark.parametrize("collection", ["church-fathers", "medieval"])
+def test_no_passage_holds_a_ccel_description(built, collection):
+    # CCEL's staff blurb in a ThML header is never corpus text (Decision log "CCEL staff
+    # descriptions"; 3.1): no passage holds 40 characters of it in a row.
+    from checks import source_text
+
+    descriptions = {name: source_text.thml_description(
+        os.path.join(source_text.SOURCES, collection, name))
+        for name in source_text.collection_files(collection)}
+    assert sum(bool(t) for t in descriptions.values()) >= 4
+    passages = [p for d in built[collection] for p in d.passages]
+    assert source_text.description_leaks(descriptions, passages) == []
