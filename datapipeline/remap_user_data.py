@@ -279,7 +279,13 @@ AFTER_STAGE = """(SELECT id, document_id, chapter_key, anchor, position FROM sta
                   UNION ALL
                   SELECT id, document_id, chapter_key, anchor, position FROM public.chunks
                   WHERE retired_at IS NULL
-                    AND document_id NOT IN (SELECT id FROM staging.documents))"""
+                    AND document_id NOT IN (SELECT id FROM staging.documents)
+                    -- a document of a staged collection that staging lacks is retired
+                    AND document_id NOT IN (
+                        SELECT d.id FROM public.documents d JOIN corpus_publishes p
+                          ON d.collection = ANY(p.collections)
+                        WHERE p.staged_at IS NOT NULL AND p.applied_at IS NULL
+                          AND p.discarded_at IS NULL))"""
 
 
 async def _live_chapter_of(conn, corpus: str, document: str, anchor: str) -> str | None:
