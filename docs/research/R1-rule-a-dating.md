@@ -300,7 +300,24 @@ Each item has a recommendation. **Carter accepted every recommendation on 5 Oct 
 - **Conversion facts:** Challoner, Arthur Preuss, Dionysius of Alexandria, and the baptism dates of Basil and Gregory Nazianzen. 5.6a must date any early letters.
 - **Catena counts** are paragraph-label counts in the CCEL ThML files (Matthew and Mark only). Luke and John exist only as scans.
 
+## Addendum (3.1, 15 Nov 2026): Cyprian's correspondents (C-02)
+
+3.1's research step, by this file's method: Quasten vol. II through the Internet Archive's search-inside service (same item and leaf offset), and the Church-act sources above. Each of the 16 letters by others in "The Epistles of Cyprian" (`aaf1a0e4`) has a sub-entry in `rule_a_R1.json`, keyed by its ThML div; ANF's numbering is given with the Oxford number the source prints.
+
+| Letter | Sender | Result | Basis |
+|---|---|---|---|
+| XXX (Oxford 30) | the Roman clergy, written by Novatian | exclude | Cyprian, Epistle LI (Oxford 55); Quasten p. 213. Decided in the plan |
+| XXIX (Oxford 36) | the Roman presbyters and deacons, composed by Novatian | exclude | Quasten p. 213: Novatian composed it, "as contents and style prove" |
+| XXV (Oxford 31) | the Roman confessors Moyses, Maximus, Nicostratus and others | exclude | Quasten p. 226: B. Melin showed it is "most probably also of Novatian's pen"; errors fall toward exclusion |
+| LXXIV (Oxford 75) | Firmilian of Caesarea | include | Stephen's letter naming Firmilian threatened excommunication (Eusebius, Church History 7.5.4; Quasten p. 237); no source shows it carried out, peace returned under Sixtus II, and Firmilian sat at the synods of Antioch until 268 (Quasten p. 128) |
+| XLIX (Oxford 53) | Maximus, Urbanus, Sidonius and Macharius | include | Written after their return from Novatian's schism in 251 (Cornelius, Epistle XLV); the synod of 251 named Novatian only |
+| II (Oxford 8) | the Roman clergy | include | Counted by Quasten (p. 365) among the presbytery's letters, apart from Novatian's |
+| XLV, XLVII (Oxford 49, 50) | Pope Cornelius | include | Pope and martyr (Quasten p. 236) |
+| XVI, XVIII, XX, XXI, XXXVIII, LXXVII, LXXVIII, LXXIX (Oxford 23, 24, 21, 22, 42, 77, 78, 79) | the Carthaginian confessors, Caldonius, Celerinus, Lucian, Caldonius and his colleagues, the bishops in the mines | include | Presumed in communion; no Church act names any of them |
+
+Carter approved every result on 15 Nov 2026 (Decision log "Cyprian's correspondents under rule A (3.1, C-02)"). No new Church act was found.
+
 ## Files
 
-- `datapipeline/registry/rule_a_R1.json`: 216 entries, as described above.
+- `datapipeline/registry/rule_a_R1.json`: 216 entries, as described above, and 16 more for Cyprian's correspondents since 3.1 (232).
 - Build used: master adapters at `9f3e19e`, vendored sources from the main checkout (not committed).

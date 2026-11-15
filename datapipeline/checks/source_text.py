@@ -12,7 +12,9 @@ belongs to:
   bars, site footers, the editor's introduction to a Bible book);
 - "withheld": the work's own text that rule E keeps out of the corpus because it has no
   English (1.5b): Latin, and the canons the removal registry retires for it; in ThML, a
-  paragraph mostly in another language, which a translator left untranslated (3.3).
+  paragraph mostly in another language, which a translator left untranslated (3.3);
+- "excluded": the work's own text that rules A to C take out of the corpus (3.1): a work
+  the removal registry retires whole, and a chapter every passage of which it retires.
 
 Nothing here imports from `ingest/`, so a parser defect cannot hide itself by being
 shared. Where a sentence of body text is interrupted by a note, the note's position is
@@ -41,7 +43,7 @@ SOURCES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 # Separates two stretches of text that must not be read as one sentence.
 SEGMENT_BREAK = "\u2029"
 
-REGIONS = ("body", "note", "toc", "heading", "apparatus", "withheld")
+REGIONS = ("body", "note", "toc", "heading", "apparatus", "withheld", "excluded")
 
 
 PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
@@ -197,6 +199,42 @@ def withheld_chapters(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
     return _withheld_chapters[path]
 
 
+_EXCLUDING_REASONS = ("rule-a", "rule-b", "rule-c")
+_excluded_divs: dict[str, frozenset[tuple[str, str]]] = {}
+
+
+def excluded_divs(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
+    """(ThML file, div id) of each unit rules A to C take out of the corpus (3.1): the
+    work div of a document an open `document` entry retires, and each chapter every
+    passage of which open `passage` entries retire (Treatises I and III among Cyprian's,
+    Hippolytus's undatable works, Book VIII before its canons). Everything inside one is
+    "excluded". Read from the registry files beside `path`, as `withheld_chapters` is."""
+    if path not in _excluded_divs:
+        folder = os.path.dirname(path)
+        with open(path, encoding="utf-8") as f:
+            entries = [e for e in json.load(f) if e.get("collection") == "church-fathers"
+                       and e.get("reason") in _EXCLUDING_REASONS and not e.get("closed_by")]
+        with open(os.path.join(folder, "works.json"), encoding="utf-8") as f:
+            keys = {w["document_id"]: w["source_key"].split("/", 1)[1]
+                    for w in json.load(f) if w["collection"] == "church-fathers"}
+        out = {tuple(keys[e["document_id"]].split("#", 1)) for e in entries
+               if e["scope"] == "document" and "#" in keys[e["document_id"]]}
+        retired = {e["passage_id"] for e in entries if e["scope"] == "passage"}
+        chapters: dict[tuple[str, str], bool] = {}     # → every row retired by 3.1
+        rows_path = os.path.join(folder, "passages", "church-fathers.jsonl")
+        if os.path.exists(rows_path):
+            with open(rows_path, encoding="utf-8") as f:
+                for line in f:
+                    r = json.loads(line)
+                    if r["status"] == "redirected" or r["document_id"] not in keys:
+                        continue
+                    key = (keys[r["document_id"]].split("#")[0],
+                           r["anchor"].split("#")[0].split("/")[0])
+                    chapters[key] = chapters.get(key, True) and r["passage_id"] in retired
+        _excluded_divs[path] = frozenset(out | {k for k, v in chapters.items() if v})
+    return _excluded_divs[path]
+
+
 # Volumes only some works of which are built, by file: the work divs measured. Text outside
 # them is not part of any built work (NPNF2-04's other works wait for 5.6a), so it is not
 # read. The adapter names the same divs (`ingest.church_fathers.VOLUME_WORKS`).
@@ -225,7 +263,8 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     is a paragraph a removal registry span entry records (`removed_paragraphs`), and the
     own paragraphs of a div `editorial_own_text` lists. A body paragraph mostly in another
     language (`checks.language.mostly_foreign`), or in a chapter the removal registry
-    retires whole for rule E (`withheld_chapters`), is "withheld" (3.3). A quotation of the author that
+    retires whole for rule E (`withheld_chapters`), is "withheld" (3.3); a body paragraph in
+    a unit rules A to C take out (`excluded_divs`) is "excluded" (3.1). A quotation of the author that
     `ingest.editorial_keep` keeps from an editorial div is body under its passage's
     chapter key (`<div>/retractations`), and a footnote caller printed as a plain digit
     (`ingest.editorial.PLAIN_CALLERS`) is read without it, as the adapter reads it. Of a
@@ -237,6 +276,7 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     own_text = editorial_own_text(source_file)
     removed = removed_paragraphs()
     withheld = withheld_chapters()
+    excluded = {d for f, d in excluded_divs() if f == source_file}
     quotes = {}
     for q in kept_quotes(source_file):
         quotes.setdefault(q.first, []).append(q)
@@ -253,6 +293,8 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                 child_region = _thml_div_region(child.get("title") or "", region)
                 if child.get("id") in editorial:
                     child_region = "apparatus"
+                elif child.get("id") in excluded and child_region == "body":
+                    child_region = "excluded"
                 walk(child, child.get("id") or div_id, child_region, True)
             elif in_div and not _in_scope(div_id, scope):
                 continue
@@ -289,6 +331,45 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
 
     walk(root, None, "body", False)
     return [u for u in units if u.text.strip()]
+
+
+# A passage may hold no run this long of a ThML file's CCEL `<description>` (3.1).
+DESCRIPTION_RUN = 40
+_QUOTED = re.compile(r'["\u201c][^"\u201c\u201d]*["\u201d]')
+
+
+def thml_description(path: str) -> str:
+    """The CCEL staff blurb in a ThML file's header (`ThML.head`'s `<description>`), with
+    its whitespace collapsed; empty when it has none. It is CCEL's text, not the work's
+    (Decision log "CCEL staff descriptions"), and no adapter reads the header."""
+    root = _read_thml(path)
+    head = next((el for el in root if isinstance(el.tag, str) and el.tag == "ThML.head"),
+                None)
+    found = head.find(".//description") if head is not None else None
+    return " ".join(_thml_text(found, skip_notes=False).split()) if found is not None else ""
+
+
+def description_leaks(descriptions: dict[str, str], passages) -> list[tuple[str, str]]:
+    """(file, passage anchor) for each passage that holds `DESCRIPTION_RUN` or more
+    consecutive characters of a file's description, whitespace collapsed. Only CCEL's own
+    words count: a stretch the description quotes (Anselm's "a being than which none
+    greater can be conceived") is the author's and may be in a passage, and no run crosses
+    one. `descriptions` maps a file to its `thml_description`; `passages` yields objects
+    with `anchor` and `content`."""
+    n = DESCRIPTION_RUN
+    windows = {}
+    for name, text in descriptions.items():
+        for part in _QUOTED.split(text):
+            for i in range(len(part) - n + 1):
+                windows.setdefault(part[i:i + n], name)
+    out = []
+    for p in passages:
+        content = " ".join(p.content.split())
+        hit = next((windows[content[i:i + n]] for i in range(len(content) - n + 1)
+                    if content[i:i + n] in windows), None)
+        if hit is not None:
+            out.append((hit, p.anchor))
+    return out
 
 
 def thml_divs(path: str) -> list[tuple[str, int, str, str]]:

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ThML>
+<ThML.head>
+<generalInfo>
+<description>Written in the third century, <i>The Treatise of Testius</i> is the best-known
+and most profound work of the Christian writer Testius, composed while he awaited his
+trial. This edition is a favourite with readers of every age.</description>
+</generalInfo>
+<electronicEdInfo><authorID>testius</authorID><bookID>anf98</bookID></electronicEdInfo>
+</ThML.head>
+<ThML.body>
+<div1 id="ii" title="Testius." type="Part">
+<div2 id="ii.i" title="The Treatise of Testius." type="Work">
+<div3 id="ii.i.i" n="I" shorttitle="Chapter I" title="Of Patience." type="Chapter">
+<p class="c18" id="ii.i.i-p1">Patience is the companion of wisdom, and the soul that waits on God is never put to shame, though the world press on it from every side and the hour of trial be long.</p>
+<p class="c18" id="ii.i.i-p2">For he who bears all things in quiet hope has already overcome what he bears, and the crown is laid up for him before the race is finished.</p>
+</div3>
+<div3 id="ii.i.ii" n="II" shorttitle="Chapter II" title="Of Hope." type="Chapter">
+<p class="c18" id="ii.i.ii-p1">Hope does not disappoint, for it rests on the promise of One who cannot lie, and what He has promised He is able also to perform in His own time.</p>
+</div3>
+</div2>
+</div1>
+</ThML.body>
+</ThML>

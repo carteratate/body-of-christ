@@ -23,7 +23,7 @@ from xml.etree.ElementTree import Element, tostring
 import defusedxml.ElementTree as ET
 
 from model import Document, Work
-from registry import drop_removed
+from registry import drop_removed, removed_document_ids
 from normalize.caps import smart_title_case
 from normalize.text import fold_ligatures
 from ingest.common import (_block_text, _build_parent_map, _cf_skippable, _strip_tags,
@@ -685,7 +685,11 @@ def build_all() -> list[Document]:
         if path.endswith(".Zone.Identifier"):
             continue
         docs.extend(build_documents(path))
-    docs = [drop_removed(_rule_e(d)) for d in distinct_titles(docs)]
+    # A work an open `document` removal retires (rules A to C, 3.1) emits nothing, and a
+    # unit a `passage` removal retires is skipped, as the papal adapters do: the adapter
+    # asks the registry, never an author or title.
+    held = removed_document_ids()
+    docs = [drop_removed(_rule_e(d)) for d in distinct_titles(docs) if d.id not in held]
     built = {(d.id, p.anchor) for d in docs for p in d.passages}
     missing = sorted(set(NON_ENGLISH_PARAGRAPHS) - built)
     if missing:

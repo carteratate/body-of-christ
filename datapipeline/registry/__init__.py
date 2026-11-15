@@ -78,6 +78,10 @@ _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 # A rule-B removal with no Church act rests on the majority of standard scholarship, which
 # its detail states (Carter, 11 Nov 2026).
 _SCHOLARLY_BASIS = re.compile(r"\bscholarship\b", re.IGNORECASE)
+# A rule-A removal with no Church act rests on the named chronology, the testimony of the
+# Fathers, or the author's not being a Christian, which its detail states (Carter,
+# 15 Nov 2026; 3.1).
+_RULE_A_BASIS = re.compile(r"\b(chronology|testimony|not a Christian)\b", re.IGNORECASE)
 
 
 # --------------------------------------------------------------------------- loading
@@ -600,12 +604,11 @@ def _validate_removals(registry: WorkRegistry, documents: dict) -> list[str]:
                     out.append(f"removal {name}: anchor {key[1]} is also a redirect target")
         if reason in ("rule-a", "rule-b"):
             act = e.get("church_act")
-            if not act and reason == "rule-b":
-                if not _SCHOLARLY_BASIS.search(e.get("detail") or ""):
-                    out.append(f"removal {name}: a rule-b removal cites its Church act, or "
-                               "states its scholarly basis in its detail")
-            elif not act:
-                out.append(f"removal {name}: a {reason} removal cites its Church act")
+            basis = _SCHOLARLY_BASIS if reason == "rule-b" else _RULE_A_BASIS
+            if not act:
+                if not basis.search(e.get("detail") or ""):
+                    out.append(f"removal {name}: a {reason} removal cites its Church act, "
+                               "or states its basis in its detail")
             else:
                 out += [f"removal {name}: {p}" for p in _act_problems(act, effect=False)]
         if bool(e.get("closed_by")) != bool(e.get("closed_on")):

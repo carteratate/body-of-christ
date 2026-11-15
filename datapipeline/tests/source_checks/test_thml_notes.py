@@ -128,5 +128,6 @@ def test_footnotes_are_scripture_references_after_a_word(built):
                             or not 0 < n["at"] <= len(p.content) \
                             or p.content[n["at"] - 1].isspace():
                         bad.append((p.anchor, n))
-    # The Imitation prints its references in Arabic numerals ("Luke 17:21.").
-    assert bad == [] and total["church-fathers"] > 14000 and total["medieval"] >= 50
+    # The Imitation prints its references in Arabic numerals ("Luke 17:21."). The Fathers
+    # held over 14,000 before 3.1 removed the works rules A to C exclude; 10,758 after.
+    assert bad == [] and total["church-fathers"] > 10000 and total["medieval"] >= 50
