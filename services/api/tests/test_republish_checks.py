@@ -320,6 +320,42 @@ def test_some_within_looks_only_at_the_first_results():
     assert not rc.Some(target, within=1)(run, REGISTRY).ok
 
 
+def test_explanation_that_presents_an_objection_as_teaching_fails():
+    check = next(c for c in rc.CHECKS if c.id == "2.4d.summa-objection")
+    run = passing_run(check)
+    hit = next(h for h in run.results if h.voice == "rejected")
+    run.explanations[hit.id] = ("Aquinas argues that evil disproves God's existence, and "
+                                "teaches this conclusion; he answers the question directly.")
+    assert not check.expect(run, REGISTRY).ok
+
+
+def test_returned_fields_are_judged_as_returned():
+    """A stale payload is judged as the search returned it, not as the corpus stores
+    it; the corpus adds only the card's facts and visibility."""
+    stored = rc.Hit("p", "d", "catechism", reference="CCC §2263–2267", content="inadmissible",
+                    voice="rejected", author="Catholic Church", searchable=False)
+    returned = {"id": "p", "document_id": "d", "collection": "catechism",
+                "reference": "CCC §2266–2267 (part)", "content": "practically non-existent",
+                "voice": None, "anchor": "ccc/2266", "unit_label": None}
+    hit = rc.as_returned(returned, stored)
+    assert (hit.reference, hit.content, hit.voice, hit.anchor) == (
+        "CCC §2266–2267 (part)", "practically non-existent", None, "ccc/2266")
+    assert (hit.author, hit.searchable, hit.found) == ("Catholic Church", False, True)
+    missing = rc.as_returned(returned, None)
+    assert (missing.found, missing.content) == (False, "practically non-existent")
+
+
+def test_deuterocanonical_check_needs_every_book_cited_by_verse():
+    good = [{"key": b, "n": n, "miscited": 0}
+            for b, n in rc.DEUTEROCANONICAL_PASSAGES.items()]
+    assert rc.deuterocanonical_pericopes(good).ok
+    assert not rc.deuterocanonical_pericopes(good[1:]).ok
+    assert not rc.deuterocanonical_pericopes(
+        [{**r, "n": 0} if r["key"] == "Baruch" else r for r in good]).ok
+    assert not rc.deuterocanonical_pericopes(
+        [{**r, "miscited": 1} if r["key"] == "Tobit" else r for r in good]).ok
+
+
 def test_explanation_check_fails_without_its_passage():
     check = rc.ExplanationSays(rc.Match(voice="rejected"), ("reject",))
     assert not check(rc.SearchRun("q", ("summa",), [OTHER]), REGISTRY).ok
@@ -548,10 +584,10 @@ async def test_vector_paths_are_recorded_and_the_step_restored():
 
     retrieve_vector.run = fake
     try:
-        captured: list[str] = []
+        captured: list[dict] = []
         with rc._recording_vector_paths(captured):
             await retrieve_vector.run([], {}, ["bible"], 5)
-        assert captured == ["v1", "v2"]
+        assert captured == [{"id": "v1"}, {"id": "v2"}]
         assert retrieve_vector.run is fake
     finally:
         retrieve_vector.run = original
@@ -645,6 +681,9 @@ async def test_every_sql_check_runs_on_a_migrated_database(migrated, check):
         assert len(rows) == 1 and set(expect.expected) <= set(rows[0])
     elif isinstance(expect, rc.CountsBy):
         assert all(set(r) == {"key", "n"} for r in rows)
+    elif expect is rc.deuterocanonical_pericopes:
+        assert {r["key"] for r in rows} == set(rc.DEUTEROCANONICAL_PASSAGES)
+        assert all(set(r) == {"key", "n", "miscited"} for r in rows)
     else:
         assert all({"reference", "article"} <= set(r) for r in rows)
     expect(rows)  # an expectation reads what the query returns without raising
@@ -667,3 +706,29 @@ async def test_keyword_hydration_reads_a_passage_back(migrated):
     [hit] = hits.values()
     assert (hit.anchor, hit.collection, hit.searchable, hit.retired) == (
         "can/1055", "canon-law", True, False)
+
+
+async def test_deuterocanonical_sql_counts_a_missing_citation_as_miscited(migrated):
+    import asyncpg
+
+    from app.db import _init_connection
+
+    check = next(c for c in SQL_CHECKS if c.id == "1.4c.deuterocanonical-pericopes")
+    tobit = "00000000-0000-0000-0000-00000000b0b1"
+    migrated(f"""
+        INSERT INTO documents (id, collection, title) VALUES ('{tobit}', 'bible', 'Tobit');
+        INSERT INTO chunks (document_id, position, anchor, reference, content) VALUES
+          ('{tobit}', 0, 'tobit/1/1', 'Tobit 1:1–22', 'The book of the words of Tobit'),
+          ('{tobit}', 1, 'tobit/2/1', NULL, 'Now when I had come home again'),
+          ('{tobit}', 2, 'tobit/3/1', 'Tobit 3', 'Then being grieved');
+    """)
+    conn = await asyncpg.connect(host=str(migrated.socket), user="postgres",
+                                 database="postgres")
+    await _init_connection(conn)
+    try:
+        rows = [dict(r) for r in await conn.fetch(check.sql, *check.args(REGISTRY))]
+    finally:
+        await conn.close()
+        migrated(f"DELETE FROM documents WHERE id = '{tobit}'")
+    assert next(r for r in rows if r["key"] == "Tobit") == {"key": "Tobit", "n": 3,
+                                                             "miscited": 2}

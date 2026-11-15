@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import contextlib
+import dataclasses
 import json
 import re
 import sys
@@ -453,6 +454,28 @@ class CountsBy:
         return "exactly: " + ", ".join(parts) + "; nothing else"
 
 
+# 1.4c's passage counts per book, Sirach's prologue included (1.4c "As built").
+DEUTEROCANONICAL_PASSAGES = {
+    "Tobit": 31, "Judith": 45, "Wisdom": 47, "Sirach": 125, "Baruch": 20,
+    "1 Maccabees": 101, "2 Maccabees": 74,
+}
+
+
+def deuterocanonical_pericopes(rows: list[dict]) -> Verdict:
+    """Every book is there with its pericopes, each cited by verse range."""
+    got = {r["key"]: r for r in rows}
+    wrong = []
+    for book, n in DEUTEROCANONICAL_PASSAGES.items():
+        row = got.get(book) or {"n": 0, "miscited": 0}
+        if row["n"] < n:
+            wrong.append(f"{book}: {row['n']} passages, expected at least {n}")
+        if row["miscited"]:
+            wrong.append(f"{book}: {row['miscited']} not cited by verse range")
+    if wrong:
+        return Verdict(False, "; ".join(wrong))
+    return Verdict(True, ", ".join(f"{b} {got[b]['n']}" for b in DEUTEROCANONICAL_PASSAGES))
+
+
 _SUMMA_PARTS = {"FP": "I", "FS": "I-II", "SS": "II-II", "TP": "III", "XP": "Suppl.",
                 "AP1": "Suppl., App. 1", "AP2": "Suppl., App. 2"}
 _ARTICLE_ID = re.compile(r"^(FP|FS|SS|TP|XP|AP1|AP2)_Q(\d+)(?:_A(\d+))?")
@@ -714,8 +737,9 @@ def kept_check(id: str, items: str, proves: str, documents: dict[str, int]) -> S
     )
 
 
-# Words that say a position is rejected rather than taught.
-REJECTED_WORDS = r"condemn|reject|refut|objection|answer|error|heres|pagan|oppos|argu"
+# Words that say a position is rejected rather than taught. Not "argues" or "answers":
+# an explanation can use them while presenting the position as the author's own.
+REJECTED_WORDS = r"condemn|reject|refut|objection|error|heres"
 
 ORDINARY = {
     "bible": "What does Scripture say about caring for widows and orphans?",
@@ -954,7 +978,7 @@ CHECKS: list[Check] = [
                "Cyprian.",
         sql=f"""
             SELECT count(*) AS passages,
-                   count(*) FILTER (WHERE COALESCE(w.author, d.author) NOT ILIKE '%Firmilian%')
+                   count(*) FILTER (WHERE COALESCE(w.author, d.author, '') NOT ILIKE '%Firmilian%')
                        AS credited_otherwise
             FROM chunks c JOIN documents d ON d.id = c.document_id
             LEFT JOIN document_works w
@@ -1385,14 +1409,24 @@ CHECKS: list[Check] = [
     ),
     SqlCheck(
         id="1.4c.deuterocanonical-pericopes", items="1.4c",
-        proves="The deuterocanonical books are in pericopes cited by verse range, never a "
-               "bare chapter.",
+        proves="The seven deuterocanonical books are in pericopes (as many as 1.4c built), "
+               "each cited by verse range, never a bare chapter.",
         sql=f"""
-            SELECT count(*) AS chapter_only FROM chunks c JOIN documents d ON d.id = c.document_id
-            WHERE d.collection = 'bible' AND {VISIBLE}
-              AND c.reference ~ '^(Tobit|Judith|Wisdom|Sirach|Baruch|1 Maccabees|2 Maccabees) \\d+$'
+            SELECT b.book AS key, count(c.id) AS n,
+                   count(c.id) FILTER (WHERE coalesce(c.reference, '') <> 'Sirach, Prologue'
+                       AND coalesce(c.reference, '') !~ ('^' || b.book
+                           || ' \\d+:\\d+(–(\\d+:)?\\d+)?( \\(part \\d+ of \\d+\\))?$'))
+                       AS miscited
+            FROM unnest($1::text[]) AS b(book)
+            LEFT JOIN documents d ON d.collection = 'bible' AND d.title = b.book
+            LEFT JOIN chunks c ON c.document_id = d.id AND {VISIBLE}
+            GROUP BY b.book
         """,
-        expect=Row({"chapter_only": 0}),
+        params=(list(DEUTEROCANONICAL_PASSAGES),),
+        expect=deuterocanonical_pericopes,
+        expect_text="each book has at least as many passages as 1.4c built ("
+                    + ", ".join(f"{b} {n}" for b, n in DEUTEROCANONICAL_PASSAGES.items())
+                    + "), and none is cited other than by verse range",
     ),
     SqlCheck(
         id="1.8c.ignatius-shorter-recension", items="1.8c, 3.1",
@@ -1591,9 +1625,25 @@ def _hits(rows: Iterable[dict]) -> dict[str, Hit]:
     return {r["id"]: Hit(**dict(r)) for r in rows}
 
 
+# What a search returns travels with the passage (the Qdrant payload or the keyword
+# row): the text, citation, label and role the models and the card see. The checks
+# judge those as returned; the corpus row adds only what the card reads from it
+# (author, text labels) and whether the passage is visible.
+_RETURNED = ("document_id", "collection", "anchor", "reference", "unit_label", "content",
+             "voice")
+
+
+def as_returned(returned: dict, stored: Hit | None) -> Hit:
+    fields = {k: returned[k] for k in _RETURNED if k in returned}
+    if stored is None:
+        return Hit(id=returned["id"], **{"collection": "", "document_id": "", **fields},
+                   found=False)
+    return dataclasses.replace(stored, **fields)
+
+
 @contextlib.contextmanager
-def _recording_vector_paths(captured: list[str]):
-    """Record the IDs the vector path returns, for `ViaVector`, at no extra cost."""
+def _recording_vector_paths(captured: list[dict]):
+    """Record the rows the vector path returns, for `ViaVector`, at no extra cost."""
     from app.rag.steps import retrieve_vector
 
     original = retrieve_vector.run
@@ -1602,7 +1652,7 @@ def _recording_vector_paths(captured: list[str]):
         paths = await original(*args, **kwargs)
         for strategies in paths.values():
             for strategy in strategies:
-                captured.extend(row["id"] for row in strategy.rows)
+                captured.extend(strategy.rows)
         return paths
 
     retrieve_vector.run = recording
@@ -1660,11 +1710,11 @@ async def _live_context(spend: bool, registry: Registry) -> tuple[Context, Calla
 
         async def search(check: SearchCheck) -> SearchRun:
             tracker = CostTracker()
-            vector_ids: list[str] = []
+            vector_rows: list[dict] = []
             run = SearchRun(check.question, check.collections)
             try:
                 plan = resolve_search_plan(check.collections, check.quota)
-                with _recording_vector_paths(vector_ids):
+                with _recording_vector_paths(vector_rows):
                     result = await runner.run(config, check.question, list(plan.collections),
                                               plan.quota, search_plan=plan,
                                               cost_tracker=tracker)
@@ -1672,12 +1722,13 @@ async def _live_context(spend: bool, registry: Registry) -> tuple[Context, Calla
                 run.error = f"{type(exc).__name__}: {exc}"
                 run.cost = tracker.total_cost()
                 return run
-            found = await hydrate([c.chunk_id for c in result.chunks] + vector_ids)
-            run.results = [found.get(c.chunk_id) or Hit(
-                id=c.chunk_id, document_id=c.document_id, collection=c.collection,
-                anchor=c.anchor, reference=c.reference, content=c.content, found=False,
-            ) for c in result.chunks]
-            run.vector = [found[i] for i in dict.fromkeys(vector_ids) if i in found]
+            found = await hydrate([c.chunk_id for c in result.chunks]
+                                  + [row["id"] for row in vector_rows])
+            run.results = [as_returned({"id": c.chunk_id, **{k: getattr(c, k)
+                                                            for k in _RETURNED}},
+                                       found.get(c.chunk_id))
+                           for c in result.chunks]
+            run.vector = [as_returned(row, found.get(row["id"])) for row in vector_rows]
             run.outcome = result.outcome
             run.degradations = list(result.degradations)
             run.cost = tracker.total_cost()
