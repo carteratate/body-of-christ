@@ -693,10 +693,9 @@ def _print_plan(plan: Plan, rows: bool) -> None:
     if rows:
         for e in plan.entries:
             key = {c: e["before"][c] for c in _pk(e["table"])}
-            where = ({"document_id": e["after"]["document_id"],
-                      "chapter_key": e["after"]["chapter_key"]} if e["table"] == READING
-                     and e["action"] == "moved"
-                     else {"chunk_id": e.get("after", e.get("survivor", {})).get("chunk_id")})
+            target = e["after"] if e["action"] == "moved" else e["survivor"]
+            where = ({"document_id": target["document_id"], "chapter_key": target["chapter_key"]}
+                     if e["table"] == READING else {"chunk_id": target["chunk_id"]})
             print(f"  {e['table']} {e['action']} ({e['rule']}) {json.dumps(key)} -> {json.dumps(where)}")
 
 
