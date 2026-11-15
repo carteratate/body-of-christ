@@ -411,6 +411,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-11-15: both sets of rules approved as written in 4.1a steps 2 and 4, and the two calls the code made: a reading position whose chapter has no live passage moves to its document's first live chapter even with no redirect (also when the chapter was gone before the publish), and a label keeps its rank when its search drops a duplicate result.
 - **4.1b** [Phase 4]. Choose the quiet hour for the cutover, and give go or no-go the day before.
 - **4.2** [Phase 4]. Give go or no-go after the accuracy checks on the staging copy. Review the check questions in 4.2's PR.
+  Answered 2026-11-15: the question list in #387 (step 1) is approved as it stands, with the indulgence check also requiring §1471's definition (Sol's final review). `--json` keeps writing the report file the operator names; "nothing written" means no write to the corpus, Qdrant or user data. The go or no-go is still to come, after the staging run.
 - **RF-1** [after the republish; it was Phase 4 until 0.3 was dropped on 30 Oct 2026]. Approve the spend for a judged comparison on the republished corpus, then decide whether to change the dedup threshold for chapter-keyed collections (canon law, the Catechism, the Summa, the Bible) from 0.9 to the tested value. The comparison report gives the effect on judge scores and on how often distinct neighbouring passages are dropped.
 
 ### Phase 5
