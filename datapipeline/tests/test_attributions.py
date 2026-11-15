@@ -105,6 +105,18 @@ def test_every_row_of_the_spec_s_table_is_present():
     assert {k: attributions.WORKS[k].get("certainty") for k in works} == works
 
 
+def test_no_work_inherits_a_note_its_document_s_label_gives():
+    """The API falls back to the document's notes for a work whose own are null, so a
+    work inside a document 3.2 notes sets its own (an empty one hides the document's)."""
+    for work_id, labels in attributions.DOCUMENTS.items():
+        if labels.get("notes"):
+            for x in BY_WORK[work_id]["works"]:
+                if any(r["work_key"] == x["work_key"] and r["status"] == "active"
+                       for r in REG.passages if r["document_id"] == x.get("document_id",
+                       BY_WORK[work_id]["document_id"])):
+                    assert x["notes"] is not None, (work_id, x["work_key"])
+
+
 def test_every_label_says_what_it_rests_on():
     assert [name for name, labels, _ in _labels() if not labels.get("basis")] == []
 

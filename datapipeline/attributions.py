@@ -217,6 +217,9 @@ WORKS: dict[tuple[str, str], dict] = {
         "author": "Anonymous", "certainty": "anonymous",
         "attribution_note": "Its author is unknown; the editors printed it with Caius's "
                             "fragments on one scholar's guess.",
+        # Empty, not null: a work's null field falls back to its document's, and Caius's
+        # "Preserved in Eusebius" does not hold for the Fragment.
+        "notes": "",
         "basis": f"{MEMO} §10, Muratorian author"},
     ("church-fathers/third-fourth-century/iii.vi", "iii.vi.ii"): {
         "author": "Lactantius", "certainty": "disputed",
