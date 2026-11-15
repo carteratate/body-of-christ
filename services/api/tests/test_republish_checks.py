@@ -356,6 +356,19 @@ def test_deuterocanonical_check_needs_every_book_cited_by_verse():
         [{**r, "miscited": 1} if r["key"] == "Tobit" else r for r in good]).ok
 
 
+def test_indulgence_check_needs_the_definition_not_just_the_anchor():
+    """C-03: the card for §1471 must hold the definition itself."""
+    check = next(c for c in rc.CHECKS if c.id == "4.2.indulgence")
+    without = rc.Hit("p", rc.CATECHISM, "catechism", anchor="ccc/1471",
+                     content="§1471 The doctrine and practice of indulgences in the Church "
+                             "are closely linked to the effects of the sacrament of Penance.")
+    assert not check.expect(rc.SearchRun("q", ("catechism",), [without]), REGISTRY).ok
+    with_it = dataclasses.replace(without, content=without.content + ' "An indulgence is a '
+                                  'remission before God of the temporal punishment due to sins '
+                                  'whose guilt has already been forgiven."')
+    assert check.expect(rc.SearchRun("q", ("catechism",), [with_it]), REGISTRY).ok
+
+
 def test_explanation_check_fails_without_its_passage():
     check = rc.ExplanationSays(rc.Match(voice="rejected"), ("reject",))
     assert not check(rc.SearchRun("q", ("summa",), [OTHER]), REGISTRY).ok

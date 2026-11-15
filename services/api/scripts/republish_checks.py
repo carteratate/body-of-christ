@@ -955,7 +955,9 @@ CHECKS: list[Check] = [
         proves="\"What is an indulgence?\" finds the Catechism's definition, §1471.",
         question="What is an indulgence?",
         collections=("catechism",),
-        expect=Some(Match(document=CATECHISM, anchor="ccc/1471")),
+        expect=Some(Match(document=CATECHISM, anchor="ccc/1471",
+                          text="An indulgence is a remission before God of the temporal "
+                               "punishment due to sins")),
     ),
     SqlCheck(
         id="4.2.psalm-51-title", items="4.2, 1.4a, C-11",
