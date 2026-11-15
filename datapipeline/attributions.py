@@ -100,6 +100,12 @@ DOCUMENTS: dict[str, dict] = {
                             "20 to 22) with his own.",
         "basis": f"{MEMO} §8, Victorinus of Pettau; the text's chapter 20 is the "
                  "non-millenarian reading Jerome substituted"},
+    # On Loving God: the translation credit is 1.9's and 2.3's (R5); 3.2's table marks
+    # the attribution genuine.
+    "medieval/on-loving-god": {
+        "certainty": "genuine",
+        "basis": f"{PLAN}, Decision log, On Loving God translation; docs/research/"
+                 "R5-on-loving-god.md"},
     # Martyrdoms (C-15).
     "church-fathers/apostolic-fathers/iv.iv": {
         "credited_as": "Church of Smyrna", "certainty": "genuine", "attribution_note": _SMYRNA,

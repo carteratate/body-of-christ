@@ -17806,9 +17806,9 @@
   },
   "attribution": {
    "credited_as": null,
-   "certainty": null,
+   "certainty": "genuine",
    "clavis": null,
-   "basis": null,
+   "basis": "docs/2026-09-28-corpus-cleanup-plan.md, Decision log, On Loving God translation; docs/research/R5-on-loving-god.md",
    "editorial_judgments": []
   },
   "works": [],

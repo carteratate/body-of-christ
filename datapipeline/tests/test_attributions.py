@@ -70,6 +70,41 @@ def test_the_apostolic_canons_are_attributed_not_anonymous():
     assert not labels["attribution_note"].startswith("Attributed")
 
 
+def test_every_row_of_the_spec_s_table_is_present():
+    """Each document the 3.2 table names carries its certainty, so a row left out of the
+    tables is caught, not only a wrong one."""
+    certainty = {"church-fathers/apostolic-fathers/viii.vi": "pseudonymous",
+                 "church-fathers/apostolic-fathers/viii.vii": "pseudonymous",
+                 "church-fathers/apostolic-fathers/viii.v": "pseudonymous",
+                 "church-fathers/apostolic-fathers/viii.viii": "disputed",
+                 "church-fathers/third-fourth-century/viii.iii": "anonymous",
+                 "church-fathers/apostolic-fathers/iii.ii": "anonymous",
+                 "church-fathers/apostolic-fathers/vi.ii": "pseudonymous",
+                 "church-fathers/third-century-3/vii.iii": "genuine",
+                 "church-fathers/third-century-3/xi.ix": "disputed",
+                 "church-fathers/third-century-3/xi.x": "disputed",
+                 "church-fathers/third-century-3/vi.ix": "disputed",
+                 "church-fathers/third-century-2/iv.vi": "genuine",
+                 "church-fathers/third-fourth-century/vi.ii": "genuine",
+                 "church-fathers/apostolic-fathers/iv.iv": "genuine",
+                 "church-fathers/apostolic-fathers/viii.xi": "anonymous",
+                 "medieval/on-loving-god": "genuine"}
+    assert {k: attributions.DOCUMENTS[k].get("certainty") for k in certainty} == certainty
+    works = {("church-fathers/third-century-3/iii.iv", "iii.iv.iii"): "pseudonymous",
+             ("church-fathers/third-century-3/iii.iv", "iii.iv.iv"): "disputed",
+             ("church-fathers/third-century-3/iii.iv", "iii.iv.v"): "pseudonymous",
+             ("church-fathers/third-century-3/iii.iv", "iii.iv.vi"): "pseudonymous",
+             ("church-fathers/third-century-2/iii.v", "iii.v.i"): "pseudonymous",
+             ("church-fathers/third-century-2/iii.v", "iii.v.iv"): "anonymous",
+             ("church-fathers/third-century-2/v.iii", "v.iii.iii"): "anonymous",
+             ("church-fathers/third-century-2/iv.vii", "iv.vii.iii"): "anonymous",
+             ("church-fathers/third-century-2/iv.vii", "iv.vii.v"): "anonymous",
+             ("church-fathers/third-fourth-century/iii.vi", "iii.vi.ii"): "disputed",
+             APOSTOLIC_CANONS: "pseudonymous",
+             ("summa", "XP"): "genuine", ("summa", "vii"): "genuine"}
+    assert {k: attributions.WORKS[k].get("certainty") for k in works} == works
+
+
 def test_every_label_says_what_it_rests_on():
     assert [name for name, labels, _ in _labels() if not labels.get("basis")] == []
 
