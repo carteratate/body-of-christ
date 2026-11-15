@@ -1132,7 +1132,7 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
     - Letters by others in Cyprian's Epistles. 1.8c credits each to its sender as a work; this item approves the wording.
   - Unverified which document holds the Refutation of All Heresies (CPG 1899), the Muratorian fragment, On the Glory of Martyrdom, Exhortation to Repentance, Canons of Hippolytus, the Acts of Archelaus and the Lactantius Poem on the Passion. 2.1's registry must locate each by CPG number before this PR.
 - **Changes:** Registry values, per the plan's "Labels for works that stay" and D10, using 2.2a's fields. `author` is the rule H credit shown to users; `certainty` is the label; `clavis_ref` the CPG number. Where the table names a work inside a document, the values go on the `document_works` entry.
-  - Dates and genres (Carter, 14 Nov 2026, Decision log "Dates and genres of the Fathers (2.3)"): every Church Fathers document also gets its `year`, `date_display` ("c. 180", "397 to 400") and `genre` (2.1's writer genres), each date from the Clavis or the Church's own citations. 2.3 left them empty. They are document facts, so they go in as rules in `datapipeline/document_facts.py` and are written by `scripts/document_facts_registry.py`, never by hand in `works.json`.
+  - Dates and genres (Carter, 14 and 15 Nov 2026, Decision log "Dates and genres of the Fathers (2.3)" and "Dates of the Fathers from Quasten (3.2)"): every Church Fathers document also gets its `year`, `date_display` ("c. 180", "397 to 400") and `genre` (2.1's writer genres, with letter for letters and law for church orders), each date from Quasten's Patrology, cited per work; a work Quasten does not date has none. 2.3 left them empty. They are document facts, so they go in as rules in `datapipeline/document_facts.py` and are written by `scripts/document_facts_registry.py`, never by hand in `works.json`.
 
   | Work | author | certainty | attribution_note or notes | clavis_ref |
   |---|---|---|---|---|
@@ -1143,33 +1143,35 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   | Twelve Topics on the Faith (work in `44fd52c3`) | Pseudo-Gregory Thaumaturgus | pseudonymous | "Not by Gregory Thaumaturgus." | CPG 1772 |
   | On the Subject of the Soul, to Tatian | Gregory Thaumaturgus | disputed | | CPG 1773 |
   | Four Homilies, On All the Saints (works in `44fd52c3`) | Pseudo-Gregory Thaumaturgus | pseudonymous | | CPG 1775 to 1777 |
-  | Refutation of All Heresies | Hippolytus | disputed | "Attributed to Hippolytus in modern times; the attribution is disputed." Held until R1 settles rule A for its author and R4 settles which book contents are authorial. | CPG 1899 |
-  | Appendix pieces of Hippolytus | Pseudo-Hippolytus | pseudonymous | | per piece |
+  | Refutation of All Heresies | no label: removed under rule A by 3.1 (R1, accepted by Carter on 5 Oct 2026) | | | CPG 1899 |
+  | Appendix pieces of Hippolytus | Pseudo-Hippolytus | pseudonymous | The discourse on the end of the world only. The lists of the Twelve and the Seventy Apostles leave under rule C (rm-7001 to rm-7003); the Canons of the Church of Alexandria are Anonymous (Carter, 15 Nov 2026) | per piece |
   | Didache | Anonymous | anonymous | | |
-  | Epistle to Diognetus | Anonymous | anonymous | work note on chapters 11 and 12: "Chapters 11 and 12 are a later addition by another hand." | CPG 1112 |
-  | Muratorian fragment | Anonymous | anonymous | | |
+  | Epistle to Diognetus | Anonymous | anonymous | a note on the passages of chapters XI and XII: "Chapters 11 and 12 are a later addition by another hand." | CPG 1112 |
+  | Muratorian fragment (a work, "The Muratorian Fragment", in `8e5fb9cb`) | Anonymous | anonymous | "Its author is unknown; the editors printed it with Caius's fragments on one scholar's guess." | |
   | On the Glory of Martyrdom; Exhortation to Repentance | Anonymous | anonymous | | |
   | Canons of Hippolytus | Anonymous | anonymous | "An Egyptian church order, about 336 to 340." | CPG 1742 |
   | Epistle of Barnabas | Pseudo-Barnabas | pseudonymous | | |
-  | Acts of Archelaus | Hegemonius | genuine | | |
-  | Oration on the Palms; homily on the Cross fragments (Methodius) | Methodius | disputed | "Doubtful." | |
-  | Poem on the Passion (Lactantius) | Lactantius | disputed | "Doubtful." | |
-  | Exposition of the Chapters of the Acts (Pamphilus) | Pamphilus | disputed | "Doubtful." | |
+  | Acts of Archelaus | Hegemonius | genuine | "Written by Hegemonius; Archelaus is the bishop who debates Mani in it." | |
+  | Oration on the Palms; homily on the Cross fragments (Methodius) | Methodius | disputed | "Its attribution to Methodius is doubtful." | |
+  | Poem on the Passion (Lactantius) | Lactantius | disputed | "Its attribution to Lactantius is doubtful." | |
+  | Exposition of the Chapters of the Acts (Pamphilus) | Pamphilus | disputed | "Its attribution to Pamphilus is doubtful." | |
   | Martyrdom of Ignatius | unchanged (today's author label is kept, D10) | not set | "A legendary account." | |
   | Seventh Council of Carthage under Cyprian | Cyprian | genuine | "Its ruling on rebaptizing heretics was not adopted by the Church." | |
   | Summa Supplement and its appendix | Thomas Aquinas | genuine | "Compiled after Aquinas's death from his earlier writings." Applied as a work over the Supplement's 4,084 and the appendix's 82 passages. | |
-  | Victorinus, Commentary on the Apocalypse | Victorinus of Pettau | genuine | Two works, the original and "Jerome's recension", labeled separately. | |
-  | Apostolic Canons (the canons of Book VIII, a work in `10d8d7c6`) | Attributed to the Apostles | pseudonymous | A received work under rule D (D10). "Attributed to the Apostles; compiled about 380. The Latin West received canons 1 to 50 through Dionysius Exiguus; all 85 were confirmed by the Council in Trullo (canon 2) and Nicaea II (canon 1)." | |
+  | Victorinus, Commentary on the Apocalypse | Victorinus of Pettau | genuine | "This is Jerome's revision of the commentary: he replaced Victorinus's comments on the thousand-year reign (Revelation 20 to 22) with his own." The corpus holds only Jerome's recension (its chapter 20 is the non-millenarian reading), so there is no second work to label (Carter, 15 Nov 2026). | |
+  | Apostolic Canons (the canons of Book VIII, a work, "The Apostolic Canons", in `10d8d7c6`) | Attributed to the Apostles | pseudonymous | A received work under rule D (D10). "Compiled about 380. The Latin West received canons 1 to 50 through Dionysius Exiguus; all 85 were confirmed by the Council in Trullo (canon 2) and Nicaea II (canon 1)." | |
   | Cyprian's two anonymous treatises in `5d75dc92` (Treatises II and IV) | Anonymous | anonymous | | |
   | Martyrdom of Polycarp (C-15) | Church of Smyrna | genuine | "A letter of the Church of Smyrna on Polycarp's death; its writer, Evarestus, is named in chapter XX." | |
   | Martyrdom of Justin (C-15) | Anonymous | anonymous | "An account of the trial and death of Justin and his companions; its author is unknown." | |
-  | Fragment collections framed by a quoting writer (C-15; 16 documents, each named in the PR) | unchanged | unchanged | work note naming where the fragments were preserved, for example "Preserved in Eusebius, Church History" (decided by Carter on 9 Oct 2026; per-span credit for the quoting writer is later) | |
-  | Letters by others in Cyprian's Epistles (C-02; works set by 1.8c) | the sender, for example "Firmilian of Caesarea" | genuine | title naming sender and recipient, for example "Firmilian of Caesarea, to Cyprian" | |
+  | Fragment collections framed by a quoting writer (C-15; 16 documents, each named in the PR) | unchanged | unchanged | a note naming where the fragments were preserved, for example "Preserved in Eusebius, Church History" (decided by Carter on 9 Oct 2026; per-span credit for the quoting writer is later); the wording of each is in `datapipeline/attributions.py` (approved 15 Nov 2026) | |
+  | Letters by others in Cyprian's Epistles (C-02; works set by 1.8c) | the sender, for example "Firmilian of Caesarea" | genuine | title naming sender and recipient, for example "Firmilian of Caesarea, to Cyprian"; Firmilian's (LXXIV) also "Its view on rebaptizing heretics was not adopted by the Church."; XXV, XXIX and XXX are 3.1's | |
+  | Gregory Thaumaturgus, On the Trinity and On the Gospel According to Matthew (works in `44fd52c3`) | Gregory Thaumaturgus | disputed | | CPG 1787 (On the Trinity) |
+  | Gregory Thaumaturgus, Canonical Epistle (work in `685b8763`) | unchanged | not set | "The eleventh canon is a later addition." (the ANF editor's judgment, rule G) | |
   | On Loving God | Bernard of Clairvaux | genuine | translation: "Translated by William Harman van Allen (1909)" (R5; the full credit line, with "Sourced via CCEL.org", is in the Decision log row "On Loving God translation") | |
 
   Wording in the notes follows the research memo; Carter approves the final sentences. Works with CPG numbers take them from the research memo's confirmed list only.
   - Authenticity judgments copied from editorial text before rule G deletes it (plan rule G) go into `attribution_note`, except where this plan overrides them.
-  - No code change beyond registry values and their validation test.
+  - Code (Carter, 15 Nov 2026): the build applies the registry's author (`attribution.credited_as`) and each work's labels (`registry.apply_document_facts`), the adapters build the Apostolic Canons, the Muratorian Fragment and the Summa's Supplement and appendix as works, and `scripts/document_facts_registry.py` writes the labels, so a rerun after 3.1 drops those of every work 3.1 removes.
 - **Acceptance checks:**
   - 0.1d's `attribution.narrative_of_author_death` entries clear: no work titled "Martyrdom", "Passion" or "Acts of" is credited to its martyr without a note, D10's Martyrdom of Ignatius excepted.
   - Registry validation test: every entry in the table exists, has a `certainty` (except the Martyrdom of Ignatius, which keeps its label and sets none), and every `Pseudo-` author has `certainty = pseudonymous`. The Apostolic Canons entry's author is not "Anonymous".
@@ -1177,7 +1179,14 @@ The query that produced this table is kept in 3.1's Acceptance checks so it can 
   - After the Phase 4 apply, `GET /v1/documents/3f1d7ed1-...` returns `author: "Pseudo-Justin"` and `facts.certainty: "pseudonymous"`, and a search for "true religion of the Greeks" shows the Pseudo-Justin label on the card (manual check, screenshot in the 4.1b log).
   - PR description must list each label with its source line in the research memo, and the R1 and R4 outcomes for the Refutation.
 - **Production safety:** Values only. Nothing changes before the Phase 4 apply. At the apply, 2.2w writes the new `author` and facts into Postgres and the Qdrant payload in the same publish, so cards, the reader and `/sources` agree from the first second. The `(collection, title, translation, author)` unique key has no collision because no two documents share the new labels with the same title.
-- **Needs Carter:** Approval of every label and note sentence, including the Apostolic Canons wording.
+- **Needs Carter:** Approval of every label and note sentence, including the Apostolic Canons wording. Answered 15 Nov 2026: approved as recommended (Decision log "Labels, certainty and notes (3.2)", "Dates of the Fathers from Quasten (3.2)", "Pseudo-Hippolytus apostle lists (3.2, rule C)").
+- **As built (15 Nov 2026):**
+  - Labels. `datapipeline/attributions.py` holds them: `DOCUMENTS` by work_id (the author shown as `attribution.credited_as`, `certainty`, `clavis`, `basis`, and the facts `attribution_note` and `notes`), `WORKS` by work_id and work key (written on the `works` rows), and `PASSAGE_NOTES` (Diognetus XI and XII, written as each passage row's `note`). Every label carries its `basis`. `scripts/document_facts_registry.py` writes them with the facts, the build's works (a work it no longer emits keeps its row, unlabelled, since retired passages still name it) and each built passage's `work_key`; `--check` compares works.json and the passage registry. `registry.apply_document_facts` sets the document's author from `credited_as` and each Work's labels from its row. The embedding prefix uses the shown author, so the relabelled passages are embedded anew at the Phase 4 stage.
+  - New works. `church_fathers._EMBEDDED_WORKS` gains the Apostolic Canons (`ix.ix.vi`, 6 passages, chapter label "Canons", cited "The Apostolic Canons, Canons") and the Muratorian Fragment (`v.iii.iii`, 2 passages, cited "The Muratorian Fragment, Section III"). `summa.PART_WORKS` makes the Supplement (`XP`, 4,186 build passages) and its appendix (`vii`, 84) works of the Summa; the counts include 1.7's prologues.
+  - Fragment collections. Of the 16 documents titled as fragments, 14 carry a preservation note (Papias; Justin's Other Fragments and On the Resurrection; Irenaeus; Caius; Dionysius's Extant and Exegetical Fragments; Julius Africanus's Chronography; the Fragment of the Disputation; Peter's Fragments; Methodius's Fragments, Three Fragments, Some Other Fragments, and Two Fragments, Uncertain), and so does Methodius's From the Discourse on the Resurrection. The Lactantius fragments are whole poems, and Hippolytus's fragment works leave under rule A (3.1).
+  - Dates and genres. `document_facts.FATHERS_DATES` dates 54 documents and `FATHERS_WORK_DATES` 3 works, each with the Quasten volume and section; 91 documents get a genre (`FATHERS_GENRES`) and 10 works (`FATHERS_WORK_GENRES`). Undated where Quasten gives no date: among others the Dialogue with Trypho, Against Heresies, Clement of Alexandria, the Octavius, Methodius, Dionysius, On the Deaths of the Persecutors and the Victorinus commentary.
+  - Rule C. rm-7001 and rm-7002 retire the two apostle lists; rm-7003 retires the live piece 1.10b had merged into the Seventy list (`iii.v.iii/from-p55`), whose redirect closes (`closed_by: 3.2`), as 3.3 did for its Latin pieces.
+  - 0.1d. The three `attribution.narrative_of_author_death` known defects clear and leave `checks/known_defects.json`.
 - **Out of scope:** Author cleanup of malformed names such as "Tertullian: Part Fourth." and trailing periods (1.10a, 1.8c). Moving Boethius to Church Fathers (P5). The Catena Aurea's per-quotation attribution (P5; it uses 2.2a's `passage_author`).
 
 ---
