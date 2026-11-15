@@ -259,6 +259,14 @@ class Removed:
 Matcher = Match | Removed
 
 
+def _resolve(match: Matcher, registry: Registry | None) -> None:
+    """Read a removal selector's targets before looking at any result, so a selector
+    that names nothing errors even when the search returned nothing."""
+    if isinstance(match, Removed):
+        assert registry is not None
+        registry.removed(match.added_by, match.reason, match.documents)
+
+
 # --------------------------------------------------------------------------- search assertions
 
 class Assertion:
@@ -277,6 +285,7 @@ class Some(Assertion):
     within: int | None = None
 
     def __call__(self, run, registry):
+        _resolve(self.match, registry)
         pool = run.results[: self.within] if self.within else run.results
         found = [h for h in pool if self.match.matches(h, registry)]
         if found:
@@ -293,6 +302,7 @@ class First(Assertion):
     match: Matcher
 
     def __call__(self, run, registry):
+        _resolve(self.match, registry)
         if run.results and self.match.matches(run.results[0], registry):
             return Verdict(True, f"first is {_short(run.results[0])}")
         return Verdict(False, f"first is not it: {_listing(run.results)}")
@@ -306,6 +316,7 @@ class NoneOf(Assertion):
     match: Matcher
 
     def __call__(self, run, registry):
+        _resolve(self.match, registry)
         bad = [h for h in run.results if self.match.matches(h, registry)]
         if bad:
             return Verdict(False, f"returned {_listing(bad)}")
@@ -340,6 +351,7 @@ class ViaVector(Assertion):
     match: Matcher
 
     def __call__(self, run, registry):
+        _resolve(self.match, registry)
         found = [h for h in run.vector if self.match.matches(h, registry)]
         if found:
             return Verdict(True, f"vector path found {_short(found[0])}")
@@ -358,6 +370,7 @@ class ExplanationSays(Assertion):
     patterns: tuple[str, ...]
 
     def __call__(self, run, registry):
+        _resolve(self.match, registry)
         target = next((h for h in run.results if self.match.matches(h, registry)), None)
         if target is None:
             return Verdict(False, f"no result to explain: {_listing(run.results)}")

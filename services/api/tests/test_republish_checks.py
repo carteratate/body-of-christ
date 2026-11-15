@@ -554,6 +554,22 @@ async def test_a_healthy_search_with_no_candidates_can_pass_a_removal_check():
     assert result.status == "PASS", result.detail
 
 
+@pytest.mark.parametrize("check_id", [
+    "3.1.search-flight-in-persecution", "1.3d.search-held",
+])
+async def test_an_empty_search_still_needs_its_removal_targets(check_id):
+    """A healthy empty search must not pass a removal check whose item has not merged."""
+    check = next(c for c in rc.CHECKS if c.id == check_id)
+
+    async def search(c):
+        return rc.SearchRun(c.question, c.collections, outcome="no_candidates")
+
+    ctx = _context(search)
+    ctx.registry = rc.Registry([])
+    [result] = await rc.run_checks([check], ctx)
+    assert result.status == "ERROR" and "has that item merged" in result.detail
+
+
 async def test_aggregates_run_last_over_every_search():
     short = rc.Hit("s", "d", "bible", content="§1")
     check = next(c for c in rc.CHECKS if c.id == "4.2.susanna")
