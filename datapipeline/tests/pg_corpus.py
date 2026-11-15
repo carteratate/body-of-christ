@@ -146,3 +146,73 @@ def start() -> tuple[CorpusCluster, callable]:
         _run(["pg_ctl", "-D", str(root / "data"), "-m", "immediate", "-w", "stop"])
         shutil.rmtree(directory, ignore_errors=True)
     return cluster, stop
+
+
+# The user tables as production has them (0005, 0006, 0016, 0022, 0023, 0026, 0027,
+# 0028, 0030), with auth.users cut to its key, for tests of 4.1a's remap.
+PRODUCTION_USER_TABLES = """
+    DROP TABLE retrievals, bookmarks, retrieval_labels, guest_trial_retrievals,
+        reading_progress, product_feedback;
+    CREATE SCHEMA auth;
+    CREATE TABLE auth.users (id uuid PRIMARY KEY);
+    CREATE TABLE searches (
+        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+        query text NOT NULL DEFAULT 'q', filters jsonb, result_count int,
+        created_at timestamptz NOT NULL DEFAULT now());
+    CREATE TABLE retrievals (
+        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        search_id uuid NOT NULL REFERENCES searches(id) ON DELETE CASCADE,
+        chunk_id uuid NOT NULL REFERENCES chunks(id) ON DELETE CASCADE,
+        rank int NOT NULL, reranker_score float, explanation text,
+        created_at timestamptz NOT NULL DEFAULT now());
+    CREATE TABLE bookmarks (
+        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+        chunk_id uuid NOT NULL REFERENCES chunks(id) ON DELETE CASCADE,
+        created_at timestamptz NOT NULL DEFAULT now(),
+        note text CHECK (char_length(note) <= 3000),
+        UNIQUE (user_id, chunk_id));
+    CREATE TABLE retrieval_labels (
+        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+        chunk_id uuid NOT NULL REFERENCES chunks(id) ON DELETE CASCADE,
+        search_id uuid NOT NULL REFERENCES searches(id) ON DELETE CASCADE,
+        label text NOT NULL CHECK (label IN ('up', 'down')),
+        rank int NOT NULL CHECK (rank >= 1),
+        created_at timestamptz NOT NULL DEFAULT now(),
+        UNIQUE (user_id, chunk_id, search_id));
+    CREATE TABLE guest_trials (
+        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        ip_hash text NOT NULL DEFAULT 'h',
+        created_at timestamptz NOT NULL DEFAULT now(),
+        claimed_by uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+        claimed_at timestamptz);
+    CREATE TABLE guest_trial_retrievals (
+        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        guest_trial_id uuid NOT NULL REFERENCES guest_trials(id) ON DELETE CASCADE,
+        chunk_id uuid NOT NULL REFERENCES chunks(id) ON DELETE CASCADE,
+        rank integer NOT NULL, reranker_score double precision, explanation text,
+        created_at timestamptz NOT NULL DEFAULT now(),
+        UNIQUE (guest_trial_id, chunk_id));
+    CREATE TABLE reading_progress (
+        user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+        document_id uuid NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+        chapter_key text NOT NULL CHECK (char_length(chapter_key) BETWEEN 1 AND 500),
+        anchor text CHECK (anchor IS NULL OR char_length(anchor) BETWEEN 1 AND 500),
+        updated_at timestamptz NOT NULL DEFAULT now(),
+        PRIMARY KEY (user_id, document_id));
+    CREATE TABLE product_feedback (
+        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
+        message text NOT NULL DEFAULT 'feedback text',
+        search_id uuid REFERENCES searches(id) ON DELETE SET NULL,
+        chunk_id uuid REFERENCES chunks(id) ON DELETE SET NULL,
+        document_id uuid REFERENCES documents(id) ON DELETE SET NULL,
+        created_at timestamptz NOT NULL DEFAULT now());
+"""
+
+
+def use_production_user_tables(cluster: CorpusCluster, database: str) -> None:
+    """Replace a test database's key-only user tables with production's shapes."""
+    cluster.psql(database, PRODUCTION_USER_TABLES, single=True)
