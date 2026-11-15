@@ -2926,6 +2926,318 @@
   }
  },
  {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.ii",
+  "collection": "church-fathers",
+  "title": "Epistle II: The Roman clergy, to the clergy of Carthage (Oxford Ep. 8)",
+  "author": "Cyprian.",
+  "passages": 2,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "The Roman clergy during the vacancy of 250, presumed in communion; Quasten (p. 365) counts it among the letters 'from the presbytery of Rome', apart from Novatian's. No Church act found (3.1)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xvi",
+  "collection": "church-fathers",
+  "title": "Epistle XVI: The confessors, to Cyprian (Oxford Ep. 23)",
+  "author": "Cyprian.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xviii",
+  "collection": "church-fathers",
+  "title": "Epistle XVIII: Caldonius, to Cyprian (Oxford Ep. 24)",
+  "author": "Cyprian.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "An African bishop and Cyprian's colleague (Oxford Ep. 42 names him among Cyprian's commissioners). Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xx",
+  "collection": "church-fathers",
+  "title": "Epistle XX: Celerinus, to Lucian (Oxford Ep. 21)",
+  "author": "Cyprian.",
+  "passages": 2,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "A Roman confessor whom Cyprian later made a lector (Oxford Ep. 39). Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xxi",
+  "collection": "church-fathers",
+  "title": "Epistle XXI: Lucian, to Celerinus (Oxford Ep. 22)",
+  "author": "Cyprian.",
+  "passages": 2,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "A Carthaginian confessor; Cyprian rebuked his certificates of peace, but no source records a break. Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xxv",
+  "collection": "church-fathers",
+  "title": "Epistle XXV: Moyses, Maximus, Nicostratus and the other confessors, to Cyprian (Oxford Ep. 31; Novatian)",
+  "author": "Cyprian.",
+  "passages": 5,
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": "250",
+   "chronology_source": "Quasten, Patrology II, p. 226 (leaf 242)",
+   "church_acts": [
+    {
+     "issuer": "Roman synod under Pope Cornelius",
+     "date": "0251-01-01",
+     "act": "Synod of sixty bishops excommunicating Novatian and his followers (Eusebius, Church History 6.43; year 251 approximate, day unknown)",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/250106.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: written by Novatian, condemned by name (251). Quasten reports that B. Melin has shown it is 'most probably also of Novatian's pen'; errors fall toward exclusion. Decided by Carter on 15 Nov 2026 (3.1)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xxix",
+  "collection": "church-fathers",
+  "title": "Epistle XXIX: The presbyters and deacons at Rome, to Cyprian (Oxford Ep. 36; Novatian)",
+  "author": "Cyprian.",
+  "passages": 3,
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": "250",
+   "chronology_source": "Quasten, Patrology II, p. 213 (leaf 229)",
+   "church_acts": [
+    {
+     "issuer": "Roman synod under Pope Cornelius",
+     "date": "0251-01-01",
+     "act": "Synod of sixty bishops excommunicating Novatian and his followers (Eusebius, Church History 6.43; year 251 approximate, day unknown)",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/250106.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: written by Novatian, condemned by name (251). Quasten: sent in the name of the Roman presbyters and deacons but composed by Novatian, 'as contents and style prove'. Decided by Carter on 15 Nov 2026 (3.1)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xxx",
+  "collection": "church-fathers",
+  "title": "Epistle XXX: The Roman clergy, to Cyprian (Oxford Ep. 30; Novatian)",
+  "author": "Cyprian.",
+  "passages": 5,
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": "250",
+   "chronology_source": "Quasten, Patrology II, p. 213 (leaf 229)",
+   "church_acts": [
+    {
+     "issuer": "Roman synod under Pope Cornelius",
+     "date": "0251-01-01",
+     "act": "Synod of sixty bishops excommunicating Novatian and his followers (Eusebius, Church History 6.43; year 251 approximate, day unknown)",
+     "effect": "condemn",
+     "citation": "https://www.newadvent.org/fathers/250106.htm"
+    }
+   ],
+   "decision": "exclude",
+   "decision_basis": "Rule A limit 1: written by Novatian, condemned by name (251), as Cyprian testifies (Epistle LI to Antonianus, Oxford Ep. 55). Decided in the plan (Decision log, 'Letters in Cyprian's Epistles (C-02)')."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xxxviii",
+  "collection": "church-fathers",
+  "title": "Epistle XXXVIII: Caldonius, Herculanus and others, to Cyprian (Oxford Ep. 42)",
+  "author": "Cyprian.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Cyprian's commissioners, acting for him against Felicissimus. Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xlv",
+  "collection": "church-fathers",
+  "title": "Epistle XLV: Pope Cornelius, to Cyprian (Oxford Ep. 49)",
+  "author": "Cyprian.",
+  "passages": 2,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Pope and martyr (Quasten p. 236). Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xlvii",
+  "collection": "church-fathers",
+  "title": "Epistle XLVII: Pope Cornelius, to Cyprian (Oxford Ep. 50)",
+  "author": "Cyprian.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Pope and martyr (Quasten p. 236). Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.xlix",
+  "collection": "church-fathers",
+  "title": "Epistle XLIX: Maximus, Urbanus, Sidonius and Macharius, to Cyprian (Oxford Ep. 53)",
+  "author": "Cyprian.",
+  "passages": 1,
+  "rule_a": {
+   "applies": true,
+   "communion_start": "251",
+   "communion_end": null,
+   "work_date": "251",
+   "chronology_source": "Cornelius, Epistle XLV (Oxford Ep. 49); Quasten, Patrology II, p. 236 (leaf 252)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Break and return: Roman confessors who had joined Novatian's schism and returned to Cornelius in 251; the letter announces that return, so it was written after it. The synod of 251 named Novatian only. No Church act names them (3.1)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.lxxiv",
+  "collection": "church-fathers",
+  "title": "Epistle LXXIV: Firmilian of Caesarea, to Cyprian (Oxford Ep. 75)",
+  "author": "Cyprian.",
+  "passages": 12,
+  "rule_a": {
+   "applies": true,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": "about 256",
+   "chronology_source": "Quasten, Patrology II, pp. 128-129, 237 (leaves 144-145, 253)",
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Pope Stephen's letter to the bishops of Cilicia, Cappadocia and Galatia, naming Firmilian (Eusebius, Church History 7.5.4), threatened to excommunicate them over rebaptism (Quasten p. 237); no source shows it carried out, peace returned under Sixtus II, and Firmilian attended the synods of Antioch against Paul of Samosata until his death in 268 (Quasten p. 128). Not counted as a formal act; Cyprian, on the same side, stays. Decided by Carter on 15 Nov 2026 (3.1); 3.2 notes that its view on rebaptism was not adopted."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.lxxvii",
+  "collection": "church-fathers",
+  "title": "Epistle LXXVII: Nemesianus, Dativus, Felix and Victor, to Cyprian (Oxford Ep. 77)",
+  "author": "Cyprian.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Numidian bishops condemned to the mines in 257 (Nemesianus is venerated as a martyr). Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.lxxviii",
+  "collection": "church-fathers",
+  "title": "Epistle LXXVIII: Lucius and the brethren with him, to Cyprian (Oxford Ep. 78)",
+  "author": "Cyprian.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "A bishop condemned to the mines in 257. Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
+  "document_id": "aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe",
+  "div_id": "iv.iv.lxxix",
+  "collection": "church-fathers",
+  "title": "Epistle LXXIX: Felix, Jader, Polianus and the martyrs at the mines, to Cyprian (Oxford Ep. 79)",
+  "author": "Cyprian.",
+  "passages": 1,
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": "include",
+   "decision_basis": "Bishops condemned to the mines of Sigua in 257. Not a dated author: in communion when writing, or presumed in communion (rule A); no Church act found (3.1, by R1's method)."
+  }
+ },
+ {
   "author": "John Henry Newman",
   "title": "Apologia pro Vita Sua",
   "rule_a": {

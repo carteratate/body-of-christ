@@ -201,7 +201,7 @@ def generate(reg: registry.WorkRegistry, documents: list, live: dict[str, str], 
 
 def sync_works(reg: registry.WorkRegistry, rows: list[dict], documents: list) -> tuple:
     """works.json with each built document's `works`, and the passage rows with each built
-    passage's `work_key` (D6, D11)."""
+    passage's `work_key` (D6, D11); a retired row keeps its own."""
     built = {d.id: d for d in documents}
     works = []
     for w in reg.works:
@@ -213,7 +213,9 @@ def sync_works(reg: registry.WorkRegistry, rows: list[dict], documents: list) ->
     out = []
     for r in rows:
         if r["document_id"] in built:
-            r = {**r, "work_key": keys.get((r["document_id"], r["anchor"]))}
+            # A retired passage keeps the work it belonged to (3.1 retires whole works).
+            kept = r["work_key"] if r["status"] == "retired" else None
+            r = {**r, "work_key": keys.get((r["document_id"], r["anchor"]), kept)}
         out.append(r)
     return works, out
 

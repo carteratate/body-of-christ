@@ -1869,7 +1869,9 @@
   "new_anchor": "ix.ix.i/from-p1-3",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1879,7 +1881,9 @@
   "new_anchor": "ix.ix.ii/from-p103",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1889,7 +1893,9 @@
   "new_anchor": "ix.ix.ii/from-p24",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1899,7 +1905,9 @@
   "new_anchor": "ix.ix.ii/from-p30",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1909,7 +1917,9 @@
   "new_anchor": "ix.ix.ii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1919,7 +1929,9 @@
   "new_anchor": "ix.ix.ii/from-p30",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1929,7 +1941,9 @@
   "new_anchor": "ix.ix.ii/from-p49",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1939,7 +1953,9 @@
   "new_anchor": "ix.ix.ii/from-p68-2",
   "kind": "moved",
   "reason": "its text now lies in another piece of the unit",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1949,7 +1965,9 @@
   "new_anchor": "ix.ix.ii/from-p68-3",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1959,7 +1977,9 @@
   "new_anchor": "ix.ix.ii/from-p93",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1969,7 +1989,9 @@
   "new_anchor": "ix.ix.iii/from-p14",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1979,7 +2001,9 @@
   "new_anchor": "ix.ix.iii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1989,7 +2013,9 @@
   "new_anchor": "ix.ix.iv/from-p10-2",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -1999,7 +2025,9 @@
   "new_anchor": "ix.ix.iv/from-p26",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -2009,7 +2037,9 @@
   "new_anchor": "ix.ix.iv/from-p34",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -2019,7 +2049,9 @@
   "new_anchor": "ix.ix.iv/from-p41",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10c"
+  "added_by": "1.10c",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "10d8d7c6-680c-5739-bc98-6ce557371f25",
@@ -8723,7 +8755,9 @@
   "new_anchor": "iii.iv.i.ii.i",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8733,7 +8767,9 @@
   "new_anchor": "iii.iv.i.ii.i/from-p28",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8743,7 +8779,9 @@
   "new_anchor": "iii.iv.i.ii.i/from-p40",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8753,7 +8791,9 @@
   "new_anchor": "iii.iv.i.ii.i/from-p54",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8763,7 +8803,9 @@
   "new_anchor": "iii.iv.i.ii.i/from-p64",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8773,7 +8815,9 @@
   "new_anchor": "iii.iv.i.ii.i/from-p76",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8783,7 +8827,9 @@
   "new_anchor": "iii.iv.i.ii.i/from-p91",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8793,7 +8839,9 @@
   "new_anchor": "iii.iv.i.ii.iii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8803,7 +8851,9 @@
   "new_anchor": "iii.iv.i.vi.i",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8813,7 +8863,9 @@
   "new_anchor": "iii.iv.i.vi.i/from-p19",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8823,7 +8875,9 @@
   "new_anchor": "iii.iv.i.vi.i/from-p35",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8833,7 +8887,9 @@
   "new_anchor": "iii.iv.i.vi.i/from-p52",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8843,7 +8899,9 @@
   "new_anchor": "iii.iv.i.vi.i/from-p71",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8963,7 +9021,9 @@
   "new_anchor": "iii.iv.i.xiii.i",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8973,7 +9033,9 @@
   "new_anchor": "iii.iv.i.xiii.i",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.8a"
+  "added_by": "1.8a",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -8983,7 +9045,9 @@
   "new_anchor": "iii.iv.i.xiv.i/from-p20",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9143,7 +9207,9 @@
   "new_anchor": "iii.iv.ii.ii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.8a"
+  "added_by": "1.8a",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9153,7 +9219,9 @@
   "new_anchor": "iii.iv.ii.iii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9163,7 +9231,9 @@
   "new_anchor": "iii.iv.ii.iv/from-p103",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9173,7 +9243,9 @@
   "new_anchor": "iii.iv.ii.iv/from-p19",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9183,7 +9255,9 @@
   "new_anchor": "iii.iv.ii.iv/from-p27",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9193,7 +9267,9 @@
   "new_anchor": "iii.iv.ii.iv/from-p43",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9203,7 +9279,9 @@
   "new_anchor": "iii.iv.ii.iv/from-p58",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9213,7 +9291,9 @@
   "new_anchor": "iii.iv.ii.iv/from-p58",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9223,7 +9303,9 @@
   "new_anchor": "iii.iv.ii.iv/from-p74",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9233,7 +9315,9 @@
   "new_anchor": "iii.iv.ii.iv/from-p74",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9243,7 +9327,9 @@
   "new_anchor": "iii.iv.ii.iv",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9253,7 +9339,9 @@
   "new_anchor": "iii.iv.ii.v.i",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "506ebe31-239c-509c-ba5e-b6c822d002df",
@@ -9263,7 +9351,9 @@
   "new_anchor": "iii.iv.ii.vi/from-p41",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "51599a74-556f-577c-9828-88b5472baf2f",
@@ -9947,7 +10037,9 @@
   "new_anchor": "iv.vii.ii",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.8a"
+  "added_by": "1.8a",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -9957,7 +10049,9 @@
   "new_anchor": "iv.vii.ii/from-p21",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -9967,7 +10061,9 @@
   "new_anchor": "iv.vii.ii/from-p26",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -10017,7 +10113,9 @@
   "new_anchor": "iv.vii.iv/from-p11",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -10027,7 +10125,9 @@
   "new_anchor": "iv.vii.iv/from-p20",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -10037,7 +10137,9 @@
   "new_anchor": "iv.vii.iv/from-p23",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -10047,7 +10149,9 @@
   "new_anchor": "iv.vii.iv/from-p27",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "5d75dc92-df2c-5421-904f-4249590ff48a",
@@ -10673,7 +10777,9 @@
   "new_anchor": "iii.iii.iv.i",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
@@ -10683,7 +10789,9 @@
   "new_anchor": "iii.iii.iv.xiv/from-p2-2",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "685b8763-d3f3-5bb7-bf9f-c34efedaadf5",
@@ -10693,7 +10801,9 @@
   "new_anchor": "iii.iii.iv.xvi/from-p2-2",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "6895ce71-2eab-54d6-93a0-516a97625efc",
@@ -12999,7 +13109,9 @@
   "new_anchor": "iii.vi.i",
   "kind": "moved",
   "reason": "its text now lies in another piece of the unit",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "8b42a526-e078-56f4-89ab-4a87b995ef3b",
@@ -13009,7 +13121,9 @@
   "new_anchor": "iii.vi.i/from-p3-2",
   "kind": "moved",
   "reason": "its text now lies in another piece of the unit",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "8b42a526-e078-56f4-89ab-4a87b995ef3b",
@@ -13019,7 +13133,9 @@
   "new_anchor": "iii.vi.i/from-p3-3",
   "kind": "merged",
   "reason": "its opening unit no longer opens a piece",
-  "added_by": "1.10b"
+  "added_by": "1.10b",
+  "closed_by": "3.1",
+  "closed_on": "2026-11-15"
  },
  {
   "document_id": "8d817baf-5149-5641-91ab-ad994870956a",
