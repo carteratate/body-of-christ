@@ -633,6 +633,37 @@ async def test_report_lists_the_document_facts_diff(world, tmp_path):
     assert diffs[DOC_B] == {"reader_access": {"live": "full", "staged": "excerpt"}}
 
 
+async def test_report_lists_the_works_diff(world, tmp_path):
+    """3.2: a work inside a document (D6) that is new or whose labels change is in the
+    report, so a work-only label change is visible."""
+    from model import Work
+    doc = _doc(world, DOC_A)
+    doc.works = [Work(work_key="w1", ordinal=1, title="A work", author="Anonymous",
+                      certainty="anonymous")]
+    for p in doc.passages:
+        p.work_key = "w1"
+    await world.runner().stage(STAGE)
+    _, data = await _report(world, tmp_path)
+    assert [(d["document_id"], d["work_key"], d["new_work"]) for d in data["works_diff"]] \
+        == [(DOC_A, "w1", True)]
+    section = (tmp_path / "report" / "report.md").read_text() \
+        .split("## Works inside documents (3.2)")[1]
+    assert "| (new works) | 1 |" in section and f"`{DOC_A}` w1: new" in section
+
+
+def test_works_md_lists_each_changed_label():
+    from release import staged
+
+    diff = [{"document_id": "d", "work_key": "w", "collection": "summa", "new_work": False,
+             "changed": {"attribution_note": {"live": None, "staged": "Compiled after"},
+                         "author": {"live": "Y", "staged": "Pseudo-Y"}}}]
+    md = "\n".join(staged.works_md(diff))
+    assert "| author | 1 |" in md and "| attribution_note | 1 |" in md
+    assert "- summa `d` w: attribution_note None → 'Compiled after'; author 'Y' → 'Pseudo-Y'" \
+        in md
+    assert "No work differs from live." in "\n".join(staged.works_md([]))
+
+
 def test_report_dedup_collision_rate():
     from release import staged
 
