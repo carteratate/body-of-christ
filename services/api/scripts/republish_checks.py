@@ -79,6 +79,8 @@ class Hit:
     text_source: str | None = None
     text_status: str | None = None
     official_latin_url: str | None = None
+    # A Summa passage's article, as stored (metadata.article, 1.7).
+    article: str | None = None
     # False when the corpus holds no row for an ID the pipeline returned.
     found: bool = True
 
@@ -95,6 +97,9 @@ class SearchRun:
     error: str | None = None
     # Explanation text by passage ID, for the checks that ask for one.
     explanations: dict[str, str] = field(default_factory=dict)
+    # What production gives the explanation model for a result, by passage ID: the
+    # card as assembled, a Summa objection with its answer (stitch.with_stitched_content).
+    explain_inputs: dict[str, str] = field(default_factory=dict)
     cost: float = 0.0
     # Wall-clock seconds for the whole run and for its vector search (4.0 step 5: the
     # pre-cutover run times search on the new Qdrant collection).
@@ -531,6 +536,18 @@ def every_result(predicate: Callable[[Hit], bool], what: str
     return check
 
 
+def summa_results_cite_their_article(runs: list[SearchRun]) -> Verdict:
+    hits = [h for h in results_of(runs) if h.collection == "summa"]
+    if not hits:
+        return Verdict(False, "no search of this run returned a Summa result")
+    return summa_citations_agree([{"reference": h.reference, "article": h.article}
+                                  for h in hits])
+
+
+summa_results_cite_their_article.__doc__ = (
+    "every Summa result's returned citation names the article it is stored under")
+
+
 # --------------------------------------------------------------------------- checks
 
 @dataclass(frozen=True)
@@ -904,6 +921,12 @@ CHECKS: list[Check] = [
                "from the corpus.",
         expect=every_result(lambda h: h.found and h.searchable and not h.retired,
                             "every result is a searchable, live passage the corpus holds"),
+    ),
+    AggregateCheck(
+        id="4.2.summa-results-cite-their-article", items="1.7, C-07",
+        proves="Every Summa passage a search returns cites the article its text belongs "
+               "to, as the search returned it.",
+        expect=summa_results_cite_their_article,
     ),
     AggregateCheck(
         id="4.2.vatican-ii-results-not-notes", items="4.2, 1.1",
@@ -1548,7 +1571,8 @@ class Context:
     keyword: Callable[[str, str, int], Awaitable[list[str]]]
     # None when the run may not spend: the paid checks are then NOT RUN.
     search: Callable[[SearchCheck], Awaitable[SearchRun]] | None
-    explain: Callable[[Hit, str], Awaitable[tuple[str, float]]] | None
+    # (passage, question, the explanation input) -> (text, cost)
+    explain: Callable[[Hit, str, str], Awaitable[tuple[str, float]]] | None
     registry: Registry
 
 
@@ -1573,10 +1597,16 @@ async def run_check(check: Check, ctx: Context, runs: list[SearchRun]) -> Outcom
             runs.append(run)
             if run.error:
                 return Outcome(check, "ERROR", run.error, run)
+            # A search that did not run cleanly proves nothing, least of all that a
+            # removed passage is absent. A healthy search may still find nothing.
+            if run.degradations or run.outcome not in ("success", "no_candidates"):
+                return Outcome(check, "ERROR", f"search outcome {run.outcome}, degraded "
+                                               f"{run.degradations}; run it again", run)
             for target in check.explain_targets():
                 hit = next((h for h in run.results if target.matches(h, ctx.registry)), None)
                 if hit is not None and ctx.explain is not None:
-                    text, cost = await ctx.explain(hit, check.question)
+                    text, cost = await ctx.explain(
+                        hit, check.question, run.explain_inputs.get(hit.id, hit.content))
                     run.explanations[hit.id] = text
                     run.cost += cost
             verdict = check.expect(run, ctx.registry)
@@ -1614,7 +1644,8 @@ _HYDRATE_SQL = """
            c.voice, c.language, c.work_key,
            c.metadata->>'text_source' AS text_source,
            c.metadata->>'text_status' AS text_status,
-           c.metadata->>'official_latin_url' AS official_latin_url
+           c.metadata->>'official_latin_url' AS official_latin_url,
+           c.metadata->>'article' AS article
     FROM chunks c JOIN documents d ON d.id = c.document_id
     LEFT JOIN document_works w ON w.document_id = c.document_id AND w.work_key = c.work_key
     WHERE c.id = ANY($1::uuid[])
@@ -1693,6 +1724,7 @@ async def _live_context(spend: bool, registry: Registry) -> tuple[Context, Calla
         from app.rag.qdrant_client import close_qdrant, init_qdrant
         from app.rag.search_plan import resolve_search_plan
         from app.rag.steps import explain as explain_step
+        from app.rag.steps import stitch
         from app.rag.steps.cost_tracker import CostTracker
         from app.rag.steps.embed import close_embed, init_embed
         from app.rag.steps.hyde_luna import close as close_hyde_luna
@@ -1729,6 +1761,12 @@ async def _live_context(spend: bool, registry: Registry) -> tuple[Context, Calla
                                        found.get(c.chunk_id))
                            for c in result.chunks]
             run.vector = [as_returned(row, found.get(row["id"])) for row in vector_rows]
+            for chunk in result.chunks:
+                attached = result.context.get(chunk.chunk_id)
+                run.explain_inputs[chunk.chunk_id] = stitch.with_stitched_content(
+                    stitch.Stitched(chunk, attached.parts if attached else [],
+                                    attached.relation if attached else None)
+                ).content
             run.outcome = result.outcome
             run.degradations = list(result.degradations)
             run.cost = tracker.total_cost()
@@ -1737,10 +1775,10 @@ async def _live_context(spend: bool, registry: Registry) -> tuple[Context, Calla
                                        if t.step == "retrieve_vector"), None)
             return run
 
-        async def explain(hit: Hit, question: str) -> tuple[str, float]:
+        async def explain(hit: Hit, question: str, content: str) -> tuple[str, float]:
             tracker = CostTracker()
             parts = [delta async for delta in explain_step.stream(
-                hit.content, hit.reference, hit.collection, question,
+                content, hit.reference, hit.collection, question,
                 unit_label=hit.unit_label, cost_tracker=tracker, voice=hit.voice,
             )]
             return "".join(parts), tracker.total_cost()

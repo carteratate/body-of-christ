@@ -463,13 +463,16 @@ def test_summa_citations_agree_with_their_articles():
 
 @pytest.mark.parametrize("check", AGGREGATES, ids=lambda c: c.id)
 def test_aggregates_pass_and_fail_on_fixture_searches(check):
-    clean = rc.Hit("a", "00000000-0000-0000-0000-0000000000aa", "bible",
-                   content="A passage of ordinary length.")
+    clean = rc.Hit("a", rc.SUMMA, "summa", content="A passage of ordinary length.",
+                   reference="Summa Theologiae I, q. 2, a. 3, obj. 1: Whether God exists?",
+                   article="FP_Q2_A3")
     assert check.expect([rc.SearchRun("q", ("bible",), [clean])]).ok
     assert not check.expect([]).ok
     bad = {
         "4.2.no-short-results": dataclasses.replace(clean, content="§12"),
         "4.2.results-searchable": dataclasses.replace(clean, searchable=False),
+        "4.2.summa-results-cite-their-article": dataclasses.replace(
+            clean, reference="Summa Theologiae I, q. 2, a. 2, ad 1: Whether …"),
         "4.2.vatican-ii-results-not-notes": dataclasses.replace(
             clean, document_id=rc.NOSTRA_AETATE, content="Cf. Rom. 11:28."),
     }[check.id]
@@ -513,16 +516,42 @@ async def test_a_run_explains_only_its_target_and_adds_the_cost():
                             [OTHER, dataclasses.replace(target, voice="rejected",
                                                         unit_label=EXAMPLES[
                                                             r"^Condemned proposition 31 of Martin Luther"])],
-                            cost=0.01)
+                            cost=0.01, explain_inputs={target.id: "objection [answered:] reply"})
 
-    async def explain(hit, question):
-        asked.append(hit.id)
+    async def explain(hit, question, content):
+        asked.append((hit.id, content))
         return EXPLANATION, 0.002
 
     [outcome] = await rc.run_checks([check], _context(search, explain))
     assert outcome.status == "PASS", outcome.detail
-    assert asked == [target.id]
+    assert asked == [(target.id, "objection [answered:] reply")]
     assert rc.summarise([outcome])["cost_usd"] == 0.012
+
+
+@pytest.mark.parametrize("outcome,degradations", [
+    ("retrieval_failed", []), ("ranking_failed", []), ("degraded_success", ["cohere:bible"]),
+    ("success", ["rerank_listwise_luna:parse_failed"]),
+])
+async def test_a_search_that_did_not_run_cleanly_is_an_error(outcome, degradations):
+    """An empty result from a failed search must not pass a "never returns" check."""
+    check = next(c for c in rc.CHECKS if c.id == "3.1.search-flight-in-persecution")
+
+    async def search(c):
+        return rc.SearchRun(c.question, c.collections, outcome=outcome,
+                            degradations=degradations)
+
+    [result] = await rc.run_checks([check], _context(search))
+    assert result.status == "ERROR", result.detail
+
+
+async def test_a_healthy_search_with_no_candidates_can_pass_a_removal_check():
+    check = next(c for c in rc.CHECKS if c.id == "3.1.search-flight-in-persecution")
+
+    async def search(c):
+        return rc.SearchRun(c.question, c.collections, outcome="no_candidates")
+
+    [result] = await rc.run_checks([check], _context(search))
+    assert result.status == "PASS", result.detail
 
 
 async def test_aggregates_run_last_over_every_search():
