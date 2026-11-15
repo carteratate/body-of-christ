@@ -1,16 +1,4 @@
 {
- "attribution.narrative_of_author_death:church-fathers/841b4e0a-225f-5090-a4c0-36d8bf1a2f63": {
-  "fixed_by": "3.2",
-  "description": "The Martyrdom of Ignatius is credited to its martyr with no note (C-15)"
- },
- "attribution.narrative_of_author_death:church-fathers/cf8278dd-3523-576c-b85a-1402077bdae3": {
-  "fixed_by": "3.2",
-  "description": "The Martyrdom of Justin Martyr is credited to its martyr with no note (C-15)"
- },
- "attribution.narrative_of_author_death:church-fathers/f8faac83-ebf5-5a3c-850e-b9620465bc3d": {
-  "fixed_by": "3.2",
-  "description": "The Martyrdom of Polycarp is credited to its martyr with no note (C-15)"
- },
  "coverage.church-fathers.third-century.xml": {
   "fixed_by": "1.8e",
   "description": "66.0% covered since 3.1 took the works rules A to C remove (Tertullian's seven and Origen's three, in this volume) out of the measure; it was 95.04%, and its uncovered text is unchanged: the Appendix's pseudo-Tertullian poems (iii.xi, about 101,000 characters) and Origen's Letter to Africanus (vi.vii, 34,000), whole works the adapter drops (1.8e)"

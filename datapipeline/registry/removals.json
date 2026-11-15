@@ -14618,7 +14618,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 205
+   "count": 188
   },
   "judgment": null,
   "added_by": "1.10b",
@@ -14658,6 +14658,54 @@
   "judgment": null,
   "added_by": "1.8a",
   "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-7001",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc",
+  "anchor": "appendix-to-the-works-of-hippolytus-containing-dubious-and-spurious-pieces/part-ii",
+  "passage_id": "1691ef99-5a03-58bb-804d-574551351457",
+  "reason": "rule-c",
+  "detail": "Rule C: a list of the apostles written about the tenth century under Hippolytus's name (Schermann, Prophetarum vitae fabulosae, 1907; M. Tomić, Dumbarton Oaks Papers 78, 2024). Carter, 15 Nov 2026 (3.2). Piece: The Twelve Apostles.",
+  "tombstone": "Removed because this list was written centuries after Hippolytus under his name, and TheoCorpus excludes such late forgeries.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "3.2",
+  "added_on": "2026-11-15"
+ },
+ {
+  "id": "rm-7002",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc",
+  "anchor": "appendix-to-the-works-of-hippolytus-containing-dubious-and-spurious-pieces/part-iii/p1",
+  "passage_id": "a73728c9-f260-51c2-83fc-d46b13802498",
+  "reason": "rule-c",
+  "detail": "Rule C: a list of the apostles written about the tenth century under Hippolytus's name (Schermann, Prophetarum vitae fabulosae, 1907; M. Tomić, Dumbarton Oaks Papers 78, 2024). Carter, 15 Nov 2026 (3.2). Piece: The Seventy Apostles.",
+  "tombstone": "Removed because this list was written centuries after Hippolytus under his name, and TheoCorpus excludes such late forgeries.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "3.2",
+  "added_on": "2026-11-15"
+ },
+ {
+  "id": "rm-7003",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc",
+  "anchor": "appendix-to-the-works-of-hippolytus-containing-dubious-and-spurious-pieces/part-iii/p2",
+  "passage_id": "0e6a528b-6580-57fb-9d3d-346b012060b5",
+  "reason": "rule-c",
+  "detail": "Rule C: a list of the apostles written about the tenth century under Hippolytus's name (Schermann, Prophetarum vitae fabulosae, 1907; M. Tomić, Dumbarton Oaks Papers 78, 2024). Carter, 15 Nov 2026 (3.2). Piece: The Seventy Apostles, the piece 1.10b merged into rm-7002's passage.",
+  "tombstone": "Removed because this list was written centuries after Hippolytus under his name, and TheoCorpus excludes such late forgeries.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "3.2",
+  "added_on": "2026-11-15"
  },
  {
   "id": "rm-0081",

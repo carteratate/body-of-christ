@@ -248,13 +248,29 @@ def document_facts(entry: dict) -> dict:
     return facts
 
 
+# A works.json `works` row's label fields (3.2), which the build sets on the adapter's Work.
+WORK_LABELS = ("author", "certainty", "attribution_note", "notes", "date_display", "year",
+               "genre", "clavis_ref")
+
+
 def apply_document_facts(document: Document, registry: WorkRegistry | None = None
                          ) -> Document:
     """The document with its registry facts set: the registry wins over the adapter (2.3).
-    A document whose entry has no facts is unchanged."""
+    Its author is the entry's `attribution.credited_as` where one is set, and each of its
+    works takes the labels of the entry's row for that work (3.2). A document whose entry
+    has no facts is unchanged."""
     entry = (registry or current()).entry_by_document.get(document.id)
     facts = document_facts(entry) if entry else {}
-    return replace(document, **facts) if facts else document
+    if not facts:
+        return document
+    credited = (entry.get("attribution") or {}).get("credited_as")
+    if credited:
+        facts["author"] = credited
+    rows = {x["work_key"]: x for x in entry.get("works", [])}
+    if document.works:
+        facts["works"] = [replace(w, **{k: rows[w.work_key].get(k) for k in WORK_LABELS})
+                          if w.work_key in rows else w for w in document.works]
+    return replace(document, **facts)
 
 
 def removed_document_ids(registry: WorkRegistry | None = None) -> set[str]:
