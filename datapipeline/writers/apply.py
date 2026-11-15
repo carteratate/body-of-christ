@@ -161,7 +161,8 @@ def _sha256(path: str) -> str:
 def write_snapshot(rows: dict[str, list[dict]], directory: str, *,
                    replace: bool = False) -> dict[str, str]:
     """Write one gzipped JSONL file per table (corpus text only, no user data) and return
-    {file: sha256}. An existing snapshot is replaced only when `replace` (its publish was
+    {file: sha256}. 4.1a's remap adds its private ledger to the same folder later in the
+    apply transaction (`remap_user_data.LEDGER_FILE`), with its sha256. An existing snapshot is replaced only when `replace` (its publish was
     never applied, so nothing can roll back to it)."""
     if os.path.exists(directory):
         if not replace:
