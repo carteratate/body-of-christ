@@ -293,8 +293,8 @@ async def facts_diff(conn, collections: list[str]) -> list[dict]:
 
 
 async def works_diff(conn, collections: list[str]) -> list[dict]:
-    """Per work inside a document, the labels staging changes against live (3.2): new
-    works, and each changed `document_works` column."""
+    """Per work inside a document, the labels staging changes against live (3.2): each
+    changed `document_works` column, and for a new work every value it is given."""
     cols = ", ".join(f"w.{c} AS live_{c}, s.{c} AS staged_{c}" for c in WORK_COLUMNS)
     rows = await conn.fetch(
         f"""SELECT s.document_id::text AS document_id, s.work_key, sd.collection,
@@ -309,7 +309,7 @@ async def works_diff(conn, collections: list[str]) -> list[dict]:
     for r in rows:
         changed = {c: {"live": _plain(r[f"live_{c}"]), "staged": _plain(r[f"staged_{c}"])}
                    for c in WORK_COLUMNS
-                   if not r["new_work"] and r[f"live_{c}"] != r[f"staged_{c}"]}
+                   if r[f"live_{c}"] != r[f"staged_{c}"]}
         if changed or r["new_work"]:
             out.append({"document_id": r["document_id"], "work_key": r["work_key"],
                         "collection": r["collection"], "new_work": r["new_work"],
@@ -414,7 +414,7 @@ def works_md(diff: list[dict]) -> list[str]:
     for d in diff:
         new[d["collection"]] += d["new_work"]
         for f in d["changed"]:
-            counts[(d["collection"], f)] += 1
+            counts[(d["collection"], f)] += not d["new_work"]
     lines += ["Works whose value differs from live, by field and collection.", "",
               "| Field | " + " | ".join(collections) + " |",
               "|---|" + "---|" * len(collections)]
@@ -424,8 +424,11 @@ def works_md(diff: list[dict]) -> list[str]:
                          + " |")
     lines += ["| (new works) | " + " | ".join(str(new[c]) for c in collections) + " |", ""]
     for d in diff:
-        what = "new" if d["new_work"] else "; ".join(
-            f"{f} {v['live']!r} → {v['staged']!r}" for f, v in d["changed"].items())
+        if d["new_work"]:
+            what = "new: " + "; ".join(f"{f} {v['staged']!r}" for f, v in d["changed"].items())
+        else:
+            what = "; ".join(f"{f} {v['live']!r} → {v['staged']!r}"
+                             for f, v in d["changed"].items())
         lines.append(f"- {d['collection']} `{d['document_id']}` {d['work_key']}: {what}")
     return lines + [""]
 

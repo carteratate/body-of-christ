@@ -648,7 +648,11 @@ async def test_report_lists_the_works_diff(world, tmp_path):
         == [(DOC_A, "w1", True)]
     section = (tmp_path / "report" / "report.md").read_text() \
         .split("## Works inside documents (3.2)")[1]
-    assert "| (new works) | 1 |" in section and f"`{DOC_A}` w1: new" in section
+    assert "| (new works) | 1 |" in section
+    # A new work's labels are listed, so a reviewer sees them before the apply.
+    assert f"`{DOC_A}` w1: new: title 'A work'; author 'Anonymous'; certainty 'anonymous'" \
+        in section
+    assert data["works_diff"][0]["changed"]["author"] == {"live": None, "staged": "Anonymous"}
 
 
 def test_works_md_lists_each_changed_label():
