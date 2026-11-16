@@ -540,11 +540,7 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 17. Known Issues & Deferred Work
 
-### 1. JWKS refresh still stampedes
-
-`app/auth/jwks.py` has an `asyncio.Lock`, but it guards only the **cache write** — `_fetch_from_remote()` runs outside it. Concurrent coroutines that all see a stale cache still all issue HTTP requests to Supabase. Low priority; the fix is to hold the lock across the fetch with a double-check on entry.
-
-### 2. Do not delete `rag/steps/dedup.py`
+### 1. Do not delete `rag/steps/dedup.py`
 
 **`rag/steps/dedup.py` is NOT dead — do not delete it.** `pipelines/runner.py` imports it
 in the parenthesized `from app.rag.steps import (...)` block, which is easy to miss with a
