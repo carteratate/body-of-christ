@@ -33,6 +33,12 @@ python3 -m pytest tests/
 cd datapipeline && python3 run_collection.py --collection bible --dry-run
 cd datapipeline && python3 publish.py stage --collection bible --release <name>
 
+# Datapipeline tests, in parallel (pytest-xdist). `-n auto` sizes the workers by free
+# memory, not CPU count (tests/conftest.py); loadscope builds each module's fixtures once.
+# With the sources about 6 min on the Lenovo, against 22 serially. A serial run
+# (`python3 -m pytest tests`) is still fine and gives the same results.
+cd datapipeline && python3 -m pytest tests -n auto --dist loadscope
+
 # Docker (prod-like)
 docker build -t theocorpus-api services/api
 docker run --env-file services/api/.env -p 8000:8000 theocorpus-api
