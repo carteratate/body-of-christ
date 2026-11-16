@@ -838,6 +838,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   5. A running storage total at the top, for Supabase and Qdrant. Stop and ask Carter (a paid Qdrant tier, or reorder the additions) when a publish's Qdrant peak, the live collection plus the new one it builds, would pass 3.4 GB of the Free cluster's 4 GiB disk, or when Supabase disk use would pass 85%.
   6. Public facts only. Correspondence, and anything Carter has not sent, stays in the private memos.
 - **Acceptance checks:** Every work named in 5.3 to 5.6c has a row with status cleared, or excerpt-only with an `excerpt_basis` its passages pass, before its PR merges. A blocked row blocks its PR. Each addition PR links its rows. The storage total is updated in each addition PR.
+- **Recorded (16 Nov 2026):** rows for 5.3a, 5.4, 5.5 and 5.6a, with the spec's other columns and the running storage total, in `5.2-rights-records.md`. Measured then: the database is 210 MB after 4.0's rewrite (3.4 KB a passage); Qdrant holds one collection, `chunks`, 54,555 points, behind `chunks_live`; live passages average 1,055 characters (church-fathers 2,273, encyclicals 1,180). The last Phase 5 publish projects to about 1.8 GB of Qdrant disk, so step 5's stop is not expected to trigger. The R6 title-page questions above are settled, and Gregory the Great's translator in npnf212 is confirmed as James Barmby.
 - **Production safety:** Documentation only.
 - **Needs Carter:** All correspondence with rights holders (CCEL, ecatholic2000, NINS for the Newman Reader, the Aquinas Institute if SCG is taken from aquinas.cc). The Qdrant tier decision when the storage total reaches step 5's stop.
 - **Out of scope:** Paid licences (Decision log, "Licences": no spending in this cleanup). Any TheoCorpus translation (Decision log, "Rights review").
@@ -987,7 +988,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
     - Ambrose, npnf210.
     - Chrysostom, npnf109 to npnf114 (six volumes).
   - Pseudo-Dionysius comes from CCEL `dionysius/works` (Parker, 1897 and 1899; both *Hierarchies* are in the second volume), which the scan memo found clean apart from light OCR slips, header "Rights: public domain". Do not use CCEL's separate `dionysius/celestial` (unattributed translation).
-  - Sizes are unmeasured. Chrysostom's six volumes are the largest addition in P5 (estimate in the millions of words; measure before building).
+  - Sizes (measured for 5.2 on 16 Nov 2026, body text without ThML notes): about 25 million characters across the 12 files, about 9,200 passages after the editorial strip. Chrysostom's six volumes are 14.7 million characters, about 5,400 passages, the largest single addition in P5.
 - **Changes:**
   1. Vendor list entries per volume. Split into PRs in this order:
      - Basil.
