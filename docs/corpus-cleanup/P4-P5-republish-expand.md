@@ -796,7 +796,8 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Research first:** The rights position of the 1954 German edition's editorial work, since options 1 and 3 use the headings, notes, numbering and selection that 1.2e leaves out. Whether the book's modern papal texts can be used. A map of its entries to the corpus: which are duplicates, which fill a gap, and which are new. What each option costs in OCR, in Qdrant and in the 1.2e rule. A concordance from Deferrari's D numbers to the DS numbers modern documents cite.
 - **Acceptance checks:** Carter's choice is in the Decision log, and the items it needs are in this plan.
 - **Production safety:** Decision and research only.
-- **Needs Carter:** Answered 15 Nov 2026 (above). Still to confirm after the research: where each kind of entry goes, and whether the book view is legal.
+- **Research (15–16 Nov 2026):** `docs/research/5.0-denzinger.md` (the map of entries, the D-to-DS concordance plan, the costs); the rights memo is kept privately.
+- **Needs Carter:** Answered 15 Nov 2026 (above) and 16 Nov 2026 on the research: the book view is built, on the conditions in the Decision log row "Denzinger book view (5.0)"; entries go where the row "Where Denzinger's entries go (5.0)" says; post-1930 originals the corpus lacks are held (row "Denzinger entries issued after 1930 (5.0)"); a fuller text replaces Deferrari's extract where one exists (row "Fuller texts over Deferrari's extracts (5.0)"). Next: the items these need (the concordance, the placed entries, the book view) are written into this plan before any addition starts.
 - **Out of scope:** Publishing anything. Each option's work is its own item.
 
 ---
