@@ -421,6 +421,98 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 
 ---
 
+### 4.3. Held texts in their place in the reader and the Library (#394)
+
+- **Type:** three PRs, merged in order: (a) the held-texts registry and its check; (b) the stage writes it and the report shows it; (c) the API and web. Then one ops step, a 2.2w publish of the collections that hold texts. Design written 15 Nov 2026; nothing is built until Carter says the Phase 4 cutover is done.
+- **Depends on:** 4.1b done, including step 13: the lock entry `republish-2026-10` stays alone in `PUBLISH_LOCK.json` until the rollback window closes (4.1b step 1), so this item's publish cannot run before then. 4.1b step 1's build freeze also stops PRs (a) and (b) from merging until the cutover is done or abandoned. PR (c) is safe to merge earlier, since it renders nothing until the publish writes the list, but it waits too so the three are reviewed together. 2.2w, 2.4a and 2.4b live. Before any Phase 5 item (issue #394).
+- **Goal:** A reader browsing a council, or a papal document published in part, sees the whole document in order. Every held text appears in its place with a reader-facing heading, marked "Not on TheoCorpus at present", and a link that opens the text online in a new tab. Its text is never shown. The Library row says how many texts are read online. Search does not change.
+- **Terms.** A **held text** is one text of a document (a sentence, a decree, a session's acts, a run of paragraphs) that the republish retires with reason `translation-in-preparation` in the `councils` collection (the gap register, G3 to G13, and pieces 1.2e's sources do not print) or `awaiting-permission` at passage scope (ADR 0001's partly published papal documents). One held text stands for one or more retired passages. Passages retired under any other reason (`rule-g-editorial`, `debris`, the rules A to C) are not held texts and are never listed: they were never the document's text, or were removed for good.
+- **Current state (15 Nov 2026, master `4495a91`, read-only queries against production the same day):**
+  - Production is still the old corpus: 0 tombstones, 0 retired passages, and no document has `metadata.held_text_url`. Everything below about retired rows is what the republish will produce.
+  - The removal registry (`datapipeline/registry/removals.json`) holds 430 open passage entries in scope: 346 `translation-in-preparation` in 8 councils and 84 `awaiting-permission` in 10 encyclicals and Exsurge Domine. 400 of them name a passage that is live today; the other 30 name pieces 1.10c cut, which no publish carried, so they will never have a tombstone. Closed entries (`closed_by`, for example Lyons I's ten G4 passages, now redirected to Giles's text) are not held (`registry.open_removals`).
+
+    | Document | Open entries (live today) | Held texts, grouped as below |
+    |---|---|---|
+    | Basel–Ferrara–Florence | 123 (97) | 28 |
+    | Constance | 109 (107) | 17 |
+    | Fifth Lateran | 59 (44) | 17 |
+    | Vienne | 43 (39) | 2 |
+    | Constantinople IV | 8 (7) | 1 |
+    | Vatican I | 2 (2) | 2 |
+    | Constantinople II, Lyons II | 1 (1) each | 1 each |
+    | Ten encyclicals (Vix Pervenit, Cum Summi, Salutis Nostrae, Traditi Humilitati, Singulari Nos, Nostis et Nobiscum, Qui Nuper, Nullis Certe Verbis, Quanto Conficiamur Moerore, Levate) | 76 (72) | 28 runs of consecutive paragraphs |
+    | Exsurge Domine | 8 (4) | the bull's closing, in 1 to 8 entries (the pieces lie inside `closing`; settled by PR (a)) |
+
+    Grouping for the councils is by the entry's `detail` with the "(gap Gn)" tag and ", a piece the 1.10c build cut" removed, splitting a detail that names two texts ("X; Y"). 21 Florence passages straddle two texts that way; none elsewhere. About 70 council entries and about 30 papal ones in all.
+  - Each entry has `document_id`, `anchor`, `passage_id`, `detail` and the tombstone sentence. `detail` is internal wording ("Session 15, the 58 articles of Wyclif condemned with the sentence (gap G6)") and is not a reader heading. No field records a passage's place in the document. Tanner anchors (`council-of-constance/sec-17/23-2`) give the Tanner section but not reliable order inside it.
+  - The built Constance (`ingest/councils_schroeder.py`, checked by building it on the Lenovo) has 13 passages in four chapters, `council-of-constance/session-8`, `-13`, `-15` and `-43`, labelled "Session 8" and so on, no contents tree, and `metadata.held_text_url` = `https://www.papalencyclicals.net/councils/ecum16.htm`. Every council built by 1.2c to 1.2e, and every partly published papal document (`ingest/papal_printings.py:264`), carries `held_text_url`.
+  - The reader outline is `document_chapters` (0037), built by `refresh_document_outline` from non-retired passages only; the contents tree is `document_contents` (0040), whose every node must open a chapter that exists (`_contents_tree`, `routes/documents.py:364`). Neither can hold an entry with no passages behind it.
+  - `TocResponse` is `document`, `chapters`, `contents` (`app/models/documents.py:105`). The web reads it once per document through `lib/reader-cache.ts` for both the overview and the reader.
+  - `/sources` returns each document's `metadata` whole (`routes/sources.py:139`); the Library's `DocRow` (`SourcesPage.tsx`) shows the title, attribution and translation, and links an excerpt-only document to its source in a new tab with an `ExternalLink` mark (#265).
+  - 2.2w's stage writes `staging.documents.metadata` from `Document.metadata` (`reader_writer.write_staged_document`); the apply upserts documents by ID; the before-snapshot exports `documents` rows; the release report diffs document facts (2.3). The Qdrant payload and the embedding input carry no document metadata (`search_writer.build_point`, `build_embedding_input`).
+- **Where the ordered list comes from.** Three sources were compared:
+
+  | Source | Order | Heading | Durable | Verdict |
+  |---|---|---|---|---|
+  | Tombstone `snapshot` (`corpus_tombstones`) | None: it stores `collection, title, author, reference, chapter_label`, no position, chapter key or anchor. Adding them changes 2.2w's stage output, the build 4.1a rehearsed | None: one row per old passage, and `public_reason` is the same sentence for all | In production, but only after the apply; pieces 1.10c cut never get one, and no dry run can check it | Not used |
+  | 2.2w's before-snapshot (`releases/snapshots/<release>-before/`) | Yes: live positions before the apply | None | No: local, gitignored, on one machine, per release, deleted when the window closes (4.1b step 13) | Not used. Its only job is rollback |
+  | Removal registry (`removals.json`) | Partly: anchors give the Tanner section | No: `detail` is internal | Yes: in git, reviewed, and the list D4 already makes complete | The source, through a new file |
+
+  **Recommended and specified:** the removal registry is the source of truth for *which* passages are held, and a new reviewed file groups them into texts and gives each its heading and place. The list is written once per document by hand-checked generation, and the build checks it against the registry on every run, so it can never drift from what retires.
+- **Changes:**
+  - **PR (a): the held-texts registry.**
+    - New `datapipeline/registry/held_texts.json`, one entry per held text, in each document's reading order:
+
+      ```json
+      {"id": "ht-0042", "document_id": "bfcce97d-…", "label": "Session 8",
+       "heading": "Sentence against John Wyclif, and the condemnation of his books",
+       "after_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
+       "removal_ids": ["rm-…", "rm-…"], "url": null,
+       "added_by": "4.3", "added_on": "2026-…"}
+      ```
+
+      `label` is the place in the document's own numbering ("Session 8", "Florence, session 11", "Paragraphs 10–19"); `heading` is what the text is, in plain words, sentence case, from Tanner's table of contents as the gap register quotes it (council headings are not under copyright); `after_anchor` is the published passage it follows in the build, or null when it comes before every published passage. Entries with the same `after_anchor` keep their file order. `url` is null, meaning the document's link (below; Carter, 15 Nov 2026). IDs `ht-NNNN` are never reused, as for removals.
+    - Papal documents: one entry per run of consecutive held paragraphs, labelled "Paragraph 9" or "Paragraphs 10–19" (the preamble as "The address"), with the heading "Not in the public-domain printing". Exsurge Domine's held pieces of the closing are one entry, "The rest of the bull, after the 41 propositions".
+    - A generator, `datapipeline/scripts/held_texts.py --draft`, proposes entries from the open removals (grouping as under Current state, placement from session or paragraph numbers against the build), and writes a draft for review; the headings are then edited by hand. It never overwrites an existing entry.
+    - `registry/__init__.py` gains `held_texts` on `WorkRegistry` and a check, run by `registry.validate` and by the build (dry runs included), that fails when: an open in-scope removal (as defined under Terms) belongs to no entry or to two (a straddling passage belongs to the first text it holds); an entry names a closed, out-of-scope or other-document removal; an `after_anchor` is not a passage the build emits for that document; or the entries' `after_anchor` positions go backwards. Closing a removal (a translation found) therefore fails the build until its held entry is removed or shrunk in the same PR.
+  - **PR (b): the stage writes it.**
+    - The councils, encyclicals and papal-documents adapters do nothing new. The stage (2.2w step 4) adds to each document's `metadata` a `held_texts` list, built from the registry: `{key, label, heading, after_anchor, after_chapter_key, url}`, with `after_chapter_key` filled from the built passage and `url` from the entry or null. Documents with no entry get no key. No table, column or migration is added: `documents.metadata` is already staged, applied, snapshotted for rollback and restored by it, so 2.2w's code changes only where it builds the row.
+    - The release report adds a section `document.held_texts`: per document, the entries added, removed or changed since live. Its D1, D4, point and payload sections must show nothing else for this publish (below).
+  - **PR (c): API and web.**
+    - API models (`app/models/documents.py`): `HeldText {key, label, heading, after_anchor: Optional[str], after_chapter_key: Optional[str], url: Optional[str]}`. `TocResponse` gains `held_texts: list[HeldText] = []`. `DocumentResponse` and `SourceDocument` gain `held_count: int = 0`. `metadata.held_texts` is removed from every `metadata` the API returns (`/documents/{id}`, `/toc`, `/sources`), so the list is sent once, by `/toc`.
+    - `/toc`: reads `metadata.held_texts`, resolves each `url` (null gives the document's `metadata.held_text_url`, else `metadata.url`, the rule `corpus_lifecycle` uses for `read_elsewhere_url`; an entry with no link at all is left out and logged), and checks it as `_contents_tree` checks a tree: every `after_chapter_key` is a chapter in `chapters`, in non-decreasing order. A stale list is dropped whole, with a warning, and the reader shows chapters only. The excerpt-only 403 and the removed-document 410 come first, unchanged.
+    - `/sources`: `held_count` is `jsonb_array_length(metadata->'held_texts')`, or 0, in the cached query. It changes only at a publish, after which the API is restarted as in 4.1b step 9.
+    - `/documents/{id}/reader` does not change.
+    - Web types in `lib/api.ts` (`TocResponse.held_texts?`, `held_count?`), all optional.
+    - New pure module `lib/held-texts.ts`: `placeHeldTexts(chapters, held)` returns the overview's entries in reading order (each held text after the chapter holding its `after_anchor`, the null ones first), and `heldAfter(anchor, held)` returns those to render after one passage. Unit-tested.
+    - `DocumentOverview.tsx`, chapter grid: each held entry is a grid cell in its place, the same size as a chapter cell, with a dashed `border-brand-muted/40` border and no ordinal (ordinals still count chapters). It reads "<label> · <heading>" in `text-brand-muted`, and under it "Not on TheoCorpus at present · Read online" in `text-brand-accent` with the `ExternalLink` mark and the screen-reader text "(opens in a new tab)", as #265's Library rows do. The whole cell is an `<a target="_blank" rel="noopener noreferrer">`. The summary line reads "13 passages · 4 sessions · 17 texts read online". The chapter search also matches held headings. A document with a contents tree (none today has held texts) shows the held entries as a flat list under the tree, "Read online", until a tree-aware design is needed.
+    - `ChapterSection.tsx`, reading flow: after a passage, the held texts whose `after_anchor` is that passage render as one muted, bordered line each, "<label>: <heading> — not on TheoCorpus at present. Read online", linking out in a new tab; the null ones render before the first chapter's first passage. Never any text.
+    - `SourcesPage.tsx` `DocRow`: when `held_count > 0`, a muted "· 17 texts read online" after the translation. The row still opens the reader.
+    - Guests and signed-in readers render the same components (`isGuest` changes nothing here); the guest reader's access rule (`require_document_access`) is unchanged.
+  - **Search.** Nothing changes (Carter, 15 Nov 2026): held texts have no points and no `chunks` rows that are not retired, and the publish below writes the same passages and vectors.
+  - **Docs.** CLAUDE.md §4's `documents` notes gain one line on `metadata.held_texts`, and §10's `/toc` and `/sources` rows name the new fields.
+- **Publishing it (ops step, after 4.1b step 13).**
+  1. A reviewed lock-file PR adds one `approved_applies` entry per collection the list touches, `councils`, `encyclicals` and `papal-documents`, each with release `held-texts-2026-12` and steps `stage`, `apply` and `rollback`, in 0.4's format. A follow-up PR removes them when this publish's window closes.
+  2. `publish.py stage` for those collections. Every passage's embedding input is unchanged, so every vector comes from the cache or the aliased collection (2.2w stage step 6): no OpenAI call, cost $0. Other collections' points are copied. The new Qdrant collection is the only extra one on the cluster, since step 13 has deleted the old `chunks`.
+  3. `publish.py report`. It must show, for the three collections: zero new, retired or redirected IDs, zero text changes, zero payload changes, `embed_sha256` equal for every point, and `document.held_texts` listing each document's entries. Anything else stops the publish.
+  4. `apply`, `switch`, restart the API (for `/sources`), smoke checks below, `cleanup`. Rollback is 2.2w's `rollback`, which restores `metadata` from the before-snapshot.
+  Users see the held entries at the apply; search sees an identical corpus behind a new collection name.
+- **Acceptance checks:**
+  - `datapipeline/tests/test_held_texts.py`: every open in-scope removal is in exactly one entry; a closed removal, an out-of-scope reason, an unknown `after_anchor` and backwards order each fail; a straddling Florence passage counts once; the 1.10c pieces need an entry like any other (their text is part of the held text). `test_stage_writes_held_texts_into_metadata`, and `test_held_texts_publish_changes_no_passage_or_point` (a stage whose only change is the list reports no ID, text, payload or `embed_sha256` change).
+  - `services/api/tests/test_held_texts.py` (real Postgres, as `test_corpus_lifecycle.py`): `/toc` returns the held entries with their resolved links and no text; a null `url` falls back to `held_text_url`, then `url`; a list whose `after_chapter_key` is missing or out of order is dropped with a warning; `metadata` in `/documents/{id}`, `/toc` and `/sources` has no `held_texts`; `/sources` `held_count` is right and is 0 for a document without the key; an excerpt-only document still answers 403; a database without the key serves today's responses (golden JSON).
+  - Web: `held-texts.test.ts` for placement; `DocumentOverview.test.tsx`, a held entry renders in its place as a link with `target="_blank"`, no ordinal, and the summary count, for a guest and a signed-in reader; `ChapterSection.test.tsx`, the held line after its passage; `SourcesPage.test.tsx`, the count on the row. `npm run lint` (0 errors), `npm test`, `npm run build`.
+  - After the publish, on production: Constance's overview lists 13 published passages in 4 sessions and its 17 held texts in session order, Sessions 8, 15 and 21's sentences among them, each opening papalencyclicals.net's Constance page in a new tab and showing none of its text; every other document in the table above does the same; each Library row shows its count; 4.2's searches give the same results as before the publish, and no held text is returned or explained.
+  - The PR (c) description has screenshots at 375 px and desktop, dark and light, of Constance's overview, a chapter with a held line, and its Library row.
+- **Production safety:** PRs (a) and (b) change only the datapipeline. PR (c)'s fields are optional and empty until the publish, so it renders today's pages; its one other change, dropping `held_texts` from returned `metadata`, drops a key no document has yet. The publish touches `documents.metadata` only, and the report proves it. Rollback is 2.2w's.
+- **Costs.** About 70 council headings to write and check (the bulk of the work, mostly Florence's 28 and Lateran V's 17), about 30 papal ones that follow a pattern, three small PRs, and one publish: no embedding spend, one Qdrant collection copy (minutes), and about 15 KB of `metadata` in all.
+- **Needs Carter:**
+  - Answered 15 Nov 2026: held texts stay out of search, unchanged (Decision log "Held texts in the reader (4.3)"). The alternatives, a search card with no text or searchable excerpts, are not built.
+  - Answered 15 Nov 2026: every held text links to its document's online page, the link its tombstone already gives (`metadata.held_text_url`, else `metadata.url`). No per-text links: each registry entry's `url` is null, and the field stays only so a later decision needs no format change.
+  - The approvals the publish needs: the lock-file PR, the stage, the apply and the switch (section A).
+- **Out of scope:** Whole documents held for permission (ADR 0001's 51 retired encyclicals): they leave the Library, and listing them as "read online" rows is a separate decision. The canon-law and Church Fathers `translation-in-preparation` passages (amended canons with no English, rule E): they have no read-online link under 2.4a's rule. Any change to search, tombstones or the reader's 410 notice.
+
+---
+
 ## Phase 5. Reorganize and expand
 
 ### 5.1a. Genre and issuer filters
