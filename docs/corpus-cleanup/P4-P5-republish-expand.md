@@ -838,7 +838,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   5. A running storage total at the top, for Supabase and Qdrant. Stop and ask Carter (a paid Qdrant tier, or reorder the additions) when a publish's Qdrant peak, the live collection plus the new one it builds, would pass 3.4 GB of the Free cluster's 4 GiB disk, or when Supabase disk use would pass 85%.
   6. Public facts only. Correspondence, and anything Carter has not sent, stays in the private memos.
 - **Acceptance checks:** Every work named in 5.3 to 5.6c has a row with status cleared, or excerpt-only with an `excerpt_basis` its passages pass, before its PR merges. A blocked row blocks its PR. Each addition PR links its rows. The storage total is updated in each addition PR.
-- **Recorded (16 Nov 2026):** rows for 5.3a, 5.4, 5.5 and 5.6a, with the spec's other columns and the running storage total, in `5.2-rights-records.md`. Measured then: the database is 210 MB after 4.0's rewrite (3.4 KB a passage); Qdrant holds one collection, `chunks`, 54,555 points, behind `chunks_live`; live passages average 1,055 characters (church-fathers 2,273, encyclicals 1,180). The last Phase 5 publish projects to about 1.8 GB of Qdrant disk, so step 5's stop is not expected to trigger. The R6 title-page questions above are settled, and Gregory the Great's translator in npnf212 is confirmed as James Barmby.
+- **Recorded (16 Nov 2026):** rows for every planned work in 5.3a to 5.6c, with the spec's other columns and the running storage total, in `5.2-rights-records.md`. Measured then: the database is 210 MB after 4.0's rewrite (3.4 KB a passage); Qdrant holds one collection, `chunks`, 54,555 points, behind `chunks_live`; live passages average 1,055 characters (church-fathers 2,273, encyclicals 1,180). The last Phase 5 publish projects to about 1.8 GB of Qdrant disk, so step 5's stop is not expected to trigger. The R6 title-page questions above are settled, and Gregory the Great's translator in npnf212 is confirmed as James Barmby. Blocked: the two Biblical Commission documents and the social-doctrine Compendium (no basis yet), Tanquerey (until 1 January 2028), and More's *Dialogue of Comfort* (held, R6). The Imitation of Christ renewal search was run and accepted on 4 Oct 2026 (NEEDS-CARTER, 0.2 and R6); its row still awaits Carter's approval.
 - **Production safety:** Documentation only.
 - **Needs Carter:** All correspondence with rights holders (CCEL, ecatholic2000, NINS for the Newman Reader, the Aquinas Institute if SCG is taken from aquinas.cc). The Qdrant tier decision when the storage total reaches step 5's stop.
 - **Out of scope:** Paid licences (Decision log, "Licences": no spending in this cleanup). Any TheoCorpus translation (Decision log, "Rights review").
@@ -1076,7 +1076,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
      - *On Cleaving to God* under Albert's name.
      - Tauler's *Following of Christ*.
      - *Theologia Germanica* unless R1 clears it.
-     - Rickaby's abridged *Of God and His Creatures* unless Carter chooses it over the complete English Dominican SCG (5.6c).
+     - Rickaby's abridged *Of God and His Creatures* (Carter chose the English Dominican SCG, 5.6c, on 16 Nov 2026).
   3. Adapters.
      - ThML goes through `ingest/thml_doc.py` with collection `theologians`, a per-work strip list (the memo's "Strip" notes, rule G), and CCEL staff descriptions never indexed (Decision log).
      - Gutenberg needs a new `ingest/gutenberg_text.py` that removes the Project Gutenberg header and licence block, splits by the work's own chapter headings (per-work config), and records the ebook number as provenance.
@@ -1137,13 +1137,13 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
        - Catena on Luke and John.
        - Robinson's *Writings of St Francis*.
      - Then OCR-only works by value:
-       - Tanquerey 1930.
+       - Tanquerey 1930. Held until 1 January 2028: every open scan is the undated second edition, and the Library of Congress dates it 1932 (Decision log "Tanquerey held until 2028 (5.2)").
        - Marmion *Christ the Life of the Soul*.
        - Aquinas Rawes sermons (*Lord's Prayer*, *Commandments*).
        - Scupoli (Rivingtons 1875 clean text is a different edition; compare with Burns 1846). R6: Burns 1846 is also "for the use of members of the English Church"; a Catholic edition is Philadelphia, Dornin, 1817 (IA `spiritualcombat01scupgoog`).
        - The Alphonsus Centenary volumes (map volumes to titles first). R6 mapped them from each volume's title page; IA's volume labels differ from the series numbers (`docs/research/R6-editions.md`). Vols. XVI, XVII, XXIII and XXIV have no open scan.
        - Gertrude, Scheeben (credited "after Nieremberg"), Möhler, Knox, Chesterton *The Thing*, Fisher, Faber, Lallemant, William of St Thierry, John of Avila, Elizabeth of the Trinity (her own writings only), Vianney (labeled as recorded sayings).
-       - Complete SCG (English Dominican 1923 to 1929) if Carter chooses it. R6: books 1 to 3 have open scans; book 4 (1929) has none.
+       - Complete SCG, English Dominican, books 1 to 3 (chosen by Carter on 16 Nov 2026; Decision log "Summa contra Gentiles edition (5.6c)"). Book 2 from `summacontragenti0002unse`, the 1923 printing. R6: book 4 (1929) has no open scan.
        - Pohle-Preuss and Koch-Preuss per volume once 5.2 confirms pre-1931 printings.
      - Adaptations are credited with the adapter ("Joseph Pohle, adapted by Arthur Preuss").
   5. Excluded by flags. Middle English Birgitta (EETS 1929), unless Carter wants it.
