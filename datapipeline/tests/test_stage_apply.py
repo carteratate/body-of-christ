@@ -259,12 +259,14 @@ async def test_voice_reaches_staging_and_payload(world):
 async def test_document_facts_and_works_reach_staging(world):
     a = _doc(world, DOC_A)
     a.genre, a.issuer, a.issuer_label = "treatise", "bernard-of-clairvaux", "Bernard"
+    a.form = "brief"
     a.works = [Work(work_key="w1", ordinal=1, title="Book One", author="Bernard")]
     a.passages[0].work_key = "w1"
     await world.runner().stage(STAGE)
-    [doc] = await world.fetch("SELECT genre, issuer, issuer_label FROM staging.documents "
+    [doc] = await world.fetch("SELECT genre, form, issuer, issuer_label FROM staging.documents "
                               "WHERE id = $1::uuid", DOC_A)
-    assert doc == {"genre": "treatise", "issuer": "bernard-of-clairvaux", "issuer_label": "Bernard"}
+    assert doc == {"genre": "treatise", "form": "brief", "issuer": "bernard-of-clairvaux",
+                   "issuer_label": "Bernard"}
     assert await world.fetch("SELECT work_key, title FROM staging.document_works") == \
         [{"work_key": "w1", "title": "Book One"}]
 
@@ -278,7 +280,7 @@ async def test_document_facts_reach_staging_and_live_after_apply(world, monkeypa
     monkeypatch.setattr(reader_access, "access_for", lambda document_id: "full")
     entry = world.registry.entry_by_document[DOC_A]
     entry.update({k: None for k in registry.FACT_FIELDS})
-    entry.update(genre="treatise", year=1128, date_display="c. 1128",
+    entry.update(genre="treatise", form="bull", year=1128, date_display="c. 1128",
                  translation="William Harman van Allen (1909)",
                  source_credit="Sourced via CCEL.org", notes="A note.")
     entry["attribution"].update(certainty="genuine", clavis="PL 182")
@@ -286,9 +288,9 @@ async def test_document_facts_reach_staging_and_live_after_apply(world, monkeypa
     a.year, a.translation, a.genre = 1099, "adapter", "sermon"
 
     await world.runner().stage(STAGE)
-    columns = ("genre, year, date_display, translation, source_credit, notes, certainty, "
-               "clavis_ref, issuer")
-    want = {"genre": "treatise", "year": 1128, "date_display": "c. 1128",
+    columns = ("genre, form, year, date_display, translation, source_credit, notes, "
+               "certainty, clavis_ref, issuer")
+    want = {"genre": "treatise", "form": "bull", "year": 1128, "date_display": "c. 1128",
             "translation": "William Harman van Allen (1909)",
             "source_credit": "Sourced via CCEL.org", "notes": "A note.",
             "certainty": "genuine", "clavis_ref": "PL 182", "issuer": None}
@@ -304,6 +306,20 @@ async def test_document_facts_reach_staging_and_live_after_apply(world, monkeypa
     finally:
         await conn.close()
     assert await world.fetch(query.format("public"), DOC_A) == [want]
+
+
+async def test_a_stage_refuses_a_database_without_0044(world):
+    """Issue #330: the writer stages documents.form, so a database without migration
+    0044 is refused by name before anything is written, not halfway through."""
+    conn = await world.connect()
+    try:
+        await conn.execute("ALTER TABLE documents DROP COLUMN form")
+    finally:
+        await conn.close()
+    before = await world.public_digest()
+    with pytest.raises(ValueError, match="live documents has no form.*0044"):
+        await world.runner().stage(STAGE)
+    assert await world.public_digest() == before
 
 
 async def test_the_contents_tree_is_staged_with_the_chunks(world):
@@ -614,23 +630,61 @@ async def test_report_checks_payload_facts_and_input_hashes(world, tmp_path):
 
 async def test_report_lists_the_document_facts_diff(world, tmp_path):
     _doc(world, DOC_A).genre = "treatise"
+    _doc(world, DOC_A).form = "bull"
     _doc(world, DOC_B).author = "Bernard"
     await world.runner().stage(STAGE)
     _, data = await _report(world, tmp_path)
     diffs = {d["id"]: d["changed"] for d in data["facts_diff"]}
     assert diffs[DOC_A]["genre"] == {"live": None, "staged": "treatise"}
+    assert diffs[DOC_A]["form"] == {"live": None, "staged": "bull"}
     # 2.3: the report's "Document facts" section counts each field per collection and
     # lists the author changes.
     report = (tmp_path / "report" / "report.md").read_text()
     section = report.split("## Document facts (2.3)")[1]
     assert "| Field | medieval |" in section
     assert "| genre | 1 |" in section and "| reader_access | 2 |" in section
+    assert "| form | 1 |" in section
     assert "Author changes: 1." in section
     assert f"`{DOC_B}`: 'Bernard of Clairvaux' → 'Bernard'" in section
     del diffs[DOC_B]["author"]
     # Neither test document is in the rights inventory, so staging makes both excerpt-only
     # (D12) and the diff says so.
     assert diffs[DOC_B] == {"reader_access": {"live": "full", "staged": "excerpt"}}
+
+
+async def test_report_lists_the_works_diff(world, tmp_path):
+    """3.2: a work inside a document (D6) that is new or whose labels change is in the
+    report, so a work-only label change is visible."""
+    from model import Work
+    doc = _doc(world, DOC_A)
+    doc.works = [Work(work_key="w1", ordinal=1, title="A work", author="Anonymous",
+                      certainty="anonymous")]
+    for p in doc.passages:
+        p.work_key = "w1"
+    await world.runner().stage(STAGE)
+    _, data = await _report(world, tmp_path)
+    assert [(d["document_id"], d["work_key"], d["new_work"]) for d in data["works_diff"]] \
+        == [(DOC_A, "w1", True)]
+    section = (tmp_path / "report" / "report.md").read_text() \
+        .split("## Works inside documents (3.2)")[1]
+    assert "| (new works) | 1 |" in section
+    # A new work's labels are listed, so a reviewer sees them before the apply.
+    assert f"`{DOC_A}` w1: new: title 'A work'; author 'Anonymous'; certainty 'anonymous'" \
+        in section
+    assert data["works_diff"][0]["changed"]["author"] == {"live": None, "staged": "Anonymous"}
+
+
+def test_works_md_lists_each_changed_label():
+    from release import staged
+
+    diff = [{"document_id": "d", "work_key": "w", "collection": "summa", "new_work": False,
+             "changed": {"attribution_note": {"live": None, "staged": "Compiled after"},
+                         "author": {"live": "Y", "staged": "Pseudo-Y"}}}]
+    md = "\n".join(staged.works_md(diff))
+    assert "| author | 1 |" in md and "| attribution_note | 1 |" in md
+    assert "- summa `d` w: attribution_note None → 'Compiled after'; author 'Y' → 'Pseudo-Y'" \
+        in md
+    assert "No work differs from live." in "\n".join(staged.works_md([]))
 
 
 def test_report_dedup_collision_rate():

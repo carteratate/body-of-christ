@@ -15,8 +15,9 @@ adds the publish checks:
 - `index.dedup_collision_rate:<collection>`: the share of same-document passage pairs
   within two positions whose vectors exceed the API's dedup threshold, beside the live
   figure; flagged above 5% (C-09). Informs RF-1; fails nothing.
-- the document-facts diff (2.3), user impact, the staging storage and the projected
-  database size, and the 10% shrink and churn warnings that used to stop a publish.
+- the document-facts diff (2.3) and the works diff (3.2), user impact, the staging
+  storage and the projected database size, and the 10% shrink and churn warnings that
+  used to stop a publish.
 
 Writes publish.json and a "Publish checks" section at the end of report.md, then records
 `<sha256 of report.json and publish.json>:<sha256 of the staged rows>` in
@@ -54,7 +55,10 @@ MAX_SHRINK = 0.10
 USER_TABLES = ("retrievals", "bookmarks", "retrieval_labels", "guest_trial_retrievals")
 FACT_COLUMNS = ("title", "author", "year", "translation", "reader_access", "genre", "issuer",
                 "issuer_label", "date_display", "certainty", "attribution_note", "notes",
-                "source_credit", "clavis_ref", "superseded_by", "superseded_note")
+                "source_credit", "clavis_ref", "superseded_by", "superseded_note", "form")
+# A work's labels inside its document (D6; 3.2), `document_works`.
+WORK_COLUMNS = ("title", "author", "certainty", "attribution_note", "notes", "date_display",
+                "year", "genre", "clavis_ref")
 
 
 class ReportRefused(ValueError):
@@ -131,7 +135,7 @@ async def staged_documents(conn, collections: list[str]) -> dict[str, list[Docum
                         attribution_note=w["attribution_note"], notes=w["notes"],
                         date_display=w["date_display"], year=w["year"], genre=w["genre"],
                         clavis_ref=w["clavis_ref"]) for w in works[d["id"]]],
-            genre=d["genre"], issuer=d["issuer"], issuer_label=d["issuer_label"],
+            genre=d["genre"], form=d["form"], issuer=d["issuer"], issuer_label=d["issuer_label"],
             date_display=d["date_display"], certainty=d["certainty"],
             attribution_note=d["attribution_note"], notes=d["notes"],
             source_credit=d["source_credit"], clavis_ref=d["clavis_ref"],
@@ -288,6 +292,31 @@ async def facts_diff(conn, collections: list[str]) -> list[dict]:
     return out
 
 
+async def works_diff(conn, collections: list[str]) -> list[dict]:
+    """Per work inside a document, the labels staging changes against live (3.2): each
+    changed `document_works` column, and for a new work every value it is given."""
+    cols = ", ".join(f"w.{c} AS live_{c}, s.{c} AS staged_{c}" for c in WORK_COLUMNS)
+    rows = await conn.fetch(
+        f"""SELECT s.document_id::text AS document_id, s.work_key, sd.collection,
+                   (w.work_key IS NULL) AS new_work, {cols}
+            FROM staging.document_works s
+            JOIN staging.documents sd ON sd.id = s.document_id
+            LEFT JOIN public.document_works w
+                   ON w.document_id = s.document_id AND w.work_key = s.work_key
+            WHERE sd.collection = ANY($1::text[])
+            ORDER BY sd.collection, s.document_id, s.work_key""", collections)
+    out = []
+    for r in rows:
+        changed = {c: {"live": _plain(r[f"live_{c}"]), "staged": _plain(r[f"staged_{c}"])}
+                   for c in WORK_COLUMNS
+                   if r[f"live_{c}"] != r[f"staged_{c}"]}
+        if changed or r["new_work"]:
+            out.append({"document_id": r["document_id"], "work_key": r["work_key"],
+                        "collection": r["collection"], "new_work": r["new_work"],
+                        "changed": changed})
+    return out
+
+
 def _plain(value):
     return str(value) if value is not None and not isinstance(value, (int, str, bool)) else value
 
@@ -372,6 +401,38 @@ def facts_md(diff: list[dict]) -> list[str]:
     return lines + [""]
 
 
+def works_md(diff: list[dict]) -> list[str]:
+    """3.2's "Works" section: per field and collection, how many works inside documents
+    staging changes against live (new works counted apart), and every changed work with
+    its changes."""
+    lines = ["", "## Works inside documents (3.2)", ""]
+    if not diff:
+        return lines + ["No work differs from live.", ""]
+    collections = sorted({d["collection"] for d in diff})
+    counts = {(c, f): 0 for c in collections for f in WORK_COLUMNS}
+    new = {c: 0 for c in collections}
+    for d in diff:
+        new[d["collection"]] += d["new_work"]
+        for f in d["changed"]:
+            counts[(d["collection"], f)] += not d["new_work"]
+    lines += ["Works whose value differs from live, by field and collection.", "",
+              "| Field | " + " | ".join(collections) + " |",
+              "|---|" + "---|" * len(collections)]
+    for f in WORK_COLUMNS:
+        if any(counts[(c, f)] for c in collections):
+            lines.append(f"| {f} | " + " | ".join(str(counts[(c, f)]) for c in collections)
+                         + " |")
+    lines += ["| (new works) | " + " | ".join(str(new[c]) for c in collections) + " |", ""]
+    for d in diff:
+        if d["new_work"]:
+            what = "new: " + "; ".join(f"{f} {v['staged']!r}" for f, v in d["changed"].items())
+        else:
+            what = "; ".join(f"{f} {v['live']!r} → {v['staged']!r}"
+                             for f, v in d["changed"].items())
+        lines.append(f"- {d['collection']} `{d['document_id']}` {d['work_key']}: {what}")
+    return lines + [""]
+
+
 def publish_md(data: dict) -> str:
     ids = data["ids"]
     lines = ["", "## Publish checks (2.2w)", "",
@@ -382,7 +443,8 @@ def publish_md(data: dict) -> str:
              f"{len(ids['new']):,}.",
              f"- Points: {len(data['points']['mismatches'])} mismatches; embedding input hash "
              f"failures {len(data['points']['hash_failures'])}.",
-             f"- Document facts changed on {len(data['facts_diff'])} documents.",
+             f"- Document facts changed on {len(data['facts_diff'])} documents; works "
+             f"inside documents changed or new: {len(data['works_diff'])}.",
              f"- Staging holds {data['storage']['staging_bytes'] / 2**20:,.1f} MiB; database "
              f"{data['storage']['database_bytes'] / 2**20:,.1f} MiB, projected after apply "
              f"{data['storage']['projected_after_apply_bytes'] / 2**20:,.1f} MiB.", "",
@@ -397,6 +459,7 @@ def publish_md(data: dict) -> str:
     if data["warnings"]:
         lines += ["", "Warnings (not failures):", ""] + [f"- {w}" for w in data["warnings"]]
     lines += facts_md(data["facts_diff"])
+    lines += works_md(data["works_diff"])
     lines += [f"Publish checks {'PASS' if data['pass'] else 'FAIL'}."]
     if data["failures"]:
         lines += [""] + [f"- {f}" for f in data["failures"][:50]]
@@ -439,6 +502,7 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
                                      row["embed_model"]),
         "dedup": await dedup_checks(conn, qdrant, row["qdrant_collection"], live, staged),
         "facts_diff": await facts_diff(conn, collections),
+        "works_diff": await works_diff(conn, collections),
         "user_impact": await user_impact(conn),
         "storage": await storage(conn),
         "warnings": await size_warnings(conn, collections),

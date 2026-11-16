@@ -161,7 +161,8 @@ def _sha256(path: str) -> str:
 def write_snapshot(rows: dict[str, list[dict]], directory: str, *,
                    replace: bool = False) -> dict[str, str]:
     """Write one gzipped JSONL file per table (corpus text only, no user data) and return
-    {file: sha256}. An existing snapshot is replaced only when `replace` (its publish was
+    {file: sha256}. 4.1a's remap adds its private ledger to the same folder later in the
+    apply transaction (`remap_user_data.LEDGER_FILE`), with its sha256. An existing snapshot is replaced only when `replace` (its publish was
     never applied, so nothing can roll back to it)."""
     if os.path.exists(directory):
         if not replace:
@@ -514,7 +515,8 @@ async def _load_snapshot_into_staging(conn, rows: dict[str, list[dict]]) -> None
         # the snapshot alone would reopen a text whose permission was withdrawn.
         d["reader_access"] = reader_access.stricter(d["reader_access"],
                                                     reader_access.access_for(d["id"]))
-        await conn.execute(rw._DOCUMENT_SQL, *[d[c] for c in rw.DOCUMENT_COLUMNS])
+        # A snapshot taken before documents.form was written (issue #330) has no form.
+        await conn.execute(rw._DOCUMENT_SQL, *[d.get(c) for c in rw.DOCUMENT_COLUMNS])
     await conn.executemany(rw._WORK_SQL, [tuple(r[c] for c in rw.WORK_COLUMNS)
                                           for r in rows["document_works"]])
     await conn.executemany(rw._CHUNK_SQL, [tuple(r[c] for c in rw.CHUNK_COLUMNS)

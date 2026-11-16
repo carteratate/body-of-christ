@@ -12,6 +12,8 @@ export interface DocumentFacts {
   date_display?: string | null;
   translation?: string | null;
   genre?: string | null;
+  /** How the papal chancery issued the document: "bull" or "brief" (issue #330). */
+  form?: string | null;
   issuer?: string | null;
   issuer_label?: string | null;
   certainty?: Certainty | null;
@@ -112,6 +114,30 @@ export function formatTranslation(code: string | null | undefined): string | nul
   return TRANSLATION_LABELS[value] ?? value;
 }
 
+// A papal document's form: how the chancery issued it (Decision log "Papal form and
+// kind (1.3b)"). Any other value is not shown.
+const FORM_LABELS: Record<string, string> = { bull: "a bull", brief: "a brief" };
+
+/** "Apostolic constitution" for `apostolic-constitution`; null for none or `other`. */
+export function genreLabel(genre: string | null | undefined): string | null {
+  const value = text(genre);
+  if (!value || value === "other") return null;
+  const words = value.replace(/-/g, " ");
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+/**
+ * What a papal document is and how it was issued, "Encyclical · issued as a brief"
+ * (issue #330). Only a document with a recorded form gets the line; its genre alone is
+ * not shown here. Null without a form, so a response without one renders as before.
+ */
+export function formatKind(facts?: DocumentFacts | null): string | null {
+  const form = FORM_LABELS[text(facts?.form) ?? ""];
+  if (!form) return null;
+  const genre = genreLabel(facts?.genre);
+  return genre ? `${genre} · issued as ${form}` : `Issued as ${form}`;
+}
+
 /** A short tag for an attribution that is not simply genuine, or null. */
 export function certaintyTag(certainty: string | null | undefined): string | null {
   if (!certainty || certainty === "genuine" || !CERTAINTIES.has(certainty)) return null;
@@ -158,7 +184,7 @@ export function parseFacts(value: unknown): DocumentFacts | null {
   const raw = value as Record<string, unknown>;
   const facts: DocumentFacts = {};
   for (const key of [
-    "date_display", "translation", "genre", "issuer", "issuer_label", "attribution_note",
+    "date_display", "translation", "genre", "form", "issuer", "issuer_label", "attribution_note",
     "notes", "source_credit", "superseded_by", "superseded_note", "work_title",
   ] as const) {
     if (typeof raw[key] === "string") facts[key] = raw[key] as string;

@@ -1,4 +1,5 @@
-"""Which corpus-cleanup objects (migration 0042) the database has (items 2.2b and 2.4a).
+"""Which corpus-cleanup objects (migration 0042, and 0044's `documents.form`) the
+database has (items 2.2b and 2.4a, issue #330).
 
 The API deploys before and after 0042 is applied. Every query that reads a 0042 column
 or table asks `current()` first and builds its SQL from the answer, so on a database
@@ -39,6 +40,9 @@ class CorpusSchema:
     works: bool         # document_works exists
     tombstones: bool    # corpus_tombstones exists
     redirects: bool     # corpus_redirects exists
+    # documents.form (0044, issue #330), a papal document's chancery form. Read only
+    # beside `facts`; a database without 0044 sends no form.
+    form: bool = False
 
     def visible(self, alias: str) -> str:
         """`AND <alias>.retired_at IS NULL`, or "" without 0042."""
@@ -92,6 +96,7 @@ def _from_columns(rows) -> CorpusSchema:
         works="document_works" in columns,
         tombstones="corpus_tombstones" in columns,
         redirects="corpus_redirects" in columns,
+        form="form" in docs,
     )
 
 

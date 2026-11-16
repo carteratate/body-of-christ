@@ -1,4 +1,4 @@
-"""Document facts against the vendored sources (corpus-cleanup 2.3)."""
+"""Document facts and labels against the vendored sources (corpus-cleanup 2.3, 3.2)."""
 from __future__ import annotations
 
 import glob
@@ -28,6 +28,25 @@ def test_registry_facts_match_the_build(built):
     works = document_facts_registry.generate(reg, documents, rights_inventory.load())
     stale = [w["work_id"] for w, old in zip(works, reg.works) if w != old]
     assert stale == [], "rerun scripts/document_facts_registry.py"
+    rows = document_facts_registry.generate_passages(reg, documents)
+    stale = [r["passage_id"] for r, old in zip(rows, reg.passages) if r != old]
+    assert stale == [], "rerun scripts/document_facts_registry.py (passage work keys, notes)"
+
+
+@needs_sources
+def test_three_point_two_works_are_built(built):
+    """The works 3.2 labels inside a document (D6) are built as works: the Apostolic
+    Canons, the Muratorian Fragment, and the Summa's Supplement and its appendix."""
+    def works(collection, title):
+        d = next(d for d in built[collection] if d.title == title)
+        return {w.title: sum(p.work_key == w.work_key for p in d.passages) for w in d.works}
+    canons = works("church-fathers", "Book VIII. Concerning Gifts, and Ordinations, and the "
+                                     "Ecclesiastical Canons")
+    assert canons == {"The Apostolic Canons": 6}
+    assert works("church-fathers", "Fragments of Caius") == {"The Muratorian Fragment": 2}
+    summa = works("summa", "Summa Theologiae")
+    assert list(summa) == ["Supplement to the Third Part", "Appendix to the Supplement"]
+    assert summa["Supplement to the Third Part"] > 4000 and summa["Appendix to the Supplement"] > 80
 
 
 @needs_sources

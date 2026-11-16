@@ -33,6 +33,12 @@ python3 -m pytest tests/
 cd datapipeline && python3 run_collection.py --collection bible --dry-run
 cd datapipeline && python3 publish.py stage --collection bible --release <name>
 
+# Datapipeline tests, in parallel (pytest-xdist). `-n auto` sizes the workers by free
+# memory, not CPU count (tests/conftest.py); loadscope builds each module's fixtures once.
+# With the sources about 6 min on the Lenovo, against 22 serially. A serial run
+# (`python3 -m pytest tests`) is still fine and gives the same results.
+cd datapipeline && python3 -m pytest tests -n auto --dist loadscope
+
 # Docker (prod-like)
 docker build -t theocorpus-api services/api
 docker run --env-file services/api/.env -p 8000:8000 theocorpus-api
@@ -225,14 +231,20 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   `bull` or `brief`, how the papal chancery issued it, NULL where none is recorded. It sits
   beside `documents.genre`, which is the document's kind (Ineffabilis Deus: genre
   `apostolic-constitution`, form `bull`); `bull` left `corpus_genres` in 0044. The values come
-  from `PAPAL_FORMS` in `datapipeline/registry/genres.py`. Nothing writes the column yet.
+  from `PAPAL_FORMS` in `datapipeline/registry/genres.py`. Issue #330 carries it: `works.json`'s
+  `form` (2.3's generator, from `papal_genres.csv`), `Document.form`, staged and applied by 2.2w,
+  and shown as "Apostolic constitution · issued as a bull" (`formatKind` in `lib/attribution.ts`)
+  in the reader overview and an opened card. A stage refuses a database without the column; the
+  API reads it only where it exists (`CorpusSchema.form`). **Applied to production on 16 Nov 2026**
+  (ledger `20261116020501`; ops log on #330). Live rows stay NULL until the republish writes them.
 - `chunks.search_vector` **redefined** (0045, item 2.2c, #181): content with Bible `{{v:N}}`
   markers stripped at weight A, plus the reference with its punctuation turned into spaces at
-  weight B, so "canon 1055", "ccc 2267" and "john 3" find their passages. **Committed but not
-  applied:** it rewrites `chunks` under an exclusive lock, so it runs by hand in 4.0's window,
-  followed by `drop_corpus_staging(); create_corpus_staging();` (runbook in
-  `docs/corpus-cleanup/P4-P5-republish-expand.md`, 4.0 step 3). Until then production has 0004's
-  expression. `retrieve_fts.py` works with either.
+  weight B, so "canon 1055", "ccc 2267" and "john 3" find their passages. **Applied to
+  production on 16 Nov 2026** in 4.0's window, by hand (it rewrites `chunks` under an exclusive
+  lock; about 21 s), followed by `drop_corpus_staging(); create_corpus_staging();` and recorded
+  in the Supabase ledger (runbook in `docs/corpus-cleanup/P4-P5-republish-expand.md`, 4.0 step 3;
+  ops log in #190). Only numbers a reference prints are indexed, so `2265` inside `§2263–2267`
+  is not. `retrieve_fts.py` works with either definition.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have
@@ -241,7 +253,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040–0045 are committed (0045 not yet applied, above); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0045 are committed (0044 and 0045 were applied on 16 Nov 2026); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -528,11 +540,7 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 17. Known Issues & Deferred Work
 
-### 1. JWKS refresh still stampedes
-
-`app/auth/jwks.py` has an `asyncio.Lock`, but it guards only the **cache write** — `_fetch_from_remote()` runs outside it. Concurrent coroutines that all see a stale cache still all issue HTTP requests to Supabase. Low priority; the fix is to hold the lock across the fetch with a double-check on entry.
-
-### 2. Do not delete `rag/steps/dedup.py`
+### 1. Do not delete `rag/steps/dedup.py`
 
 **`rag/steps/dedup.py` is NOT dead — do not delete it.** `pipelines/runner.py` imports it
 in the parenthesized `from app.rag.steps import (...)` block, which is easy to miss with a

@@ -26,14 +26,14 @@ PUBLISH_LOCK.json entry, and the suffix of the staging Qdrant collection
 
 - `apply` writes the before-snapshot to `releases/snapshots/<release>-before/`, then in
   one transaction updates, inserts and retires (never deletes), writes tombstones and
-  redirects, and refreshes outlines; then it switches the alias `chunks_live` to the
-  publish's collection, unless `--no-switch`. It refuses a publish whose redirects a user
-  row points at until 4.1a's remap exists. `--retire-only` retires the documents an open
+  redirects, moves the user rows on redirected IDs (4.1a, `remap_user_data.py`), and
+  refreshes outlines; then it switches the alias `chunks_live` to the publish's
+  collection, unless `--no-switch`. The remap's private ledger joins the before-snapshot. `--retire-only` retires the documents an open
   `document` removal entry names in one collection, with nothing staged (D7's On the
   Incarnation exception).
 - `switch` points the alias at the publish's collection (after `apply --no-switch`).
-- `rollback` undoes an applied publish from its before-snapshot, in one transaction, then
-  points the alias back. It is the only rollback path (D11).
+- `rollback` undoes an applied publish from its before-snapshot, in one transaction with
+  4.1a's reverse remap, then points the alias back. It is the only rollback path (D11).
 - `cleanup` drops the staging tables once the apply is checked; rollback still works.
 
 Every subcommand except `report` and `status` asks the publish lock (0.4) for its step:
@@ -104,6 +104,11 @@ def guard_publish(step: str, collections: Sequence[str], release: str, lock_path
     guard = publish_lock_guard(step, lock_path)
     for c in ["all"] if set(collections) == set(SOURCE_ADAPTERS) else collections:
         guard(c, release)
+
+
+def _print_remap(title: str, counts: dict[str, int]) -> None:
+    """4.1a's public ledger counts (per table and rule; no IDs) for the publish log."""
+    print(f"{title}: " + (", ".join(f"{k} {n}" for k, n in counts.items()) or "none"))
 
 
 async def _connect():
@@ -222,6 +227,7 @@ async def discard(args, lock_path=None) -> int:
 
 async def apply(args, lock_path=None) -> int:
     from config import settings
+    from remap_user_data import UserDataRemapImpl
     from writers import apply as A
     from writers.qdrant import get_client
 
@@ -243,11 +249,12 @@ async def apply(args, lock_path=None) -> int:
             return 0
         row = await _publish_row(conn, args.release)
         guard_publish("apply", row["collections"], args.release, lock_path)
-        result = await A.apply(conn, args.release)
+        result = await A.apply(conn, args.release, remap=UserDataRemapImpl())
         print(f"applied {result.release}: {result.touched} documents touched, "
               f"{result.inserted} passages inserted, {result.retired_passages} passages and "
               f"{result.retired_documents} documents retired, {result.tombstones} tombstones, "
               f"{result.redirects} redirects")
+        _print_remap("user rows moved", result.remap)
         if not args.no_switch:
             old, new = await A.switch(conn, client, args.release, settings.QDRANT_LIVE_ALIAS)
             print(f"switched {settings.QDRANT_LIVE_ALIAS}: {old} -> {new}")
@@ -277,6 +284,7 @@ async def switch(args, lock_path=None) -> int:
 
 async def rollback(args, lock_path=None) -> int:
     from config import settings
+    from remap_user_data import UserDataRemapImpl
     from writers import apply as A
     from writers.qdrant import get_client
 
@@ -285,13 +293,15 @@ async def rollback(args, lock_path=None) -> int:
     try:
         row = await _publish_row(conn, args.release)
         guard_publish("rollback", row["collections"], args.release, lock_path)
-        result = await A.rollback(conn, client, args.release, alias=settings.QDRANT_LIVE_ALIAS)
+        result = await A.rollback(conn, client, args.release, alias=settings.QDRANT_LIVE_ALIAS,
+                                  remap=UserDataRemapImpl())
     finally:
         await conn.close()
         await client.close()
     print(f"rolled back {result.release}: {result.restored_passages} passages restored, "
           f"{result.retired_passages} passages the publish added retired as rolled back; "
           f"alias -> {result.alias or 'unchanged'}. Run cleanup, then restart the API.")
+    _print_remap("user rows restored", result.remap)
     return 0
 
 

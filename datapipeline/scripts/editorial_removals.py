@@ -276,6 +276,16 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
     holds the live text of the collection's passages by ID. Only the files `item` covers
     (`item_of`) are read."""
     by_key = {d.metadata["source_key"]: d for d in documents}
+    # A document an open `document` removal retires (rules A to C, 3.1) is not built; its
+    # span and class entries are kept as they stand, below.
+    held = registry.removed_document_ids(reg)
+    # Likewise a passage another item's `passage` entry retires (a work rule A to C
+    # removes from a container, 3.1): its chapter is not built, and the span entries
+    # anchored on it are kept as they stand.
+    others = {e["passage_id"] for e in registry.open_removals(reg)
+              if e["scope"] == "passage" and e.get("added_by") != item}
+    retired_anchors = {(r["document_id"], r["anchor"]) for r in reg.passages
+                       if r["passage_id"] in others}
 
     skipped: dict[str, set[str]] = defaultdict(set)      # source file -> skipped div ids
     titles: dict[tuple[str, str], str] = {}              # (file, div) -> its title
@@ -312,9 +322,16 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
 
     # Chapters whose text was all the editors': no built passage holds them.
     kept_chapters = []
+    # Chapters another item retires whole: their heading lines still count, as before.
+    retired_chapters: set[tuple[str, str]] = set()
     for source_key, div, edit in chapters:
         d = by_key.get(source_key)
         if d is not None and not any(p.chapter_key == div for p in d.passages) \
+                and any(doc == d.id and (a == div or a.startswith(div + "/"))
+                        for doc, a in retired_anchors):
+            retired_chapters.add((source_key, div))
+            kept_chapters.append((source_key, div, edit))
+        elif d is not None and not any(p.chapter_key == div for p in d.passages) \
                 and edit.removed:
             kinds = {r.kind for r in edit.removed}
             kind = "argument" if "argument" in kinds else "summary" if "summary" in kinds \
@@ -379,7 +396,8 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
         d = by_key.get(source_key)
         removed = [r for r in edit.removed if r.kind != "label"]
         if not removed or d is None:
-            if removed and d is None:
+            if removed and d is None and reg.document_by_key.get(
+                    (COLLECTION, source_key)) not in held:
                 problems.append(f"{source_key}#{div}: removals in a document not built")
             continue
         r4 = (_file_of(source_key), div) in editorial.AUTHORIAL_CONTENTS
@@ -388,6 +406,8 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
                 headings[d.id] += 1
                 heading_text[d.id].append((source_key, f"{div}-{r.block}", r.text))
                 continue
+            if (source_key, div) in retired_chapters:
+                continue              # its span entries are kept as they stand, below
             anchor = holder(d, div, edit.order, r.block)
             if anchor is None:
                 problems.append(f"{source_key}#{div}: {r.kind} {r.block} in no built passage")
@@ -410,6 +430,11 @@ def generate(reg: registry.WorkRegistry, documents: list, log: list, live: dict[
                    "number lines and title lines",
             span={"rule": "ingest.editorial.classify_lines (heading)", "count": n})
         entries.append(heading_entries[doc_id])
+    entries += [json.loads(json.dumps(e)) for e in reg.removals
+                if e.get("added_by") == item and e["collection"] == COLLECTION
+                and (e["document_id"] in held and e["scope"] in ("span", "class")
+                     or e["scope"] == "span"
+                     and (e["document_id"], e["anchor"]) in retired_anchors)]
 
     # Judgments first.
     found = []

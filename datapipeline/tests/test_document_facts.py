@@ -108,6 +108,27 @@ def test_papal_genres_are_1_3b_s():
         assert w["genre"] == labels[slug].genre, w["work_id"]
 
 
+def test_papal_forms_are_1_3b_s():
+    """Issue #330: each papal document's form (bull or brief) is `papal_genres.csv`'s,
+    and no other document has one."""
+    labels = papal_genres.load()
+    formed = {}
+    for w in FILLED:
+        if w["collection"] in document_facts.PAPAL_COLLECTIONS:
+            slug = w["source_key"].split("/", 1)[1]
+            assert w["form"] == labels[slug].form, w["work_id"]
+        else:
+            assert w["form"] is None, w["work_id"]
+        if w["form"]:
+            formed[w["source_key"]] = w["form"]
+    # The 13 other documents the CSV gives a form are held for permission (ADR 0001).
+    assert formed == {
+        "encyclicals/salutis-nostrae": "bull", "encyclicals/in-supremo-apostolatus": "brief",
+        "encyclicals/ineffabilis-deus": "bull", "encyclicals/munificentissimus-deus": "bull",
+        "papal-documents/unam-sanctam": "bull", "papal-documents/exsurge-domine": "bull",
+        "papal-documents/sublimis-deus": "bull"}
+
+
 def test_issuers():
     by_key = {w["source_key"]: w for w in FILLED}
     assert (by_key["catechism"]["issuer"], by_key["canon-law"]["issuer_label"]) \
@@ -135,10 +156,12 @@ def test_corrected_years():
 def test_a_valid_entry_passes():
     assert problems(entry(genre="treatise", issuer="holy-see", issuer_label="Holy See",
                           year=1100)) == []
+    assert problems(entry(genre="encyclical", form="brief")) == []
 
 
 @pytest.mark.parametrize("facts, message", [
     ({"genre": "bull"}, "genre"),
+    ({"form": "encyclical"}, "form"),
     ({"issuer": "Pope Leo XIII", "issuer_label": "Pope Leo XIII"}, "slug"),
     ({"issuer": "pope-leo-xiii"}, "no issuer_label"),
     ({"issuer_label": "Pope Leo XIII"}, "without an issuer"),

@@ -23,7 +23,7 @@ from xml.etree.ElementTree import Element, tostring
 import defusedxml.ElementTree as ET
 
 from model import Document, Work
-from registry import drop_removed
+from registry import drop_removed, removed_document_ids
 from normalize.caps import smart_title_case
 from normalize.text import fold_ligatures
 from ingest.common import (_block_text, _build_parent_map, _cf_skippable, _strip_tags,
@@ -151,10 +151,17 @@ _LETTER_SENDERS = {
 # Epistle XXX: written by Novatian for the Roman clergy, credited to no one (above).
 _UNCREDITED_LETTERS = frozenset({"iv.iv.xxx"})
 # A work inside a document that is otherwise one work (C-15), by (file, document div):
-# {work div: (title, label prefix)}.
+# {work div: (title, label prefix, chapter label)}. The div is the work's own chapter, or
+# holds its chapters. A chapter label of None keeps the chapter's own. 3.2 adds the
+# Apostolic Canons, the canons at the end of Constitutions Book VIII (D10), and the
+# Muratorian Fragment, printed as section III of Caius's fragments.
 _EMBEDDED_WORKS = {
     ("third-fourth-century.xml", "iii.ii"): {
-        "iii.ii.viii": ("Epitome of the Divine Institutes", "Epitome")},
+        "iii.ii.viii": ("Epitome of the Divine Institutes", "Epitome", None)},
+    ("third-fourth-century.xml", "ix.ix"): {
+        "ix.ix.vi": ("The Apostolic Canons", None, "Canons")},
+    ("third-century-2.xml", "v.iii"): {
+        "v.iii.iii": ("The Muratorian Fragment", None, None)},
 }
 # Works inside a container that share a title with another there, by work div id:
 # Hippolytus's second set of Psalms fragments (from de Magistris) prints "On the Psalms."
@@ -362,15 +369,16 @@ def _anf_chapters(filename, work, parent_map, editor):
                     prefix = None
                 plan = ChapterPlan(work_key=w.get("id"), work_label=prefix)
         else:
-            holder = next((k for k in embedded if elem.get("id", "").startswith(k + ".")),
+            div = elem.get("id", "")
+            holder = next((k for k in embedded if div == k or div.startswith(k + ".")),
                           None)
             if holder:
-                title, prefix = embedded[holder]
+                title, prefix, own = embedded[holder]
                 if holder not in works:
                     works[holder] = Work(work_key=holder, ordinal=len(works) + 1,
                                          title=title)
-                label = re.sub(r"^(?:The )?Preface$", "Preface",
-                               re.sub(r"^Chap\. ", "Chapter ", _chapter_label(elem)))
+                label = own or re.sub(r"^(?:The )?Preface$", "Preface",
+                                      re.sub(r"^Chap\. ", "Chapter ", _chapter_label(elem)))
                 plan = ChapterPlan(label=label, work_key=holder, work_label=prefix,
                                    cites=title)
         chapters.append((book, elem, plan))
@@ -677,7 +685,11 @@ def build_all() -> list[Document]:
         if path.endswith(".Zone.Identifier"):
             continue
         docs.extend(build_documents(path))
-    docs = [drop_removed(_rule_e(d)) for d in distinct_titles(docs)]
+    # A work an open `document` removal retires (rules A to C, 3.1) emits nothing, and a
+    # unit a `passage` removal retires is skipped, as the papal adapters do: the adapter
+    # asks the registry, never an author or title.
+    held = removed_document_ids()
+    docs = [drop_removed(_rule_e(d)) for d in distinct_titles(docs) if d.id not in held]
     built = {(d.id, p.anchor) for d in docs for p in d.passages}
     missing = sorted(set(NON_ENGLISH_PARAGRAPHS) - built)
     if missing:

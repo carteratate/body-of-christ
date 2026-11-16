@@ -1,24 +1,11 @@
 {
- "attribution.letter_sender:church-fathers/aaf1a0e4-9bf5-5e26-9eaf-8f4f38ff60fe": {
-  "fixed_by": "3.1",
-  "description": "The Epistles of Cyprian: Epistle XXX, which Novatian wrote for the Roman clergy, is credited to no sender; 3.1 removes it under rule A (C-02). 1.8c credits the other 15 letters by others to their senders",
-  "units": ["iv.iv.xxx"]
- },
- "attribution.narrative_of_author_death:church-fathers/841b4e0a-225f-5090-a4c0-36d8bf1a2f63": {
-  "fixed_by": "3.2",
-  "description": "The Martyrdom of Ignatius is credited to its martyr with no note (C-15)"
- },
- "attribution.narrative_of_author_death:church-fathers/cf8278dd-3523-576c-b85a-1402077bdae3": {
-  "fixed_by": "3.2",
-  "description": "The Martyrdom of Justin Martyr is credited to its martyr with no note (C-15)"
- },
- "attribution.narrative_of_author_death:church-fathers/f8faac83-ebf5-5a3c-850e-b9620465bc3d": {
-  "fixed_by": "3.2",
-  "description": "The Martyrdom of Polycarp is credited to its martyr with no note (C-15)"
+ "coverage.church-fathers.third-century.xml": {
+  "fixed_by": "1.8e",
+  "description": "66.0% covered since 3.1 took the works rules A to C remove (Tertullian's seven and Origen's three, in this volume) out of the measure; it was 95.04%, and its uncovered text is unchanged: the Appendix's pseudo-Tertullian poems (iii.xi, about 101,000 characters) and Origen's Letter to Africanus (vi.vii, 34,000), whole works the adapter drops (1.8e)"
  },
  "coverage.church-fathers.third-century-3.xml": {
   "fixed_by": "1.8e",
-  "description": "92.44% covered: whole works holding their text directly in a div dropped (1.8e)"
+  "description": "88.16% covered: whole works holding their text directly in a div dropped (1.8e); 92.44% before 3.1 took the works rules A to C remove out of the measure"
  },
  "coverage.church-fathers.third-fourth-century.xml": {
   "fixed_by": "1.8e",
@@ -111,7 +98,7 @@
  },
  "sequence.thml_chapters.missing:church-fathers/third-century.xml#vi.vii": {
   "fixed_by": "1.8e",
-  "description": "whole work \"A Letter from Origen to Africanus\" holds its text directly in its div and is dropped"
+  "description": "whole work \"A Letter from Origen to Africanus\" holds its text directly in its div and is dropped; rule A excludes it (Origen, condemned by name), so 1.8e rules it out (3.1)"
  },
  "sequence.thml_chapters.missing:church-fathers/third-fourth-century.xml#iii.vi": {
   "fixed_by": "1.8e",

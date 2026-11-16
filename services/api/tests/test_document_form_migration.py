@@ -5,8 +5,13 @@ document's form (bull, brief) is a label separate from its genre (corpus cleanup
 
 import re
 import runpy
+import uuid
 
+import asyncpg
 import pytest
+
+from app import corpus_schema
+from app.routes import documents
 
 from tests.pg_cluster import MIGRATIONS
 from tests.test_corpus_facts_migration import (  # noqa: F401  (postgres is a fixture)
@@ -84,3 +89,35 @@ def test_corpus_forms_is_closed_to_client_roles(formed):
                   ) == [["t"]]
     assert formed("SELECT count(*) FROM pg_policies WHERE tablename = 'corpus_forms'"
                   ) == [["0"]]
+
+
+
+async def _reader_facts(cluster):
+    """The schema the API probes, and the facts GET /documents/{id} sends for DOC_A."""
+    conn = await asyncpg.connect(host=str(cluster.socket), user="postgres",
+                                 database="postgres")
+    try:
+        schema = await corpus_schema.probe(conn)
+        row = await conn.fetchrow(
+            documents._document_sql(access=True, outline=True, schema=schema),
+            uuid.UUID(DOC_A))
+    finally:
+        await conn.close()
+    return schema, documents._document_facts(row)
+
+
+async def test_the_reader_sends_the_form_once_0044_is_applied(formed):
+    """Issue #330: the document's facts carry documents.form."""
+    formed(f"UPDATE documents SET genre = 'encyclical', form = 'brief' WHERE id = '{DOC_A}'")
+    schema, facts = await _reader_facts(formed)
+    assert schema.form
+    assert (facts.genre, facts.form) == ("encyclical", "brief")
+
+
+async def test_the_reader_reads_no_form_before_0044(postgres):  # noqa: F811
+    """The API deploys before 0044 is applied: facts as before, with no form."""
+    postgres(SEED)
+    postgres.migrate(*EARLIER, SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name)
+    schema, facts = await _reader_facts(postgres)
+    assert schema.facts and not schema.form
+    assert facts.form is None

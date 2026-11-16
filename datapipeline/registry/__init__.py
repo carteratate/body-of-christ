@@ -29,7 +29,7 @@ from dataclasses import dataclass, field, replace
 import identity
 from identity import PIECE_MARK, unit_anchor
 from model import Document
-from registry.genres import ALL_GENRES
+from registry.genres import ALL_GENRES, PAPAL_FORMS
 
 REGISTRY_DIR = os.path.dirname(os.path.abspath(__file__))
 WORKS_FILE = "works.json"
@@ -66,8 +66,9 @@ TOMBSTONE_MAX = 300
 # Document facts (2.3, 2.2a's documents columns), flat on each works.json entry. The
 # build sets them on the Document, over whatever the adapter set (`apply_document_facts`).
 # `certainty` and `clavis_ref` are not among them: they are `attribution.certainty` and
-# `attribution.clavis`, which 3.2 fills, so no fact is held twice.
-FACT_FIELDS = ("genre", "issuer", "issuer_label", "year", "date_display", "translation",
+# `attribution.clavis`, which 3.2 fills, so no fact is held twice. `form` is a papal
+# document's chancery form, `bull` or `brief` (1.3b, 0044; issue #330), beside its genre.
+FACT_FIELDS = ("genre", "form", "issuer", "issuer_label", "year", "date_display", "translation",
                "source_credit", "attribution_note", "notes", "superseded_by",
                "superseded_note")
 _ISSUER = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
@@ -78,6 +79,10 @@ _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 # A rule-B removal with no Church act rests on the majority of standard scholarship, which
 # its detail states (Carter, 11 Nov 2026).
 _SCHOLARLY_BASIS = re.compile(r"\bscholarship\b", re.IGNORECASE)
+# A rule-A removal with no Church act rests on the named chronology, the testimony of the
+# Fathers, or the author's not being a Christian, which its detail states (Carter,
+# 15 Nov 2026; 3.1).
+_RULE_A_BASIS = re.compile(r"\b(chronology|testimony|not a Christian)\b", re.IGNORECASE)
 
 
 # --------------------------------------------------------------------------- loading
@@ -244,13 +249,29 @@ def document_facts(entry: dict) -> dict:
     return facts
 
 
+# A works.json `works` row's label fields (3.2), which the build sets on the adapter's Work.
+WORK_LABELS = ("author", "certainty", "attribution_note", "notes", "date_display", "year",
+               "genre", "clavis_ref")
+
+
 def apply_document_facts(document: Document, registry: WorkRegistry | None = None
                          ) -> Document:
     """The document with its registry facts set: the registry wins over the adapter (2.3).
-    A document whose entry has no facts is unchanged."""
+    Its author is the entry's `attribution.credited_as` where one is set, and each of its
+    works takes the labels of the entry's row for that work (3.2). A document whose entry
+    has no facts is unchanged."""
     entry = (registry or current()).entry_by_document.get(document.id)
     facts = document_facts(entry) if entry else {}
-    return replace(document, **facts) if facts else document
+    if not facts:
+        return document
+    credited = (entry.get("attribution") or {}).get("credited_as")
+    if credited:
+        facts["author"] = credited
+    rows = {x["work_key"]: x for x in entry.get("works", [])}
+    if document.works:
+        facts["works"] = [replace(w, **{k: rows[w.work_key].get(k) for k in WORK_LABELS})
+                          if w.work_key in rows else w for w in document.works]
+    return replace(document, **facts)
 
 
 def removed_document_ids(registry: WorkRegistry | None = None) -> set[str]:
@@ -389,6 +410,8 @@ def _validate_facts(registry: WorkRegistry) -> list[str]:
             out.append(f"{name}: facts lack {', '.join(missing)}")
         if w.get("genre") is not None and w["genre"] not in ALL_GENRES:
             out.append(f"{name}: genre {w['genre']!r}")
+        if w.get("form") is not None and w["form"] not in PAPAL_FORMS:
+            out.append(f"{name}: form {w['form']!r} is not in PAPAL_FORMS")
         issuer, label = w.get("issuer"), w.get("issuer_label")
         if issuer is not None and not _ISSUER.match(str(issuer)):
             out.append(f"{name}: issuer {issuer!r} is not a lowercase hyphenated slug")
@@ -584,12 +607,11 @@ def _validate_removals(registry: WorkRegistry, documents: dict) -> list[str]:
                     out.append(f"removal {name}: anchor {key[1]} is also a redirect target")
         if reason in ("rule-a", "rule-b"):
             act = e.get("church_act")
-            if not act and reason == "rule-b":
-                if not _SCHOLARLY_BASIS.search(e.get("detail") or ""):
-                    out.append(f"removal {name}: a rule-b removal cites its Church act, or "
-                               "states its scholarly basis in its detail")
-            elif not act:
-                out.append(f"removal {name}: a {reason} removal cites its Church act")
+            basis = _SCHOLARLY_BASIS if reason == "rule-b" else _RULE_A_BASIS
+            if not act:
+                if not basis.search(e.get("detail") or ""):
+                    out.append(f"removal {name}: a {reason} removal cites its Church act, "
+                               "or states its basis in its detail")
             else:
                 out += [f"removal {name}: {p}" for p in _act_problems(act, effect=False)]
         if bool(e.get("closed_by")) != bool(e.get("closed_on")):

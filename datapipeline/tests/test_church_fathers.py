@@ -87,8 +87,9 @@ def test_split_passages_have_complete_reader_boundaries():
     docs = build_all()
     # 127 after 1.8a, whose rule G took Asterius Urbanus's only passage, his Elucidation;
     # 128 since 1.8c parses his text and brings the document back; 142 since 1.8b splits
-    # the two Augustine treatise volumes into their 16 works.
-    assert len(docs) == 142
+    # the two Augustine treatise volumes into their 16 works; 109 since 3.1 removes 33
+    # works under rules A to C.
+    assert len(docs) == 109
     for doc in docs:
         groups = defaultdict(list)
         for passage in doc.passages:
@@ -110,6 +111,20 @@ def test_split_passages_have_complete_reader_boundaries():
 @pytest.fixture(scope="module")
 def fathers():
     return build_all()
+
+
+@pytest.fixture(scope="module")
+def unremoved():
+    """The build without 3.1's removals (rules A to C), for the checks 1.8c made of works
+    3.1 then removes."""
+    reg = registry.current()
+    previous = registry.activate(registry.WorkRegistry(
+        reg.works, reg.passages, reg.redirects,
+        [e for e in reg.removals if e.get("added_by") != "3.1"], reg.kept_text))
+    try:
+        return build_all()
+    finally:
+        registry.activate(previous)
 
 
 def _doc(docs, source_key):
@@ -143,9 +158,11 @@ def test_relabelled_documents_keep_their_frozen_ids(fathers):
         assert frozen is None or frozen == d.id, d.title
 
 
-def test_ignatius_letters_open_with_salutation(fathers):
+def test_ignatius_letters_open_with_salutation(unremoved):
     # The 15 Ignatian letters that print a greeting above their first chapter; the
     # short letters to John and Mary carry theirs as the title, the Martyrdom has none.
+    # Five are forgeries 3.1 removes (rule B), so the adapter is checked unremoved.
+    fathers = unremoved
     opened = [d for d in fathers if d.author == "Ignatius"
               and d.passages[0].chapter_label == "Salutation"]
     assert len(opened) == 15, sorted(d.title for d in opened)
@@ -251,19 +268,23 @@ def test_asterius_has_text(fathers):
     assert not [p for p in d.passages if "Elucidation" in p.chapter_label]
 
 
-def test_panegyric_labels(fathers):
+def test_panegyric_labels(fathers, unremoved):
     d = _doc(fathers, "third-century-3.xml#iii.iii")
-    panegyric = [p for p in d.passages if p.chapter_key.startswith("iii.iii.iv.")]
-    assert panegyric
-    assert not [p.chapter_label for p in d.passages if "Argument" in p.chapter_label]
+    # 3.1 removes the Panegyric to Origen under rule A; its labels are checked unremoved.
+    assert not [p for p in d.passages if p.chapter_key.startswith("iii.iii.iv.")]
+    whole = _doc(unremoved, "third-century-3.xml#iii.iii")
+    assert [p for p in whole.passages if p.chapter_key.startswith("iii.iii.iv.")]
+    assert not [p.chapter_label for p in whole.passages if "Argument" in p.chapter_label]
 
 
 def test_cyprian_letters_credited_to_senders(fathers):
     d = _doc(fathers, "third-century-2.xml#iv.iv")
     works = {w.work_key: w for w in d.works}
+    # Epistles XXV and XXIX, by Novatian, leave under rule A (3.1).
+    removed = {"iv.iv.xxv", "iv.iv.xxix", "iv.iv.xxx"}
     for div, (sender, _) in cf._LETTER_SENDERS.items():
         pieces = [p for p in d.passages if p.work_key == div]
-        assert pieces, div
+        assert bool(pieces) != (div in removed), div
         assert works[div].author == sender
     assert works["iv.iv.lxxiv"].author == "Firmilian of Caesarea"
     # Continuation pieces resolve to the letter too.
@@ -456,3 +477,57 @@ def test_incarnation_coverage_reads_only_its_work():
     units = source_text.thml_units(os.path.join(_SRC, "npnf204.xml"))
     assert units and all(u.unit_id == "vii.ii" or u.unit_id.startswith("vii.ii.")
                          for u in units)
+
+
+# --------------------------------------------------------------------------- 3.1
+
+def test_rule_removals_emit_none_of_the_removed_units(fathers):
+    """Building with the registry emits no work rules A to C remove (3.1): no removed
+    document, and no passage an open `passage` entry retires."""
+    reg = registry.current()
+    removed = registry.removed_document_ids(reg)
+    retired = {e["passage_id"] for e in registry.open_removals(reg) if e["scope"] == "passage"}
+    assert not [d.title for d in fathers if d.id in removed]
+    assert not [(d.title, p.anchor) for d in fathers for p in d.passages
+                if registry.resolve_passage_id(d.id, p.anchor, reg) in retired]
+    authors = {d.author for d in fathers}
+    assert not authors & {"Origen", "Novatian", "Tatian", "Arnobius",
+                          "Alexander of Lycopolis"}
+    # Of the Apostolic Constitutions, only Book VIII's canons stay (rule D).
+    assert [d.id[:8] for d in fathers
+            if d.author == "Constitutions of the Holy Apostles"] == ["10d8d7c6"]
+    assert {"To His Wife", "On the Apparel of Women"} <= {
+        d.title for d in fathers if d.author == "Tertullian"}
+
+
+def test_book_viii_emits_only_its_canons(fathers):
+    d = next(d for d in fathers if d.id.startswith("10d8d7c6"))
+    assert {p.chapter_key for p in d.passages} == {"ix.ix.vi"}
+    # 3.2 makes the canons a work of their own, "The Apostolic Canons", labelled "Canons".
+    assert d.passages[0].chapter_label == "Canons"
+    assert {p.work_key for p in d.passages} == {"ix.ix.vi"}
+    assert [w.title for w in d.works] == ["The Apostolic Canons"]
+    assert len(d.passages) == 6 and [p.position for p in d.passages] == list(range(6))
+
+
+def test_treatises_attributed_to_cyprian_keep_ii_and_iv(fathers):
+    d = _doc(fathers, "third-century-2.xml#iv.vii")
+    assert [k for k in dict.fromkeys(p.work_key for p in d.passages)] == \
+        ["iv.vii.iii", "iv.vii.v"]
+
+
+def test_no_novatian_passage_is_built(fathers):
+    """3.1's acceptance check: no passage is credited to Novatian or sits in a work by him,
+    Epistles XXV, XXIX and XXX included."""
+    assert not [d.title for d in fathers if "Novatian" == d.author]
+    letters = _doc(fathers, "third-century-2.xml#iv.iv")
+    assert not [p.anchor for p in letters.passages
+                if p.work_key in ("iv.iv.xxv", "iv.iv.xxix", "iv.iv.xxx")]
+    assert [p for p in letters.passages if p.work_key == "iv.iv.lxxiv"]   # Firmilian stays
+
+
+def test_hippolytus_keeps_his_datable_works(fathers):
+    d = _doc(fathers, "third-century-2.xml#iii.iv")
+    assert [k for k in dict.fromkeys(p.work_key for p in d.passages)] == \
+        ["iii.iv.i.x", "iii.iv.ii.i"]
+    assert not [x for x in fathers if x.title == "The Refutation of All Heresies"]
