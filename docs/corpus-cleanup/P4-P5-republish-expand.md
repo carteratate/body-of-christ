@@ -387,7 +387,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - The build commit is that PR's merge commit into `master`. From that merge until the cutover is done or abandoned, no adapter change merges (the 5.2 rights thread holds its PRs; #381 stays unmerged).
   - The 1.2e fallback adds nothing. All eleven councils, Constantinople IV to Lateran V, have passed 1.2f's gate: every frozen text in `datapipeline/ocr/texts/` for them (`schroeder-*`, the four Deferrari council extracts and Giles's Lyons I) records `pass`. `HELD` in `ingest/councils_schroeder.py` stays empty, and no `translation-in-preparation` entry is added, so the IDs reserved for it (`rm-8001` upward) are unused.
   - The rejected-voice fallback is not needed: 2.4d is live, so 3.4's ranges stay searchable and carry their rejected-voice label (Decision log "Rejected voices (C-01)").
-  - `datapipeline/PUBLISH_LOCK.json` gains the entry `{"collection": "all", "release": "republish-2026-10", "steps": ["stage", "apply", "rollback"]}`.
+  - `datapipeline/PUBLISH_LOCK.json` gains the entry `{"collection": "all", "release": "republish-2026-10", "steps": ["stage", "apply", "rollback"]}` (#406).
 - **Out of scope:** Collection renames (5.1b). Any new source. Any retrieval tuning (Retrieval follow-ups).
 
 ### 4.2. Accuracy checks on staging and production
