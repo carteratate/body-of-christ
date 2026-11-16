@@ -421,6 +421,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 5
 
 - **5.0** [Phase 5, before any addition starts]. Decide how Denzinger is handled for good: its own collection, all its parts placed where they belong, or both. The research listed in 5.0 comes first.
+  Answered 2026-11-15: option 2 for search (each entry placed where it belongs, only entries the corpus lacks in full, each passage carrying its D and DS numbers as citations); and, if the rights research shows it is legal, Denzinger also as a book in the reader, in its own order and numbering, built from the same passages so search shows no duplicates. Still open after the research: where each kind of entry goes, and the book view's legality.
 - **5.1a** [Phase 5]. Approve how genre names appear on screen (for example "Apostolic exhortation" for `apostolic-exhortation`).
 - **5.1b.1** [Phase 5]. Confirm the three new collection keys and labels: `papal` for "Papal documents", `church-law` for "Church law" and `theologians` for "Theologians and spiritual writers". Approve the merged search prompt for papal documents.
 - **5.1b.2** [Phase 5]. Approve the new collection colors and the interim About and Discover wording.
