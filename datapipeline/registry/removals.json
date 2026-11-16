@@ -39770,6 +39770,25 @@
   "judgment": null
  },
  {
+  "id": "rm-7503",
+  "scope": "span",
+  "collection": "summa",
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/XP_Q65_A1/p16",
+  "passage_id": null,
+  "reason": "other-author",
+  "detail": "Suppl. q.65 a.1, the one-line reply to the fifth objection: not in the Leonine text, Leonine vol. 12 scan image 592 (Carter, 15 Nov 2026, #360)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "987b68541606132bf0124bf60fa5d02e96e72089",
+   "excerpt": "The Reply to the Fifth Objection is clear from what has been said."
+  },
+  "added_by": "360",
+  "added_on": "2026-11-16",
+  "judgment": null
+ },
+ {
   "id": "rm-3002",
   "scope": "passage",
   "collection": "summa",
@@ -39784,6 +39803,38 @@
   "added_by": "1.7",
   "added_on": "2026-11-12",
   "judgment": "The Reply to the Tenth Objection is lacking in the codices. The solution given here is found in some editions, and was supplied by Nicolai."
+ },
+ {
+  "id": "rm-7502",
+  "scope": "passage",
+  "collection": "summa",
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-34-holy-orders-qq-34-40/article-4-whether-the-form-of-this-sacrament-is-suitably-expressed/8",
+  "passage_id": "8645953c-f65b-5f01-bb48-34d43f1f2f36",
+  "reason": "other-author",
+  "detail": "Suppl. q.34 a.4, reply 4: not in the Leonine text, which ends the article at ad 3, Leonine vol. 12 scan image 522 (Carter, 15 Nov 2026, #360)",
+  "tombstone": "This text is not in the critical (Leonine) edition of the Summa, which omits it as not in the original manuscripts.",
+  "church_act": null,
+  "span": null,
+  "added_by": "360",
+  "added_on": "2026-11-16",
+  "judgment": null
+ },
+ {
+  "id": "rm-7501",
+  "scope": "passage",
+  "collection": "summa",
+  "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
+  "anchor": "summa/supplement-supplement-to-the-third-part-of-the-summa-theologica/question-9-of-the-quality-of-confession-four-articles/article-4-whether-the-sixteen-conditions-usually-assigned-are-necessary-for-confession/5",
+  "passage_id": "a4c34b21-f8f0-59ba-8ba3-01c7efd87e70",
+  "reason": "other-author",
+  "detail": "Suppl. q.9 a.4, the sed contra (\"We have the authority of the masters\"): not in the Leonine text, Leonine vol. 12 scan image 480 (Carter, 15 Nov 2026, #360)",
+  "tombstone": "This text is not in the critical (Leonine) edition of the Summa, which omits it as not in the original manuscripts.",
+  "church_act": null,
+  "span": null,
+  "added_by": "360",
+  "added_on": "2026-11-16",
+  "judgment": null
  },
  {
   "id": "rm-3001",

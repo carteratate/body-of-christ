@@ -4881,11 +4881,16 @@
    "class": "source-error",
    "defect": "ccel",
    "latin": [
-    "Suppl. q. 14 a. 4 ad 2 et 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 490)"
+    "Suppl. q. 14 a. 4 ad 2 et 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 490)",
+    "Suppl. q. 14 a. 4 ad s. c. (\"Aliae autem rationes\") (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 489)"
    ],
    "printed": {
     "source": "dom-v18"
-   }
+   },
+   "also_answers": [
+    "sc 1",
+    "sc 2"
+   ]
   },
   "XP_Q16_A2-p11": {
    "role": "reply",
@@ -5017,6 +5022,4770 @@
    "printed": {
     "source": "dom-v21"
    }
+  },
+  "XP_Q2_A2-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 2 a. 2 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 464)"
+   ]
+  },
+  "XP_Q2_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 2 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 464)"
+   ]
+  },
+  "XP_Q2_A6-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 2 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 465)"
+   ]
+  },
+  "XP_Q2_A6-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 2 a. 6 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 465)"
+   ]
+  },
+  "XP_Q3_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 3 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 466)"
+   ]
+  },
+  "XP_Q3_A2-p4": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 3",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 3 a. 2 s. c. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 467)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q3_A2-p7": {
+   "also_answers": [
+    "sc 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 3 a. 2 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 467)"
+   ]
+  },
+  "XP_Q3_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 3 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 467)"
+   ]
+  },
+  "XP_Q4_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 4 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 468)"
+   ]
+  },
+  "XP_Q4_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 4 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 468)"
+   ]
+  },
+  "XP_Q4_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 4 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 469)"
+   ]
+  },
+  "XP_Q5_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 5 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 469)"
+   ]
+  },
+  "XP_Q5_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 5 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 469)"
+   ]
+  },
+  "XP_Q6_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 6 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 470)"
+   ]
+  },
+  "XP_Q6_A2-p5": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 6 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 471)",
+    "Suppl. q. 6 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 471)"
+   ]
+  },
+  "XP_Q6_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 6 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 471)"
+   ]
+  },
+  "XP_Q6_A4-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 6 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 471)"
+   ]
+  },
+  "XP_Q6_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 6 a. 4 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 472)"
+   ]
+  },
+  "XP_Q6_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 6 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 472)"
+   ]
+  },
+  "XP_Q7_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 7 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 473)"
+   ]
+  },
+  "XP_Q7_A3-p13": {
+   "role": "reply",
+   "targets": [
+    "obj 5"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 7 a. 3 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 474)"
+   ]
+  },
+  "XP_Q8_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 8 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 474)"
+   ]
+  },
+  "XP_Q8_A3-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 8 a. 3 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 475)"
+   ]
+  },
+  "XP_Q8_A4-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 8 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 476)"
+   ]
+  },
+  "XP_Q8_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 8 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 477)"
+   ]
+  },
+  "XP_Q8_A5-p8": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 8 a. 5 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 477)"
+   ]
+  },
+  "XP_Q8_A6-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 8 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 477)"
+   ]
+  },
+  "XP_Q8_A7-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 8 a. 7 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 478)"
+   ]
+  },
+  "XP_Q9_A2-p6": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 9 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 479)",
+    "Suppl. q. 9 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 479)"
+   ]
+  },
+  "XP_Q9_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 9 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 479)"
+   ]
+  },
+  "XP_Q10_A2-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 10 a. 2 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 481)"
+   ]
+  },
+  "XP_Q10_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 10 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 481)"
+   ]
+  },
+  "XP_Q11_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 11 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 482)"
+   ]
+  },
+  "XP_Q11_A2-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 11 a. 2 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 483)"
+   ]
+  },
+  "XP_Q11_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 11 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 483)"
+   ]
+  },
+  "XP_Q11_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 11 a. 3 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 483)"
+   ]
+  },
+  "XP_Q11_A4-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 11 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 483)"
+   ]
+  },
+  "XP_Q11_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 11 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 484)"
+   ]
+  },
+  "XP_Q12_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 12 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 484)"
+   ]
+  },
+  "XP_Q12_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 12 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 485)"
+   ]
+  },
+  "XP_Q13_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 13 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 486)"
+   ]
+  },
+  "XP_Q13_A1-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 13 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 486)"
+   ]
+  },
+  "XP_Q13_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 13 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 487)"
+   ]
+  },
+  "XP_Q14_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 14 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 488)"
+   ]
+  },
+  "XP_Q14_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 14 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 488)"
+   ]
+  },
+  "XP_Q14_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 14 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 488)"
+   ]
+  },
+  "XP_Q14_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 14 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 489)"
+   ]
+  },
+  "XP_Q14_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 14 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 489)"
+   ]
+  },
+  "XP_Q14_A5-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 14 a. 5 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 490)"
+   ]
+  },
+  "XP_Q15_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 15 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 490)"
+   ]
+  },
+  "XP_Q15_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 15 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 490)"
+   ]
+  },
+  "XP_Q15_A3-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 15 a. 3 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 491)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q15_A3-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 15 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 491)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q15_A3-p14": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 15 a. 3 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 491)"
+   ]
+  },
+  "XP_Q15_A3-p15": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 15 a. 3 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 491)"
+   ]
+  },
+  "XP_Q16_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 16 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 491)"
+   ]
+  },
+  "XP_Q16_A2-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 16 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 492)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026); Aquinas grants it ('Quartum concedimus')"
+  },
+  "XP_Q16_A2-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 16 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 492)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q16_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 16 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 492)"
+   ]
+  },
+  "XP_Q16_A3-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 16 a. 3 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 492)"
+   ]
+  },
+  "XP_Q17_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 17 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 493)"
+   ]
+  },
+  "XP_Q17_A3-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 17 a. 3 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 494)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q17_A3-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 17 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 494)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q17_A3-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 17 a. 3 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 494)"
+   ]
+  },
+  "XP_Q17_A3-p14": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 17 a. 3 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 494)"
+   ]
+  },
+  "XP_Q18_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 18 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 495)"
+   ]
+  },
+  "XP_Q18_A1-p9": {
+   "also_answers": [
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 18 a. 1 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 495)"
+   ]
+  },
+  "XP_Q18_A1-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 18 a. 1 ad 4 et 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 495)"
+   ]
+  },
+  "XP_Q18_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 18 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 496)"
+   ]
+  },
+  "XP_Q18_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 18 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 496)"
+   ]
+  },
+  "XP_Q18_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 18 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 497)"
+   ]
+  },
+  "XP_Q19_A1-p5": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 19 a. 1 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 497)",
+    "Suppl. q. 19 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 497)"
+   ]
+  },
+  "XP_Q19_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 19 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 498)"
+   ]
+  },
+  "XP_Q19_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 19 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 499)"
+   ]
+  },
+  "XP_Q19_A6-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 19 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 499)"
+   ]
+  },
+  "XP_Q20_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 20 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 500)"
+   ]
+  },
+  "XP_Q20_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 20 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 500)"
+   ]
+  },
+  "XP_Q20_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 20 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 501)"
+   ]
+  },
+  "XP_Q21_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 21 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 502)"
+   ]
+  },
+  "XP_Q22_A5-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 22 a. 5 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 504)"
+   ]
+  },
+  "XP_Q23_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 23 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 505)"
+   ]
+  },
+  "XP_Q25_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 25 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 507)"
+   ]
+  },
+  "XP_Q25_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 25 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 508)"
+   ]
+  },
+  "XP_Q25_A3-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 25 a. 3 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 509)"
+   ]
+  },
+  "XP_Q26_A1-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 26 a. 1 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 509)"
+   ]
+  },
+  "XP_Q26_A2-p5": {
+   "also_answers": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 26 a. 2 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 510)"
+   ]
+  },
+  "XP_Q26_A3-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 26 a. 3 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 510)"
+   ]
+  },
+  "XP_Q27_A1-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 27 a. 1 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 510)"
+   ]
+  },
+  "XP_Q27_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 27 a. 4 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 511)"
+   ]
+  },
+  "XP_Q28_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 28 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 511)"
+   ]
+  },
+  "XP_Q29_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 29 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 513)"
+   ]
+  },
+  "XP_Q29_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 29 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 513)"
+   ]
+  },
+  "XP_Q29_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 29 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 514)"
+   ]
+  },
+  "XP_Q29_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 29 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 514)"
+   ]
+  },
+  "XP_Q29_A5-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 29 a. 5 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 514)"
+   ]
+  },
+  "XP_Q29_A7-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 29 a. 7 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 515)"
+   ]
+  },
+  "XP_Q29_A8-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 29 a. 8 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 515)"
+   ]
+  },
+  "XP_Q30_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 30 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 516)"
+   ]
+  },
+  "XP_Q30_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 30 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 517)"
+   ]
+  },
+  "XP_Q30_A2-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 30 a. 2 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 517)"
+   ]
+  },
+  "XP_Q30_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 30 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 517)"
+   ]
+  },
+  "XP_Q32_A7-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 32 a. 7 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 520)"
+   ]
+  },
+  "XP_Q33_A2-p5": {
+   "also_answers": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 33 a. 2 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 520)"
+   ]
+  },
+  "XP_Q34_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 34 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 521)"
+   ]
+  },
+  "XP_Q34_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 34 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 522)"
+   ]
+  },
+  "XP_Q34_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 34 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 522)"
+   ]
+  },
+  "XP_Q34_A5-p7": {
+   "also_answers": [
+    "obj 1"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 34 a. 5 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 522)"
+   ]
+  },
+  "XP_Q35_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 35 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 523)"
+   ]
+  },
+  "XP_Q35_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 35 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 523)"
+   ]
+  },
+  "XP_Q35_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 35 a. 2 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 523)"
+   ]
+  },
+  "XP_Q36_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 36 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 524)"
+   ]
+  },
+  "XP_Q36_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 36 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 525)"
+   ]
+  },
+  "XP_Q36_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 36 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 526)"
+   ]
+  },
+  "XP_Q36_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 36 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 526)"
+   ]
+  },
+  "XP_Q37_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 37 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 527)"
+   ]
+  },
+  "XP_Q37_A2-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 37 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 527)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q37_A2-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 37 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 527)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q37_A2-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 37 a. 2 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 528)"
+   ]
+  },
+  "XP_Q37_A2-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 37 a. 2 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 528)"
+   ]
+  },
+  "XP_Q37_A3-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 37 a. 3 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 528)"
+   ]
+  },
+  "XP_Q37_A4-p16": {
+   "role": "reply",
+   "targets": [
+    "obj 5"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 37 a. 4 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 529)"
+   ]
+  },
+  "XP_Q38_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 38 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 530)"
+   ]
+  },
+  "XP_Q38_A1-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 38 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 530)"
+   ]
+  },
+  "XP_Q38_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 38 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 531)"
+   ]
+  },
+  "XP_Q38_A2-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 38 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 531)"
+   ]
+  },
+  "XP_Q39_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 39 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 532)"
+   ]
+  },
+  "XP_Q39_A1-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 39 a. 1 ad 2 et 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 532)"
+   ]
+  },
+  "XP_Q39_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 39 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 532)"
+   ]
+  },
+  "XP_Q39_A3-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 39 a. 3 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 532)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q39_A3-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 39 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 532)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q39_A3-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 39 a. 3 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 533)"
+   ]
+  },
+  "XP_Q39_A3-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 39 a. 3 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 533)"
+   ]
+  },
+  "XP_Q39_A6-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 39 a. 6 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 533)"
+   ]
+  },
+  "XP_Q40_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 40 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 534)"
+   ]
+  },
+  "XP_Q40_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 40 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 534)"
+   ]
+  },
+  "XP_Q40_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 40 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 534)"
+   ]
+  },
+  "XP_Q40_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 40 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 535)"
+   ]
+  },
+  "XP_Q40_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 40 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 535)"
+   ]
+  },
+  "XP_Q40_A5-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 40 a. 5 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 535)"
+   ]
+  },
+  "XP_Q40_A6-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 40 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 536)"
+   ]
+  },
+  "XP_Q41_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 41 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 537)"
+   ]
+  },
+  "XP_Q41_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 41 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 538)"
+   ]
+  },
+  "XP_Q41_A2-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 41 a. 2 ad 2 et 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 538)"
+   ]
+  },
+  "XP_Q41_A3-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 41 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 538)"
+   ]
+  },
+  "XP_Q41_A4-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 41 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 539)"
+   ]
+  },
+  "XP_Q41_A4-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 4"
+   ],
+   "source_label": "Reply to Objection 2",
+   "defect": "translators",
+   "printed": {
+    "source": "dom-v19",
+    "page": "85"
+   },
+   "note": "the translation omits ad 2 and ad 3 and numbers ad 4 and ad 5 as replies 2 and 3",
+   "class": "source-error",
+   "latin": [
+    "Suppl. q. 41 a. 4 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 539)"
+   ]
+  },
+  "XP_Q41_A4-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 5"
+   ],
+   "source_label": "Reply to Objection 3",
+   "defect": "translators",
+   "printed": {
+    "source": "dom-v19",
+    "page": "85"
+   },
+   "class": "source-error",
+   "latin": [
+    "Suppl. q. 41 a. 4 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 539)"
+   ]
+  },
+  "XP_Q42_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 42 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 539)"
+   ]
+  },
+  "XP_Q42_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 42 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 540)"
+   ]
+  },
+  "XP_Q42_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 42 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 540)"
+   ]
+  },
+  "XP_Q42_A4-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 42 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 541)"
+   ]
+  },
+  "XP_Q44_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 44 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 544)"
+   ]
+  },
+  "XP_Q44_A3-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 4"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 44 a. 3 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 545)"
+   ]
+  },
+  "XP_Q45_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 45 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 545)"
+   ]
+  },
+  "XP_Q45_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 45 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 546)"
+   ]
+  },
+  "XP_Q45_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 45 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 546)"
+   ]
+  },
+  "XP_Q45_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 45 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 546)"
+   ]
+  },
+  "XP_Q45_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 45 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 547)"
+   ]
+  },
+  "XP_Q46_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 46 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 547)"
+   ]
+  },
+  "XP_Q46_A1-p10": {
+   "also_answers": [
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 46 a. 1 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 548)"
+   ]
+  },
+  "XP_Q46_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 46 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 548)"
+   ]
+  },
+  "XP_Q47_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 47 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 548)"
+   ]
+  },
+  "XP_Q47_A1-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3",
+    "obj 4",
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 47 a. 1 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 549)"
+   ]
+  },
+  "XP_Q47_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 47 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 549)"
+   ]
+  },
+  "XP_Q47_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 47 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 549)"
+   ]
+  },
+  "XP_Q47_A5-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 47 a. 5 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 550)"
+   ]
+  },
+  "XP_Q47_A6-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 47 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 550)"
+   ]
+  },
+  "XP_Q48_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 48 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 550)"
+   ]
+  },
+  "XP_Q48_A1-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 48 a. 1 ad 5 et 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 551)"
+   ]
+  },
+  "XP_Q48_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 48 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 551)"
+   ]
+  },
+  "XP_Q49_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 49 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 552)"
+   ]
+  },
+  "XP_Q49_A2-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 49 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 552)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q49_A2-p7": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 6",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 49 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 552)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q49_A2-p8": {
+   "latin_role": "sed-contra",
+   "latin_number": 3,
+   "source_label": "Objection 7",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 49 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 552)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q49_A2-p14": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 49 a. 2 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 552)"
+   ]
+  },
+  "XP_Q49_A2-p15": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 49 a. 2 ad 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 552)"
+   ]
+  },
+  "XP_Q49_A2-p16": {
+   "role": "reply",
+   "targets": [
+    "sc 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 49 a. 2 ad 7 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 553)"
+   ]
+  },
+  "XP_Q49_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 49 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 553)"
+   ]
+  },
+  "XP_Q49_A4-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 49 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 554)"
+   ]
+  },
+  "XP_Q49_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 49 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 554)"
+   ]
+  },
+  "XP_Q49_A6-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 49 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 555)"
+   ]
+  },
+  "XP_Q50_A1-p9": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 8",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 50 a. 1 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 555)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q50_A1-p10": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 9",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 50 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 555)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q50_A1-p29": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 50 a. 1 ad 8 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 556)"
+   ]
+  },
+  "XP_Q50_A1-p30": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 50 a. 1 ad 9 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 556)"
+   ]
+  },
+  "XP_Q51_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 51 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 557)"
+   ]
+  },
+  "XP_Q51_A2-p8": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 7",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 51 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 557)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q51_A2-p9": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 8",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 51 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 557)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q51_A2-p10": {
+   "latin_role": "sed-contra",
+   "latin_number": 3,
+   "source_label": "Objection 9",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 51 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 557)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q51_A2-p18": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 51 a. 2 ad 7 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 557)"
+   ]
+  },
+  "XP_Q51_A2-p19": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 51 a. 2 ad 8 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 557)"
+   ]
+  },
+  "XP_Q51_A2-p20": {
+   "role": "reply",
+   "targets": [
+    "sc 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 51 a. 2 ad 9 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 558)"
+   ]
+  },
+  "XP_Q52_A1-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 52 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 558)"
+   ]
+  },
+  "XP_Q52_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 52 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 559)"
+   ]
+  },
+  "XP_Q52_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 52 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 559)"
+   ]
+  },
+  "XP_Q52_A4-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 52 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 560)"
+   ]
+  },
+  "XP_Q53_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 53 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 561)"
+   ]
+  },
+  "XP_Q53_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 53 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 561)"
+   ]
+  },
+  "XP_Q53_A3-p15": {
+   "role": "reply",
+   "targets": [
+    "obj 5"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 53 a. 3 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 562)"
+   ]
+  },
+  "XP_Q53_A4-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 53 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 562)"
+   ]
+  },
+  "XP_Q54_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 54 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 564)"
+   ]
+  },
+  "XP_Q54_A4-p10": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 54 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 566)"
+   ]
+  },
+  "XP_Q55_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 55 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 567)"
+   ]
+  },
+  "XP_Q55_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 55 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 568)"
+   ]
+  },
+  "XP_Q55_A5-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 55 a. 5 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 568)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q55_A5-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 55 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 568)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q55_A5-p7": {
+   "latin_role": "sed-contra",
+   "latin_number": 3,
+   "source_label": "Objection 6",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 55 a. 5 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 568)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q55_A5-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 55 a. 5 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 569)"
+   ]
+  },
+  "XP_Q55_A5-p14": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 55 a. 5 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 569)"
+   ]
+  },
+  "XP_Q55_A5-p15": {
+   "role": "reply",
+   "targets": [
+    "sc 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 55 a. 5 ad 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 569)"
+   ]
+  },
+  "XP_Q55_A11-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 55 a. 11 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 571)"
+   ]
+  },
+  "XP_Q56_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 56 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 571)"
+   ]
+  },
+  "XP_Q56_A2-p8": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 7",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 56 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 572)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q56_A2-p9": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 8",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 56 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 572)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q56_A2-p10": {
+   "latin_role": "sed-contra",
+   "latin_number": 3,
+   "source_label": "Objection 9",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 56 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 572)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q56_A2-p16": {
+   "role": "reply",
+   "targets": [
+    "obj 5",
+    "obj 6"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 56 a. 2 ad 5 et 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 572)"
+   ]
+  },
+  "XP_Q56_A2-p17": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 56 a. 2 ad 7 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 572)"
+   ]
+  },
+  "XP_Q56_A2-p18": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 56 a. 2 ad 8 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 572)"
+   ]
+  },
+  "XP_Q56_A2-p19": {
+   "role": "reply",
+   "targets": [
+    "sc 3"
+   ],
+   "also_answers": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 56 a. 2 ad 9 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 572)"
+   ]
+  },
+  "XP_Q57_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 57 a. 1 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 574)"
+   ]
+  },
+  "XP_Q57_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 57 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 575)"
+   ]
+  },
+  "XP_Q57_A2-p8": {
+   "also_answers": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 57 a. 2 ad 1, 2 et 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 575)"
+   ]
+  },
+  "XP_Q57_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 57 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 575)"
+   ]
+  },
+  "XP_Q58_A1-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 58 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 576)"
+   ]
+  },
+  "XP_Q58_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 58 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 576)"
+   ]
+  },
+  "XP_Q58_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 58 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 577)"
+   ]
+  },
+  "XP_Q58_A4-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 58 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 577)"
+   ]
+  },
+  "XP_Q58_A4-p8": {
+   "also_answers": [
+    "obj 1",
+    "obj 2",
+    "obj 3",
+    "obj 4"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 58 a. 4 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 578)"
+   ]
+  },
+  "XP_Q58_A5-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 58 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 578)"
+   ]
+  },
+  "XP_Q59_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 59 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 578)"
+   ]
+  },
+  "XP_Q59_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 59 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 579)"
+   ]
+  },
+  "XP_Q59_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 59 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 580)"
+   ]
+  },
+  "XP_Q59_A4-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 59 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 580)"
+   ]
+  },
+  "XP_Q59_A5-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 59 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 581)"
+   ]
+  },
+  "XP_Q59_A6-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 59 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 582)"
+   ]
+  },
+  "XP_Q60_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 60 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 582)"
+   ]
+  },
+  "XP_Q60_A2-p6": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 60 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 583)",
+    "Suppl. q. 60 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 583)"
+   ]
+  },
+  "XP_Q61_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 61 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 583)"
+   ]
+  },
+  "XP_Q62_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 62 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 584)"
+   ]
+  },
+  "XP_Q62_A2-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 62 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 585)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q62_A2-p7": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 6",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 62 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 585)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q62_A2-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 62 a. 2 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 585)"
+   ]
+  },
+  "XP_Q62_A2-p14": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 62 a. 2 ad 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 585)"
+   ]
+  },
+  "XP_Q62_A3-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 62 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 585)"
+   ]
+  },
+  "XP_Q62_A3-p12": {
+   "also_answers": [
+    "obj 3"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 62 a. 3 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 585)"
+   ]
+  },
+  "XP_Q62_A4-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 62 a. 4 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 586)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q62_A4-p7": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 6",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 62 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 586)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q62_A4-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 62 a. 4 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 586)"
+   ]
+  },
+  "XP_Q62_A4-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 62 a. 4 ad 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 586)"
+   ]
+  },
+  "XP_Q62_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 62 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 586)"
+   ]
+  },
+  "XP_Q62_A6-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 62 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 587)"
+   ]
+  },
+  "XP_Q63_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 63 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 587)"
+   ]
+  },
+  "XP_Q63_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 63 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 588)"
+   ]
+  },
+  "XP_Q64_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 64 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 588)"
+   ]
+  },
+  "XP_Q64_A2-p6": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 64 a. 2 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 589)",
+    "Suppl. q. 64 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 589)"
+   ]
+  },
+  "XP_Q64_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 64 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 589)"
+   ]
+  },
+  "XP_Q64_A6-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 64 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 590)"
+   ]
+  },
+  "XP_Q65_A1-p7": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 6",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 65 a. 1 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 591)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q65_A1-p8": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 7",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 65 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 591)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q65_A1-p9": {
+   "latin_role": "sed-contra",
+   "latin_number": 3,
+   "source_label": "Objection 8",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 65 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 591)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q65_A1-p10": {
+   "latin_role": "sed-contra",
+   "latin_number": 4,
+   "source_label": "Objection 9",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 65 a. 1 s. c. 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 591)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q65_A1-p15": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 65 a. 1 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 592)"
+   ]
+  },
+  "XP_Q65_A1-p17": {
+   "flag": "not-in-leonine",
+   "source_note": "the Leonine has no reply to the fifth argument; removed as text outside the Leonine (Carter, 15 Nov 2026)",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 65 a. 1 no ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 592)"
+   ]
+  },
+  "XP_Q65_A1-p19": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "note": "the Leonine prints this reply as 'ad quintum', with the sed contra replies numbered 5 to 8",
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 65 a. 1 ad 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 592)"
+   ]
+  },
+  "XP_Q65_A1-p20": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 65 a. 1 ad 7 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 592)"
+   ]
+  },
+  "XP_Q65_A1-p21": {
+   "role": "reply",
+   "targets": [
+    "sc 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 65 a. 1 ad 8 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 592)"
+   ]
+  },
+  "XP_Q65_A1-p22": {
+   "role": "reply",
+   "targets": [
+    "sc 4"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 65 a. 1 ad 9 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 592)"
+   ]
+  },
+  "XP_Q65_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 65 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 593)"
+   ]
+  },
+  "XP_Q65_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 65 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 593)"
+   ]
+  },
+  "XP_Q65_A4-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 65 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 594)"
+   ]
+  },
+  "XP_Q65_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 65 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 594)"
+   ]
+  },
+  "XP_Q66_A2-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 66 a. 2 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 596)"
+   ]
+  },
+  "XP_Q66_A3-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 66 a. 3 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 596)"
+   ]
+  },
+  "XP_Q66_A4-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 66 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 597)"
+   ]
+  },
+  "XP_Q66_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 66 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 597)"
+   ]
+  },
+  "XP_Q67_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 67 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 597)"
+   ]
+  },
+  "XP_Q67_A1-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 67 a. 1 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 598)"
+   ]
+  },
+  "XP_Q67_A3-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 67 a. 3 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 598)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q67_A3-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 67 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 598)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q67_A3-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 67 a. 3 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 599)"
+   ]
+  },
+  "XP_Q67_A3-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 67 a. 3 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 599)"
+   ]
+  },
+  "XP_Q67_A4-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 67 a. 4 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 599)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q67_A4-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 67 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 599)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q67_A4-p12": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 67 a. 4 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 599)"
+   ]
+  },
+  "XP_Q67_A4-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 67 a. 4 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 599)"
+   ]
+  },
+  "XP_Q67_A6-p4": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 3",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 67 a. 6 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 600)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q67_A6-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 67 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 600)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q67_A6-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 3,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 67 a. 6 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 600)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q67_A6-p7": {
+   "also_answers": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 67 a. 6 ad 1 et 2 (granted) (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 600)"
+   ]
+  },
+  "XP_Q67_A6-p8": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 67 a. 6 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 600)"
+   ]
+  },
+  "XP_Q67_A6-p9": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 67 a. 6 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 600)"
+   ]
+  },
+  "XP_Q67_A6-p10": {
+   "role": "reply",
+   "targets": [
+    "sc 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 67 a. 6 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 600)"
+   ]
+  },
+  "XP_Q67_A7-p7": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 67 a. 7 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 600)"
+   ]
+  },
+  "XP_Q69_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 602)"
+   ]
+  },
+  "XP_Q69_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 602)"
+   ]
+  },
+  "XP_Q69_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 603)"
+   ]
+  },
+  "XP_Q69_A3-p7": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 3 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 603)"
+   ]
+  },
+  "XP_Q69_A3-p13": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "source_label": "Reply to Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 3 ad s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 603)"
+   ]
+  },
+  "XP_Q69_A3-p14": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "source_label": "Reply to Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 3 ad s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 603)"
+   ]
+  },
+  "XP_Q69_A3-p15": {
+   "role": "reply",
+   "targets": [
+    "sc 3"
+   ],
+   "source_label": "Reply to Objection 6",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 3 ad s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 604)"
+   ]
+  },
+  "XP_Q69_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 604)"
+   ]
+  },
+  "XP_Q69_A4-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 69 a. 4 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 604)"
+   ]
+  },
+  "XP_Q69_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 604)"
+   ]
+  },
+  "XP_Q69_A5-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 69 a. 5 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 604)"
+   ]
+  },
+  "XP_Q69_A7-p5": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 4",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 7 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 605)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q69_A7-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 7 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 605)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q69_A7-p7": {
+   "latin_role": "sed-contra",
+   "latin_number": 3,
+   "source_label": "Objection 6",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 7 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 605)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q69_A7-p8": {
+   "latin_role": "sed-contra",
+   "latin_number": 4,
+   "source_label": "Objection 7",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 7 s. c. 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 605)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q69_A7-p9": {
+   "latin_role": "sed-contra",
+   "latin_number": 5,
+   "source_label": "Objection 8",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 7 s. c. 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 605)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q69_A7-p10": {
+   "latin_role": "sed-contra",
+   "latin_number": 6,
+   "source_label": "Objection 9",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 7 s. c. 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 605)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q69_A7-p11": {
+   "latin_role": "sed-contra",
+   "latin_number": 7,
+   "source_label": "Objection 10",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 69 a. 7 s. c. 7 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 605)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q69_A7-p16": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 69 a. 7 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 606)"
+   ]
+  },
+  "XP_Q69_A7-p17": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 69 a. 7 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 606)"
+   ]
+  },
+  "XP_Q69_A7-p18": {
+   "role": "reply",
+   "targets": [
+    "sc 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 69 a. 7 ad 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 606)"
+   ]
+  },
+  "XP_Q69_A7-p19": {
+   "role": "reply",
+   "targets": [
+    "sc 4"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 69 a. 7 ad 7 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 606)"
+   ]
+  },
+  "XP_Q69_A7-p20": {
+   "role": "reply",
+   "targets": [
+    "sc 5"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 69 a. 7 ad 8 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 606)"
+   ]
+  },
+  "XP_Q69_A7-p21": {
+   "role": "reply",
+   "targets": [
+    "sc 6"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 69 a. 7 ad 9 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 606)"
+   ]
+  },
+  "XP_Q69_A7-p22": {
+   "role": "reply",
+   "targets": [
+    "sc 7"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 69 a. 7 ad 10 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 606)"
+   ]
+  },
+  "XP_Q70_A1-p10": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 70 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 606)"
+   ]
+  },
+  "XP_Q70_A1-p11": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 70 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 606)"
+   ]
+  },
+  "XP_Q70_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 70 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 607)"
+   ]
+  },
+  "XP_Q70_A3-p11": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 70 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 609)"
+   ]
+  },
+  "XP_Q70_A3-p12": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 70 a. 3 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 609)"
+   ]
+  },
+  "XP_Q71_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 610)"
+   ]
+  },
+  "XP_Q71_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 611)"
+   ]
+  },
+  "XP_Q71_A3-p6": {
+   "latin_role": "sed-contra",
+   "latin_number": 1,
+   "source_label": "Objection 5",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 3 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 611)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q71_A3-p7": {
+   "latin_role": "sed-contra",
+   "latin_number": 2,
+   "source_label": "Objection 6",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 611)"
+   ],
+   "note": "the translators number the sed contra as an objection because Aquinas replies to it; cited by its Latin role (Carter, 15 Nov 2026)"
+  },
+  "XP_Q71_A3-p14": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 71 a. 3 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 612)"
+   ]
+  },
+  "XP_Q71_A3-p15": {
+   "role": "reply",
+   "targets": [
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 71 a. 3 ad 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 612)"
+   ]
+  },
+  "XP_Q71_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 612)"
+   ]
+  },
+  "XP_Q71_A4-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3",
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 71 a. 4 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 612)"
+   ]
+  },
+  "XP_Q71_A5-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 613)"
+   ]
+  },
+  "XP_Q71_A5-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 5 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 613)"
+   ]
+  },
+  "XP_Q71_A6-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 614)"
+   ]
+  },
+  "XP_Q71_A8-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 8 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 615)"
+   ]
+  },
+  "XP_Q71_A10-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 10 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 616)"
+   ]
+  },
+  "XP_Q71_A11-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 11 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 616)"
+   ]
+  },
+  "XP_Q71_A11-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 11 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 616)"
+   ]
+  },
+  "XP_Q71_A12-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 12 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 617)"
+   ]
+  },
+  "XP_Q71_A13-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 71 a. 13 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 618)"
+   ]
+  },
+  "XP_Q72_A1-p7": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 72 a. 1 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 619)",
+    "Suppl. q. 72 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 619)"
+   ]
+  },
+  "XP_Q72_A1-p8": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 72 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 619)"
+   ]
+  },
+  "XP_Q72_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 72 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 620)"
+   ]
+  },
+  "XP_Q72_A2-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 72 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 620)"
+   ]
+  },
+  "XP_Q72_A3-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 72 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 621)"
+   ]
+  },
+  "XP_Q72_A3-p10": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 72 a. 3 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 621)"
+   ]
+  },
+  "XP_Q73_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 73 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 621)"
+   ]
+  },
+  "XP_Q73_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 73 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 622)"
+   ]
+  },
+  "XP_Q73_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 73 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 622)"
+   ]
+  },
+  "XP_Q73_A3-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 73 a. 3 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 623)"
+   ]
+  },
+  "XP_Q74_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 74 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 623)"
+   ]
+  },
+  "XP_Q74_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 74 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 624)"
+   ]
+  },
+  "XP_Q74_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 74 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 624)"
+   ]
+  },
+  "XP_Q74_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 74 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 625)"
+   ]
+  },
+  "XP_Q74_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 74 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 625)"
+   ]
+  },
+  "XP_Q74_A6-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 74 a. 6 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 626)"
+   ]
+  },
+  "XP_Q74_A7-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 74 a. 7 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 627)"
+   ]
+  },
+  "XP_Q74_A7-p9": {
+   "also_answers": [
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 74 a. 7 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 627)"
+   ]
+  },
+  "XP_Q74_A9-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 74 a. 9 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 628)"
+   ]
+  },
+  "XP_Q75_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 75 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 628)"
+   ]
+  },
+  "XP_Q75_A1-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 75 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 628)"
+   ]
+  },
+  "XP_Q75_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 75 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 629)"
+   ]
+  },
+  "XP_Q75_A2-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 75 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 629)"
+   ]
+  },
+  "XP_Q75_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 75 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 630)"
+   ]
+  },
+  "XP_Q76_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 76 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 631)"
+   ]
+  },
+  "XP_Q76_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 76 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 631)"
+   ]
+  },
+  "XP_Q76_A3-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 76 a. 3 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 632)"
+   ]
+  },
+  "XP_Q77_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 77 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 633)"
+   ]
+  },
+  "XP_Q77_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 77 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 633)"
+   ]
+  },
+  "XP_Q77_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 77 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 634)"
+   ]
+  },
+  "XP_Q77_A4-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 77 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 635)"
+   ]
+  },
+  "XP_Q78_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 78 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 635)"
+   ]
+  },
+  "XP_Q78_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 78 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 636)"
+   ]
+  },
+  "XP_Q78_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 78 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 636)"
+   ]
+  },
+  "XP_Q78_A3-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 78 a. 3 ad 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 637)"
+   ]
+  },
+  "XP_Q79_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 79 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 637)"
+   ]
+  },
+  "XP_Q79_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 79 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 638)"
+   ]
+  },
+  "XP_Q79_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 79 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 639)"
+   ]
+  },
+  "XP_Q80_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 80 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 640)"
+   ]
+  },
+  "XP_Q80_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 80 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 640)"
+   ]
+  },
+  "XP_Q80_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 80 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 641)"
+   ]
+  },
+  "XP_Q80_A4-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 80 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 642)"
+   ]
+  },
+  "XP_Q80_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 80 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 643)"
+   ]
+  },
+  "XP_Q81_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 81 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 644)"
+   ]
+  },
+  "XP_Q81_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 81 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 645)"
+   ]
+  },
+  "XP_Q81_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 81 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 645)"
+   ]
+  },
+  "XP_Q81_A4-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 81 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 645)"
+   ]
+  },
+  "XP_Q82_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 82 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 646)"
+   ]
+  },
+  "XP_Q82_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 82 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 647)"
+   ]
+  },
+  "XP_Q82_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 82 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 648)"
+   ]
+  },
+  "XP_Q82_A4-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 82 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 649)"
+   ]
+  },
+  "XP_Q83_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 83 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 650)"
+   ]
+  },
+  "XP_Q83_A1-p12": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 83 a. 1 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 650)"
+   ]
+  },
+  "XP_Q83_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 83 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 652)"
+   ]
+  },
+  "XP_Q83_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 83 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 653)"
+   ]
+  },
+  "XP_Q83_A4-p9": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 83 a. 4 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 653)"
+   ]
+  },
+  "XP_Q83_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 83 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 653)"
+   ]
+  },
+  "XP_Q83_A6-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 83 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 654)"
+   ]
+  },
+  "XP_Q84_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 84 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 654)"
+   ]
+  },
+  "XP_Q84_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 84 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 656)"
+   ]
+  },
+  "XP_Q85_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 85 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 658)"
+   ]
+  },
+  "XP_Q85_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 85 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 658)"
+   ]
+  },
+  "XP_Q85_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 85 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 659)"
+   ]
+  },
+  "XP_Q86_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 86 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 659)"
+   ]
+  },
+  "XP_Q86_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 86 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 660)"
+   ]
+  },
+  "XP_Q86_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 86 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 661)"
+   ]
+  },
+  "XP_Q87_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 87 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 662)"
+   ]
+  },
+  "XP_Q87_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 87 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 662)"
+   ]
+  },
+  "XP_Q87_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 87 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 663)"
+   ]
+  },
+  "XP_Q87_A3-p7": {
+   "also_answers": [
+    "obj 1",
+    "obj 2",
+    "obj 3",
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 87 a. 3 ad arg. (ad utramque partem) (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 663)"
+   ]
+  },
+  "XP_Q88_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 88 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 663)"
+   ]
+  },
+  "XP_Q88_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 88 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 664)"
+   ]
+  },
+  "XP_Q88_A3-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 88 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 665)"
+   ]
+  },
+  "XP_Q88_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 88 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 665)"
+   ]
+  },
+  "XP_Q89_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 89 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 666)"
+   ]
+  },
+  "XP_Q89_A1-p8": {
+   "also_answers": [
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 89 a. 1 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 666)"
+   ]
+  },
+  "XP_Q89_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 89 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 666)"
+   ]
+  },
+  "XP_Q89_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 89 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 667)"
+   ]
+  },
+  "XP_Q89_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 89 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 668)"
+   ]
+  },
+  "XP_Q89_A6-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 89 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 668)"
+   ]
+  },
+  "XP_Q89_A6-p11": {
+   "role": "reply",
+   "targets": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 89 a. 6 ad 4 et 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 669)"
+   ]
+  },
+  "XP_Q89_A7-p8": {
+   "role": "reply",
+   "targets": [
+    "sc 1"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 89 a. 7 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 669)"
+   ]
+  },
+  "XP_Q89_A8-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 89 a. 8 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 669)"
+   ]
+  },
+  "XP_Q89_A8-p10": {
+   "role": "reply",
+   "targets": [
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 89 a. 8 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 669)"
+   ]
+  },
+  "XP_Q90_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 90 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 670)"
+   ]
+  },
+  "XP_Q90_A1-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 90 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 670)"
+   ]
+  },
+  "XP_Q90_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 90 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 670)"
+   ]
+  },
+  "XP_Q90_A2-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 90 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 670)"
+   ]
+  },
+  "XP_Q90_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 90 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 671)"
+   ]
+  },
+  "XP_Q90_A3-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 90 a. 3 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 671)"
+   ]
+  },
+  "XP_Q91_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 672)"
+   ]
+  },
+  "XP_Q91_A1-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 672)"
+   ]
+  },
+  "XP_Q91_A2-p13": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 673)"
+   ]
+  },
+  "XP_Q91_A2-p14": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 673)"
+   ]
+  },
+  "XP_Q91_A2-p15": {
+   "holds": [
+    "sc 4"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 2 s. c. 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 673)"
+   ]
+  },
+  "XP_Q91_A2-p16": {
+   "holds": [
+    "sc 5"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 2 s. c. 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 673)"
+   ]
+  },
+  "XP_Q91_A2-p19": {
+   "role": "reply",
+   "targets": [
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 91 a. 2 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 673)"
+   ]
+  },
+  "XP_Q91_A2-p28": {
+   "role": "reply",
+   "targets": [
+    "sc 1",
+    "sc 2",
+    "sc 3",
+    "sc 4"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 91 a. 2 ad s. c. (\"Alias rationes concedimus\" (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 674)",
+    "Suppl. q. 91 a. 2 \"ad primam ergo earum\") (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 674)"
+   ]
+  },
+  "XP_Q91_A2-p29": {
+   "role": "reply",
+   "targets": [
+    "sc 5"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 91 a. 2 ad s. c. 5 (\"ad secundam rationem\") (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 674)"
+   ]
+  },
+  "XP_Q91_A3-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 674)"
+   ]
+  },
+  "XP_Q91_A3-p10": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 3 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 674)"
+   ]
+  },
+  "XP_Q91_A4-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 675)"
+   ]
+  },
+  "XP_Q91_A4-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 4 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 675)"
+   ]
+  },
+  "XP_Q91_A5-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 676)"
+   ]
+  },
+  "XP_Q91_A5-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 91 a. 5 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 676)"
+   ]
+  },
+  "XP_Q92_A1-p19": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 677)"
+   ]
+  },
+  "XP_Q92_A1-p20": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 677)"
+   ]
+  },
+  "XP_Q92_A1-p21": {
+   "holds": [
+    "sc 4"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 1 s. c. 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 677)"
+   ]
+  },
+  "XP_Q92_A1-p22": {
+   "holds": [
+    "sc 5"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 1 s. c. 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 677)"
+   ]
+  },
+  "XP_Q92_A1-p23": {
+   "holds": [
+    "sc 6"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 1 s. c. 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 677)"
+   ]
+  },
+  "XP_Q92_A2-p10": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 681)"
+   ]
+  },
+  "XP_Q92_A2-p11": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 681)"
+   ]
+  },
+  "XP_Q92_A2-p12": {
+   "holds": [
+    "sc 4"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 2 s. c. 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 681)"
+   ]
+  },
+  "XP_Q92_A2-p13": {
+   "holds": [
+    "sc 5"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 2 s. c. 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 681)"
+   ]
+  },
+  "XP_Q92_A3-p15": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 682)"
+   ]
+  },
+  "XP_Q92_A3-p16": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 92 a. 3 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 682)"
+   ]
+  },
+  "XP_Q93_A1-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 93 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 683)"
+   ]
+  },
+  "XP_Q93_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 93 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 684)"
+   ]
+  },
+  "XP_Q93_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 93 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 685)"
+   ]
+  },
+  "XP_Q94_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 94 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 686)"
+   ]
+  },
+  "XP_Q95_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 95 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 686)"
+   ]
+  },
+  "XP_Q95_A1-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 95 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 686)"
+   ]
+  },
+  "XP_Q95_A2-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 95 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 687)"
+   ]
+  },
+  "XP_Q95_A2-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 95 a. 2 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 687)"
+   ]
+  },
+  "XP_Q95_A2-p13": {
+   "also_answers": [
+    "obj 4"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 95 a. 2 ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 687)"
+   ]
+  },
+  "XP_Q95_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 95 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 688)"
+   ]
+  },
+  "XP_Q95_A4-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 95 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 688)"
+   ]
+  },
+  "XP_Q96_A1-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 96 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 690)"
+   ]
+  },
+  "XP_Q96_A1-p9": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 96 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 690)"
+   ]
+  },
+  "XP_Q96_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 96 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 691)"
+   ]
+  },
+  "XP_Q96_A5-p10": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 96 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 693)"
+   ]
+  },
+  "XP_Q96_A6-p15": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 96 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 695)"
+   ]
+  },
+  "XP_Q96_A7-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 96 a. 7 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 696)"
+   ]
+  },
+  "XP_Q96_A8-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 96 a. 8 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 697)"
+   ]
+  },
+  "XP_Q96_A9-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 96 a. 9 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 697)"
+   ]
+  },
+  "XP_Q96_A10-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 96 a. 10 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 697)"
+   ]
+  },
+  "XP_Q96_A10-p8": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 96 a. 10 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 697)"
+   ]
+  },
+  "XP_Q96_A11-p13": {
+   "role": "reply",
+   "targets": [
+    "obj 3",
+    "obj 4"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 96 a. 11 ad 3 et 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 698)"
+   ]
+  },
+  "XP_Q96_A12-p6": {
+   "also_answers": [
+    "obj 1",
+    "obj 2",
+    "obj 3",
+    "obj 4"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 96 a. 12 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 698)"
+   ]
+  },
+  "XP_Q97_A1-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 97 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 699)"
+   ]
+  },
+  "XP_Q97_A3-p6": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 97 a. 3 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 700)"
+   ]
+  },
+  "XP_Q97_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 97 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 700)"
+   ]
+  },
+  "XP_Q97_A4-p11": {
+   "role": "reply",
+   "targets": [
+    "obj 1",
+    "obj 2",
+    "obj 3"
+   ],
+   "class": "prose-reply",
+   "latin": [
+    "Suppl. q. 97 a. 4 ad arg. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 700)"
+   ]
+  },
+  "XP_Q97_A5-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 97 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 700)"
+   ]
+  },
+  "XP_Q97_A6-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 97 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 701)"
+   ]
+  },
+  "XP_Q97_A7-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 97 a. 7 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 702)"
+   ]
+  },
+  "XP_Q97_A7-p8": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 97 a. 7 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 702)"
+   ]
+  },
+  "XP_Q98_A1-p5": {
+   "holds": [
+    "sc 1",
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 98 a. 1 s. c. 1 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 703)",
+    "Suppl. q. 98 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 703)"
+   ]
+  },
+  "XP_Q98_A2-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 98 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 703)"
+   ]
+  },
+  "XP_Q98_A3-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 98 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 703)"
+   ]
+  },
+  "XP_Q98_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 98 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 704)"
+   ]
+  },
+  "XP_Q98_A6-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 98 a. 6 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 704)"
+   ]
+  },
+  "XP_Q98_A7-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 98 a. 7 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 705)"
+   ]
+  },
+  "XP_Q98_A8-p6": {
+   "also_answers": [
+    "obj 2"
+   ],
+   "class": "joint-reply",
+   "latin": [
+    "Suppl. q. 98 a. 8 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 705)"
+   ]
+  },
+  "XP_Q99_A1-p9": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 99 a. 1 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 706)"
+   ]
+  },
+  "XP_Q99_A1-p10": {
+   "holds": [
+    "sc 3"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 99 a. 1 s. c. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 706)"
+   ]
+  },
+  "XP_Q99_A2-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 99 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 707)"
+   ]
+  },
+  "XP_Q99_A3-p8": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 99 a. 3 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 708)"
+   ]
+  },
+  "XP_Q99_A4-p6": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 99 a. 4 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 708)"
+   ]
+  },
+  "XP_Q99_A5-p7": {
+   "holds": [
+    "sc 2"
+   ],
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 99 a. 5 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 709)"
+   ]
+  },
+  "XP_Q9_A4-p13": {
+   "flag": "not-in-leonine",
+   "source_note": "the Leonine has no sed contra in this article; removed as text outside the Leonine (Carter, 15 Nov 2026)",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 9 a. 4 no s. c. (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 480)"
+   ]
+  },
+  "XP_Q34_A4-p10": {
+   "flag": "not-in-leonine",
+   "source_note": "the Leonine ends this article at ad 3; removed as text outside the Leonine (Carter, 15 Nov 2026)",
+   "class": "variant",
+   "latin": [
+    "Suppl. q. 34 a. 4 no ad 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 522)"
+   ]
   }
  },
  "articles": {
@@ -5217,6 +9986,101 @@
    "from_div": "SS_Q66_A5",
    "first_paragraph": "SS_Q66_A5-p10",
    "latin": "II-II q. 66 a. 6"
+  },
+  "XP_Q41_A4": {
+   "missing": [
+    {
+     "unit": "ad 2",
+     "missing": true,
+     "after": "XP_Q41_A4-p10",
+     "defect": "translators",
+     "printed": {
+      "source": "dom-v19",
+      "page": "85"
+     },
+     "latin": "Suppl. q. 41 a. 4 ad 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 539)"
+    },
+    {
+     "unit": "ad 3",
+     "missing": true,
+     "after": "XP_Q41_A4-p10",
+     "defect": "translators",
+     "printed": {
+      "source": "dom-v19",
+      "page": "85"
+     },
+     "latin": "Suppl. q. 41 a. 4 ad 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 539)"
+    }
+   ]
+  },
+  "XP_Q62_A6": {
+   "missing": [
+    {
+     "unit": "ad 5",
+     "missing": true,
+     "after": "XP_Q62_A6-p13",
+     "defect": "ccel",
+     "printed": {
+      "source": "dom-v19",
+      "page": "306"
+     },
+     "latin": "Suppl. q. 62 a. 6 ad 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 587)"
+    }
+   ]
+  },
+  "XP_Q64_A10": {
+   "not_in_leonine": true,
+   "latin": "Suppl. q. 64 has 7 articles; this one is not among them (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 591)",
+   "note": "the translators' own note says the Leonine omits it; kept and flagged (Carter, 15 Nov 2026)"
+  },
+  "XP_Q64_A3": {
+   "not_in_leonine": true,
+   "latin": "Suppl. q. 64 has 7 articles; this one is not among them (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 589)",
+   "note": "the translators' own note says the Leonine omits it; kept and flagged (Carter, 15 Nov 2026)"
+  },
+  "XP_Q64_A4": {
+   "not_in_leonine": true,
+   "latin": "Suppl. q. 64 has 7 articles; this one is not among them (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 589)",
+   "note": "the translators' own note says the Leonine omits it; kept and flagged (Carter, 15 Nov 2026)"
+  },
+  "XP_Q64_A5": {
+   "leonine_article": 3,
+   "latin": "Suppl. q. 64 a. 3 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 589)"
+  },
+  "XP_Q64_A6": {
+   "leonine_article": 4,
+   "latin": "Suppl. q. 64 a. 4 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 590)"
+  },
+  "XP_Q64_A7": {
+   "leonine_article": 5,
+   "latin": "Suppl. q. 64 a. 5 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 590)"
+  },
+  "XP_Q64_A8": {
+   "leonine_article": 6,
+   "latin": "Suppl. q. 64 a. 6 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 590)"
+  },
+  "XP_Q64_A9": {
+   "leonine_article": 7,
+   "latin": "Suppl. q. 64 a. 7 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 590)"
+  },
+  "XP_Q71_A10": {
+   "no_replies": true,
+   "latin": "Suppl. q. 71 a. 10: no ad unit (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 616)"
+  },
+  "XP_Q83_A2": {
+   "missing": [
+    {
+     "unit": "sc 2",
+     "missing": true,
+     "after": "XP_Q83_A2-p7",
+     "defect": "translators",
+     "printed": {
+      "source": "dom-v20",
+      "page": "216"
+     },
+     "latin": "Suppl. q. 83 a. 2 s. c. 2 (Leonine vol. 12, archive.org operaomniaiussui12thom, scan image 651)"
+    }
+   ]
   }
  }
 }
