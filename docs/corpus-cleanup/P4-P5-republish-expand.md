@@ -175,6 +175,37 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 - **Needs Carter:**
   - Approve the window and the run, including 2.2c's migration.
   - Choose a paid Qdrant tier for the cutover month if search on the new collection is too slow in 4.2 (step 5).
+- **As built (15 and 16 Nov 2026).** Steps 1 to 4 are done; step 5 needed nothing; **step 6 is open** until 4.1a's rehearsal reports the apply peak. The ops log, with every query's output, is in #190.
+  - Connection: `psql` from the Lenovo over Supavisor session mode (port 5432), which is not the transaction pooler (6543). Steps 1, 2 and 3.1 ran in read-only transactions.
+  - Step 1 (15 Nov 21:09 UTC): Postgres 17.6. Database 403 MB. `chunks` 380 MB: heap 89, TOAST 200, indexes 88. Live row bytes 123 MB (content 42, `search_vector` 49, metadata 5). WAL 128 MB. 1,600 dead tuples. 0045's expression, computed read-only over all 54,555 rows, took 6.8 s and gave 56 MB of vectors.
+  - Step 2: passed. The peak (one new copy of `chunks` plus its WAL, at most about 0.5 GB) puts disk use near 42% against the 30 Oct reading of 36% of 8 GB.
+  - Step 3.1: 0 open publishes and empty staging, both on 15 Nov and again at the window.
+  - Step 3 (16 Nov 2026, 00:27 UTC; Carter approved running at once instead of 20:30 UTC; 0045 only, 0044 left for #330):
+    - 0045 ran in one transaction and acquired its lock on the first try. The rewrite (`SET EXPRESSION`, the first run of that path anywhere) took 18.1 s and the GIN index 3.0 s, so **search and the reader were locked out for about 21 s**.
+    - Recreating staging took 0.16 s and `ANALYZE` 1.1 s.
+    - Ledger row: `20261116002752` / `0045_search_vector_markers_and_reference`, the whole file as the one statement, `created_by` `claude-code, approved by Carter (4.0, #190)`.
+    - `VACUUM FULL` was not run, because the rewrite left heap plus TOAST (148 MB) within 18 MB of live row bytes (130 MB).
+    - The `IS DISTINCT FROM` check returned 0, and no passage keeps a marker token.
+  - Step 4: database **403 → 210 MB** (the estimate was 220 to 260 MB). `chunks` **380 → 187 MB**: heap 82, TOAST 66, indexes 39. The search-vector index went from 26 to 17 MB. WAL 176 MB.
+  - Index contents. John 3:1–21 held the numbers 2 to 21 from its verse markers; it now holds only 3, 1 and 21, all at weight B, from its reference. "CCC §2263–2267 (part)" adds ccc, 2263, 2267 and part. "Code of Canon Law, Can. 1055" adds code, canon, law and 1055.
+  - Keyword step alone (production's `min_match` SQL, in-process), top results before → after:
+    - "canon 1055": canon 1055 absent → first.
+    - "ccc 2267": no hits → CCC §2263–2267 (part) first.
+    - "psalm 23": Acts 1:12–26, Acts 13:13–52, Judith 16 and 1 Chronicles → Psalms 23:1–6 first.
+    - "john 3": Acts, Matthew and 1 Maccabees → John 3:22–36 second and John 3:1–21 sixth.
+    - "john 3 16": four Maccabees passages matched through markers → none; John 16 and John 3 lead.
+  - Two results differ from what was expected. Neither is a marker match:
+    - "psalm 23" still returns Acts 13:13–52 (6th) and Judith 16 (10th). Their text holds the word "psalm" (Acts 13:33 and 13:35, Judith 16:1), and min-match accepts one word of two.
+    - "john 3 16" returns 1 Timothy 5:3–16 and 2 Kings 1:3–16, through the 3 and 16 their references print. That is the citation-number side of 0045.
+  - Known limits, as designed: a number inside a printed range is not indexed (CCC 2265, John 3:16), and text matches (weight A) rank above reference-only matches (B).
+  - Ordinary questions, keyword step:
+    - "the dignity of human labor" (encyclicals): the same 10, reordered.
+    - "grace and free will" (church-fathers): 8 of 10 the same.
+    - "whether God exists" (summa): only 4 of 10 the same, because Summa references carry the article titles, whose words now count at weight B. Q2 A3 "Whether God exists?" entered the keyword top 10.
+  - Acceptance:
+    - `/health`, `/health/db` and `/health/search` return 200.
+    - One production-pipeline search per collection, in-process (`runner.run`, which writes nothing), returned results in all ten. The Summa search still ranks Q2 A3 first.
+    - Projected peaks next to the rehearsal's measured ones wait for step 6.
 - **Out of scope:** Dropping `content_embedding` or `annotation_embedding` (CLAUDE.md §4: all-NULL, reclaims nothing). Qdrant quantization. Any change to autovacuum settings.
 
 ### 4.1a. User-data remap for redirects, rehearsed locally

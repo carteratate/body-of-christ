@@ -228,11 +228,12 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   from `PAPAL_FORMS` in `datapipeline/registry/genres.py`. Nothing writes the column yet.
 - `chunks.search_vector` **redefined** (0045, item 2.2c, #181): content with Bible `{{v:N}}`
   markers stripped at weight A, plus the reference with its punctuation turned into spaces at
-  weight B, so "canon 1055", "ccc 2267" and "john 3" find their passages. **Committed but not
-  applied:** it rewrites `chunks` under an exclusive lock, so it runs by hand in 4.0's window,
-  followed by `drop_corpus_staging(); create_corpus_staging();` (runbook in
-  `docs/corpus-cleanup/P4-P5-republish-expand.md`, 4.0 step 3). Until then production has 0004's
-  expression. `retrieve_fts.py` works with either.
+  weight B, so "canon 1055", "ccc 2267" and "john 3" find their passages. **Applied to
+  production on 16 Nov 2026** in 4.0's window, by hand (it rewrites `chunks` under an exclusive
+  lock; about 21 s), followed by `drop_corpus_staging(); create_corpus_staging();` and recorded
+  in the Supabase ledger (runbook in `docs/corpus-cleanup/P4-P5-republish-expand.md`, 4.0 step 3;
+  ops log in #190). Only numbers a reference prints are indexed, so `2265` inside `§2263–2267`
+  is not. `retrieve_fts.py` works with either definition.
 - `studies`, `study_blocks` — **drafted, not yet in the repo.** A `0035_studies.sql`
   migration and a `test_study_schema.py` exist on at least one working tree but are
   committed to no branch, so `git log` will not find them and a fresh clone will not have
@@ -241,7 +242,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040–0045 are committed (0045 not yet applied, above); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0045 are committed (0044 is not yet applied to production, #330; 0045 was applied on 16 Nov 2026); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the

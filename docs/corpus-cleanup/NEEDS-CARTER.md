@@ -88,7 +88,10 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 ### Phase 4
 
 - **4.0** [Phase 4]. Approve the time and the run of `VACUUM FULL`, which compacts the main table. Search and the reader pause for about a minute while it runs.
+  Answered 2026-11-15: approved as part of the window, to run only if space was left after 0045. Not run (16 Nov 2026): 0045's rewrite (entry below) compacted `chunks` by itself: heap plus TOAST came to 148 MB against 130 MB of live rows, so `VACUUM FULL` was not run (4.0 step 3.5).
 - **2.2c and 4.0** [Phase 4]. Approve applying 2.2c's migration in the same window. It changes how the keyword-search column is computed (no verse markers, references added), which rewrites the main table once, like `VACUUM FULL`; the window may then need only one rewrite. Search and the reader pause while it runs.
+  Answered 2026-11-15: approved for 16 Nov 2026 at 20:30 UTC, 0045 only (0044 left for #330). Answered 2026-11-15 (later): approved to run at once instead, exactly as prepared.
+  Done 2026-11-16 at 00:27 UTC, from the Lenovo with `psql --single-transaction` over Supavisor session mode. The lock was acquired on the first try and held about 21 s (rewrite 18.1 s, GIN index 3.0 s); Postgres 17's `SET EXPRESSION` path, never run before, worked. Then staging was recreated, `ANALYZE` run (1.1 s) and the migration recorded in `supabase_migrations.schema_migrations` as `20261116002752` / `0045_search_vector_markers_and_reference`, the way 0042 and 0043 were. Database 403 MB to 210 MB, `chunks` 380 MB to 187 MB. Checks passed: the `IS DISTINCT FROM` count is 0, `/health`, `/health/db` and `/health/search` return 200, and one search per collection returns results in all ten. Ops log in #190.
 - **4.1b** [Phase 4]. Approve, one at a time:
   - the PR that freezes the Phase 4 build, including any council that shows a gap notice because its public-domain text is not ready;
   - the lock-file PR for the republish;
