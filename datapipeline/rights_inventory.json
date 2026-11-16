@@ -10876,6 +10876,32 @@
     "credit_line": null,
     "checked_by": null,
     "checked_on": null
+   },
+   {
+    "texts": "Suppl. q.62 a.6 reply 5 (p. 306), which the CCEL text lacks",
+    "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Third Part (Supplement), QQ. XXXIV-LXVIII (London: Burns Oates & Washbourne, 1930 printing)",
+    "translator": "Fathers of the English Dominican Province",
+    "first_published": 1930,
+    "source_path": "summa/summatheologicao0019thom/",
+    "source_url": "https://archive.org/details/summatheologicao0019thom",
+    "status": "pd-us-pre-1931",
+    "renewal_search": null,
+    "credit_line": null,
+    "checked_by": null,
+    "checked_on": null
+   },
+   {
+    "texts": "Suppl. q.83 a.2 \"quite inconceivable\" (p. 216), where the CCEL text misprints \"quite conceivable\"",
+    "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Third Part (Supplement), QQ. LXIX-LXXXVI (London: Burns Oates & Washbourne, 1921)",
+    "translator": "Fathers of the English Dominican Province",
+    "first_published": 1921,
+    "source_path": "summa/summatheologicao0020thom/",
+    "source_url": "https://archive.org/details/summatheologicao0020thom",
+    "status": "pd-us-pre-1931",
+    "renewal_search": null,
+    "credit_line": null,
+    "checked_by": null,
+    "checked_on": null
    }
   ]
  },

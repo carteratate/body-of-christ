@@ -241,7 +241,7 @@ def test_reply_to_sed_contra_target(tmp_path):
 
 
 def test_reply_past_the_last_objection_answers_a_sed_contra(tmp_path):
-    """Where R7's file records nothing (the Supplement), a reply numbered past the last
+    """Where the corrections file records nothing, a reply numbered past the last
     objection answers the sed contra arguments in order (XP q.69 a.3)."""
     paras = OBJ + [SED, "Further, Jerome argues so.", RESP] + REPLIES + [
         B("Reply to Objection 4:", "Jerome speaks of glory."),
@@ -250,6 +250,36 @@ def test_reply_past_the_last_objection_answers_a_sed_contra(tmp_path):
                                 part_title="Supplement"))
     assert [p.metadata["reply_targets"] for p in doc.passages[-2:]] == [["sc 1"], ["sc 2"]]
     assert not content.summa_reply_targets([doc], NO_CORRECTIONS)
+
+
+def test_general_reply_to_both_sides_is_numbered_after_the_objections(tmp_path):
+    """"Et per hoc patet solutio ad obiecta", answering the objections and the sed contra
+    arguments together (XP q.47 a.1): an unnumbered Leonine unit, numbered as the Leonine
+    numbers such replies, after the objections (#360)."""
+    paras = OBJ + [SED, "Further, another authority.", RESP,
+                   "This suffices for the Replies to the Objections on either side."]
+    corrections = {"paragraphs": {
+        "XP_Q1_A1-p5": {"holds": ["sc 2"], "latin": ["Suppl. q. 1 a. 1 s. c. 2 (Leonine vol. 12)"]},
+        "XP_Q1_A1-p7": {"role": "reply", "targets": ["obj 1", "obj 2", "obj 3", "sc 1", "sc 2"],
+                        "latin": ["Suppl. q. 1 a. 1 ad arg. (Leonine vol. 12)"]}},
+        "articles": {}}
+    doc = _build(tmp_path, _xml(_article("XP_Q1_A1", paras), part="XP",
+                                part_title="Supplement"), corrections)
+    reply = doc.passages[-1]
+    assert reply.unit_label == "Reply to Objections 1, 2, 3, 4 and 5"
+    assert ", ad 1, 2, 3, 4 and 5: " in reply.reference
+    assert not content.summa_reply_targets([doc], corrections)
+
+
+def test_granted_objection_has_no_rejected_voice(tmp_path, monkeypatch):
+    """An objection Aquinas grants ("prima duo concedimus", XP q.67 a.6) is not a view he
+    rejects (Carter, 16 Nov 2026)."""
+    monkeypatch.setattr(summa, "GRANTED", frozenset({"XP_Q1_A1-p1"}))
+    doc = _build(tmp_path, _xml(_article("XP_Q1_A1", OBJ + [SED, RESP] + REPLIES), part="XP",
+                                part_title="Supplement"))
+    voices = [(p.unit_label, p.voice) for p in doc.passages if p.unit_label.startswith("Obj")]
+    assert voices == [("Objection 1", None), ("Objection 2", "rejected"),
+                      ("Objection 3", "rejected")]
 
 
 def test_reply_only_article_gets_no_determination(tmp_path):
@@ -599,8 +629,9 @@ def test_recovered_file_holds_only_edition_text_with_its_page():
         assert any(m["unit"] == unit["unit"] and m["after"] == unit["after"] for m in missing)
     for fix in recovered["in_place"]:
         assert fix["source"] in recovered["editions"] and fix["page"]
-        if fix["paragraph"] == "TP_Q7_A5-p6":
-            continue                    # a misprint corrected ("a[9]" for "as")
+        if fix["paragraph"] in ("TP_Q7_A5-p6", "XP_Q83_A2-p7"):
+            continue                    # a misprint corrected ("a[9]" for "as";
+                                        # "conceivable" for "inconceivable")
         # A restoration adds the printed words; it keeps every word CCEL has.
         rest = iter(fix["replace"].split())
         assert all(word in rest for word in fix["find"].split()), fix["paragraph"]
@@ -653,12 +684,40 @@ def test_source_prologues_and_recovered_units(built):
     treatises = [p.reference for p in built.passages if p.unit_label == "Prologue"]
     assert treatises == ["Summa Theologiae I-II, prologue", "Summa Theologiae III, prologue"]
     recovered = [p for p in built.passages if "/recovered-" in p.anchor]
-    assert len(recovered) == 8 and all(p.metadata["recovered_from"] for p in recovered)
+    assert len(recovered) == 9 and all(p.metadata["recovered_from"] for p in recovered)
     note = [p for p in built.passages if p.note]
-    assert [p.metadata["article"] for p in note] == ["SS_Q20_A3"]
+    # No English edition prints these units: II-II q.20 a.3's general reply, the
+    # Supplement's q.41 a.4 replies 2 and 3 and q.83 a.2's second sed contra (#360).
+    assert [p.metadata["article"] for p in note] == ["SS_Q20_A3", "XP_Q41_A4", "XP_Q83_A2"]
     excluded = {e["paragraph"] for e in built.metadata["excluded_paragraphs"]}
     assert summa.OUTSIDE_LEONINE <= excluded
     assert "TP_Q55_A6-p6" not in excluded
+
+
+@pytest.mark.sources
+@_needs_sources
+def test_source_supplement_against_the_leonine(built):
+    """#360's source checks: the Supplement read against the Leonine page images."""
+    by_anchor = {p.anchor: p for p in built.passages}
+    # A sed contra the translators print as "Objection 4: On the other hand" keeps its
+    # label, cites its Latin role, and is not rejected where Aquinas grants it.
+    granted = by_anchor["summa/XP_Q16_A2/p5"]
+    assert granted.unit_label == "Objection 4" and ", sed contra 1: " in granted.reference
+    assert granted.voice is None
+    answered = by_anchor["summa/XP_Q15_A3/p5"]
+    assert ", sed contra 1: " in answered.reference and answered.voice == "rejected"
+    for anchor in ("summa/XP_Q67_A6/p2", "summa/XP_Q67_A6/p3", "summa/XP_Q74_A6/p2"):
+        assert by_anchor[anchor].voice is None, anchor
+    # Units outside the Leonine are gone; q.64's three articles stay.
+    excluded = {e["paragraph"] for e in built.metadata["excluded_paragraphs"]}
+    assert {"XP_Q9_A4-p13", "XP_Q34_A4-p10", "XP_Q65_A1-p17"} <= excluded
+    assert "summa/XP_Q64_A3/p2" in by_anchor
+    # The reply CCEL lost comes back from the 1930 printing; the misprint is corrected.
+    assert any(a.startswith("summa/XP_Q62_A6/recovered-") for a in by_anchor)
+    assert "quite inconceivable that" in by_anchor["summa/XP_Q83_A2/p7"].content
+    # q.41 a.4's replies are numbered by the Latin they answer.
+    assert by_anchor["summa/XP_Q41_A4/p11"].unit_label == "Reply to Objection 4"
+    assert by_anchor["summa/XP_Q41_A4/p12"].unit_label == "Reply to Objection 5"
 
 
 @pytest.mark.sources

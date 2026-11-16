@@ -73,12 +73,18 @@ _EDITORIAL_DIVS = frozenset({"XP.i", "vii.i"})
 # Units the translators' base text has and the Leonine edition lacks, removed as text
 # outside the Leonine (Carter, 12 Nov 2026, R7 question 3): III q.57 a.4's objection 2
 # and its reply, and III q.22 a.2's reply 3 with the note introducing it. III q.55
-# a.6's objection 5 stays: the Leonine prints its reply.
+# a.6's objection 5 stays: the Leonine prints its reply. In the Supplement (#360, Carter,
+# 15 Nov 2026): q.9 a.4's sed contra, q.34 a.4's reply 4 and q.65 a.1's one-line reply 5.
 OUTSIDE_LEONINE = frozenset({"TP_Q57_A4-p3", "TP_Q57_A4-p4", "TP_Q57_A4-p11",
-                             "TP_Q57_A4-p12", "TP_Q22_A2-p12", "TP_Q22_A2-p13"})
+                             "TP_Q57_A4-p12", "TP_Q22_A2-p12", "TP_Q22_A2-p13",
+                             "XP_Q9_A4-p13", "XP_Q34_A4-p10", "XP_Q65_A1-p17"})
 # The printed "Objection N: On the contrary" sed contras Aquinas grants rather than
-# answers ("Quartum concedimus"): they are not a view he rejects (Carter, 12 Nov 2026).
-GRANTED = frozenset({"SS_Q123_A12-p5", "SS_Q136_A5-p5"})
+# answers ("Quartum concedimus"): they are not a view he rejects (Carter, 12 Nov 2026; the
+# Supplement's q.16 a.2, #360). Objections he grants are not either: the Supplement's q.67
+# a.6 objections 1 and 2 ("prima duo concedimus") and q.74 a.6 objection 1 (Carter, 16 Nov
+# 2026, #360).
+GRANTED = frozenset({"SS_Q123_A12-p5", "SS_Q136_A5-p5", "XP_Q16_A2-p5",
+                     "XP_Q67_A6-p2", "XP_Q67_A6-p3", "XP_Q74_A6-p2"})
 # Article titles whose printed number disagrees with their div id; the id wins. Any
 # other disagreement fails the build. I q.114 a.5 is titled "Article. 4" (#251).
 _MISNUMBERED_TITLES = frozenset({"FP_Q114_A5"})
@@ -288,7 +294,8 @@ def _opening_part(para: _Para, role: str | None, number: int | None) -> _Part:
                      voice=None if para.pid in GRANTED else "rejected")
     if role == "objection":
         n = facts.get("latin_number") or facts.get("number") or number
-        return _Part("objection", f"Objection {n}", [para], voice="rejected")
+        return _Part("objection", f"Objection {n}", [para],
+                     voice=None if para.pid in GRANTED else "rejected")
     if role == "reply":
         return _reply_part([para], facts.get("number") or number)
     if role == "sed-contra":
@@ -360,6 +367,7 @@ def article_parts(paras: list[_Para], facts: dict | None = None,
         for unit in after.get(para.pid, []):
             parts.append(_recovered_part(unit))
     _answer_sed_contras(parts)
+    _number_sed_contra_replies(parts)
     for part in parts:
         answered = [t for p in part.paras for t in p.facts.get("also_answers", [])]
         part.targets += [t for t in answered if t not in part.targets]
@@ -369,9 +377,9 @@ def article_parts(paras: list[_Para], facts: dict | None = None,
 def _answer_sed_contras(parts: list[_Part]) -> None:
     """A reply numbered past the article's last objection answers a sed contra argument:
     the Leonine numbers those replies after the objections, so with three objections
-    "ad 4" answers the first (R7 section 3; C-29). R7's corrections file records them for
-    the four core parts; this reads the same rule where it records none (the
-    Supplement)."""
+    "ad 4" answers the first (R7 section 3; C-29). The corrections file records them for
+    the whole Summa (the Supplement since #360); this reads the same rule where it records
+    none."""
     objections = [int(p.label.split()[-1]) for p in parts if p.role == "objection"]
     if not objections or not any(p.role == "sed-contra" for p in parts):
         return
@@ -383,6 +391,23 @@ def _answer_sed_contras(parts: list[_Part]) -> None:
         kind, n = part.targets[0].split()
         if kind == "obj" and int(n) > last:
             part.targets = [f"sc {int(n) - last}"]
+
+
+def _number_sed_contra_replies(parts: list[_Part]) -> None:
+    """A reply to the sed contra arguments whose Leonine unit carries no number ("Et per hoc
+    patet solutio ad obiecta" answering both sides, "Alias rationes concedimus") is numbered
+    as the Leonine numbers such replies: after the article's objections, so with three
+    objections the first sed contra's reply is "ad 4" (the Supplement, #360)."""
+    printed = [int(p.label.split()[-1]) for p in parts if p.role == "objection"]
+    last = max(printed, default=0)
+    for part in parts:
+        if part.role != "reply" or part.cited or not any(t.startswith("sc ") for t in part.targets):
+            continue
+        numbers = sorted(set(_target_numbers(part.targets, "obj")
+                             + [last + n for n in _target_numbers(part.targets, "sc")]))
+        noun = "Objection" if len(numbers) == 1 else "Objections"
+        part.label = f"Reply to {noun} {_numbers_phrase(numbers)}"
+        part.cited = f"ad {_numbers_phrase(numbers)}"
 
 
 def _recovered_part(unit: dict) -> _Part:
@@ -655,12 +680,20 @@ def _build_article(b: _Build, div4, code: str, part_title: str, q: str, articles
             (art_id, int(_DIV_ID.match(art_id).group(3)), question))
 
 
+def _restores_words(fix: dict) -> bool:
+    """An in-place fix that adds printed words CCEL lost (it keeps every word CCEL has),
+    not one that corrects a misprint ("conceivable" for "inconceivable", XP q.83 a.2)."""
+    rest = iter(fix["replace"].split())
+    return all(word in rest for word in fix["find"].split())
+
+
 def _missing_note(facts: dict, recovered: dict) -> str | None:
     """A reader note for a unit no English edition supplies (Decision log "The Summa
     against an independent edition (R7)"): the article's first passage says it is
     missing. Units restored from a printed edition, whole or in place, need none."""
     restored = {(u["article"], u["unit"]) for u in recovered.get("units", [])}
-    in_place = {f["paragraph"].rsplit("-", 1)[0] for f in recovered.get("in_place", [])}
+    in_place = {f["paragraph"].rsplit("-", 1)[0] for f in recovered.get("in_place", [])
+                if _restores_words(f)}
     lost = [m for m in facts.get("missing", [])
             if m["after"].rsplit("-", 1)[0] not in in_place
             and (m["after"].rsplit("-", 1)[0], m["unit"]) not in restored]
