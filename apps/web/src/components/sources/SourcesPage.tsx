@@ -314,6 +314,43 @@ function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
   );
 }
 
+function GenericSection({ collectionKey, docs, opener }: { collectionKey: string; docs: SourceDocument[]; opener: DocOpener }) {
+  const meta = getCollectionMeta(collectionKey);
+  const sectionPassages = docs.reduce((sum, d) => sum + d.chunk_count, 0);
+
+  return (
+    <section>
+      <div className="flex items-center gap-3 mb-3 pb-2 border-b border-brand-surface">
+        <span
+          className="text-xs font-semibold px-2.5 py-0.5 rounded-full border"
+          style={{ color: meta?.color, borderColor: meta?.color }}
+        >
+          {meta?.label ?? collectionKey}
+        </span>
+        <span className="text-brand-muted text-xs">
+          {docs.length === 1 ? "1 document" : `${docs.length} documents`}
+          {" · "}
+          {sectionPassages.toLocaleString()} passages
+        </span>
+      </div>
+      <ul className="space-y-1.5">
+        {docs.map((doc) => (
+          <DocRow key={doc.id} doc={doc} opener={opener} />
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+// One collection's section, as the full Library shows it. The unfiltered page and
+// the Collection drop-down both render through here, so they cannot drift apart
+// (issue #392).
+function CollectionSection({ collectionKey, docs, opener }: { collectionKey: string; docs: SourceDocument[]; opener: DocOpener }) {
+  if (collectionKey === "bible") return <BibleSection docs={docs} opener={opener} />;
+  if (collectionKey === "councils") return <CouncilsSection docs={docs} opener={opener} />;
+  return <GenericSection collectionKey={collectionKey} docs={docs} opener={opener} />;
+}
+
 export function SourcesPage() {
   const { token, sources, sourcesLoading, sourcesReady, sourcesError, reloadSources } = useAppContext();
   const loading = sourcesLoading || !sourcesReady;
@@ -384,6 +421,10 @@ export function SourcesPage() {
     });
   }, [collection, query, sources]);
   const filteredMode = query.trim().length > 0 || collection !== "all";
+  // The text search lists matching documents flat; the drop-down alone shows the
+  // collection's own section.
+  const listMode = query.trim().length > 0;
+  const shownCollections = collection === "all" ? COLLECTIONS.map(({ key }) => key) : [collection];
 
   const nonBibleSources = sources.filter((s) => s.collection !== "bible");
   const totalPassages = sources.reduce((sum, s) => sum + s.chunk_count, 0);
@@ -475,7 +516,7 @@ export function SourcesPage() {
           </div>
         )}
 
-        {!loading && !sourcesError && filteredMode && filteredSources.length > 0 && (
+        {!loading && !sourcesError && listMode && filteredSources.length > 0 && (
           <section>
             <p className="mb-3 text-xs text-brand-muted">{filteredSources.length} {filteredSources.length === 1 ? "document" : "documents"}</p>
             <ul className="space-y-1.5">
@@ -484,45 +525,12 @@ export function SourcesPage() {
           </section>
         )}
 
-        {!loading && !sourcesError && totalPassages > 0 && !filteredMode && (
+        {!loading && !sourcesError && totalPassages > 0 && !listMode && filteredSources.length > 0 && (
           <div className="space-y-8">
-            {COLLECTIONS.map(({ key }) => {
+            {shownCollections.map((key) => {
               const docs = sources.filter((s) => s.collection === key);
               if (docs.length === 0) return null;
-
-              if (key === "bible") {
-                return <BibleSection key={key} docs={docs} opener={opener} />;
-              }
-
-              if (key === "councils") {
-                return <CouncilsSection key={key} docs={docs} opener={opener} />;
-              }
-
-              const meta = getCollectionMeta(key);
-              const sectionPassages = docs.reduce((sum, d) => sum + d.chunk_count, 0);
-
-              return (
-                <section key={key}>
-                  <div className="flex items-center gap-3 mb-3 pb-2 border-b border-brand-surface">
-                    <span
-                      className="text-xs font-semibold px-2.5 py-0.5 rounded-full border"
-                      style={{ color: meta?.color, borderColor: meta?.color }}
-                    >
-                      {meta?.label ?? key}
-                    </span>
-                    <span className="text-brand-muted text-xs">
-                      {docs.length === 1 ? "1 document" : `${docs.length} documents`}
-                      {" · "}
-                      {sectionPassages.toLocaleString()} passages
-                    </span>
-                  </div>
-                  <ul className="space-y-1.5">
-                    {docs.map((doc) => (
-                      <DocRow key={doc.id} doc={doc} opener={opener} />
-                    ))}
-                  </ul>
-                </section>
-              );
+              return <CollectionSection key={key} collectionKey={key} docs={docs} opener={opener} />;
             })}
           </div>
         )}

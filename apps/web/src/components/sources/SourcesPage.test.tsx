@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SourcesPage } from "./SourcesPage";
@@ -134,5 +134,93 @@ describe("SourcesPage Bible book order (C-24)", () => {
     expect(bookRank("Song of Songs")).toBe(bookRank("Song of Solomon"));
     expect(bookRank("Song of Songs")).toBe(bookRank("Ecclesiastes") + 1);
     expect(bookRank("Unknown Book")).toBe(73);
+  });
+});
+
+describe("SourcesPage Collection drop-down (issue #392)", () => {
+  const VAT2 = ["Sacrosanctum Concilium", "Inter Mirifica", "Lumen Gentium"];
+  function doc(id: string, collection: string, title: string, extra: Partial<SourceDocument> = {}) {
+    return { id, title, author: null, year: null, collection, translation: null, chunk_count: 10, metadata: {}, ...extra } as unknown as SourceDocument;
+  }
+  const SOURCES = [
+    doc("nicaea", "councils", "Council of Nicaea", { year: 325, metadata: { council_number: 1 } }),
+    doc("trent", "councils", "Council of Trent", { year: 1545, metadata: { council_number: 19 } }),
+    ...VAT2.map((title, i) => doc(`v2-${i}`, "councils", title, { year: 1963 + i, metadata: { council: "Second Vatican Council" } })),
+    doc("gen", "bible", "Genesis", { translation: "DRA" }),
+    doc("exo", "bible", "Exodus", { translation: "DRA" }),
+    doc("summa", "summa", "Summa Theologiae", { author: "Thomas Aquinas", year: 1274 }),
+    doc("rn", "encyclicals", "Rerum Novarum", { author: "Pope Leo XIII", year: 1891 }),
+  ];
+
+  beforeEach(() => {
+    state.sources = SOURCES;
+    state.listReadingProgress.mockResolvedValue([]);
+  });
+
+  async function choose(collection: string) {
+    render(<SourcesPage />);
+    const select = await screen.findByRole("combobox");
+    fireEvent.change(select, { target: { value: collection } });
+  }
+
+  it("shows the Councils section with Vatican II as one collapsed row", async () => {
+    await choose("councils");
+
+    expect(screen.getByText("3 councils · 50 passages")).toBeTruthy();
+    const vat2 = screen.getByRole("button", { name: /Second Vatican Council/ });
+    expect(vat2.textContent).toContain("1963–1965 · 3 documents");
+    for (const title of VAT2) expect(screen.queryByText(title)).toBeNull();
+    // Councils in date order, with Vatican II in its place among them.
+    const rows = screen.getAllByRole("listitem").map((li) => li.textContent ?? "");
+    expect(rows.map((t) => t.split(/#|\d{4}/)[0].trim().replace(/[▸▾].*/, "").trim()))
+      .toEqual(["Council of Nicaea", "Council of Trent", "Second Vatican Council"]);
+    expect(screen.queryByText("Genesis")).toBeNull();
+    expect(screen.queryByText("Summa Theologiae")).toBeNull();
+    expect(screen.queryByText("Continue Reading")).toBeNull();
+
+    fireEvent.click(vat2);
+    for (const title of VAT2) expect(screen.getByRole("link", { name: title })).toBeTruthy();
+  });
+
+  it("shows the Bible section with its book grid", async () => {
+    await choose("bible");
+
+    expect(screen.getByText("1 translation · 20 passages")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /2 books · DRA/ }));
+    expect(screen.getAllByRole("link").map((a) => a.textContent)).toEqual(["Genesis", "Exodus"]);
+    expect(screen.queryByText("Council of Nicaea")).toBeNull();
+  });
+
+  it("shows a generic collection's section with its bubble and counts, and nothing else", async () => {
+    await choose("encyclicals");
+
+    expect(screen.getByText("1 document · 10 passages")).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Rerum Novarum/ })).toBeTruthy();
+    expect(screen.getAllByRole("link")).toHaveLength(1);
+  });
+
+  it("renders the same section as the full page, and returns to it on All collections", async () => {
+    render(<SourcesPage />);
+    const select = await screen.findByRole("combobox");
+    const fullCouncils = screen.getByText("3 councils · 50 passages").closest("section")!.outerHTML;
+
+    fireEvent.change(select, { target: { value: "councils" } });
+    expect(screen.getByText("3 councils · 50 passages").closest("section")!.outerHTML).toBe(fullCouncils);
+
+    fireEvent.change(select, { target: { value: "all" } });
+    expect(screen.getByText("1 translation · 20 passages")).toBeTruthy();
+    expect(screen.getByText("Summa Theologiae")).toBeTruthy();
+  });
+
+  it("keeps the text search's flat list, limited to the chosen collection", async () => {
+    // "um" matches Rerum Novarum (encyclicals) as well as two Vatican II documents.
+    await choose("councils");
+    fireEvent.change(screen.getByRole("searchbox"), { target: { value: "um" } });
+
+    expect(screen.getByText("2 documents")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Second Vatican Council/ })).toBeNull();
+    expect(screen.queryByText(/councils ·/)).toBeNull();
+    expect(screen.getAllByRole("link").map((a) => a.textContent?.split(/\d/)[0].trim()))
+      .toEqual(["Sacrosanctum Concilium", "Lumen Gentium"]);
   });
 });
