@@ -51,6 +51,10 @@ EXAMPLES = {
     r"^Letter of Nestorius, condemned": "Letter of Nestorius, condemned by the Council of Ephesus",
     r"^Mani's teaching": "Mani's teaching, refuted by Archelaus",
     "Firmilian": "Firmilian of Caesarea",
+    r"^Pseudo-Justin$": "Pseudo-Justin",
+    r"^Anonymous$": "Anonymous",
+    r"^Church of Smyrna$": "Church of Smyrna",
+    r"^Polycarp": "Polycarp",
     r"^Cyprian": "Cyprian",
 }
 # Says, in words every ExplanationSays pattern accepts, that a position is rejected.
@@ -187,9 +191,38 @@ def test_searches_name_valid_collections_and_allowed_quotas():
             assert check.collection in rc.ORDINARY
 
 
-def test_3_2_has_a_placeholder_until_it_merges():
-    pending = [c for c in rc.CHECKS if isinstance(c, rc.PlaceholderCheck)]
-    assert [c.items for c in pending] == ["3.2"]
+def test_3_2_labels_are_the_registered_ones():
+    """Each label a 3.2 check expects is the one 3.2 wrote to works.json: a document's
+    shown author is `credited_as` (else its author), its certainty the attribution's."""
+    works = {w["document_id"]: w for w in json.loads(WORKS.read_text())}
+    for document_id, columns in rc.DOCUMENT_LABELS.items():
+        w = works[document_id]
+        registered = {
+            "author": w["attribution"]["credited_as"] or w["author"],
+            "certainty": w["attribution"]["certainty"],
+            "attribution_note": w["attribution_note"], "notes": w["notes"],
+        }
+        assert {c: registered[c] for c in columns} == columns, document_id
+    for key, columns in rc.WORK_LABELS.items():
+        document_id, work_key = key.split(" ")
+        [work] = [k for k in works[document_id]["works"] if k["work_key"] == work_key]
+        assert {c: work.get(c) for c in columns} == columns, key
+    preserved = {d for d, w in works.items() if (w.get("notes") or "").startswith("Preserved ")}
+    assert set(rc.PRESERVED_FRAGMENTS) == preserved
+    entries = [e for e in json.loads(rc.REMOVALS.read_text()) if e["added_by"] == "3.2"]
+    assert {e["id"] for e in entries} == {"rm-7001", "rm-7002", "rm-7003"}
+
+
+@pytest.mark.parametrize("check", [c for c in rc.CHECKS if isinstance(c, rc.SqlCheck)
+                                   and isinstance(c.expect, rc.ByKey)], ids=lambda c: c.id)
+def test_keyed_expectations_pass_and_fail_on_fixture_rows(check):
+    good = [{"key": k, **cols} for k, cols in check.expect.expected.items()]
+    assert check.expect(good).ok
+    first = next(iter(check.expect.expected))
+    assert not check.expect([r for r in good if r["key"] != first]).ok
+    column = next(iter(check.expect.expected[first]))
+    assert not check.expect([{**r, column: "something else"} if r["key"] == first else r
+                             for r in good]).ok
 
 
 def test_document_ids_name_the_works_they_claim():
@@ -624,12 +657,6 @@ async def test_keyword_checks_read_their_hits_in_order():
     assert (ok.status, wrong.status) == ("PASS", "FAIL")
 
 
-async def test_placeholder_is_pending():
-    [outcome] = await rc.run_checks(
-        [c for c in rc.CHECKS if isinstance(c, rc.PlaceholderCheck)], _context())
-    assert outcome.status == "PENDING"
-
-
 async def test_vector_paths_are_recorded_and_the_step_restored():
     from app.rag.steps import retrieve_vector
     from app.rag.steps.types import RetrievalPath
@@ -739,6 +766,8 @@ async def test_every_sql_check_runs_on_a_migrated_database(migrated, check):
         assert len(rows) == 1 and set(expect.expected) <= set(rows[0])
     elif isinstance(expect, rc.CountsBy):
         assert all(set(r) == {"key", "n"} for r in rows)
+    elif isinstance(expect, rc.ByKey):
+        assert all({"key", *cols} <= set(r) for r in rows for cols in expect.expected.values())
     elif expect is rc.deuterocanonical_pericopes:
         assert {r["key"] for r in rows} == set(rc.DEUTEROCANONICAL_PASSAGES)
         assert all(set(r) == {"key", "n", "miscited"} for r in rows)

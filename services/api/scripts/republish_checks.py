@@ -494,6 +494,37 @@ def deuterocanonical_pericopes(rows: list[dict]) -> Verdict:
     return Verdict(True, ", ".join(f"{b} {got[b]['n']}" for b in DEUTEROCANONICAL_PASSAGES))
 
 
+@dataclass(frozen=True)
+class ByKey:
+    """The SELECT returns rows keyed by `key`; each expected key is there with these
+    column values (only the columns named; None means the column is empty)."""
+
+    expected: dict[str, dict]
+    names: dict[str, str] = field(default_factory=dict)
+
+    def __call__(self, rows: list[dict]) -> Verdict:
+        got = {str(r["key"]): r for r in rows}
+        wrong = []
+        for key, columns in self.expected.items():
+            name = self.names.get(key, key)
+            row = got.get(key)
+            if row is None:
+                wrong.append(f"{name}: missing")
+                continue
+            for column, want in columns.items():
+                if row.get(column) != want:
+                    wrong.append(f"{name}: {column} = {row.get(column)!r}, expected {want!r}")
+        if wrong:
+            return Verdict(False, "; ".join(wrong))
+        return Verdict(True, f"all {len(self.expected)} as registered")
+
+    def describe(self) -> str:
+        return "; ".join(
+            f"{self.names.get(k, k)}: "
+            + ", ".join(f"{c} {v!r}" for c, v in cols.items())
+            for k, cols in self.expected.items())
+
+
 _SUMMA_PARTS = {"FP": "I", "FS": "I-II", "SS": "II-II", "TP": "III", "XP": "Suppl.",
                 "AP1": "Suppl., App. 1", "AP2": "Suppl., App. 2"}
 _ARTICLE_ID = re.compile(r"^(FP|FS|SS|TP|XP|AP1|AP2)_Q(\d+)(?:_A(\d+))?")
@@ -634,14 +665,6 @@ class AggregateCheck(Check):
         return f"across every search of this run: {self.expect.__doc__}"
 
 
-@dataclass(frozen=True)
-class PlaceholderCheck(Check):
-    kind = "placeholder"
-
-    def expectation(self) -> str:
-        return "not written yet"
-
-
 # Document IDs (frozen in datapipeline/registry/works.json; a test holds the titles).
 CATECHISM = "9679c400-d314-5394-b916-f6fc27b50104"
 CANON_LAW = "aa889573-50b2-5a1d-9264-f309583c0c1b"
@@ -726,6 +749,88 @@ MEDIEVAL_IGNATIUS = (
     "830a2c63-f968-5861-9a10-c1ee3c6ee79d", "1a0a016b-395e-5307-9aea-19a896b87eae",
 )
 BOOK_VIII = "10d8d7c6-680c-5739-bc98-6ce557371f25"
+
+# 3.2's labels, as registered (datapipeline/attributions.py, written to works.json;
+# a test holds them equal). A document's `author` is the one shown.
+HORTATORY_ADDRESS = "3f1d7ed1-b5cd-539a-a446-8d4eab61dbd4"
+DIOGNETUS = "abf69de0-a1e2-53ce-8283-541924c6ea32"
+DIDACHE = "eb26cfd2-ba51-56b7-b9cd-8b5fe7c8d852"
+MARTYRDOM_OF_POLYCARP = "f8faac83-ebf5-5a3c-850e-b9620465bc3d"
+CAIUS = "8e5fb9cb-352a-59c8-8449-07d673b3671c"
+_PSEUDO_JUSTIN = {"author": "Pseudo-Justin", "certainty": "pseudonymous"}
+_ANONYMOUS = {"author": "Anonymous", "certainty": "anonymous"}
+_DOUBTFUL = "Its attribution to Methodius is doubtful."
+DOCUMENT_LABELS: dict[str, dict] = {
+    HORTATORY_ADDRESS: _PSEUDO_JUSTIN,
+    "dd54c7cc-1a9a-5388-90d3-e8c4b8a95e06": _PSEUDO_JUSTIN,
+    "abd0e330-31fe-5de4-bf93-e9b572c179b5": _PSEUDO_JUSTIN,
+    "24b54b57-da45-534e-834c-686963d5d905": {"certainty": "disputed"},
+    DIOGNETUS: _ANONYMOUS,
+    DIDACHE: _ANONYMOUS,
+    "cf8278dd-3523-576c-b85a-1402077bdae3": _ANONYMOUS,
+    MARTYRDOM_OF_POLYCARP: {"author": "Church of Smyrna", "certainty": "genuine"},
+    "1d83b302-69ee-5b50-aca6-fcaed82d54c7": {"author": "Pseudo-Barnabas",
+                                              "certainty": "pseudonymous"},
+    ARCHELAUS: {"author": "Hegemonius", "certainty": "genuine"},
+    "e847b8bb-ce69-528e-9eda-5173a795ec18": {"author": "Victorinus of Pettau",
+                                              "certainty": "genuine"},
+    "841b4e0a-225f-5090-a4c0-36d8bf1a2f63": {"author": "Ignatius", "certainty": None,
+                                              "attribution_note": "A legendary account."},
+    "83609fa8-480c-5a66-a09c-f0114c4d3e66": {
+        "certainty": "genuine",
+        "notes": "Its ruling on rebaptizing heretics was not adopted by the Church."},
+    "faf07b54-7968-53f3-891e-d8683f9c271d": {
+        "certainty": "disputed", "attribution_note": "Its attribution to Pamphilus is doubtful."},
+    "2ac6445a-0528-500f-8574-0e62ef1d4b9e": {"certainty": "disputed",
+                                              "attribution_note": _DOUBTFUL},
+    "5f210d1e-1be7-54fa-a09d-f1dd6f3f315a": {"certainty": "disputed",
+                                              "attribution_note": _DOUBTFUL},
+    "85bd14cc-fd8a-5e72-a126-fc5b4c3e6ebd": {"author": "Bernard of Clairvaux",
+                                              "certainty": "genuine"},
+}
+_COMPILED = "Compiled after Aquinas's death from his earlier writings."
+WORK_LABELS: dict[str, dict] = {
+    f"{SUMMA} XP": {"author": "Thomas Aquinas", "certainty": "genuine",
+                    "attribution_note": _COMPILED},
+    f"{SUMMA} vii": {"author": "Thomas Aquinas", "certainty": "genuine",
+                     "attribution_note": _COMPILED},
+    f"{BOOK_VIII} ix.ix.vi": {"author": "Attributed to the Apostles",
+                              "certainty": "pseudonymous"},
+    # An empty note, not NULL: the API falls back to the document's note on NULL, and
+    # Caius's "Preserved in Eusebius" is not the Fragment's (3.2 As built).
+    f"{CAIUS} v.iii.iii": {**_ANONYMOUS, "notes": ""},
+    "44fd52c3-fdef-518e-a463-a3273f39764c iii.iv.iii": {
+        "author": "Pseudo-Gregory Thaumaturgus", "certainty": "pseudonymous"},
+    "44fd52c3-fdef-518e-a463-a3273f39764c iii.iv.ii": {
+        "author": "Gregory Thaumaturgus", "certainty": "disputed"},
+    f"{CYPRIAN_EPISTLES} iv.iv.lxxiv": {
+        "author": "Firmilian of Caesarea", "certainty": "genuine",
+        "notes": "Its view on rebaptizing heretics was not adopted by the Church."},
+    "5d75dc92-df2c-5421-904f-4249590ff48a iv.vii.iii": _ANONYMOUS,
+    "5d75dc92-df2c-5421-904f-4249590ff48a iv.vii.v": _ANONYMOUS,
+    "a2b36c64-4f0a-5d36-bbe2-97fa74c4acbc iii.v.i": {"author": "Pseudo-Hippolytus",
+                                                     "certainty": "pseudonymous"},
+    "8b42a526-e078-56f4-89ab-4a87b995ef3b iii.vi.ii": {"author": "Lactantius",
+                                                       "certainty": "disputed"},
+    "685b8763-d3f3-5bb7-bf9f-c34efedaadf5 iii.iii.iii": {
+        "notes": "The eleventh canon is a later addition."},
+}
+LABEL_NAMES = {
+    HORTATORY_ADDRESS: "Hortatory Address", DIOGNETUS: "Diognetus", DIDACHE: "Didache",
+    MARTYRDOM_OF_POLYCARP: "Martyrdom of Polycarp", ARCHELAUS: "Acts of Archelaus",
+    f"{SUMMA} XP": "Supplement", f"{SUMMA} vii": "Supplement's appendix",
+    f"{BOOK_VIII} ix.ix.vi": "Apostolic Canons", f"{CAIUS} v.iii.iii": "Muratorian Fragment",
+    f"{CYPRIAN_EPISTLES} iv.iv.lxxiv": "Firmilian's letter",
+}
+PRESERVED_FRAGMENTS = (
+    "0066869a-28fb-5274-a847-c4d3e88a948e", "efc282b4-fe6a-5162-9e1b-8748c686dde1",
+    "22369abb-5ee4-50d2-85c8-fdf4da8fc2ce", "24b54b57-da45-534e-834c-686963d5d905",
+    CAIUS, "2444aae2-01c7-5f06-be45-a14be10fddfc", "6e9f0854-4460-5044-b0ed-c13355cd90fe",
+    "12083c91-ed66-5b5c-ac89-bd4ebbadb439", "6895ce71-2eab-54d6-93a0-516a97625efc",
+    "4b66fa28-684a-5e79-8596-6029d5de1a48", "5b81cdef-4a4f-52de-8b35-8657680f30dc",
+    "525a3cd5-3890-5be3-993f-34f5de18a83b", "5f210d1e-1be7-54fa-a09d-f1dd6f3f315a",
+    "ecfd05c0-32a2-5153-9054-d3ab06c56c2c", "973645b6-6110-5711-a635-6b84c2632fd8",
+)
 
 # A passage users can find: searchable, and neither it nor its document retired.
 VISIBLE = "c.searchable AND c.retired_at IS NULL AND d.retired_at IS NULL"
@@ -1540,11 +1645,124 @@ CHECKS: list[Check] = [
         expect=Row({"summa": AtLeast(3000), "catechism": AtLeast(400), "supplement": 1}),
     ),
 
-    # ---- 3.2: labels and notes (placeholder) --------------------------------------------
-    PlaceholderCheck(
-        id="3.2.pending", items="3.2",
-        proves="3.2 (labels, certainty and notes for works that stay) has not merged; its "
-               "checks are added when it does.",
+    # ---- 3.2: labels, certainty and notes for works that stay ---------------------------
+    SqlCheck(
+        id="3.2.document-labels", items="3.2, C-15",
+        proves="Doubtful works say so on their card: the author shown and the certainty "
+               "label of each document 3.2 relabels (Pseudo-Justin, the anonymous Didache "
+               "and Diognetus, the martyrdoms, Hegemonius, and the rest).",
+        sql="""
+            SELECT id::text AS key, author, certainty, attribution_note, notes
+            FROM documents WHERE id = ANY($1::uuid[]) AND retired_at IS NULL
+        """,
+        params=(sorted(DOCUMENT_LABELS),),
+        expect=ByKey(DOCUMENT_LABELS, names=LABEL_NAMES),
+    ),
+    SqlCheck(
+        id="3.2.work-labels", items="3.2, C-02",
+        proves="Works inside a document carry their own labels: the Summa's Supplement and "
+               "its appendix, the Apostolic Canons, the Muratorian Fragment, the "
+               "Pseudo-Gregory and Pseudo-Hippolytus pieces, Firmilian's letter and the "
+               "anonymous treatises among Cyprian's.",
+        sql="""
+            SELECT document_id::text || ' ' || work_key AS key, author, certainty,
+                   attribution_note, notes
+            FROM document_works
+            WHERE document_id::text || ' ' || work_key = ANY($1::text[])
+        """,
+        params=(sorted(WORK_LABELS),),
+        expect=ByKey(WORK_LABELS, names=LABEL_NAMES),
+    ),
+    SqlCheck(
+        id="3.2.works-hold-their-passages", items="3.2",
+        proves="The new works hold their passages, so their labels reach each card: the "
+               "Supplement, its appendix, the Apostolic Canons and the Muratorian Fragment.",
+        sql=f"""
+            SELECT c.document_id::text || ' ' || c.work_key AS key, count(*) AS n
+            FROM chunks c JOIN documents d ON d.id = c.document_id
+            WHERE c.document_id::text || ' ' || c.work_key = ANY($1::text[]) AND {VISIBLE}
+            GROUP BY 1
+        """,
+        params=([f"{SUMMA} XP", f"{SUMMA} vii", f"{BOOK_VIII} ix.ix.vi",
+                 f"{CAIUS} v.iii.iii"],),
+        expect=CountsBy({f"{BOOK_VIII} ix.ix.vi": 6, f"{CAIUS} v.iii.iii": 2},
+                        at_least={f"{SUMMA} XP": 4_186, f"{SUMMA} vii": 84},
+                        names=LABEL_NAMES),
+    ),
+    SqlCheck(
+        id="3.2.diognetus-note", items="3.2",
+        proves="Diognetus's chapters 11 and 12, and no other passage of it, carry the note "
+               "that they are a later addition.",
+        sql=f"""
+            SELECT count(*) FILTER (WHERE c.anchor ~ '^iii\\.ii\\.(xi|xii)(/|$)'
+                                      AND c.note = $2) AS noted,
+                   count(*) FILTER (WHERE c.anchor !~ '^iii\\.ii\\.(xi|xii)(/|$)'
+                                      AND c.note IS NOT NULL) AS other_notes
+            FROM chunks c JOIN documents d ON d.id = c.document_id
+            WHERE c.document_id = $1 AND {VISIBLE}
+        """,
+        params=(DIOGNETUS, "Chapters 11 and 12 are a later addition by another hand."),
+        expect=Row({"noted": 2, "other_notes": 0}),
+    ),
+    SqlCheck(
+        id="3.2.preservation-notes", items="3.2, C-15",
+        proves="The 15 fragment collections framed by a quoting writer say where the "
+               "fragments were preserved.",
+        sql="""
+            SELECT count(*) AS noted FROM documents
+            WHERE id = ANY($1::uuid[]) AND retired_at IS NULL AND notes LIKE 'Preserved %'
+        """,
+        params=(list(PRESERVED_FRAGMENTS),),
+        expect=Row({"noted": 15}),
+    ),
+    SqlCheck(
+        id="3.2.fathers-dates-and-genres", items="3.2, 2.3",
+        proves="The Fathers carry Quasten's dates (54 documents) and a genre (91).",
+        sql="""
+            SELECT count(*) FILTER (WHERE date_display IS NOT NULL) AS dated,
+                   count(*) FILTER (WHERE genre IS NOT NULL) AS with_genre
+            FROM documents WHERE collection = 'church-fathers' AND retired_at IS NULL
+        """,
+        expect=Row({"dated": AtLeast(54), "with_genre": AtLeast(91)}),
+    ),
+    removal_check("3.2.apostle-lists", "3.2",
+                  "The Pseudo-Hippolytus lists of the Twelve and the Seventy Apostles are "
+                  "gone (rule C).",
+                  "3.2"),
+    SearchCheck(
+        id="3.2.pseudo-justin", items="3.2",
+        proves="The spec's own check: a search for the Hortatory Address shows it as "
+               "Pseudo-Justin, not Justin Martyr.",
+        question="true religion of the Greeks",
+        collections=("church-fathers",),
+        expect=Some(Match(document=HORTATORY_ADDRESS, author=r"^Pseudo-Justin$")),
+    ),
+    SearchCheck(
+        id="3.2.supplement", items="3.2",
+        proves="A question the Supplement answers returns it as its own work, which "
+               "carries the note that it was compiled after Aquinas's death.",
+        question="What qualities will the bodies of the blessed have after the resurrection?",
+        collections=("summa",),
+        expect=Some(Match(document=SUMMA, work_key="XP")),
+    ),
+    SearchCheck(
+        id="3.2.didache", items="3.2",
+        proves="The Didache is shown as anonymous.",
+        question="What does the Teaching of the Twelve Apostles say about baptism and fasting?",
+        collections=("church-fathers",),
+        expect=Some(Match(document=DIDACHE, author=r"^Anonymous$")),
+    ),
+    SearchCheck(
+        id="3.2.martyrdom-of-polycarp", items="3.2, C-15",
+        proves="The Martyrdom of Polycarp is credited to the Church of Smyrna, not to "
+               "Polycarp.",
+        question="How did Polycarp die, and what did he say before his death?",
+        collections=("church-fathers",),
+        expect=all_of(
+            Some(Match(document=MARTYRDOM_OF_POLYCARP, author=r"^Church of Smyrna$")),
+            NoneOf(Match(document=MARTYRDOM_OF_POLYCARP, author=r"^Polycarp",
+                         what="a card of the Martyrdom credited to Polycarp")),
+        ),
     ),
 ]
 
@@ -1572,7 +1790,7 @@ for _collection, (_question, _match) in REFERENCES.items():
 @dataclass
 class Outcome:
     check: Check
-    status: str        # PASS, FAIL, ERROR, NOT RUN or PENDING
+    status: str        # PASS, FAIL, ERROR or NOT RUN
     detail: str
     run: SearchRun | None = None
 
@@ -1593,8 +1811,6 @@ class Context:
 
 async def run_check(check: Check, ctx: Context, runs: list[SearchRun]) -> Outcome:
     try:
-        if isinstance(check, PlaceholderCheck):
-            return Outcome(check, "PENDING", check.proves)
         if isinstance(check, SqlCheck):
             verdict = check.expect(await ctx.fetch(check.sql, check.args(ctx.registry)))
             return Outcome(check, "PASS" if verdict.ok else "FAIL", verdict.detail)
