@@ -48,11 +48,14 @@ def _pre_outline_columns(visible: str) -> str:
            (SELECT count(*) FROM chunks c WHERE c.document_id = d.id{visible}) AS cnt"""
 
 
-# Document facts (0042), for DocumentResponse.facts.
-_FACT_COLUMNS = """,
+# Document facts (0042), for DocumentResponse.facts, and the form where 0044 has added it
+# (issue #330), so the API deploys before that migration is applied.
+def _fact_columns(form: bool) -> str:
+    return f""",
            d.date_display, d.genre, d.issuer, d.issuer_label, d.certainty,
            d.attribution_note, d.notes, d.source_credit,
-           d.superseded_by::text AS superseded_by, d.superseded_note"""
+           d.superseded_by::text AS superseded_by, d.superseded_note,
+           {"d.form" if form else "NULL::text AS form"}"""
 
 
 def _document_sql(*, access: bool, outline: bool,
@@ -65,7 +68,7 @@ def _document_sql(*, access: bool, outline: bool,
     SELECT d.id, d.collection, d.title, d.author, d.year, d.translation, d.metadata,
            {"d.reader_access" if access else "'full'"} AS reader_access,
            {_outline_columns(visible) if outline else _pre_outline_columns(visible)},
-           {"d.retired_at IS NOT NULL" if schema.retired else "false"} AS retired{_FACT_COLUMNS if schema.facts else ""}
+           {"d.retired_at IS NOT NULL" if schema.retired else "false"} AS retired{_fact_columns(schema.form) if schema.facts else ""}
     FROM documents d WHERE d.id = $1
 """
 
@@ -256,6 +259,7 @@ def _document_facts(doc_row) -> DocumentFacts | None:
     return DocumentFacts(
         year=doc_row["year"], date_display=doc_row["date_display"],
         translation=doc_row["translation"] or None, genre=doc_row["genre"],
+        form=doc_row["form"],
         issuer=doc_row["issuer"], issuer_label=doc_row["issuer_label"],
         certainty=doc_row["certainty"], attribution_note=doc_row["attribution_note"],
         notes=doc_row["notes"], source_credit=required or doc_row["source_credit"],

@@ -1092,6 +1092,20 @@ describe("corpus cleanup 2.4b: overview and later chapters", () => {
     expect(await screen.findByText("Anon · 1990 · World English Bible, Catholic Edition")).toBeTruthy();
   });
 
+  it("says what a papal document is and how it was issued (issue #330)", async () => {
+    navigation.params = new Map([["from", "library"]]);
+    api.getToc.mockResolvedValue({
+      document: {
+        ...documentInfo("doc-a"), author: "Pope Pius IX", year: 1854,
+        facts: { genre: "apostolic-constitution", form: "bull", translation: "Vatican English" },
+      },
+      chapters: [{ chapter_key: "chapter-a", chapter_label: "Chapter A" }],
+    });
+    render(<DocumentReader docId="doc-a" />);
+    expect((await screen.findByTestId("document-kind")).textContent)
+      .toBe("Apostolic constitution · issued as a bull");
+  });
+
   it("shows the removal page when a later chapter was removed", async () => {
     const { ReaderRemovedError } = await import("@/lib/api");
     navigation.params = new Map([["chapter", "chapter-a"], ["from", "library"]]);

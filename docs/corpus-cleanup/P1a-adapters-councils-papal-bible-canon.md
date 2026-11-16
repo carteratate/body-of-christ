@@ -725,6 +725,10 @@ These apply to every PR below and are not repeated in each item.
   - Re-vendoring adds `genre`, `form`, `sha256` and `bytes` to each manifest entry and changes the three manifests' hashes in `source_lock.json`; no source file is fetched or changed. Build passages are unchanged (9,695).
   - Found on the way. vatican.va dates Quo Graviora (Leo XII) 13 March 1825; the manifest says 1826. Our Sublimis Deus text is dated 29 May 1537, the date of the brief Pastorale Officium (which In Supremo Apostolatus cites); Sublimis Deus is usually dated 2 June 1537. Both are left for 1.3d.
 
+- **Follow-up, as built (issue #330, 15 Nov 2026):** the form reaches `documents.form`.
+  - Registry. `form` is a fact field (`registry.FACT_FIELDS`), validated against `PAPAL_FORMS`; `document_facts.derive` copies a papal document's `metadata["form"]`, and `scripts/document_facts_registry.py` wrote it. Seven published documents carry one: `bull` for Salutis Nostrae, Ineffabilis Deus, Munificentissimus Deus, Unam Sanctam, Exsurge Domine and Sublimis Deus, `brief` for In Supremo Apostolatus. The other 13 with a form are held for permission (ADR 0001) and carry no facts.
+  - Writer. `Document.form` is in `reader_writer.DOCUMENT_COLUMNS`, so the stage, the apply and the rollback snapshot carry it, and the staged report's facts diff counts it (`release/staged.FACT_COLUMNS`). A stage refuses a database whose `documents` lacks a writer column, naming 0044. Not in the Qdrant payload: no filter reads it (5.1a decides).
+  - API and web. `DocumentFacts.form` on search, bookmarks, history and the reader, read only where the column exists (`CorpusSchema.form`), so the API runs before 0044 is applied. The web shows "Apostolic letter · issued as a brief" (`formatKind`) under the attribution line of the reader overview and first in an opened card's facts; a document without a form shows no new line.
 ---
 
 ### R3. Esther (specified in the P0 file)

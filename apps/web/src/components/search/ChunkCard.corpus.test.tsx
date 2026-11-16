@@ -113,6 +113,25 @@ describe("result card body (opened)", () => {
     ]);
   });
 
+  it("says what a papal document is and how it was issued, before the translation", async () => {
+    renderCard(result({}, {
+      collection: "encyclicals", author: "Pope Gregory XVI", document_title: "In Supremo Apostolatus",
+      facts: {
+        genre: "apostolic-letter", form: "brief", translation: "Vatican English",
+        source_credit: "© Dicastery for Communication – Libreria Editrice Vaticana",
+      },
+    }));
+    // Not on the collapsed card.
+    expect(screen.queryByText(/issued as/)).toBeNull();
+    await expand();
+    const lines = [...screen.getByTestId("passage-facts").querySelectorAll("p")].map((p) => p.textContent);
+    expect(lines).toEqual([
+      "Apostolic letter · issued as a brief",
+      "Translation: Vatican English",
+      "© Dicastery for Communication – Libreria Editrice Vaticana",
+    ]);
+  });
+
   it("names a translation code in full", async () => {
     renderCard(result({}, { collection: "bible", author: null, facts: { translation: "WEB-C" } }));
     await expand();

@@ -15,6 +15,9 @@ Three keys of the passage's `metadata` also leave the API here (2.4f): `text_sou
 ("unofficial_english", a canon shown in the L'Osservatore Romano English, 1.5b) and
 `official_latin_url`. The rest of `metadata` stays internal.
 
+A document's `form` (bull or brief, 0044, issue #330) is read only where the column
+exists, so the API deploys before that migration is applied.
+
 Best-effort: on a database without 0042 it returns nothing and runs no query; on a
 failure or timeout it returns nothing and the caller sends today's payload.
 """
@@ -32,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 TIMEOUT_SECONDS = 1.0
 
-_DOCUMENT_FIELDS = ("year", "date_display", "translation", "genre", "issuer",
+_DOCUMENT_FIELDS = ("year", "date_display", "translation", "genre", "form", "issuer",
                     "issuer_label", "certainty", "attribution_note", "notes",
                     "source_credit", "superseded_by", "superseded_note")
 # Work values that replace the document's when the passage belongs to a work.
@@ -62,7 +65,7 @@ def text_labels(row) -> dict:
     return labels
 
 
-def _sql(works: bool) -> str:
+def _sql(works: bool, form: bool = False) -> str:
     work = ("""w.title AS work_title, w.author AS work_author, w.year AS work_year,
            w.date_display AS work_date_display, w.genre AS work_genre,
            w.certainty AS work_certainty, w.attribution_note AS work_attribution_note,
@@ -77,7 +80,8 @@ def _sql(works: bool) -> str:
     SELECT c.id::text AS chunk_id, c.language, c.note, c.passage_author, c.voice,
            {TEXT_LABEL_COLUMNS},
            d.author, d.year, NULLIF(d.translation, '') AS translation, d.date_display,
-           d.genre, d.issuer, d.issuer_label, d.certainty, d.attribution_note, d.notes,
+           d.genre, {"d.form" if form else "NULL::text AS form"}, d.issuer, d.issuer_label,
+           d.certainty, d.attribution_note, d.notes,
            d.source_credit, d.superseded_by::text AS superseded_by, d.superseded_note,
            {work}
     FROM chunks c
@@ -144,7 +148,7 @@ async def fetch(conn, chunk_ids) -> dict[str, PassageFacts]:
     async def run(s: corpus_schema.CorpusSchema):
         if not s.facts:
             return []
-        return await conn.fetch(_sql(s.works), [uuid.UUID(i) for i in ids])
+        return await conn.fetch(_sql(s.works, s.form), [uuid.UUID(i) for i in ids])
 
     rows = await corpus_schema.run_with_fallback(run, conn)
     return {r["chunk_id"]: _passage_facts(r) for r in rows}

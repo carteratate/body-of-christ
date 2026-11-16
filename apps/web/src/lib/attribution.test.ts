@@ -4,7 +4,9 @@ import {
   factNotes,
   formatAttribution,
   formatDate,
+  formatKind,
   formatTranslation,
+  genreLabel,
   parseFacts,
   siteName,
   sourceCreditOf,
@@ -95,11 +97,36 @@ describe("siteName", () => {
   });
 });
 
+describe("formatKind", () => {
+  it("names the genre and how a papal document was issued (issue #330)", () => {
+    expect(formatKind({ genre: "encyclical", form: "brief" })).toBe("Encyclical · issued as a brief");
+    expect(formatKind({ genre: "apostolic-constitution", form: "bull" }))
+      .toBe("Apostolic constitution · issued as a bull");
+    expect(formatKind({ genre: "other", form: "bull" })).toBe("Issued as a bull");
+  });
+
+  it("shows nothing without a recorded form", () => {
+    expect(formatKind({ genre: "encyclical" })).toBeNull();
+    expect(formatKind({ genre: "encyclical", form: "breve" })).toBeNull();
+    expect(formatKind(null)).toBeNull();
+  });
+});
+
+describe("genreLabel", () => {
+  it("reads a genre slug as words", () => {
+    expect(genreLabel("motu-proprio")).toBe("Motu proprio");
+    expect(genreLabel("encyclical")).toBe("Encyclical");
+    expect(genreLabel("other")).toBeNull();
+    expect(genreLabel(null)).toBeNull();
+  });
+});
+
 describe("parseFacts", () => {
   it("keeps well-typed fields and drops the rest", () => {
     expect(parseFacts({ year: 397, certainty: "disputed", notes: "n", translation: 3, certainty_x: 1 }))
       .toEqual({ year: 397, certainty: "disputed", notes: "n" });
     expect(parseFacts({ certainty: "maybe" })).toEqual({});
+    expect(parseFacts({ genre: "encyclical", form: "brief" })).toEqual({ genre: "encyclical", form: "brief" });
     expect(parseFacts("facts")).toBeNull();
     expect(parseFacts(null)).toBeNull();
   });

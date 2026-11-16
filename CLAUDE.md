@@ -225,7 +225,11 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   `bull` or `brief`, how the papal chancery issued it, NULL where none is recorded. It sits
   beside `documents.genre`, which is the document's kind (Ineffabilis Deus: genre
   `apostolic-constitution`, form `bull`); `bull` left `corpus_genres` in 0044. The values come
-  from `PAPAL_FORMS` in `datapipeline/registry/genres.py`. Nothing writes the column yet.
+  from `PAPAL_FORMS` in `datapipeline/registry/genres.py`. Issue #330 carries it: `works.json`'s
+  `form` (2.3's generator, from `papal_genres.csv`), `Document.form`, staged and applied by 2.2w,
+  and shown as "Apostolic constitution · issued as a bull" (`formatKind` in `lib/attribution.ts`)
+  in the reader overview and an opened card. A stage refuses a database without the column; the
+  API reads it only where it exists (`CorpusSchema.form`). Live rows stay NULL until the republish.
 - `chunks.search_vector` **redefined** (0045, item 2.2c, #181): content with Bible `{{v:N}}`
   markers stripped at weight A, plus the reference with its punctuation turned into spaces at
   weight B, so "canon 1055", "ccc 2267" and "john 3" find their passages. **Applied to
