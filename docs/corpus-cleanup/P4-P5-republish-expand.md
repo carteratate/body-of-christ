@@ -664,10 +664,11 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   1. Denzinger as its own collection: the whole book, with its numbering and order, readable and citable as "Denz. 714".
   2. All its parts placed where they belong: every extract goes into its own document, and the book itself does not appear.
   3. Both.
-- **Research first:** The rights position of the 1954 German edition's editorial work, since options 1 and 3 use the headings, notes, numbering and selection that 1.2e leaves out. Whether the book's modern papal texts can be used. A map of its entries to the corpus: which are duplicates, which fill a gap, and which are new. What each option costs in OCR, in Qdrant and in the 1.2e rule.
+- **Decided (Carter, 15 Nov 2026; Decision log "Denzinger in the expansion (5.0)"):** option 2 for search, with each placed passage carrying its D and DS numbers as citations. If the rights research allows it, also option 3's reading side: Denzinger as a book in the reader, in its own order and numbering, built from the same passages, so search shows no duplicates. The research below still runs first, and its map of entries proposes where each kind goes, for Carter to confirm.
+- **Research first:** The rights position of the 1954 German edition's editorial work, since options 1 and 3 use the headings, notes, numbering and selection that 1.2e leaves out. Whether the book's modern papal texts can be used. A map of its entries to the corpus: which are duplicates, which fill a gap, and which are new. What each option costs in OCR, in Qdrant and in the 1.2e rule. A concordance from Deferrari's D numbers to the DS numbers modern documents cite.
 - **Acceptance checks:** Carter's choice is in the Decision log, and the items it needs are in this plan.
 - **Production safety:** Decision and research only.
-- **Needs Carter:** The choice.
+- **Needs Carter:** Answered 15 Nov 2026 (above). Still to confirm after the research: where each kind of entry goes, and whether the book view is legal.
 - **Out of scope:** Publishing anything. Each option's work is its own item.
 
 ---
