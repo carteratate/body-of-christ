@@ -55,7 +55,7 @@ MAX_SHRINK = 0.10
 USER_TABLES = ("retrievals", "bookmarks", "retrieval_labels", "guest_trial_retrievals")
 FACT_COLUMNS = ("title", "author", "year", "translation", "reader_access", "genre", "issuer",
                 "issuer_label", "date_display", "certainty", "attribution_note", "notes",
-                "source_credit", "clavis_ref", "superseded_by", "superseded_note")
+                "source_credit", "clavis_ref", "superseded_by", "superseded_note", "form")
 # A work's labels inside its document (D6; 3.2), `document_works`.
 WORK_COLUMNS = ("title", "author", "certainty", "attribution_note", "notes", "date_display",
                 "year", "genre", "clavis_ref")
@@ -135,7 +135,7 @@ async def staged_documents(conn, collections: list[str]) -> dict[str, list[Docum
                         attribution_note=w["attribution_note"], notes=w["notes"],
                         date_display=w["date_display"], year=w["year"], genre=w["genre"],
                         clavis_ref=w["clavis_ref"]) for w in works[d["id"]]],
-            genre=d["genre"], issuer=d["issuer"], issuer_label=d["issuer_label"],
+            genre=d["genre"], form=d["form"], issuer=d["issuer"], issuer_label=d["issuer_label"],
             date_display=d["date_display"], certainty=d["certainty"],
             attribution_note=d["attribution_note"], notes=d["notes"],
             source_credit=d["source_credit"], clavis_ref=d["clavis_ref"],

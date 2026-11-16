@@ -8,7 +8,7 @@ import { getReadingProgress, ReaderMovedError, ReaderRemovedError, ReaderRestric
 import { loadToc } from "@/lib/reader-cache";
 import { ReaderRestrictedNotice } from "./ReaderRestrictedNotice";
 import { ReaderRemovedNotice } from "./ReaderRemovedNotice";
-import { certaintyTag, formatAttribution, formatDate, formatTranslation, factNotes, type WorkInfo } from "@/lib/attribution";
+import { certaintyTag, formatAttribution, formatDate, formatKind, formatTranslation, factNotes, type WorkInfo } from "@/lib/attribution";
 import type { Tombstone } from "@/lib/corpus-lifecycle";
 import { SourceCredit } from "@/components/common/SourceLink";
 import { getCollectionMeta } from "@/lib/collections";
@@ -250,6 +250,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
     facts ? formatTranslation(facts.translation ?? documentInfo.translation) : documentInfo.translation,
   ].filter(Boolean).join(" · ");
   const certainty = certaintyTag(facts?.certainty);
+  const kind = formatKind(facts);
   const notes = factNotes(facts);
   const superseded = facts?.superseded_note?.trim() || null;
   const works = documentInfo.works ?? [];
@@ -277,6 +278,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                 {certainty && <span className="ml-2 rounded border border-brand-muted/40 px-1 text-[11px]">{certainty}</span>}
               </p>
             )}
+            {kind && <p className="mt-1 text-sm text-brand-muted" data-testid="document-kind">{kind}</p>}
             {(notes.length > 0 || superseded) && (
               <div className="mt-3 space-y-1 text-sm leading-snug text-brand-muted">
                 {notes.map((note) => <p key={note}>{note}</p>)}

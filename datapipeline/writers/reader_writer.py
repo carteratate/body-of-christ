@@ -28,7 +28,7 @@ DOCUMENT_COLUMNS = (
     "id", "collection", "title", "translation", "author", "year", "metadata",
     "reader_access", "genre", "issuer", "issuer_label", "date_display", "certainty",
     "attribution_note", "notes", "source_credit", "clavis_ref", "superseded_by",
-    "superseded_note",
+    "superseded_note", "form",
 )
 CHUNK_COLUMNS = (
     "id", "document_id", "content", "position", "reference", "anchor", "chapter_key",
@@ -93,6 +93,12 @@ async def staging_shape_problems(conn: asyncpg.Connection) -> list[str]:
 async def ensure_staging(conn: asyncpg.Connection) -> None:
     """Create the staging tables if absent (2.2a's function), and refuse when existing
     ones differ in shape from live."""
+    live = {r["column_name"] for r in await conn.fetch(_SHAPE_SQL, "public", ["documents"])}
+    missing = [c for c in DOCUMENT_COLUMNS if c not in live]
+    if missing:
+        # documents.form is migration 0044's (issue #330).
+        raise ValueError(f"REFUSING: live documents has no {', '.join(missing)}; apply the "
+                         "migration that adds it (documents.form: 0044) first")
     if not await staging_exists(conn):
         await conn.execute("SELECT public.create_corpus_staging()")
     problems = await staging_shape_problems(conn)
@@ -126,7 +132,7 @@ def document_row(doc: Document) -> tuple:
             _json(doc.metadata or None), reader_access.access_for_document(doc), doc.genre,
             doc.issuer, doc.issuer_label, doc.date_display, doc.certainty,
             doc.attribution_note, doc.notes, doc.source_credit, doc.clavis_ref,
-            doc.superseded_by, doc.superseded_note)
+            doc.superseded_by, doc.superseded_note, doc.form)
 
 
 def chunk_rows(doc: Document) -> list[tuple]:

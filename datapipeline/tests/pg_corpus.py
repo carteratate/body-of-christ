@@ -4,7 +4,7 @@ run the publish path's real SQL (2.2w).
 One cluster per test session. Its `corpus_template` database has the corpus tables as
 production has them before 0037 (from services/api/tests/test_corpus_facts_migration.py,
 without the unused pgvector columns), the user tables that reference passages and
-documents, and migrations 0037, 0038, 0040, 0041, 0042 and 0043 applied. Each test gets
+documents, and migrations 0037, 0038, 0040, 0041, 0042, 0043 and 0044 applied. Each test gets
 its own copy (`CREATE DATABASE ... TEMPLATE`). Skips when initdb, pg_ctl or psql is
 missing, or when running as root.
 """
@@ -23,7 +23,8 @@ import pytest
 MIGRATIONS = Path(__file__).parents[2] / "supabase/migrations"
 APPLIED = ("0037_document_outline.sql", "0038_backfill_document_outline.sql",
            "0040_document_contents.sql", "0041_document_reader_access.sql",
-           "0042_corpus_facts_retirement_staging.sql", "0043_validate_corpus_facts.sql")
+           "0042_corpus_facts_retirement_staging.sql", "0043_validate_corpus_facts.sql",
+           "0044_document_form.sql")
 
 PRODUCTION_SCHEMA = """
     CREATE ROLE anon NOLOGIN;

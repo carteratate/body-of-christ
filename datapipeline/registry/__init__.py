@@ -29,7 +29,7 @@ from dataclasses import dataclass, field, replace
 import identity
 from identity import PIECE_MARK, unit_anchor
 from model import Document
-from registry.genres import ALL_GENRES
+from registry.genres import ALL_GENRES, PAPAL_FORMS
 
 REGISTRY_DIR = os.path.dirname(os.path.abspath(__file__))
 WORKS_FILE = "works.json"
@@ -66,8 +66,9 @@ TOMBSTONE_MAX = 300
 # Document facts (2.3, 2.2a's documents columns), flat on each works.json entry. The
 # build sets them on the Document, over whatever the adapter set (`apply_document_facts`).
 # `certainty` and `clavis_ref` are not among them: they are `attribution.certainty` and
-# `attribution.clavis`, which 3.2 fills, so no fact is held twice.
-FACT_FIELDS = ("genre", "issuer", "issuer_label", "year", "date_display", "translation",
+# `attribution.clavis`, which 3.2 fills, so no fact is held twice. `form` is a papal
+# document's chancery form, `bull` or `brief` (1.3b, 0044; issue #330), beside its genre.
+FACT_FIELDS = ("genre", "form", "issuer", "issuer_label", "year", "date_display", "translation",
                "source_credit", "attribution_note", "notes", "superseded_by",
                "superseded_note")
 _ISSUER = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
@@ -409,6 +410,8 @@ def _validate_facts(registry: WorkRegistry) -> list[str]:
             out.append(f"{name}: facts lack {', '.join(missing)}")
         if w.get("genre") is not None and w["genre"] not in ALL_GENRES:
             out.append(f"{name}: genre {w['genre']!r}")
+        if w.get("form") is not None and w["form"] not in PAPAL_FORMS:
+            out.append(f"{name}: form {w['form']!r} is not in PAPAL_FORMS")
         issuer, label = w.get("issuer"), w.get("issuer_label")
         if issuer is not None and not _ISSUER.match(str(issuer)):
             out.append(f"{name}: issuer {issuer!r} is not a lowercase hyphenated slug")
