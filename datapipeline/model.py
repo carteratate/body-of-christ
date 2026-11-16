@@ -85,6 +85,7 @@ class Document:
     # Document facts (2.2a's documents columns). 2.3 fills them from the registry; the
     # stage writes whatever is set. superseded_by is the current document's ID (D11).
     genre: str | None = None         # one of registry.genres.ALL_GENRES
+    form: str | None = None          # bull or brief, registry.genres.PAPAL_FORMS (0044)
     issuer: str | None = None        # slug for filters, e.g. "pope-leo-xiii"
     issuer_label: str | None = None  # display, e.g. "Pope Leo XIII"
     date_display: str | None = None

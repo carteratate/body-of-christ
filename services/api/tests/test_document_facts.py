@@ -1,4 +1,5 @@
 """Document facts on live search chunk events (corpus cleanup 2.4a)."""
+import dataclasses
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -20,6 +21,7 @@ def _row(**overrides):
         "chunk_id": CHUNK, "language": None, "note": "A note.",
         "passage_author": None, "voice": None, "author": "Justin Martyr", "year": 155,
         "translation": "Ante-Nicene Fathers", "date_display": "c. 155", "genre": "treatise",
+        "form": None,
         "issuer": None, "issuer_label": None, "certainty": "genuine",
         "attribution_note": None, "notes": None, "source_credit": "Sourced via CCEL.org",
         "superseded_by": None, "superseded_note": None, "work_title": None,
@@ -96,6 +98,25 @@ async def test_work_values_override_document_values(with_0042):
     assert source["facts"]["date_display"] == "4th c."
     assert source["facts"]["work_title"] == "Dubious Writings"
     assert source["facts"]["genre"] == "treatise"  # no work value: the document's
+
+
+async def test_chunk_events_carry_the_documents_form(monkeypatch):
+    """Issue #330: a papal document's form (bull, brief) rides with its facts, and is
+    read from documents.form only where 0044 has added the column."""
+    monkeypatch.setattr(corpus_schema, "_cached",
+                        dataclasses.replace(WITH_0042, form=True))
+    pool = MagicMock(fetch=AsyncMock(return_value=[_row(genre="encyclical", form="brief")]))
+    source = _chunk_event(await _events(pool, _result()))["source"]
+    assert (source["facts"]["genre"], source["facts"]["form"]) == ("encyclical", "brief")
+    assert "d.form," in pool.fetch.await_args.args[0]
+
+
+async def test_without_0044_the_facts_query_reads_no_form(with_0042):
+    pool = MagicMock(fetch=AsyncMock(return_value=[_row()]))
+    source = _chunk_event(await _events(pool, _result()))["source"]
+    assert source["facts"]["form"] is None
+    sql = pool.fetch.await_args.args[0]
+    assert "NULL::text AS form" in sql and "d.form" not in sql
 
 
 async def test_an_excerpt_documents_required_notice_wins_over_the_stored_credit():

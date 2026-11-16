@@ -515,7 +515,8 @@ async def _load_snapshot_into_staging(conn, rows: dict[str, list[dict]]) -> None
         # the snapshot alone would reopen a text whose permission was withdrawn.
         d["reader_access"] = reader_access.stricter(d["reader_access"],
                                                     reader_access.access_for(d["id"]))
-        await conn.execute(rw._DOCUMENT_SQL, *[d[c] for c in rw.DOCUMENT_COLUMNS])
+        # A snapshot taken before documents.form was written (issue #330) has no form.
+        await conn.execute(rw._DOCUMENT_SQL, *[d.get(c) for c in rw.DOCUMENT_COLUMNS])
     await conn.executemany(rw._WORK_SQL, [tuple(r[c] for c in rw.WORK_COLUMNS)
                                           for r in rows["document_works"]])
     await conn.executemany(rw._CHUNK_SQL, [tuple(r[c] for c in rw.CHUNK_COLUMNS)

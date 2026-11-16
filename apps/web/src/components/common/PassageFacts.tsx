@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import { factNotes, formatTranslation, type DocumentFacts } from "@/lib/attribution";
+import { factNotes, formatKind, formatTranslation, type DocumentFacts } from "@/lib/attribution";
 import {
   movedLine,
   readElsewhere,
@@ -64,7 +64,7 @@ export function TextLabels({ labels }: { labels: PassageTextLabels | null | unde
 
 /**
  * What an opened passage says about its text, under the text (corpus cleanup 2.4b):
- * the translation, then where the text came from (2.4f), then the notes, then the
+ * what kind of document it is where a papal form is recorded (issue #330), the translation, then where the text came from (2.4f), then the notes, then the
  * source credit, which stays last. Shown
  * only where the passage is opened (the expanded search card, the bookmark), never
  * on a collapsed card (Decision log, "Source credits"). Renders nothing without facts
@@ -80,11 +80,12 @@ export function PassageFacts({ facts, passageNote, language, credit, supersededH
   /** Decoded by `passageTextLabels` (2.4f). */
   textLabels?: PassageTextLabels | null;
 }) {
+  const kind = formatKind(facts);
   const translation = formatTranslation(facts?.translation);
   const notes = factNotes(facts, passageNote);
   const superseded = facts?.superseded_note?.trim() || null;
   const languageLabel = languageName(language);
-  if (!translation && notes.length === 0 && !superseded && !languageLabel
+  if (!kind && !translation && notes.length === 0 && !superseded && !languageLabel
       && !hasTextLabels(textLabels)) {
     return credit ? <SourceCredit text={credit} /> : null;
   }
@@ -93,6 +94,7 @@ export function PassageFacts({ facts, passageNote, language, credit, supersededH
       {languageLabel && (
         <p>This passage is in {languageLabel}; it is not included in search.</p>
       )}
+      {kind && <p>{kind}</p>}
       {translation && <p>{/^translat/i.test(translation) ? translation : `Translation: ${translation}`}</p>}
       <TextLabels labels={textLabels} />
       {notes.map((note) => <p key={note}>{note}</p>)}

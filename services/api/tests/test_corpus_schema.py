@@ -1,4 +1,5 @@
 """corpus_schema: which 0042 objects exist, and today's SQL without them (2.2b, 2.4a)."""
+import dataclasses
 from unittest.mock import AsyncMock, MagicMock
 
 import asyncpg
@@ -10,6 +11,7 @@ from tests.pg_cluster import local_cluster
 from tests.test_corpus_facts_migration import (
     EARLIER, PRODUCTION_SCHEMA, SCHEMA_MIGRATION, VALIDATE_MIGRATION,
 )
+from tests.test_document_form_migration import FORM_MIGRATION
 
 pytestmark = pytest.mark.real_corpus_schema
 
@@ -125,3 +127,6 @@ async def test_probe_against_a_database_before_and_after_0042(cluster):
     assert await _probe(cluster) == corpus_schema.LEGACY
     cluster.migrate(SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name)
     assert await _probe(cluster) == ALL
+    # 0044 adds documents.form (issue #330); everything else reads as before.
+    cluster.migrate(FORM_MIGRATION.name)
+    assert await _probe(cluster) == dataclasses.replace(ALL, form=True)

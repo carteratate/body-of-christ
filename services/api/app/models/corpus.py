@@ -17,6 +17,9 @@ class DocumentFacts(BaseModel):
     date_display: Optional[str] = None
     translation: Optional[str] = None
     genre: Optional[str] = None
+    # How the papal chancery issued the document, "bull" or "brief" (0044, issue #330);
+    # None where none is recorded and on a database without 0044.
+    form: Optional[str] = None
     issuer: Optional[str] = None        # slug, for filters
     issuer_label: Optional[str] = None  # shown to users
     certainty: Optional[Certainty] = None

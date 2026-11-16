@@ -14,6 +14,9 @@ credits for document facts (2.3)"):
 - `genre`: a papal document's `metadata["genre"]` (1.3b, `papal_genres.csv`); `catechism`
   and `code` for the Catechism and the Code; a Church Fathers work's from
   `FATHERS_GENRES` (3.2); otherwise none.
+- `form`: how the papal chancery issued a papal document, `bull` or `brief`, from its
+  `metadata["form"]` (1.3b, `papal_genres.csv`; issue #330); none where none is recorded,
+  and for every other document.
 - `issuer`, `issuer_label` (D11): the pope from `metadata["pope"]`; the council a council
   document comes from; the Holy See for the Catechism and the Code; otherwise none.
 - `year`, `date_display`: the adapter's, with the corrections below, and the Church
@@ -275,6 +278,12 @@ def _genre(document: Document, work_id: str) -> str | None:
     return {"catechism": "catechism", "canon-law": "code"}.get(document.collection)
 
 
+def _form(document: Document) -> str | None:
+    if document.collection in PAPAL_COLLECTIONS:
+        return (document.metadata or {}).get("form")
+    return None
+
+
 def _translation(document: Document, key: str, credit: str | None) -> str:
     if credit_names_translation(credit):
         return ""
@@ -304,6 +313,7 @@ def derive(document: Document, row: dict | None, entry: dict) -> dict:
     issuer, label = _issuer(document)
     facts = {
         "genre": _genre(document, work_id),
+        "form": _form(document),
         "issuer": issuer,
         "issuer_label": label,
         "year": YEAR.get(work_id, document.year),
