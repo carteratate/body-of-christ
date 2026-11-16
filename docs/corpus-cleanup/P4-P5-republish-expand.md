@@ -322,7 +322,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
 ### 4.1b. Production cutover runbook
 
 - **Type:** ops, with one small PR (the lock-file change)
-- **Depends on:** 4.0 (including 2.2c's migration), 4.1a (rehearsal passed), 4.2 pre-cutover run passed, 2.2w, 2.2b (API reads `chunks_live`), 2.4a, 2.4b, 2.4d and 2.4f live, P1 to P3 merged, 3.4 included.
+- **Depends on:** 4.0 (including 2.2c's migration), 4.1a (rehearsal passed), 4.2 pre-cutover run passed, 2.2w, 2.2b (API reads `chunks_live`), 2.4a, 2.4b, 2.4d and 2.4f live, P1 to P3 merged, 3.4 included, and #360 (the Summa Supplement corrections) merged (Carter, 15 Nov 2026).
 - **Goal:** Switch production from the old corpus to the cleaned one in minutes, with a tested rollback. Users see the corrected corpus (Vatican II and Trent recovered, removals shown as tombstones, correct labels); bookmarks and history keep working.
 - **Current state:**
   - After 2.2b the API reads Qdrant through the alias `chunks_live`, which points at `chunks` (2.2b ops steps). The datapipeline writer takes a target collection name from 2.2w.
@@ -331,6 +331,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - The apply is 2.2w's single transaction. It updates changed rows in place by id, inserts new ids, retires removed ids, writes tombstones and redirects, runs 4.1a's remap, and refreshes reader outlines.
 - **Changes:** Runbook. Every numbered step that writes to production is a separate Carter approval.
   1. **Staging build, T minus 2 days (no user impact).**
+     - Wait for #360. The staging build does not start until #360 (the Summa Supplement corrections) has merged, so its corrections go out with the republish (Carter, 15 Nov 2026). If it adds removals or redirects after 4.1a's rehearsal, 4.1a's remap dry run and size measurements are rerun against the new build first, and both sets of figures are recorded (4.1a As built, part 2).
      - Freeze the build. A reviewed PR names the commit the P4 build is made from. It also applies the 1.2e fallback (D9, D11; this step owns it): for any council that has not passed 1.2f's gate by then, the adapter emits nothing for it, and the PR adds removal-registry entries with reason `translation-in-preparation` for all of that council's Tanner passages, with 1.2e's tombstone. No adapter change merges after this PR until the cutover is done or abandoned. The same PR applies the rejected-voice fallback: if 2.4d is not deployed, it sets `searchable = false` on every row in 3.4's ranges (Decision log "Rejected voices (C-01)").
      - Lock-file change. A reviewed PR (it may be the same one) adds to `datapipeline/PUBLISH_LOCK.json` the entry `{"collection": "all", "release": "republish-2026-10", "steps": ["stage", "apply", "rollback"], ...}` in 0.4's format. It stays until the rollback window closes (step 13), and no other entry is added in between, so no other publish can run.
      - Run `publish.py stage --collection all --release republish-2026-10`. It writes every collection into the `staging` schema and into the new Qdrant collection `chunks-republish-2026-10` (D11).
@@ -381,6 +382,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - Approve steps 1 (staging build and embedding spend), 4, 6, 7 (only if an outline refresh has to be run by hand), 8, 9, 10 (the smoke checks and the `cleanup` that drops the staging tables in production), 12 (if used) and each part of 13.
   - Answered 4 Nov 2026: the rollback window is 14 days.
   - Choose the window. Give go or no-go at step 2.
+  - Found by 4.1a's rehearsal (16 Nov 2026): step 10's check that "Nostra Aetate 4 and Gaudium et Spes open in full in the reader" cannot pass. All 16 Vatican II documents are excerpt-only (LEV text), on production today and in the build, so their reader answers 403 and links to vatican.va. Replace it with: Nostra Aetate §4 shows its whole paragraph in a search result and links to vatican.va, and the Council of Trent's Bull of Indiction (new) opens in full in the reader? Recommended: yes.
 - **Out of scope:** Collection renames (5.1b). Any new source. Any retrieval tuning (Retrieval follow-ups).
 
 ### 4.2. Accuracy checks on staging and production
