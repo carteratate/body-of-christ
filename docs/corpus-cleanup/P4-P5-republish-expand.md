@@ -318,6 +318,25 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - Preview: after cycle 2's apply and before its rollback, Carter used the app against the local stores (the API and a production build of the web on the Lenovo). One defect found there is outside this item and on production too: the Library's collection filter drops each collection's section (#392).
   - Deleted on 16 Nov 2026: the dump, the user-ID list, both local databases, the Qdrant copy, both before-snapshots with their ledgers, the reports and the logs. The embedding cache keeps the 23,468 new vectors, so 4.1b's stage pays only for inputs changed since.
   - #360 (the Summa Supplement) was open at the rehearsal. If it adds removals or redirects, rerun against the new build, on a fresh dump with Carter's approval: the stage and report (new totals and user impact), the remap dry run (rows on the new redirects), and the size and apply-time measurements; record both sets of figures here (Carter, 15 Nov 2026). The rollback checks need a rerun only if #360 changes the apply, rollback or remap code.
+- **As built, part 3: the rerun at the frozen build (20 Nov 2026).** #360 added three removals and a restored reply, and #391 changed the apply and rollback code (`documents.form`), so the stage, report, remap dry run and measurements were rerun, and so was cycle 1's rollback check. Carter approved a fresh `pg_dump` of production's `public` schema (the same handling: `~/rehearsal-4.1a/`, mode 700, counts only), a read-only copy of Qdrant's 54,555 points (68 s) and Qdrant 1.18.2's release binary. Built at `549ba2f` (#406's freeze). Everything was deleted on 20 Nov 2026 once #408 merged: the dumps, the user-ID list, the databases, the Qdrant copy, both before-snapshots with their ledgers, the reports and the logs.
+  - Embedding: 121 inputs missed the cache, all Summa Supplement passages (about 16,600 tokens, about $0.002, stated before the call). A second stage made 0 calls.
+  - Stage: 350 documents and 51,486 passages (rehearsal 51,427); 4,639 tombstones; redirects 2,092 passage, 36,677 anchor and 6,122 chapter. 2.5 min.
+  - Report: 0 failing checks. Kept 47,909, retired 4,554, redirected 2,092, new 3,577 (rehearsal: 47,911, 4,552, 2,092, 3,516). User rows on retired and redirected IDs were unchanged from the rehearsal: retrievals 133 and 194, guest results 0 and 4, reading positions 4 and 12.
+  - Remap dry run and apply agreed, as in cycle 1: retrievals repointed 185, merged 6, dropped 6; guest results repointed 4; reading positions rewritten 12, moved to a first chapter 1.
+  - Measurements (`pg_database_size`), both runs:
+
+    | Point | Rehearsal (16 Nov) | Rerun (20 Nov) |
+    |---|---|---|
+    | Restored | 199 MB | 205 MB |
+    | After the staging build | 397 MB | 402 MB |
+    | Apply peak | 720 MB | 721 MB |
+    | After `cleanup` | 523 MB | 524 MB |
+    | Apply time (wall) | 37 s | 37 s |
+    | Rollback peak | 764 MB | 964 MB |
+    | Rollback time (wall) | 86 s | 84 s |
+
+  - Rollback check (cycle 1): every user table and the live documents, passages, outlines and contents equalled the pre-apply copy, except `document_works`, which kept 40 rows the publish had added on 8 documents (Cyprian's epistles and treatises, two Hippolytus volumes, Caius, Apostolic Constitutions VIII, the Summa). #408 fixed the rollback (and two related parking bugs Sol found); rerun with its code on a fresh copy, every table equalled the pre-apply copy, `document_works` included. Guest trials differed only because the API's 30-day retention had removed three October trials meanwhile.
+  - Cycle 2 (user activity between apply and rollback) was not rerun, since the remap code was unchanged.
 
 ### 4.1b. Production cutover runbook
 
@@ -388,6 +407,14 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - The 1.2e fallback adds nothing. All eleven councils, Constantinople IV to Lateran V, have passed 1.2f's gate: every frozen text in `datapipeline/ocr/texts/` for them (`schroeder-*`, the four Deferrari council extracts and Giles's Lyons I) records `pass`. `HELD` in `ingest/councils_schroeder.py` stays empty, and no `translation-in-preparation` entry is added, so the IDs reserved for it (`rm-8001` upward) are unused.
   - The rejected-voice fallback is not needed: 2.4d is live, so 3.4's ranges stay searchable and carry their rejected-voice label (Decision log "Rejected voices (C-01)").
   - `datapipeline/PUBLISH_LOCK.json` gains the entry `{"collection": "all", "release": "republish-2026-10", "steps": ["stage", "apply", "rollback"]}` (#406).
+- **As built, steps 1 and 2 (20 Nov 2026).**
+  - #408 (merged before the stage) makes a rollback restore the snapshot's `document_works` exactly; #411 (merged before the window) gives the near-duplicate filter a line per collection for the republish's fingerprints (RF-1's as-built note). Both are needed at the cutover; neither changes the build.
+  - Staging build (Carter approved it in the session): `publish.py stage --collection all --release republish-2026-10` from master `99600f5`, whose datapipeline equals `7ba49e9` (the freeze plus #408). 20:17 to 20:28 UTC, 11 min. 350 documents, 51,486 passages, 4,639 tombstones, redirects as in 4.1a's rerun. Every vector from the cache: $0.
+  - Checks: `chunks-republish-2026-10` holds 51,486 points, 48 not searchable, equal to staging; green; vectors in memory; HNSW 16/64; keyword indexes on `collection`, `document_id`, `genre` and `issuer`, boolean on `searchable`. `chunks_live` still targets `chunks`. Database 210 → 408 MB.
+  - Release report: publish checks pass (D1 similarity, D4 removal registry, 0 unexplained), figures equal to 4.1a's rerun except guest results on redirected IDs, 3 (the API's 30-day retention removed one trial). Recorded on #192.
+  - Step 2, 4.2's pre-cutover run: every check passed (4.2's as-built note; `docs/eval/2026-11-20-republish-checks.md`).
+  - Traffic for the window (production `search_costs`, 30 days to 20 Nov 2026): 22 searches, the latest on 14 Nov; none at all between 15:00 and 21:00 UTC. Proposed window: a weekday at 16:00 UTC (11:00 Eastern), when Carter can approve each step.
+  - Step 10's Vatican II check is open for Carter (Needs Carter above); recommended: replace it.
 - **Out of scope:** Collection renames (5.1b). Any new source. Any retrieval tuning (Retrieval follow-ups).
 
 ### 4.2. Accuracy checks on staging and production
@@ -422,6 +449,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - "Canon 112 returns canon 112 alone" is checked as: canon 112 first, no card of it holding canon 113, labelled unofficial English. "No result with `searchable = false`" is an aggregate over the run's results, read back from the corpus by ID, and also refuses a retired passage or one the corpus does not hold. "A reference-style question per collection also succeeds through vector retrieval" records the vector path's candidates during the same run (no extra call) and asks for the named passage among them and among the results. C-07 is checked twice: on every stored Summa passage, and on the citations the run's Summa results return.
   - The run prints and records the pipeline's cost (its `CostTracker`, plus the explanations') and, for 4.0 step 5, the median and slowest search and vector-search times. Production's `search_costs` put a one-collection search at $0.0062 on average and $0.0074 at most (30 days to 15 Nov 2026), so a paid run is about $0.35 to $0.45 and the staging and production runs together under $1. On staging, the script refuses to spend while `QDRANT_READ_COLLECTION` is still `chunks` or `chunks_live`.
   - Baseline, 15 Nov 2026, the free checks against production (read-only): every database and keyword check fails as expected, since the cleaned corpus is not published, except 3.1's kept works, which pass (rerun after #386 and #388 merged). The same free checks against the master build with #386 and #388 staged into a local Postgres by `reader_writer.write_staged_document` (migrated through 0045): all 52 pass.
+- **As built, steps 2 and 5 (20 Nov 2026).** The pre-cutover run against production's staged publish (`CORPUS_READ_SCHEMA=staging`, `QDRANT_READ_COLLECTION=chunks-republish-2026-10`, in process on the Lenovo, read-only), approved by Carter: 113 PASS, 1 FAIL, 1 ERROR, then 4 PASS on a rerun of those two and the two slowest searches, so every one of the 115 checks has passed. The failure was the check's own wording (the explanation marked Exsurge Domine's proposition 31 condemned but did not name Leo X; the rerun's did); the error was the listwise reranker's malformed output, which the check counts as degraded. Cost $0.36 plus $0.02. Vector search on the new collection: median 0.27 s, slowest 0.54 s, so no paid Qdrant tier is needed (4.0 step 5). The run also recorded every similarity the near-duplicate filter computed: 98 drops in 36 of 59 searches at 0.9, which led to #411 (RF-1's as-built note); replayed with #411's lines, 32 in 14. A comparison run of the same searches against the live corpus was blocked by the agent's permission check and not run; the post-cutover run measures the filter live. The report is `docs/eval/2026-11-20-republish-checks.md`.
 - **Out of scope:** Measuring or tuning ranking quality. That belongs in Retrieval follow-ups, which may run a judged comparison on the republished corpus if one is wanted.
 
 ---
