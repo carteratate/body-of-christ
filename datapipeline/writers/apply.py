@@ -233,15 +233,23 @@ async def _core(conn, scope_documents: list[str], *, release: str,
             """UPDATE public.documents SET retired_at = now()
                WHERE id = ANY($1::uuid[]) AND retired_at IS NULL""", retire_documents)
     # Park the live works above every ordinal the staged ones take. A rollback's staging
-    # (the before-snapshot) can hold a work an earlier publish already parked, so its
-    # offset clears the highest ordinal on either side.
-    offset = "1000000" if not rollback else """1 + greatest(
-                 (SELECT max(x.ordinal) FROM public.document_works x WHERE x.document_id = w.document_id),
-                 coalesce((SELECT max(s.ordinal) FROM staging.document_works s
-                           WHERE s.document_id = w.document_id), 0))"""
-    await conn.execute(
-        f"""UPDATE public.document_works w SET ordinal = w.ordinal + {offset}
-           WHERE w.document_id IN (SELECT id FROM staging.documents)""")
+    # (the before-snapshot) can hold a work an earlier publish already parked, so it parks
+    # them on the next free ordinals above the highest on either side.
+    if not rollback:
+        await conn.execute(
+            """UPDATE public.document_works SET ordinal = ordinal + 1000000
+               WHERE document_id IN (SELECT id FROM staging.documents)""")
+    else:
+        await conn.execute(
+            """UPDATE public.document_works w SET ordinal = p.top + p.rn
+               FROM (SELECT x.document_id, x.work_key,
+                            row_number() OVER (PARTITION BY x.document_id ORDER BY x.ordinal) AS rn,
+                            greatest(max(x.ordinal) OVER (PARTITION BY x.document_id),
+                                     coalesce((SELECT max(s.ordinal) FROM staging.document_works s
+                                               WHERE s.document_id = x.document_id), 0)) AS top
+                     FROM public.document_works x
+                     WHERE x.document_id IN (SELECT id FROM staging.documents)) p
+               WHERE w.document_id = p.document_id AND w.work_key = p.work_key""")
     work_cols = ", ".join(rw.WORK_COLUMNS)
     await conn.execute(
         f"""INSERT INTO public.document_works ({work_cols})
@@ -322,8 +330,9 @@ async def _core(conn, scope_documents: list[str], *, release: str,
             SELECT {contents_cols} FROM staging.document_contents ORDER BY document_id, ordinal""")
     # Works no staged or retired passage names any more. A rollback's staging is the
     # before-snapshot, which holds every work its documents had, so it restores exactly
-    # those: a work the publish added goes. Only rows this rollback has just retired can
-    # still name one (a restored row names a snapshot work), so they let go of it first.
+    # those: a work the publish added goes. Only retired rows can still name one (a
+    # restored row names a snapshot work), whether this rollback or an earlier one retired
+    # them, so they let go of it first.
     if rollback:
         await conn.execute(
             """UPDATE public.chunks c SET work_key = NULL
