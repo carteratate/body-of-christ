@@ -750,14 +750,17 @@ async def test_rollback_restores_a_work_parked_by_an_earlier_publish(world):
 
 
 async def test_rollback_parks_a_high_ordinal_without_overflow(world):
-    """A rollback parks works on the next free ordinals, never doubling a high one past
-    PostgreSQL's integer range."""
+    """A work parked many publishes over sits at a high ordinal; a rollback parks it on the
+    next free ordinal, never doubling it past PostgreSQL's integer range."""
     await _sql(world, """INSERT INTO document_works (document_id, work_key, ordinal, title)
                          VALUES ($1::uuid, 'w-high', 1100000000, 'High')""", DOC_A)
-    a = _doc(world, DOC_A)
-    a.works = [Work(work_key="w-high", ordinal=1100000000, title="High")]
+    await _sql(world, "UPDATE chunks SET work_key = 'w-high' WHERE id = $1::uuid",
+               pid(DOC_A, "a/4"))
+    _retire_a4(world)
     await _stage(world)
     await _apply(world)
+    [row] = await world.fetch("SELECT ordinal FROM document_works WHERE work_key = 'w-high'")
+    assert row["ordinal"] == 1101000000
     await _rollback(world)
     [row] = await world.fetch("SELECT ordinal FROM document_works WHERE work_key = 'w-high'")
     assert row["ordinal"] == 1100000000
