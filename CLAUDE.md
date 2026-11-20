@@ -389,9 +389,14 @@ Two themes, selected by `data-theme` on `<html>` and persisted in `user_preferen
 | `brand-surface` | `#172232` | `#e3dbc8` |
 | `brand-accent` | `#C4972A` | `#C4972A` |
 | `brand-primary` | `#EAE6DC` | `#1a1610` |
-| `brand-muted` | `#7A8099` | `#6a6050` |
+| `brand-muted` | `#BBBECB` | `#534B3F` |
 
 Any new color must be added to **both** theme blocks.
+
+`brand-muted` is secondary text, and it must read at WCAG's 4.5:1 on every collection card
+tint (`rgba(<collection>, 0.32)` over `brand-bg`) and on `brand-bg` and `brand-surface` in both
+themes. Both values above are the minimum of their hue that does (Carter, 20 Nov 2026).
+Recheck when a collection colour or a background changes.
 
 The brand heading font is `font-brand` (`--font-brand`): **Judson, set in capitals** (rules in
 `globals.css`). Use the `font-brand` class, never an inline `fontFamily`. Cinzel was removed in
