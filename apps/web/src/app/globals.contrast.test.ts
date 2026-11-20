@@ -11,7 +11,7 @@ const CARD_TINT = 0.32;
 const MINIMUM = 4.5;
 
 function token(block: string, name: string): string {
-  const match = block.match(new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})`));
+  const match = block.match(new RegExp(`--color-${name}:\\s*(#[0-9a-fA-F]{6})\\s*;`));
   if (!match) throw new Error(`no ${name} in block`);
   return match[1];
 }
