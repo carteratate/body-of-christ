@@ -313,13 +313,24 @@ async def _core(conn, scope_documents: list[str], *, release: str,
     await conn.execute(
         f"""INSERT INTO public.document_contents ({contents_cols})
             SELECT {contents_cols} FROM staging.document_contents ORDER BY document_id, ordinal""")
-    # Works no staged or retired passage names any more.
-    await conn.execute(
-        """DELETE FROM public.document_works w
-           WHERE w.document_id IN (SELECT id FROM staging.documents)
-             AND (w.document_id, w.work_key) NOT IN (SELECT document_id, work_key FROM staging.document_works)
+    # Works no staged or retired passage names any more. A rollback's staging is the
+    # before-snapshot, which holds every work its documents had, so it restores exactly
+    # those: a work the publish added goes. Only rows this rollback has just retired can
+    # still name one (a restored row names a snapshot work), so they let go of it first.
+    if rollback:
+        await conn.execute(
+            """UPDATE public.chunks c SET work_key = NULL
+               WHERE c.retired_at IS NOT NULL AND c.work_key IS NOT NULL
+                 AND c.document_id IN (SELECT id FROM staging.documents)
+                 AND (c.document_id, c.work_key) NOT IN
+                     (SELECT document_id, work_key FROM staging.document_works)""")
+    named_elsewhere = "" if rollback else """
              AND NOT EXISTS (SELECT 1 FROM public.chunks c
-                             WHERE c.document_id = w.document_id AND c.work_key = w.work_key)""")
+                             WHERE c.document_id = w.document_id AND c.work_key = w.work_key)"""
+    await conn.execute(
+        f"""DELETE FROM public.document_works w
+           WHERE w.document_id IN (SELECT id FROM staging.documents)
+             AND (w.document_id, w.work_key) NOT IN (SELECT document_id, work_key FROM staging.document_works){named_elsewhere}""")
     staged = {str(r["id"]) for r in await conn.fetch("SELECT id FROM staging.chunks")}
     return CoreResult(touched=touched, retired_documents=retire_documents,
                       retired_passages=[str(r["id"]) for r in retired],

@@ -12,6 +12,7 @@ import asyncpg
 import pytest
 
 import reader_access
+from model import Work
 from publication import StageRequest
 from release.staged import staged_content_sha256
 from tests import pg_corpus
@@ -695,6 +696,27 @@ async def test_rollback_rederives_reader_access(world, monkeypatch):
     await _rollback(world)
     [row] = await world.fetch("SELECT reader_access FROM documents WHERE id = $1::uuid", DOC_A)
     assert row["reader_access"] == "excerpt"
+
+
+async def test_rollback_restores_the_snapshot_works(world):
+    """A work the publish added goes with the rollback, even though the passage that names
+    it stays as a retired row (4.1b rehearsal rerun, 20 Nov 2026: eight documents kept the
+    new corpus's work list over the old text)."""
+    await _sql(world, """INSERT INTO document_works (document_id, work_key, ordinal, title)
+                         VALUES ($1::uuid, 'w-old', 1, 'Kept')""", DOC_A)
+    a = _doc(world, DOC_A)
+    a.works = [Work(work_key="w-old", ordinal=1, title="Kept"),
+               Work(work_key="w-new", ordinal=2, title="Added")]
+    a.passages.append(passage("a/5", "c2", "A restored line.", 4, work_key="w-new"))
+    await _stage(world)
+    await _apply(world)
+    keys = lambda rows: sorted(r["work_key"] for r in rows)
+    assert keys(await world.fetch("SELECT work_key FROM document_works")) == ["w-new", "w-old"]
+    await _rollback(world)
+    assert keys(await world.fetch("SELECT work_key FROM document_works")) == ["w-old"]
+    [row] = await world.fetch("SELECT retired_at IS NOT NULL AS r FROM chunks WHERE id = $1::uuid",
+                              pid(DOC_A, "a/5"))
+    assert row["r"] is True
 
 
 async def test_rollback_never_opens_beyond_the_snapshot(world):
