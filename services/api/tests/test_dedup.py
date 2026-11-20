@@ -689,11 +689,12 @@ def test_focused_chapter_keyed_collections_are_valid_and_a_superset():
 
 
 # ---------------------------------------------------------------------------
-# apply_dedup — the line follows the fingerprints the read collection holds
+# apply_dedup — the line follows the fingerprints the pair's points hold
 # ---------------------------------------------------------------------------
 
-def _pair_at(cosine: float, collection: str):
-    """Two neighbouring passages of one document whose vectors are `cosine` apart."""
+def _pair_at(cosine: float, collection: str, prefixed: tuple[bool, bool]):
+    """Two neighbouring passages of one document whose vectors are `cosine` apart; a
+    point a publish built carries `embed_sha256`."""
     import math as _m
     a = _chunk("aaaa-0000-0000-0000-00000000000a", "doc1", "T", 0.9, position=1,
                collection=collection)
@@ -701,40 +702,43 @@ def _pair_at(cosine: float, collection: str):
                collection=collection)
     va = [1.0, 0.0] + [0.0] * 1534
     vb = [cosine, _m.sqrt(1 - cosine * cosine)] + [0.0] * 1534
-    pa = MagicMock(); pa.id = a.chunk_id; pa.vector = va
-    pb = MagicMock(); pb.id = b.chunk_id; pb.vector = vb
+    points = []
+    for chunk, vector, marked in ((a, va, prefixed[0]), (b, vb, prefixed[1])):
+        p = MagicMock(); p.id = chunk.chunk_id; p.vector = vector
+        p.payload = {"embed_sha256": "f" * 64} if marked else {}
+        points.append(p)
     client = AsyncMock()
-    client.retrieve = AsyncMock(return_value=[pa, pb])
+    client.retrieve = AsyncMock(return_value=points)
     return [a, b], client
 
 
-async def _kept(cosine: float, collection: str, target: str | None) -> int:
-    ranked, client = _pair_at(cosine, collection)
-    with patch("app.rag.dedup.get_qdrant_client", return_value=client), \
-            patch("app.rag.dedup.read_target", AsyncMock(return_value=target)):
-        return len(await apply_dedup(ranked))
+async def _kept(cosine: float, collection: str, prefixed=(True, True)) -> int:
+    ranked, client = _pair_at(cosine, collection, prefixed)
+    with patch("app.rag.dedup.get_qdrant_client", return_value=client):
+        result = await apply_dedup(ranked)
+    assert client.retrieve.call_args.kwargs["with_payload"] == ["embed_sha256"]
+    return len(result)
 
 
 @pytest.mark.asyncio
-async def test_todays_collection_keeps_the_0_9_line():
-    """`chunks` holds the old fingerprints: a Summa pair at 0.94 is a duplicate there."""
-    assert await _kept(0.94, "summa", "chunks") == 1
+async def test_todays_fingerprints_keep_the_0_9_line():
+    """Today's points carry no `embed_sha256`: a Summa pair at 0.94 is a duplicate."""
+    assert await _kept(0.94, "summa", (False, False)) == 1
 
 
 @pytest.mark.asyncio
-async def test_a_published_collection_uses_its_collections_line():
-    """A collection a 2.2w publish built prefixes author, title and chapter, so neighbours
-    sit closer; the Summa's line is 0.95 there (4.2 pre-cutover run, 20 Nov 2026)."""
-    assert await _kept(0.94, "summa", "chunks-republish-2026-10") == 2
-    assert await _kept(0.96, "summa", "chunks-republish-2026-10") == 1
+async def test_a_publishs_fingerprints_use_their_collections_line():
+    """A publish's points prefix author, title and chapter, so neighbours sit closer; the
+    Summa's line is 0.95 there (4.2 pre-cutover run, 20 Nov 2026)."""
+    assert await _kept(0.94, "summa") == 2
+    assert await _kept(0.96, "summa") == 1
 
 
 @pytest.mark.asyncio
 async def test_a_collection_without_its_own_line_keeps_0_9():
-    assert await _kept(0.91, "bible", "chunks-republish-2026-10") == 1
+    assert await _kept(0.91, "bible") == 1
 
 
 @pytest.mark.asyncio
-async def test_an_unknown_target_keeps_todays_line():
-    """When the alias cannot be resolved, the filter behaves as it does today."""
-    assert await _kept(0.94, "summa", None) == 1
+async def test_a_pair_with_one_unmarked_point_keeps_0_9():
+    assert await _kept(0.94, "summa", (True, False)) == 1

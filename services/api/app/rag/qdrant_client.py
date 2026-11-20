@@ -83,29 +83,6 @@ async def searchable_indexed() -> bool:
     return indexed
 
 
-_read_target: str | None = None
-_read_target_checked_at = 0.0
-
-
-async def read_target() -> str | None:
-    """The collection the read alias resolves to (`resolve_read_target`), read again after
-    five minutes, so search can tell which fingerprints it is comparing; None until the
-    first answer. A failed lookup keeps the last answer."""
-    global _read_target, _read_target_checked_at
-    if (_read_target is not None
-            and time.monotonic() - _read_target_checked_at < _INDEX_TTL_SECONDS):
-        return _read_target
-    client = _client
-    if client is None:
-        return _read_target
-    try:
-        _read_target = await resolve_read_target(client)
-    except Exception as exc:
-        logger.warning("Qdrant read target lookup failed (%s)", exc.__class__.__name__)
-    _read_target_checked_at = time.monotonic()
-    return _read_target
-
-
 def forget_searchable_index() -> None:
     global _searchable_indexed
     _searchable_indexed = None
