@@ -686,3 +686,55 @@ def test_focused_chapter_keyed_collections_are_valid_and_a_superset():
 
     assert _FOCUSED_CHAPTER_KEYED_COLLECTIONS <= VALID_COLLECTIONS
     assert _CHAPTER_KEYED_COLLECTIONS < _FOCUSED_CHAPTER_KEYED_COLLECTIONS
+
+
+# ---------------------------------------------------------------------------
+# apply_dedup — the line follows the fingerprints the read collection holds
+# ---------------------------------------------------------------------------
+
+def _pair_at(cosine: float, collection: str):
+    """Two neighbouring passages of one document whose vectors are `cosine` apart."""
+    import math as _m
+    a = _chunk("aaaa-0000-0000-0000-00000000000a", "doc1", "T", 0.9, position=1,
+               collection=collection)
+    b = _chunk("bbbb-0000-0000-0000-00000000000b", "doc1", "T", 0.7, position=2,
+               collection=collection)
+    va = [1.0, 0.0] + [0.0] * 1534
+    vb = [cosine, _m.sqrt(1 - cosine * cosine)] + [0.0] * 1534
+    pa = MagicMock(); pa.id = a.chunk_id; pa.vector = va
+    pb = MagicMock(); pb.id = b.chunk_id; pb.vector = vb
+    client = AsyncMock()
+    client.retrieve = AsyncMock(return_value=[pa, pb])
+    return [a, b], client
+
+
+async def _kept(cosine: float, collection: str, target: str | None) -> int:
+    ranked, client = _pair_at(cosine, collection)
+    with patch("app.rag.dedup.get_qdrant_client", return_value=client), \
+            patch("app.rag.dedup.read_target", AsyncMock(return_value=target)):
+        return len(await apply_dedup(ranked))
+
+
+@pytest.mark.asyncio
+async def test_todays_collection_keeps_the_0_9_line():
+    """`chunks` holds the old fingerprints: a Summa pair at 0.94 is a duplicate there."""
+    assert await _kept(0.94, "summa", "chunks") == 1
+
+
+@pytest.mark.asyncio
+async def test_a_published_collection_uses_its_collections_line():
+    """A collection a 2.2w publish built prefixes author, title and chapter, so neighbours
+    sit closer; the Summa's line is 0.95 there (4.2 pre-cutover run, 20 Nov 2026)."""
+    assert await _kept(0.94, "summa", "chunks-republish-2026-10") == 2
+    assert await _kept(0.96, "summa", "chunks-republish-2026-10") == 1
+
+
+@pytest.mark.asyncio
+async def test_a_collection_without_its_own_line_keeps_0_9():
+    assert await _kept(0.91, "bible", "chunks-republish-2026-10") == 1
+
+
+@pytest.mark.asyncio
+async def test_an_unknown_target_keeps_todays_line():
+    """When the alias cannot be resolved, the filter behaves as it does today."""
+    assert await _kept(0.94, "summa", None) == 1

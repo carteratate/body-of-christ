@@ -1,7 +1,9 @@
 """Position+cosine dedup and per-source cap for post-scoring results.
 
 apply_dedup(ranked) drops the lower-scorer in any pair from the same document
-where abs(position_a - position_b) <= 2 AND cosine_similarity > 0.9, then
+where abs(position_a - position_b) <= 2 AND cosine_similarity is above the line
+(`cosine_threshold`: 0.9 on today's fingerprints, per collection on a published
+collection's), then
 caps results at 2 per *source* (see `source_key`). Input must already be sorted
 descending by reranker_score (the pipeline's global sort precedes this call).
 
@@ -15,12 +17,39 @@ from __future__ import annotations
 import logging
 import math
 
-from app.rag.qdrant_client import get_qdrant_client, read_collection
+from app.rag.qdrant_client import get_qdrant_client, read_collection, read_target
 from app.rag.steps.types import RankedChunk
 
 logger = logging.getLogger(__name__)
 
 _COSINE_THRESHOLD = 0.9
+# Today's `chunks` holds fingerprints of each passage's text under its chapter label. A
+# collection the stage-then-apply writer builds (`chunks-<release>`) prefixes each with its
+# author, title and chapter (datapipeline/writers/search_writer.py, `embedding_prefix`), which
+# neighbours share, so their fingerprints sit closer: at 0.9 the filter fired on 67% of
+# neighbouring Summa pairs instead of 20.5%. These lines make it fire on each collection's
+# new fingerprints as often as 0.9 does on today's (measured on the republish build,
+# 20 Nov 2026; corpus cleanup 4.2). A collection not listed keeps 0.9.
+_LEGACY_COLLECTION = "chunks"
+_PREFIXED_THRESHOLDS = {
+    "summa": 0.950,
+    "canon-law": 0.912,
+    "councils": 0.928,
+    "encyclicals": 0.928,
+    "apostolic-exhortations": 0.930,
+    "papal-documents": 0.930,
+    "medieval": 0.931,
+    "church-fathers": 0.923,
+    "catechism": 0.919,
+}
+
+
+def cosine_threshold(collection: str, target: str | None) -> float:
+    """The near-duplicate line for a pair from `collection` when search reads `target`:
+    today's 0.9 for the old fingerprints, or when the target is not yet known."""
+    if target is None or target == _LEGACY_COLLECTION:
+        return _COSINE_THRESHOLD
+    return _PREFIXED_THRESHOLDS.get(collection, _COSINE_THRESHOLD)
 _POSITION_PROXIMITY = 2
 _PER_SOURCE_CAP = 2
 
@@ -240,6 +269,8 @@ async def apply_dedup(
                     if p.vector is not None
                 }
                 score_map = {r.chunk_id: r.reranker_score for r in ranked}
+                collection_of = {r.chunk_id: r.collection for r in ranked}
+                target = await read_target()
                 for id_a, id_b in close_pairs:
                     if id_a in to_drop or id_b in to_drop:
                         continue
@@ -247,7 +278,9 @@ async def apply_dedup(
                     vec_b = vec_map.get(id_b)
                     if vec_a is None or vec_b is None:
                         continue
-                    if _cosine_sim(vec_a, vec_b) > _COSINE_THRESHOLD:
+                    # A pair shares a document, so it shares a collection.
+                    line = cosine_threshold(collection_of[id_a], target)
+                    if _cosine_sim(vec_a, vec_b) > line:
                         drop = (
                             id_a if score_map.get(id_a, 0.0) < score_map.get(id_b, 0.0) else id_b
                         )
