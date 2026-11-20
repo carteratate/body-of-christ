@@ -719,6 +719,36 @@ async def test_rollback_restores_the_snapshot_works(world):
     assert row["r"] is True
 
 
+async def test_rollback_restores_a_work_parked_by_an_earlier_publish(world):
+    """A work an earlier publish kept for a retired passage sits at ordinal + 1000000; a
+    rollback of a later publish puts it back there without colliding with the works it
+    parks on the way."""
+    async def publish(release):
+        request = StageRequest(release=release, collections=("medieval",))
+        await _stage(world, request)
+        await _apply(world, release)
+        await _cleanup(world, release)
+
+    a = _doc(world, DOC_A)
+    a.works = [Work(work_key="w-old", ordinal=2, title="Old")]
+    a.passages.append(passage("a/5", "c2", "A restored line.", 4, work_key="w-old"))
+    await publish("first")
+    world.registry.removals.append(_removal(
+        id="rm-0911", scope="passage", document_id=DOC_A, anchor="a/5",
+        passage_id=pid(DOC_A, "a/5"), reason="debris", tombstone="Removed."))
+    a.passages.pop()
+    a.works = []
+    await publish("second")
+    parked = await world.fetch("SELECT work_key, ordinal FROM document_works")
+    assert [dict(r) for r in parked] == [{"work_key": "w-old", "ordinal": 1000002}]
+    a.works = [Work(work_key="w-new", ordinal=2, title="New")]
+    a.passages.append(passage("a/6", "c2", "Another line.", 4, work_key="w-new"))
+    await publish("third")
+    await _rollback(world, "third")
+    rows = await world.fetch("SELECT work_key, ordinal FROM document_works")
+    assert [dict(r) for r in rows] == [dict(r) for r in parked]
+
+
 async def test_rollback_never_opens_beyond_the_snapshot(world):
     """Carter, 6 Nov 2026: the inventory describes the published edition, and a re-sourced
     work keeps its ID, so a rollback to an excerpt-only snapshot stays excerpt-only."""
