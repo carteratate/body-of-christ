@@ -56,6 +56,9 @@ SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
 }
 
 
+WORK_ORDINAL_LIMIT = 1_000_000
+
+
 # --------------------------------------------------------------------------- build
 
 def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOURCE_ADAPTERS,
@@ -94,6 +97,13 @@ def validate_documents(collection: str, documents: list[Document]) -> None:
     # order. Raises contents.ContentsError, a ValueError.
     for document in documents:
         contents.check(document)
+    # The apply parks live works at ordinal + 1,000,000 while it writes these, and a
+    # rollback parks them above both, which holds only while a built ordinal stays below.
+    for document in documents:
+        bad = [w.work_key for w in document.works if not 0 < w.ordinal < WORK_ORDINAL_LIMIT]
+        if bad:
+            raise ValueError(f"REFUSING: {document.title}: work ordinal outside 1 to "
+                             f"{WORK_ORDINAL_LIMIT - 1}: {', '.join(bad)}")
 
 
 def prepare(documents: list[Document], registry: reg.WorkRegistry | None = None

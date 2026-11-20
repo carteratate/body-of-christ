@@ -10,8 +10,9 @@ import pytest
 
 import registry
 from identity import passage_id
-from model import Document, Passage
-from publication import SOURCE_ADAPTERS, StageRequest, StageRunner, build, prepare
+from model import Document, Passage, Work
+from publication import (SOURCE_ADAPTERS, WORK_ORDINAL_LIMIT, StageRequest, StageRunner,
+                         build, prepare, validate_documents)
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY_ROOT))
@@ -107,6 +108,16 @@ def test_the_build_drops_what_the_removal_registry_retires():
     whole = {**removal, "id": "rm-10", "scope": "document", "anchor": None, "passage_id": None}
     assert build("medieval", source_adapters={"medieval": lambda: [_document("a/1")]},
                  registry=_registry(removals=[whole])) == []
+
+
+def test_a_work_ordinal_at_the_apply_offset_refuses_the_build():
+    """The apply parks live works at ordinal + 1,000,000, so a built ordinal stays below."""
+    document = _document("a/1")
+    document.works = [Work(work_key="w", ordinal=WORK_ORDINAL_LIMIT - 1, title="W")]
+    validate_documents("medieval", [document])
+    document.works = [Work(work_key="w", ordinal=WORK_ORDINAL_LIMIT, title="W")]
+    with pytest.raises(ValueError, match="work ordinal outside 1 to 999999"):
+        validate_documents("medieval", [document])
 
 
 async def test_write_guard_runs_before_adapters_and_store_acquisition():
