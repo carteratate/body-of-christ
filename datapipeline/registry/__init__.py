@@ -327,6 +327,11 @@ def assign_ids(document: Document, registry: WorkRegistry | None = None
 
 # --------------------------------------------------------------------------- validation
 
+# A work's ordinal stays below this: the apply parks live works at ordinal + 1,000,000 while
+# it writes the staged ones (writers/apply.py), and a rollback parks above both.
+WORK_ORDINAL_LIMIT = 1_000_000
+
+
 def validate(registry: WorkRegistry) -> list[str]:
     """Every rule the registry files must hold; an empty list means valid."""
     problems: list[str] = []
@@ -383,7 +388,9 @@ def _validate_works(works: list[dict]) -> list[str]:
         out += [f"{name}: {p}" for p in _rule_a_problems(w.get("rule_a") or {})]
         out += [f"{name}: {p}" for p in _attribution_problems(w.get("attribution") or {})]
         ordinals = [x.get("ordinal") for x in w.get("works", [])]
-        if ordinals != sorted(ordinals):
+        if any(not isinstance(o, int) or not 0 < o < WORK_ORDINAL_LIMIT for o in ordinals):
+            out.append(f"{name}: a work ordinal is outside 1 to {WORK_ORDINAL_LIMIT - 1}")
+        elif ordinals != sorted(ordinals):
             out.append(f"{name}: works are not sorted by ordinal")
         keys = [x.get("work_key") for x in w.get("works", [])]
         if len(keys) != len(set(keys)):

@@ -330,6 +330,13 @@ def test_passage_work_key_names_a_work_of_its_document():
     assert Work(work_key="letter-1", ordinal=1, title="Letter 1").genre is None
 
 
+def test_work_ordinals_stay_below_the_apply_offset():
+    w = _container()
+    w["works"][0]["ordinal"] = registry.WORK_ORDINAL_LIMIT
+    assert any("work ordinal is outside" in p for p in registry.validate(valid_registry(
+        works=[w], passages=[row(w["document_id"], "ii.i", work_key="letter-1")])))
+
+
 def test_every_work_has_a_passage():
     w = _container()
     assert any("has no passage" in p for p in registry.validate(valid_registry(
