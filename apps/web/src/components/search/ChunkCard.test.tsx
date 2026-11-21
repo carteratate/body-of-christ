@@ -433,6 +433,53 @@ describe("ChunkCard keeps the attachment out of every action", () => {
   });
 });
 
+describe("ChunkCard role caption when the text already says it", () => {
+  function summaAnswer(content: string) {
+    return {
+      chunk_id: "00000000-0000-0000-0000-000000000001",
+      content,
+      source: {
+        collection: "summa",
+        document_title: "Summa Theologiae",
+        author: "Thomas Aquinas",
+        reference: "ST III, Question 73, Article 5",
+        document_id: "00000000-0000-0000-0000-000000000002",
+        position: 1,
+        anchor: "summa-q73-a5",
+        unit_label: "I answer that",
+      },
+      reranker_score: 0.9,
+      explanation: "Relevant",
+    };
+  }
+
+  async function open(content: string) {
+    render(
+      <ChunkCard
+        result={summaAnswer(content) as never}
+        index={0}
+        searchId="00000000-0000-0000-0000-000000000003"
+        token="token"
+      />,
+    );
+    const header = screen.getByRole("button", { expanded: false });
+    await userEvent.click(header);
+    return header;
+  }
+
+  it("leaves the caption off when the passage opens with its own role", async () => {
+    const header = await open("I answer that, This sacrament was appropriately instituted.");
+    expect(screen.queryByText("I answer that", { exact: true })).toBeNull();
+    // Screen readers still hear the role in the header's name.
+    expect(header.getAttribute("aria-label")).toContain("I answer that");
+  });
+
+  it("keeps the caption on an answer that continues from an earlier passage", async () => {
+    await open("A falling short of the just due may be considered in respect of the thing.");
+    expect(screen.getByText("I answer that", { exact: true })).toBeTruthy();
+  });
+});
+
 const RESULT = {
   chunk_id: "00000000-0000-0000-0000-000000000001",
   content: "A passage",

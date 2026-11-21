@@ -20,12 +20,19 @@
   --color-brand-surface-hover: color-mix(in srgb, var(--color-brand-surface), var(--color-brand-contrast-dark) 12%);
   --color-brand-accent:  #C4972A;
   --color-brand-primary: #EAE6DC;
-  --color-brand-muted:   #7A8099;
+  /* Secondary text. The lightest of its hue that reads at WCAG's 4.5:1 on every collection
+     card tint and on the page and panel backgrounds (20 Nov 2026; was #7A8099, 2.1:1). */
+  --color-brand-muted:   #BBBECB;
   --color-brand-danger:  #e57373;
   --color-brand-delete:  #b91c1c;
   --color-brand-contrast-dark:  #000000;
   --color-brand-contrast-light: #ffffff;
   --color-brand-focus:          #ffffff;
+  /* The "Read with care" panel under an opened passage (4.4): a quiet darkening of the
+     card's tint, never the gold accent, so it reads the same on every collection. */
+  --color-brand-caution-panel:  rgba(0, 0, 0, 0.22);
+  /* The hairline above a required notice (4.4). */
+  --color-brand-hairline:       rgba(234, 230, 220, 0.12);
 
   /* A raised card's shadow (shadow-lift): a soft drop plus a hairline edge. It is built
      from theme colors, so it follows the theme. Pair it with bg-brand-surface-hover. */
@@ -77,10 +84,13 @@ body {
     --color-brand-surface-hover: color-mix(in srgb, var(--color-brand-surface), var(--color-brand-primary) 6%);
     --color-brand-accent:  #C4972A;
     --color-brand-primary: #1a1610;
-    --color-brand-muted:   #6a6050;
+    /* The same rule for Ivory Vault (20 Nov 2026; was #6a6050, 3.3:1). */
+    --color-brand-muted:   #534B3F;
     --color-brand-danger:  #c0392b;
     --color-brand-delete:  #b91c1c;
     --color-brand-focus:   #000000;
+    --color-brand-caution-panel: rgba(255, 255, 255, 0.42);
+    --color-brand-hairline:      rgba(26, 22, 16, 0.14);
   }
 
   [data-theme="light"] body {

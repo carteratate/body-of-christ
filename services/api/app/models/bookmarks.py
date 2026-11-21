@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import Literal, Optional
 
-from app.models.corpus import DocumentFacts, PassageStatus, Redirect, Tombstone
+from app.models.corpus import (DocumentFacts, PassageCard, PassageStatus, Redirect,
+                               Tombstone)
 from app.models.search import Footnote
 
 
@@ -40,6 +41,7 @@ class BookmarkSource(BaseModel):
     text_source: Optional[Literal["ocr"]] = None
     text_status: Optional[Literal["unofficial_english"]] = None
     official_latin_url: Optional[str] = None
+    card: Optional[PassageCard] = None  # same as ChunkSource (4.4)
 
 
 class BookmarkChunk(BaseModel):

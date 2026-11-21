@@ -142,14 +142,12 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   reading order (`_contents_tree` in `routes/documents.py`), so a writer that rewrites
   chunks without the tree degrades the reader to the flat list. The API tolerates the
   table being absent. The Summa adapter builds its tree (Part > Treatise > Question >
-  Article, keyed by div id; `build_contents` in `ingest/summa.py`, #254); it reaches
-  readers with the Summa's Phase 4 publish. **Stopgap:** until then the live Summa has no
-  stored tree, so `/toc` derives Part > Question > Article from its current chapter keys
-  and labels (`app/derived_contents.py`). Delete that module and its call right after
-  that publish, not before, or live readers lose the tree (Carter, 14 Nov 2026).
+  Article, keyed by div id; `build_contents` in `ingest/summa.py`, #254); it reached
+  readers with the Phase 4 republish (20 Nov 2026, 3,775 nodes), and the stopgap that
+  derived a tree from chapter labels before then (`app/derived_contents.py`) is removed.
   The Catechism adapter emits its tree (`catechism.build_contents`, #253): the source's
-  contents shape, labelled with the US headings the passages print. Live has none stored
-  until its Phase 4 publish, and while it is excerpt-only `/toc` refuses it anyway (403).
+  contents shape, labelled with the US headings the passages print. It is stored since
+  the republish (566 nodes), but while the Catechism is excerpt-only `/toc` refuses it (403).
   The overview renders trees with
   `components/reader/ContentsTree.tsx`; the logic is `lib/contents-tree.ts`.
 - `documents.reader_access` — **excerpt-only documents** (0041, issue #265): `full` or
@@ -203,7 +201,10 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   `app/corpus_lifecycle.py` turns a retired row into `moved` (redirect) or `removed`
   (tombstone, shown without its text). The reader answers a removed document or passage
   with 410 `{"detail": "removed", "tombstone"}` and a moved one with 404
-  `{"detail": "moved", "redirect"}`. Document facts on `documents` (`genre` → the
+  `{"detail": "moved", "redirect"}`. After a publish's rollback window,
+  `publish.py purge-retired` (4.1b step 13, `datapipeline/retention.py`) deletes retired
+  rows nothing points at, keeping held texts (ADR 0001); a deleted passage's tombstone
+  `snapshot` keeps its `anchor` and `chapter_key`, which the reader's notice reads. Document facts on `documents` (`genre` → the
   `corpus_genres` lookup, seeded from `datapipeline/registry/genres.py`; `issuer` slug and
   `issuer_label`; `date_display`, `certainty`, `attribution_note`, `notes`,
   `source_credit`, `clavis_ref`, `superseded_by`/`superseded_note`). Works inside one
@@ -257,10 +258,11 @@ Migrations 0001–0034, 0036–0038 and 0040–0045 are committed (0044 and 0045
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
-repo. Qdrant owns all vector search. Production holds one Qdrant collection, `chunks`; the
+repo. Qdrant owns all vector search. Production holds two Qdrant collections: `chunks-republish-2026-10`, which is live, and `chunks`,
+the pre-republish corpus, kept for rollback until 4.1b step 13 deletes it. The
 V5 `facets` and `questions` collections exist only if a V5 `embed` run creates them.
 The API reads the collection or alias `QDRANT_READ_COLLECTION` names (default `chunks`;
-production reads the alias `chunks_live` since 10 Nov 2026; a 2.2w publish switches it), and
+production reads the alias `chunks_live` since 10 Nov 2026, which targets `chunks-republish-2026-10` since the Phase 4 cutover on 20 Nov 2026; a 2.2w publish switches it), and
 `/health/search` reports it and its target. Production's Qdrant runs in **strict mode**: it
 refuses a filter on a payload field with no index, so the API filters on `searchable`
 only once the read collection has that boolean index (`qdrant_client.searchable_indexed`).
@@ -389,9 +391,14 @@ Two themes, selected by `data-theme` on `<html>` and persisted in `user_preferen
 | `brand-surface` | `#172232` | `#e3dbc8` |
 | `brand-accent` | `#C4972A` | `#C4972A` |
 | `brand-primary` | `#EAE6DC` | `#1a1610` |
-| `brand-muted` | `#7A8099` | `#6a6050` |
+| `brand-muted` | `#BBBECB` | `#534B3F` |
 
 Any new color must be added to **both** theme blocks.
+
+`brand-muted` is secondary text, and it must read at WCAG's 4.5:1 on every collection card
+tint (`rgba(<collection>, 0.32)` over `brand-bg`) and on `brand-bg` and `brand-surface` in both
+themes. Both values above are the minimum of their hue that does (Carter, 20 Nov 2026).
+Recheck when a collection colour or a background changes.
 
 The brand heading font is `font-brand` (`--font-brand`): **Judson, set in capitals** (rules in
 `globals.css`). Use the `font-brand` class, never an inline `fontFamily`. Cinzel was removed in
@@ -540,11 +547,7 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 17. Known Issues & Deferred Work
 
-### 1. JWKS refresh still stampedes
-
-`app/auth/jwks.py` has an `asyncio.Lock`, but it guards only the **cache write** — `_fetch_from_remote()` runs outside it. Concurrent coroutines that all see a stale cache still all issue HTTP requests to Supabase. Low priority; the fix is to hold the lock across the fetch with a double-check on entry.
-
-### 2. Do not delete `rag/steps/dedup.py`
+### 1. Do not delete `rag/steps/dedup.py`
 
 **`rag/steps/dedup.py` is NOT dead — do not delete it.** `pipelines/runner.py` imports it
 in the parenthesized `from app.rag.steps import (...)` block, which is easy to miss with a
@@ -626,6 +629,10 @@ winner count to it, so ten works without a special case.
 ## Active work: corpus cleanup
 
 The corpus is being fixed and republished before any collection is added or reorganized.
+The Phase 4 republish went live on 20 Nov 2026 (`republish-2026-10`, #192); its rollback window
+runs to 4 Dec 2026, and until its lock entry is removed then (4.1b step 13) no other publish can run.
+A rollback in that window restores a corpus with no stored Summa tree, and the Summa reader would
+fall back to its flat chapter list.
 Start from the "Start here" section of `docs/2026-09-28-corpus-cleanup-plan.md`; detailed
 work specifications are in `docs/corpus-cleanup/`. The plan's Decision log is settled.
 The findings of the 6 Oct 2026 corpus reviews (C-01 to C-30) are routed to their items in

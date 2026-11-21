@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { displayRole, rejectedLabel } from "./passageRole";
+import { displayRole, opensWithRole, rejectedLabel } from "./passageRole";
 
 describe("displayRole", () => {
   it("names a Summa objection, which reads as a flat assertion without it", () => {
@@ -54,5 +54,25 @@ describe("rejectedLabel", () => {
     expect(rejectedLabel({ unit_label: "Objection 1" })).toBeNull();
     expect(rejectedLabel({ voice: null, unit_label: "Objection 1" })).toBeNull();
     expect(rejectedLabel({ voice: "affirmed", unit_label: "Objection 1" })).toBeNull();
+  });
+});
+
+describe("opensWithRole", () => {
+  it("is true when the passage's own first words are its role", () => {
+    // 3,122 of 3,260 Summa answers open "I answer that, ..." and 3,044 of 3,050 "On the
+    // contrary, ..." (live corpus, 20 Nov 2026): a caption above them reads as a repeat.
+    expect(opensWithRole("I answer that, This sacrament was appropriately instituted", "I answer that")).toBe(true);
+    expect(opensWithRole("  On the contrary, It is written", "On the contrary")).toBe(true);
+    expect(opensWithRole("on the contrary, it is written", "On the contrary")).toBe(true);
+  });
+
+  it("is false when the text does not say it: a continued answer, a second sed contra, an objection", () => {
+    expect(opensWithRole("A falling short of the just due may be considered", "I answer that")).toBe(false);
+    expect(opensWithRole("Further, if the soul as soon as separated gained knowledge", "On the contrary")).toBe(false);
+    expect(opensWithRole("It would seem that the marriage act is not meritorious", "Objection 1")).toBe(false);
+  });
+
+  it("needs the whole role, not a word that begins with it", () => {
+    expect(opensWithRole("I answer thatched roofs", "I answer that")).toBe(false);
   });
 });

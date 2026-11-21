@@ -24,6 +24,14 @@
   "pope1914": {
    "archive": "onprayercontempl00thomuoft",
    "edition": "Hugh Pope, O.P., On Prayer and the Contemplative Life by S. Thomas Aquinas (London: R. & T. Washbourne, 1914)"
+  },
+  "dom-v19": {
+   "archive": "summatheologicao0019thom",
+   "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Third Part (Supplement), QQ. XXXIV-LXVIII (London: Burns Oates & Washbourne, 1930 printing)"
+  },
+  "dom-v20": {
+   "archive": "summatheologicao0020thom",
+   "edition": "The Summa Theologica of St. Thomas Aquinas, literally translated by Fathers of the English Dominican Province, Third Part (Supplement), QQ. LXIX-LXXXVI (London: Burns Oates & Washbourne, 1921)"
   }
  },
  "units": [
@@ -98,6 +106,15 @@
    "page": "249",
    "leaf": 273,
    "text": "S. Gregory says: \"The active life precedes the contemplative in the order of time, for from good works a man passes to contemplation.\""
+  },
+  {
+   "article": "XP_Q62_A6",
+   "unit": "ad 5",
+   "after": "XP_Q62_A6-p13",
+   "source": "dom-v19",
+   "page": "306",
+   "leaf": 317,
+   "text": "If the husband's adultery is secret, this does not deprive his adulterous wife of the right to allege it in self-defence, although she cannot prove it. Wherefore the husband sins by seeking a divorce, and if, after the sentence of divorce, his wife asks for the marriage debt or for a reconciliation, the husband is bound to both."
   }
  ],
  "in_place": [
@@ -138,6 +155,15 @@
    "leaf": 125,
    "find": "inasmuch a[9] these",
    "replace": "inasmuch as these"
+  },
+  {
+   "paragraph": "XP_Q83_A2-p7",
+   "unit": "sc",
+   "source": "dom-v20",
+   "page": "216",
+   "leaf": 227,
+   "find": "it is quite conceivable that",
+   "replace": "it is quite inconceivable that"
   }
  ]
 }

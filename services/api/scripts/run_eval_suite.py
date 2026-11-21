@@ -418,6 +418,7 @@ def _fingerprint(pipelines: list[str], quota: int) -> dict:
         Path(__file__).parents[1] / "app/rag/steps/rerank.py",
         Path(__file__).parents[1] / "app/rag/steps/retrieve_fts.py",
         Path(__file__).parents[1] / "app/rag/steps/retrieve_vector.py",
+        Path(__file__).parents[1] / "app/rag/dedup.py",
         Path(__file__).parents[1] / "app/rag/steps/llm_rerank/listwise.py",
         Path(__file__).parents[1] / "app/rag/compare/judge.py",
         Path(__file__).parents[1] / "app/rag/steps/cost_tracker.py",

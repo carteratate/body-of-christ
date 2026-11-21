@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import type { ReaderPassage } from "@/lib/api";
 import { renderVerseMarkers } from "@/lib/verse-markers";
-import { rejectedLabel } from "@/lib/passageRole";
+import { opensWithRole, rejectedLabel } from "@/lib/passageRole";
 import { RejectedVoice } from "@/components/common/RejectedVoice";
 import { TextLabels, hasTextLabels } from "@/components/common/PassageFacts";
 import { passageTextLabels } from "@/lib/search-stream";
@@ -35,7 +35,7 @@ export function Passage({ passage, highlighted, history = [], highlightAnchor = 
             ...(highlighted ? { background: "rgba(196,151,42,0.16)", borderRadius: 4, padding: "2px 4px" } : {}),
           }}
         >
-          {passage.unit_label && !rejected && (
+          {passage.unit_label && !rejected && !opensWithRole(passage.content, passage.unit_label) && (
             <sup className="text-brand-muted mr-1" style={{ fontSize: 10 }}>{passage.unit_label}</sup>
           )}
           {renderVerseMarkers(passage.content)}
