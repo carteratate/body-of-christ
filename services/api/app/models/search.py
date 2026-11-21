@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import Literal, Optional
 
-from app.models.corpus import DocumentFacts, PassageStatus, Redirect, Tombstone
+from app.models.corpus import (DocumentFacts, PassageCard, PassageStatus, Redirect,
+                               Tombstone)
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 
 
@@ -54,6 +55,9 @@ class ChunkSource(BaseModel):
     text_source: Optional[Literal["ocr"]] = None
     text_status: Optional[Literal["unofficial_english"]] = None
     official_latin_url: Optional[str] = None
+    # The notes under the opened passage (4.4, `app/card_notes.py`), only for a passage
+    # whose document a 4.4 publish wrote. Absent, clients show the fields above as before.
+    card: Optional[PassageCard] = None
 
 
 class ContextPart(BaseModel):
