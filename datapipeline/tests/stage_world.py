@@ -71,6 +71,9 @@ def base_registry() -> registry.WorkRegistry:
     works = [registry.work_entry(collection=c, source_key=f"{c}/{t}", document_id=d,
                                  title=t, author=a, frozen_on="2026-10-30")
              for d, (c, t, a) in TITLES.items()]
+    # The translator the result card names (4.4), which every build now requires.
+    for w in works:
+        w["card_translator"] = "Translated by a test translator (1900)"
     rows = [{"passage_id": pid(d, a), "document_id": d, "anchor": a, "live_anchor": a,
              "status": "active", "frozen_on": "2026-10-30", "work_key": None}
             for d, a, _, _ in LIVE]
