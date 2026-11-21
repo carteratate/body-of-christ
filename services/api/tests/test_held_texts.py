@@ -207,7 +207,7 @@ async def test_a_document_without_the_key_serves_todays_toc(db):
             "year": 1545, "translation": "",
             "metadata": {"url": "https://example.org/trent", "council_number": 19},
             "chunk_count": 1, "reader_access": "full", "source_url": None, "works": [],
-            "status": "current", "held_count": 0,
+            "status": "current", "held_count": 0, "overview_notes": None,
         },
         "chapters": [{"chapter_key": "t", "chapter_label": "Session 1"}],
         "contents": None,
