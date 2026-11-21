@@ -239,6 +239,54 @@ async def test_a_live_run_refuses_and_deletes_nothing(db, sql, reason):
         await conn.close()
 
 
+EARLY = "Carter, 21 Nov 2026 (#192)"
+
+
+async def test_close_window_early_lifts_only_the_window_refusal(db, capsys):
+    """--close-window-early: inside the window the purge runs, and says so; another
+    refusal (an open publish) still stops it."""
+    cluster, name = db
+    cluster.psql(name, f"UPDATE corpus_publishes SET applied_at = now() - interval '1 day' "
+                       f"WHERE id = '{RELEASE}'")
+    conn = await _conn(db)
+    try:
+        plan = await R.read_plan(conn, RELEASE)
+        assert any("rollback window of 'rel-old' is open" in r for r in plan.refusals)
+        early = await R.read_plan(conn, RELEASE, EARLY)
+        assert early.refusals == []
+        assert early.early_close.startswith("EARLY CLOSE: the rollback window of 'rel-old'")
+        assert EARLY in early.early_close and early.early_close in R.describe(early)
+
+        cluster.psql(name, "INSERT INTO corpus_publishes (id, collections, qdrant_collection, "
+                           "staged_at) VALUES ('rel-next', ARRAY['bible'], 'x', now())")
+        with pytest.raises(R.RetentionRefused, match="publish 'rel-next' is open"):
+            await R.execute(conn, RELEASE, disk_free_bytes=1 << 40, early_close=EARLY)
+        cluster.psql(name, "DELETE FROM corpus_publishes WHERE id = 'rel-next'")
+
+        lines = []
+        result = await R.execute(conn, RELEASE, disk_free_bytes=1 << 40, early_close=EARLY,
+                                 progress=lines.append)
+        assert result.passages == 4 and lines[0] == early.early_close
+    finally:
+        await conn.close()
+
+
+async def test_close_window_early_needs_a_named_decision():
+    import publish
+
+    with pytest.raises(SystemExit):
+        publish.build_parser().parse_args(
+            ["purge-retired", "--release", RELEASE, "--close-window-early", "yes"])
+
+
+async def test_close_window_early_is_not_mentioned_once_the_window_has_closed(db):
+    conn = await _conn(db)
+    try:
+        assert (await R.read_plan(conn, RELEASE, EARLY)).early_close is None
+    finally:
+        await conn.close()
+
+
 async def test_a_live_run_refuses_without_enough_disk(db):
     conn = await _conn(db)
     try:
@@ -438,6 +486,22 @@ async def test_the_old_collection_is_deleted_only_when_named_and_unused(db):
         # A retry (the first response lost) finds it gone and succeeds.
         assert await R.drop_old_collection(conn, q, RELEASE, "live", "old-points") == (
             "old-points", False)
+    finally:
+        await conn.close()
+        await q.close()
+
+
+async def test_the_old_collection_can_go_early_by_decision(db):
+    cluster, name = db
+    cluster.psql(name, f"UPDATE corpus_publishes SET applied_at = now() - interval '1 day' "
+                       f"WHERE id = '{RELEASE}'")
+    q = await _qdrant()
+    conn = await _conn(db)
+    try:
+        with pytest.raises(R.RetentionRefused, match="rollback window"):
+            await R.drop_old_collection(conn, q, RELEASE, "live", "old-points")
+        assert await R.drop_old_collection(conn, q, RELEASE, "live", "old-points",
+                                           EARLY) == ("old-points", True)
     finally:
         await conn.close()
         await q.close()

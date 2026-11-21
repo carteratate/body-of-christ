@@ -643,6 +643,12 @@ async def _rollback(conn, qdrant, release: str, *, alias: str,
             target = await _restore_qdrant(qdrant, row, directory, alias, retire_only)
         return RollbackResult(release=release, restored_passages=0, retired_passages=0,
                               retired_documents=0, remap={}, alias=target)
+    previous = row["previous_qdrant_collection"]
+    if not retire_only and previous and not await qdrant.collection_exists(previous):
+        # A window closed early (4.1b step 13, --close-window-early) can delete the
+        # collection before the deadline below; the alias could not then be put back.
+        raise ApplyRefused(f"REFUSING: Qdrant collection '{previous}', which the rollback "
+                           "points the alias back at, no longer exists")
     expected = row["snapshot_sha256"]
     expected = json.loads(expected) if isinstance(expected, str) else expected
     rows = read_snapshot(directory, expected)
