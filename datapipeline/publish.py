@@ -10,6 +10,8 @@
     python3 publish.py switch  --release <name>
     python3 publish.py rollback --release <name>
     python3 publish.py cleanup --release <name>
+    python3 publish.py purge-retired --release <name> [--execute --disk-free-gb <GB>]
+    python3 publish.py drop-old-collection --release <name> [--execute --confirm <name>]
 
 The release name is the publish ID: `corpus_publishes.id`, the `release` of the
 PUBLISH_LOCK.json entry, and the suffix of the staging Qdrant collection
@@ -35,10 +37,13 @@ PUBLISH_LOCK.json entry, and the suffix of the staging Qdrant collection
 - `rollback` undoes an applied publish from its before-snapshot, in one transaction with
   4.1a's reverse remap, then points the alias back. It is the only rollback path (D11).
 - `cleanup` drops the staging tables once the apply is checked; rollback still works.
+- `purge-retired` and `drop-old-collection` are 4.1b step 13, after the rollback window
+  (`retention.py`): delete the retired rows nothing points at, and the Qdrant collection
+  the switch left. Each is a dry run unless `--execute`.
 
 Every subcommand except `report` and `status` asks the publish lock (0.4) for its step:
-`stage` for stage and discard, `apply` for apply, switch and cleanup, `rollback` for
-rollback. A run whose database and Qdrant are both on this machine (a local rehearsal,
+`stage` for stage and discard, `apply` for apply, switch, cleanup and a live
+purge-retired or drop-old-collection, `rollback` for rollback. A run whose database and Qdrant are both on this machine (a local rehearsal,
 D8) passes without an entry.
 """
 from __future__ import annotations
@@ -94,6 +99,20 @@ def build_parser() -> argparse.ArgumentParser:
                        ("rollback", "undo an applied publish from its before-snapshot"),
                        ("cleanup", "drop the staging tables of an applied publish")):
         sub.add_parser(name, help=text).add_argument("--release", required=True, type=_release)
+    purge = sub.add_parser("purge-retired",
+                           help="delete retired rows nothing points at (4.1b step 13)")
+    purge.add_argument("--release", required=True, type=_release)
+    purge.add_argument("--execute", action="store_true",
+                       help="delete; without it, a dry run that writes nothing")
+    purge.add_argument("--disk-free-gb", type=float,
+                       help="free space on the database disk, read from the Supabase "
+                            "dashboard (Database -> Disk) just before; needed with --execute")
+    drop = sub.add_parser("drop-old-collection",
+                          help="delete the Qdrant collection the switch left (4.1b step 13)")
+    drop.add_argument("--release", required=True, type=_release)
+    drop.add_argument("--execute", action="store_true",
+                      help="delete; without it, a dry run that changes nothing")
+    drop.add_argument("--confirm", help="with --execute: the collection's name, typed out")
     return parser
 
 
@@ -319,8 +338,66 @@ async def cleanup(args, lock_path=None) -> int:
     return 0
 
 
+async def purge_retired(args, lock_path=None) -> int:
+    import retention
+
+    if not args.execute and args.disk_free_gb is not None:
+        raise ValueError("--disk-free-gb goes with --execute")
+    conn = await _connect()
+    try:
+        if not args.execute:
+            print("\n".join(retention.describe(await retention.read_plan(conn, args.release))))
+            return 0
+        row = await _publish_row(conn, args.release)
+        guard_publish("apply", row["collections"], args.release, lock_path)
+        free = None if args.disk_free_gb is None else int(args.disk_free_gb * (1 << 30))
+        result = await retention.execute(conn, args.release, disk_free_bytes=free)
+    finally:
+        await conn.close()
+    print(f"purged {args.release}: {result.passages:,} passages and {result.documents:,} "
+          f"documents deleted in {result.batches} batches, {result.outlines} outline "
+          f"refreshes, {result.newly_kept} rows kept because someone pointed at them since "
+          "the plan. Next: VACUUM (analyze) chunks, then measure the database size.")
+    return 0
+
+
+async def drop_old_collection(args, lock_path=None) -> int:
+    import retention
+    from config import settings
+    from writers.qdrant import get_client
+
+    if args.confirm and not args.execute:
+        raise ValueError("--confirm goes with --execute")
+    conn = await _connect()
+    client = get_client()
+    try:
+        if not args.execute:
+            async with conn.transaction(readonly=True):
+                old = await retention.old_collection(conn, client, args.release,
+                                                     settings.QDRANT_LIVE_ALIAS)
+            print(f"drop-old-collection {args.release}: dry run, nothing changed")
+            print(f"  would delete Qdrant collection '{old.name}' "
+                  f"({'?' if old.points is None else f'{old.points:,}'} points). "
+                  "It cannot be undone; the only copy after that is a snapshot, if one is kept.")
+            print("  a live run now would refuse:" if old.problems else
+                  "  a live run now would pass its checks (the lock is checked when it starts)")
+            for problem in old.problems:
+                print(f"  - {problem}")
+            return 0
+        row = await _publish_row(conn, args.release)
+        guard_publish("apply", row["collections"], args.release, lock_path)
+        name = await retention.drop_old_collection(conn, client, args.release,
+                                                   settings.QDRANT_LIVE_ALIAS, args.confirm)
+    finally:
+        await conn.close()
+        await client.close()
+    print(f"deleted Qdrant collection '{name}'")
+    return 0
+
+
 COMMANDS = {"stage": stage, "report": report, "discard": discard, "apply": apply,
-            "switch": switch, "rollback": rollback, "cleanup": cleanup}
+            "switch": switch, "rollback": rollback, "cleanup": cleanup,
+            "purge-retired": purge_retired, "drop-old-collection": drop_old_collection}
 
 
 def main(argv: Sequence[str] | None = None, *, lock_path=None) -> int:
