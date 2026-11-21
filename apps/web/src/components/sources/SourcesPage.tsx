@@ -61,7 +61,7 @@ function SourceMark({ doc }: { doc: SourceDocument }) {
 function HeldCount({ doc }: { doc: SourceDocument }) {
   const count = doc.held_count ?? 0;
   if (count <= 0) return null;
-  return <span className="text-brand-muted text-xs ml-1" data-testid="held-count">· {heldCountLabel(count)}</span>;
+  return <span className="text-brand-muted text-xs ml-1 whitespace-nowrap" data-testid="held-count">· {heldCountLabel(count)}</span>;
 }
 
 // Canonical Catholic ordering of the 73 books, used to sort the Bible book grid
