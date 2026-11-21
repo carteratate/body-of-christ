@@ -38,6 +38,22 @@ export function displayRole(
 }
 
 /**
+ * True when the passage's own first words are its role, as in 3,122 of 3,260 Summa
+ * answers ("I answer that, ...") and 3,044 of 3,050 "On the contrary, ..." passages
+ * (live corpus, 20 Nov 2026), and 44 Catechism paragraphs with their own number. The
+ * opened card leaves its caption off, and the reader its inline label, either of which
+ * would read as the same words twice. A continued answer or a second sed contra does not open
+ * with them and keeps its caption, as an objection always does ("It would seem...").
+ * The role stays in the header's accessible name and the copied citation either way.
+ */
+export function opensWithRole(content: string, role: string): boolean {
+  const text = content.trimStart().toLowerCase();
+  const words = role.trim().toLowerCase();
+  if (!words || !text.startsWith(words)) return false;
+  return !/[a-z0-9]/.test(text.charAt(words.length));
+}
+
+/**
  * The label shown above a passage that states a position its document rejects
  * (`voice: "rejected"`, corpus cleanup 2.4d): its `unit_label` ("Condemned proposition
  * 10", "Objection 2"), or null for any other passage. Restored searches and bookmarks
