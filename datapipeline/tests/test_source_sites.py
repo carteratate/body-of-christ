@@ -40,7 +40,7 @@ def test_the_catechism_is_listed_under_the_usccb():
     assert [d["title"] for d in usccb["documents"]] == ["Catechism of the Catholic Church"]
     # Its basis (spec 5.2), which the inventory row does not record.
     [basis] = usccb["excerpt_bases"]
-    assert "5,000 words" in basis["statement"] and basis["documents"] == 1
+    assert basis["url"].startswith("https://www.usccb.org/") and basis["documents"] == 1
 
 
 def test_a_site_or_status_with_no_wording_stops_the_build():

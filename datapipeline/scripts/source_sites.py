@@ -55,11 +55,13 @@ SITES = (
      "in_copyright": "In copyright, held by Libreria Editrice Vaticana and, for the English "
                      "translation, the USCCB. Its notice is shown with every passage, and "
                      "the full text is read on the USCCB's site.",
-     # The spec's basis for the Catechism (4.4 and 5.2: "the USCCB notice, excerpts up
-     # to 5,000 words, with its notice shown"), which its inventory row does not record.
-     "excerpt_basis": {"statement": "the USCCB's terms for using the Catechism of the "
-                                    "Catholic Church: excerpts of up to 5,000 words, each "
-                                    "with its notice", "url": None}},
+     # The USCCB's published guidelines, which the Catechism's inventory row does not
+     # record. Named and linked, not paraphrased: their word limit counts a whole work
+     # (read 21 Nov 2026), and whether TheoCorpus's use fits them is Carter's question.
+     "excerpt_basis": {"statement": "the USCCB's guidelines for use of the Catechism of "
+                                    "the Catholic Church",
+                       "url": "https://www.usccb.org/committees/catechism/"
+                              "use-catechism-catholic-church"}},
     {"key": "ebible", "hosts": ("ebible.org",),
      "name": "eBible.org", "url": "https://ebible.org",
      "taken": "The World English Bible, Catholic Edition."},
