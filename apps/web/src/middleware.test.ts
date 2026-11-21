@@ -159,6 +159,8 @@ describe("middleware refreshed cookies", () => {
     ["/reader/guest/doc-a", "/reader/doc-a", signedIn()],
     ["/guest/about", "/about", signedIn()],
     ["/about", "/guest/about", signedOut()],
+    ["/guest/about/sources", "/about/sources", signedIn()],
+    ["/about/sources", "/guest/about/sources", signedOut()],
     ["/history", "/login", signedOut()],
   ])("carries rotated cookies onto the redirect from %s", async (path, destination, result) => {
     supabaseState.getClaims.mockImplementation(refreshingThen(result));

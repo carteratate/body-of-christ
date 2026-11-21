@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { COLLECTIONS } from "@/lib/collections";
 
 const COLLECTION_DESCRIPTIONS: Record<string, string> = {
@@ -23,7 +24,7 @@ const COLLECTION_DESCRIPTIONS: Record<string, string> = {
     "Other official papal writings that don't fall neatly into the categories above: papal bulls, apostolic letters, and a motu proprio. They range from bulls of the 14th to 16th centuries, such as Unam Sanctam (Boniface VIII, 1302) and Exsurge Domine (Leo X, 1520), to modern apostolic letters such as Salvifici Doloris on human suffering and Ordinatio Sacerdotalis on priestly ordination. Helpful for tracing specific decisions and pronouncements across pontificates.",
 };
 
-export function AboutPage() {
+export function AboutPage({ isGuest = false }: { isGuest?: boolean }) {
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       <div className="px-6 py-6 max-w-3xl w-full mx-auto">
@@ -70,6 +71,20 @@ export function AboutPage() {
               );
             })}
           </div>
+        </section>
+
+        {/* Sources (corpus cleanup 4.4) */}
+        <section className="mt-10">
+          <p className="text-brand-muted text-[10px] uppercase tracking-widest font-medium mb-3 pb-2 border-b border-brand-surface">
+            Sources
+          </p>
+          <p className="text-brand-primary text-sm leading-relaxed">
+            Where the texts come from, and on what basis:{" "}
+            <Link href={isGuest ? "/guest/about/sources" : "/about/sources"} className="text-brand-accent underline-offset-2 hover:underline">
+              Sources
+            </Link>
+            .
+          </p>
         </section>
       </div>
     </div>

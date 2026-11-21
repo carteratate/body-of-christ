@@ -112,6 +112,9 @@ export interface DocumentInfo {
    *  the document with their own attribution. Absent from an older API. */
   facts?: DocumentFacts | null;
   works?: WorkInfo[];
+  /** Corpus cleanup 4.4: the document-wide notes, shown in place of the facts' notes.
+   *  Absent or null for a document no 4.4 publish has written. */
+  overview_notes?: unknown;
 }
 
 export interface ReaderPassage {
@@ -206,6 +209,8 @@ export interface BookmarkChunkInfo {
     text_source?: TextSource | null;
     text_status?: TextStatus | null;
     official_latin_url?: string | null;
+    /** See ChunkSource.card (corpus cleanup 4.4); decoded by `parsePassageCard`. */
+    card?: unknown;
   };
   /** See ChunkResult.footnotes (issue #279). */
   footnotes?: Footnote[];
@@ -820,6 +825,9 @@ export interface SourceDocument {
   source_url?: string | null;
   /** Corpus cleanup 2.4b reads these when the API sends them; /sources does not yet. */
   facts?: DocumentFacts | null;
+  /** See DocumentInfo.overview_notes (4.4). The row of an excerpt-only document, whose
+   *  overview answers 403, shows them. */
+  overview_notes?: unknown;
 }
 
 export async function getSources(token: string): Promise<SourceDocument[]> {

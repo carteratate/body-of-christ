@@ -34,6 +34,7 @@ import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { useGuestGate } from "@/components/layout/guestGate";
 import { certaintyTag, formatAttribution, formatDate, sourceCreditOf, withoutAuthorPrefix } from "@/lib/attribution";
 import { MovedNote, PassageFacts, RemovalNotice } from "@/components/common/PassageFacts";
+import { copiedCredit, parsePassageCard } from "@/lib/card-notes";
 import { parseTombstone, removalStatusLabel, type Tombstone } from "@/lib/corpus-lifecycle";
 
 function hexToRgb(color: string): string {
@@ -285,8 +286,9 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
     // and the clipboard is the one place this text leaves the app entirely.
     const cited = rejected ? `${citation} [${rejected}]` : role ? `${citation}, ${role}` : citation;
     // The rights holder's credit travels with the text (the USCCB requires it after
-    // any Catechism excerpt).
-    const credited = sourceCredit ? `\n\n${sourceCredit}` : "";
+    // any Catechism excerpt). With a 4.4 card, only the required notice does.
+    const copyCredit = copiedCredit(card, sourceCredit);
+    const credited = copyCredit ? `\n\n${copyCredit}` : "";
     // Text, then its notes, then the credit, which stays last.
     const notes = footnotes.length ? `\n\n${footnotesCopyText(footnotes)}` : "";
     const body = footnotes.length ? contentWithMarkers(content, footnotes) : stripVerseMarkers(content);
@@ -307,6 +309,8 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   const sourceHref = excerptSourceUrl(source);
   // Shown only once the card is opened (Decision log, "Source credits").
   const sourceCredit = sourceCreditOf(facts, excerptSourceCredit(source));
+  // The notes under the opened text (4.4), when the API built them.
+  const card = parsePassageCard(source.card);
   const canOpenContext = UUID_RE.test(document_id) && !excerptOnly;
   const contextHref = readerHref({
     docId: document_id,
@@ -466,6 +470,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
             language={source.language}
             credit={sourceCredit}
             textLabels={passageTextLabels(source)}
+            card={card}
             supersededHref={facts?.superseded_by && !isGuest
               ? readerHref({ docId: facts.superseded_by, origin: "search", returnKey: null })
               : null}
