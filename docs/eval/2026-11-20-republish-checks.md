@@ -24,126 +24,132 @@ The release report flagged a much higher near-duplicate collision rate on the ne
 
 32 of the 59 searches returned fewer than their 5 results, most of them because of the standing per-source cap (two per document or chapter). Several had no near-duplicate drop at all.
 
-## Production (4.1b step 11)
+## Production (4.1b step 11), 20 to 21 Nov 2026, 23:53 to 00:07 UTC
 
-Not yet run.
+- **Run:** the same script against the live corpus after the cutover (`QDRANT_READ_COLLECTION=chunks_live`, now `chunks-republish-2026-10`), in process and read-only.
+- **First run:** 113 PASS, 2 FAIL. Cost $0.3536. Vector search median 0.29 s, slowest 0.82 s.
+  - `2.4d.exsurge-domine-31`: the explanation said the proposition is condemned but did not name Leo X, as on staging's first run.
+  - `2.4d.summa-objection`: q.2 a.3 objection 1 was not among the five results, all of them answers and replies; q.2 a.3 reply 1, which the card shows with its objection attached, came first.
+- **Two reruns of both:** the Summa check passed twice (the objection 5th, then 2nd); Exsurge passed once and failed once on the same naming.
+- **Verdict:** both are run-to-run variation (HyDE's draw, the explanation's wording), not a corpus fault. The Leo X requirement is stricter than the spec's "says the position is rejected", and is a follow-up for the check or the explanation prompt.
+- **Near-duplicate filter, live with #411:** 33 drops in 15 searches (staging at 0.9: 98 in 36; replayed at #411's lines: 32 in 14). Searches returning fewer than 5 results: 32, as on staging (the per-source cap).
 
 ## Every check
 
 | Check | Kind | Staging | Detail (staging) | Production |
 |---|---|---|---|---|
-| `4.2.nostra-aetate-4` | search | PASS | found Nostra Aetate, §4 (part 2 of 2) [councils] | not yet run |
-| `4.2.trent-justification` | search | PASS | found Council of Trent, Session 6, Decree on Justification, Chapter VII [councils] | not yet run |
-| `4.2.vatican-i-infallibility` | search | PASS | found First Vatican Council, Pastor Aeternus, Chapter IV (part 2 of 2) [councils] | not yet run |
-| `4.2.vatican-i-faith-reason` | search | PASS | found First Vatican Council, Dei Filius, Chapter IV (part 2 of 2) [councils] | not yet run |
-| `4.2.ccc-2267` | search | PASS | ok: found CCC §2263–2267 [catechism] \| ok: none among 2 results | not yet run |
-| `4.2.ccc-2267-history` | database | PASS | stored = 1, searchable = 0 | not yet run |
-| `4.2.canon-112` | search | PASS | ok: first is Code of Canon Law, Can. 112 [canon-law] \| ok: none among 1 results | not yet run |
-| `4.2.susanna` | search | PASS | found Daniel 13:29–57 [bible] | not yet run |
-| `4.2.bel-and-the-dragon` | search | PASS | found Daniel 14:1–27 [bible] | not yet run |
-| `4.2.no-short-passages` | database | PASS | short = 0 | not yet run |
-| `4.2.vatican-ii-no-note-cards` | database | PASS | note_cards = 0 | not yet run |
-| `4.2.indulgence` | search | PASS | found CCC §1471 [catechism] | not yet run |
-| `4.2.psalm-51-title` | database | PASS | with_title = 1 | not yet run |
-| `2.2c.keyword-canon-1055` | keyword | PASS | first is Code of Canon Law, Can. 1055 [canon-law] | not yet run |
-| `2.2c.keyword-ccc-2267` | keyword | PASS | first is CCC §2263–2267 [catechism] | not yet run |
-| `2.2c.keyword-john-3` | keyword | PASS | found John 3:22–36 [bible] | not yet run |
-| `2.2c.search-vector-rebuilt` | database | PASS | stale = 0 | not yet run |
-| `1.7.summa-citations` | database | PASS | all 27115 Summa passages cite their own article | not yet run |
-| `1.8c.firmilian-credited` | database | PASS | passages = 12, credited_otherwise = 0 | not yet run |
-| `1.8c.firmilian-search` | search | PASS | ok: found The Epistles of Cyprian, Firmilian of Caesarea, to Cyprian · Epistle LXXIV (part 9 of 12) [church-fathers] \| ok: none among 3 results | not yet run |
-| `3.1.origen` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.tertullian-seven-works` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.novatian-works` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.novatian-letters` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.tatian` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.arnobius` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.alexander-of-lycopolis` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.hippolytus` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.panegyric-to-origen` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.phoenix` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.apostolic-constitutions` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.forged-ignatius` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.sectional-confession` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.pfaff-fragments` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.medieval-ignatius` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.1.kept-works` | database | PASS | 10d8d7c6-680c-5739-bc98-6ce557371f25 6, 3717ce05-ad42-5ec3-b3ce-ff3964908e05 20, 506ebe31-239c-509c-ba5e-b6c822d002df 52, 5d75dc92-df2c-5421-904f-4249590ff48a 1 | not yet run |
-| `3.1.search-against-celsus` | search | PASS → PASS on rerun | none among 5 results | not yet run |
-| `3.1.search-flight-in-persecution` | search | PASS | none among 5 results | not yet run |
-| `3.1.search-naassenes` | search | PASS | none among 2 results | not yet run |
-| `3.1.search-roman-clergy-letters` | search | PASS | none among 2 results | not yet run |
-| `3.1.search-to-his-wife` | search | PASS | found To His Wife, Chapter I: Design of the Treatise. Disavowal of Personal Motives in Writing It [church-fathers] | not yet run |
-| `3.1.search-apparel-of-women` | search | PASS | found On the Apparel of Women, Book II · Chapter XIII: It is Not Enough that God Know Us to Be Chaste: We Must Seem So Before Men. Especially in These Times of  | not yet run |
-| `3.3.ubi-lutetiam` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.3.latin-passages` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.3.omission-notes` | database | PASS | Instructor 1, Stromata 1, Divine Institutes 1, Workmanship of God 1 | not yet run |
-| `3.3.search-stromata-iii` | search | PASS | none among 4 results | not yet run |
-| `3.3.search-ubi-lutetiam` | search | PASS | none among 5 results | not yet run |
-| `1.3d.held-documents` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `1.3d.search-held` | search | PASS | none among 1 results | not yet run |
-| `1.3d.ineffabilis-deus` | search | PASS | found Ineffabilis Deus, §52 [encyclicals] | not yet run |
-| `1.3d.mirari-vos` | search | PASS | found Mirari Vos, §13 [encyclicals] | not yet run |
-| `1.3d.quanta-cura-restored` | database | PASS | restored = 1 | not yet run |
-| `1.5b.unofficial-english` | database | PASS | labelled = 9 | not yet run |
-| `1.5b.retired-canons` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `1.5b.latin-links` | database | PASS | links = 6 | not yet run |
-| `1.5b.search-personal-prelatures` | search | PASS | none among 4 results | not yet run |
-| `1.7.q71` | search | PASS → PASS on rerun | found Summa Theologiae I, q. 71, a. 1, co.: On the Work of the Fifth Day [summa] | not yet run |
-| `1.7.q72` | search | PASS | found Summa Theologiae I, q. 72, a. 1, co.: On the Work of the Sixth Day [summa] | not yet run |
-| `1.7.question-prologues` | database | PASS | prologues = 613 | not yet run |
-| `3.4.rejected-voice-ranges` | database | PASS | Exsurge Domine 41, Summa 10522, Octavius 10, Ephesus 4, Syllabus 80, Constance 4, Acts of Archelaus 11 | not yet run |
-| `2.4d.exsurge-domine-31` | search | FAIL → PASS on rerun | ok: found Exsurge Domine, §31 [papal-documents] \| ok: explanation: 'The claim that a just person sins in every good work is Luther’s condemned proposition 31,  | not yet run |
-| `2.4d.summa-objection` | search | PASS | ok: found Summa Theologiae I, q. 2, a. 3, obj. 1: Whether God exists? [summa] \| ok: explanation: 'The argument that God’s infinite goodness should preclude any | not yet run |
-| `2.4d.caecilius` | search | PASS | ok: found The Octavius of Minucius Felix, Chapter V (part 2 of 2) [church-fathers] \| ok: explanation: 'Caecilius argues that disasters kill good and bad people | not yet run |
-| `3.4.syllabus` | search | PASS | found Syllabus of Errors, §15 [encyclicals] | not yet run |
-| `3.4.wyclif` | search | PASS | found Council of Constance, Session 8, Articles of Wyclif (part 1 of 2) [councils] | not yet run |
-| `3.4.nestorius` | search | PASS | found Council of Ephesus, Nestorius's Second Letter (part 3 of 4) [councils] | not yet run |
-| `3.4.mani` | search | PASS | found The Acts of the Disputation with the Heresiarch Manes, Chapter VI (part 2 of 3) [church-fathers] | not yet run |
-| `2.4f.lateran-iv-scanned` | search | PASS | found Fourth Lateran Council, Canon 21 [councils] | not yet run |
-| `2.4f.scanned-label-counts` | database | PASS | apostolic-exhortations 187, councils 388, encyclicals 481, papal-documents 9 | not yet run |
-| `1.2c.chalcedon` | search | PASS | found Council of Chalcedon, The Definition of Faith (part 3 of 3) [councils] | not yet run |
-| `1.4b.joel-numbering` | search | PASS | found Joel 3:1–5 [bible] | not yet run |
-| `1.4b.daniel-hosea-numbering` | database | PASS | daniel = 1, hosea = 1 | not yet run |
-| `1.4a.book-names-and-prologue` | database | PASS | song_of_songs = 1, sirach_prologue = 1 | not yet run |
-| `1.4c.deuterocanonical-pericopes` | database | PASS | Tobit 31, Judith 45, Wisdom 47, Sirach 125, Baruch 20, 1 Maccabees 101, 2 Maccabees 74 | not yet run |
-| `1.8c.ignatius-shorter-recension` | database | PASS | shorter = 91, other = 0 | not yet run |
-| `1.8d.robertson-incarnation` | search | PASS | found On the Incarnation of the Word, Section 20 [church-fathers] | not yet run |
-| `1.8d.robertson-text` | database | PASS | robertson = 1, lawson = 0, passages = 59 | not yet run |
-| `1.9.anselm` | database | PASS | cur_deus_homo = 1, proslogium_date = 1, proslogium_preface = 1 | not yet run |
-| `phase-1.removals` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `contents.summa-and-catechism` | database | PASS | summa = 3775, catechism = 566, supplement = 1 | not yet run |
-| `3.2.document-labels` | database | PASS | all 17 as registered | not yet run |
-| `3.2.work-labels` | database | PASS | all 12 as registered | not yet run |
-| `3.2.works-hold-their-passages` | database | PASS | Apostolic Canons 6, Supplement's appendix 84, Supplement 4245, Muratorian Fragment 2 | not yet run |
-| `3.2.diognetus-note` | database | PASS | noted = 2, other_notes = 0 | not yet run |
-| `3.2.preservation-notes` | database | PASS | noted = 15 | not yet run |
-| `3.2.fathers-dates-and-genres` | database | PASS | dated = 54, with_genre = 91 | not yet run |
-| `3.2.apostle-lists` | database | PASS | visible = 0, live_documents = 0 | not yet run |
-| `3.2.pseudo-justin` | search | PASS | found Hortatory Address to the Greeks, Chapter I [church-fathers] | not yet run |
-| `3.2.supplement` | search | PASS | found Summa Theologiae Suppl., q. 82, prologue [summa] | not yet run |
-| `3.2.didache` | search | PASS | found The Teaching of the Twelve Apostles, Chapter VII [church-fathers] | not yet run |
-| `3.2.martyrdom-of-polycarp` | search | PASS | ok: found The Martyrdom of Polycarp, Chapter XIV.—The prayer of Polycarp. [church-fathers] \| ok: none among 2 results | not yet run |
-| `4.2.answers.bible` | search | ERROR → PASS on rerun | 5 results, first James 1:19–27 [bible] | not yet run |
-| `4.2.answers.catechism` | search | PASS | 5 results, first CCC §2558–2563 [catechism] | not yet run |
-| `4.2.answers.church-fathers` | search | PASS | 5 results, first The First Apology, Chapter LXI.—Christian baptism. [church-fathers] | not yet run |
-| `4.2.answers.councils` | search | PASS | 5 results, first Council of Basel-Ferrara-Florence, Florence, Session 6, Laetentur caeli [councils] | not yet run |
-| `4.2.answers.encyclicals` | search | PASS | 5 results, first Centesimus Annus, §15 [encyclicals] | not yet run |
-| `4.2.answers.apostolic-exhortations` | search | PASS | 5 results, first Familiaris Consortio, §17 [apostolic-exhortations] | not yet run |
-| `4.2.answers.papal-documents` | search | PASS | 3 results, first Salvifici Doloris, §26 (part 2 of 2) [papal-documents] | not yet run |
-| `4.2.answers.canon-law` | search | PASS | 5 results, first Code of Canon Law, Can. 1066 [canon-law] | not yet run |
-| `4.2.answers.summa` | search | PASS | 5 results, first Summa Theologiae II-II, q. 110, a. 3, co.: Whether every lie is a sin? [summa] | not yet run |
-| `4.2.answers.medieval` | search | PASS | 5 results, first On Loving God, Chapter V. Of the Christian's debt of love, how great it is (part 2 of 2) [medieval] | not yet run |
-| `4.2.reference.bible` | search | PASS | ok: found Psalms 23:1–6 [bible] \| ok: vector path found Psalms 23:1–6 [bible] | not yet run |
-| `4.2.reference.catechism` | search | PASS | ok: found CCC §1471 [catechism] \| ok: vector path found CCC §1471 [catechism] | not yet run |
-| `4.2.reference.canon-law` | search | PASS | ok: found Code of Canon Law, Can. 1055 [canon-law] \| ok: vector path found Code of Canon Law, Can. 1055 [canon-law] | not yet run |
-| `4.2.reference.summa` | search | PASS | ok: found Summa Theologiae I, q. 2, a. 3, co.: Whether God exists? (part 1 of 2) [summa] \| ok: vector path found Summa Theologiae I, q. 2, a. 3, co.: Whether G | not yet run |
-| `4.2.reference.councils` | search | PASS | ok: found Lumen Gentium, §25 (part 1 of 2) [councils] \| ok: vector path found Lumen Gentium, §25 (part 1 of 2) [councils] | not yet run |
-| `4.2.reference.encyclicals` | search | PASS | ok: found Rerum Novarum, §20 [encyclicals] \| ok: vector path found Rerum Novarum, §20 [encyclicals] | not yet run |
-| `4.2.reference.apostolic-exhortations` | search | PASS | ok: found Familiaris Consortio, §11 [apostolic-exhortations] \| ok: vector path found Familiaris Consortio, §11 [apostolic-exhortations] | not yet run |
-| `4.2.reference.papal-documents` | search | PASS | ok: found Ordinatio Sacerdotalis, §4 [papal-documents] \| ok: vector path found Ordinatio Sacerdotalis, §4 [papal-documents] | not yet run |
-| `4.2.reference.church-fathers` | search | PASS | ok: found The Confessions of Saint Augustine, Book X · Chapter XXVII [church-fathers] \| ok: vector path found The Confessions of Saint Augustine, Book X · Chap | not yet run |
-| `4.2.reference.medieval` | search | PASS | ok: found Proslogium, Chapter II [medieval] \| ok: vector path found Proslogium, Chapter II [medieval] | not yet run |
-| `4.2.no-short-results` | aggregate | PASS | all 221 results across 59 searches | not yet run |
-| `4.2.results-searchable` | aggregate | PASS | all 221 results across 59 searches | not yet run |
-| `4.2.summa-results-cite-their-article` | aggregate | PASS | all 27 Summa passages cite their own article | not yet run |
-| `4.2.vatican-ii-results-not-notes` | aggregate | PASS | all 221 results across 59 searches | not yet run |
+| `4.2.nostra-aetate-4` | search | PASS | found Nostra Aetate, §4 (part 2 of 2) [councils] | PASS |
+| `4.2.trent-justification` | search | PASS | found Council of Trent, Session 6, Decree on Justification, Chapter VII [councils] | PASS |
+| `4.2.vatican-i-infallibility` | search | PASS | found First Vatican Council, Pastor Aeternus, Chapter IV (part 2 of 2) [councils] | PASS |
+| `4.2.vatican-i-faith-reason` | search | PASS | found First Vatican Council, Dei Filius, Chapter IV (part 2 of 2) [councils] | PASS |
+| `4.2.ccc-2267` | search | PASS | ok: found CCC §2263–2267 [catechism] \| ok: none among 2 results | PASS |
+| `4.2.ccc-2267-history` | database | PASS | stored = 1, searchable = 0 | PASS |
+| `4.2.canon-112` | search | PASS | ok: first is Code of Canon Law, Can. 112 [canon-law] \| ok: none among 1 results | PASS |
+| `4.2.susanna` | search | PASS | found Daniel 13:29–57 [bible] | PASS |
+| `4.2.bel-and-the-dragon` | search | PASS | found Daniel 14:1–27 [bible] | PASS |
+| `4.2.no-short-passages` | database | PASS | short = 0 | PASS |
+| `4.2.vatican-ii-no-note-cards` | database | PASS | note_cards = 0 | PASS |
+| `4.2.indulgence` | search | PASS | found CCC §1471 [catechism] | PASS |
+| `4.2.psalm-51-title` | database | PASS | with_title = 1 | PASS |
+| `2.2c.keyword-canon-1055` | keyword | PASS | first is Code of Canon Law, Can. 1055 [canon-law] | PASS |
+| `2.2c.keyword-ccc-2267` | keyword | PASS | first is CCC §2263–2267 [catechism] | PASS |
+| `2.2c.keyword-john-3` | keyword | PASS | found John 3:22–36 [bible] | PASS |
+| `2.2c.search-vector-rebuilt` | database | PASS | stale = 0 | PASS |
+| `1.7.summa-citations` | database | PASS | all 27115 Summa passages cite their own article | PASS |
+| `1.8c.firmilian-credited` | database | PASS | passages = 12, credited_otherwise = 0 | PASS |
+| `1.8c.firmilian-search` | search | PASS | ok: found The Epistles of Cyprian, Firmilian of Caesarea, to Cyprian · Epistle LXXIV (part 9 of 12) [church-fathers] \| ok: none among 3 results | PASS |
+| `3.1.origen` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.tertullian-seven-works` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.novatian-works` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.novatian-letters` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.tatian` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.arnobius` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.alexander-of-lycopolis` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.hippolytus` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.panegyric-to-origen` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.phoenix` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.apostolic-constitutions` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.forged-ignatius` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.sectional-confession` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.pfaff-fragments` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.medieval-ignatius` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.1.kept-works` | database | PASS | 10d8d7c6-680c-5739-bc98-6ce557371f25 6, 3717ce05-ad42-5ec3-b3ce-ff3964908e05 20, 506ebe31-239c-509c-ba5e-b6c822d002df 52, 5d75dc92-df2c-5421-904f-4249590ff48a 1 | PASS |
+| `3.1.search-against-celsus` | search | PASS → PASS on rerun | none among 5 results | PASS |
+| `3.1.search-flight-in-persecution` | search | PASS | none among 5 results | PASS |
+| `3.1.search-naassenes` | search | PASS | none among 2 results | PASS |
+| `3.1.search-roman-clergy-letters` | search | PASS | none among 2 results | PASS |
+| `3.1.search-to-his-wife` | search | PASS | found To His Wife, Chapter I: Design of the Treatise. Disavowal of Personal Motives in Writing It [church-fathers] | PASS |
+| `3.1.search-apparel-of-women` | search | PASS | found On the Apparel of Women, Book II · Chapter XIII: It is Not Enough that God Know Us to Be Chaste: We Must Seem So Before Men. Especially in These Times of  | PASS |
+| `3.3.ubi-lutetiam` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.3.latin-passages` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.3.omission-notes` | database | PASS | Instructor 1, Stromata 1, Divine Institutes 1, Workmanship of God 1 | PASS |
+| `3.3.search-stromata-iii` | search | PASS | none among 4 results | PASS |
+| `3.3.search-ubi-lutetiam` | search | PASS | none among 5 results | PASS |
+| `1.3d.held-documents` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `1.3d.search-held` | search | PASS | none among 1 results | PASS |
+| `1.3d.ineffabilis-deus` | search | PASS | found Ineffabilis Deus, §52 [encyclicals] | PASS |
+| `1.3d.mirari-vos` | search | PASS | found Mirari Vos, §13 [encyclicals] | PASS |
+| `1.3d.quanta-cura-restored` | database | PASS | restored = 1 | PASS |
+| `1.5b.unofficial-english` | database | PASS | labelled = 9 | PASS |
+| `1.5b.retired-canons` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `1.5b.latin-links` | database | PASS | links = 6 | PASS |
+| `1.5b.search-personal-prelatures` | search | PASS | none among 4 results | PASS |
+| `1.7.q71` | search | PASS → PASS on rerun | found Summa Theologiae I, q. 71, a. 1, co.: On the Work of the Fifth Day [summa] | PASS |
+| `1.7.q72` | search | PASS | found Summa Theologiae I, q. 72, a. 1, co.: On the Work of the Sixth Day [summa] | PASS |
+| `1.7.question-prologues` | database | PASS | prologues = 613 | PASS |
+| `3.4.rejected-voice-ranges` | database | PASS | Exsurge Domine 41, Summa 10522, Octavius 10, Ephesus 4, Syllabus 80, Constance 4, Acts of Archelaus 11 | PASS |
+| `2.4d.exsurge-domine-31` | search | FAIL → PASS on rerun | ok: found Exsurge Domine, §31 [papal-documents] \| ok: explanation: 'The claim that a just person sins in every good work is Luther’s condemned proposition 31,  | FAIL → FAIL, PASS on reruns |
+| `2.4d.summa-objection` | search | PASS | ok: found Summa Theologiae I, q. 2, a. 3, obj. 1: Whether God exists? [summa] \| ok: explanation: 'The argument that God’s infinite goodness should preclude any | FAIL → PASS, PASS on reruns |
+| `2.4d.caecilius` | search | PASS | ok: found The Octavius of Minucius Felix, Chapter V (part 2 of 2) [church-fathers] \| ok: explanation: 'Caecilius argues that disasters kill good and bad people | PASS |
+| `3.4.syllabus` | search | PASS | found Syllabus of Errors, §15 [encyclicals] | PASS |
+| `3.4.wyclif` | search | PASS | found Council of Constance, Session 8, Articles of Wyclif (part 1 of 2) [councils] | PASS |
+| `3.4.nestorius` | search | PASS | found Council of Ephesus, Nestorius's Second Letter (part 3 of 4) [councils] | PASS |
+| `3.4.mani` | search | PASS | found The Acts of the Disputation with the Heresiarch Manes, Chapter VI (part 2 of 3) [church-fathers] | PASS |
+| `2.4f.lateran-iv-scanned` | search | PASS | found Fourth Lateran Council, Canon 21 [councils] | PASS |
+| `2.4f.scanned-label-counts` | database | PASS | apostolic-exhortations 187, councils 388, encyclicals 481, papal-documents 9 | PASS |
+| `1.2c.chalcedon` | search | PASS | found Council of Chalcedon, The Definition of Faith (part 3 of 3) [councils] | PASS |
+| `1.4b.joel-numbering` | search | PASS | found Joel 3:1–5 [bible] | PASS |
+| `1.4b.daniel-hosea-numbering` | database | PASS | daniel = 1, hosea = 1 | PASS |
+| `1.4a.book-names-and-prologue` | database | PASS | song_of_songs = 1, sirach_prologue = 1 | PASS |
+| `1.4c.deuterocanonical-pericopes` | database | PASS | Tobit 31, Judith 45, Wisdom 47, Sirach 125, Baruch 20, 1 Maccabees 101, 2 Maccabees 74 | PASS |
+| `1.8c.ignatius-shorter-recension` | database | PASS | shorter = 91, other = 0 | PASS |
+| `1.8d.robertson-incarnation` | search | PASS | found On the Incarnation of the Word, Section 20 [church-fathers] | PASS |
+| `1.8d.robertson-text` | database | PASS | robertson = 1, lawson = 0, passages = 59 | PASS |
+| `1.9.anselm` | database | PASS | cur_deus_homo = 1, proslogium_date = 1, proslogium_preface = 1 | PASS |
+| `phase-1.removals` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `contents.summa-and-catechism` | database | PASS | summa = 3775, catechism = 566, supplement = 1 | PASS |
+| `3.2.document-labels` | database | PASS | all 17 as registered | PASS |
+| `3.2.work-labels` | database | PASS | all 12 as registered | PASS |
+| `3.2.works-hold-their-passages` | database | PASS | Apostolic Canons 6, Supplement's appendix 84, Supplement 4245, Muratorian Fragment 2 | PASS |
+| `3.2.diognetus-note` | database | PASS | noted = 2, other_notes = 0 | PASS |
+| `3.2.preservation-notes` | database | PASS | noted = 15 | PASS |
+| `3.2.fathers-dates-and-genres` | database | PASS | dated = 54, with_genre = 91 | PASS |
+| `3.2.apostle-lists` | database | PASS | visible = 0, live_documents = 0 | PASS |
+| `3.2.pseudo-justin` | search | PASS | found Hortatory Address to the Greeks, Chapter I [church-fathers] | PASS |
+| `3.2.supplement` | search | PASS | found Summa Theologiae Suppl., q. 82, prologue [summa] | PASS |
+| `3.2.didache` | search | PASS | found The Teaching of the Twelve Apostles, Chapter VII [church-fathers] | PASS |
+| `3.2.martyrdom-of-polycarp` | search | PASS | ok: found The Martyrdom of Polycarp, Chapter XIV.—The prayer of Polycarp. [church-fathers] \| ok: none among 2 results | PASS |
+| `4.2.answers.bible` | search | ERROR → PASS on rerun | 5 results, first James 1:19–27 [bible] | PASS |
+| `4.2.answers.catechism` | search | PASS | 5 results, first CCC §2558–2563 [catechism] | PASS |
+| `4.2.answers.church-fathers` | search | PASS | 5 results, first The First Apology, Chapter LXI.—Christian baptism. [church-fathers] | PASS |
+| `4.2.answers.councils` | search | PASS | 5 results, first Council of Basel-Ferrara-Florence, Florence, Session 6, Laetentur caeli [councils] | PASS |
+| `4.2.answers.encyclicals` | search | PASS | 5 results, first Centesimus Annus, §15 [encyclicals] | PASS |
+| `4.2.answers.apostolic-exhortations` | search | PASS | 5 results, first Familiaris Consortio, §17 [apostolic-exhortations] | PASS |
+| `4.2.answers.papal-documents` | search | PASS | 3 results, first Salvifici Doloris, §26 (part 2 of 2) [papal-documents] | PASS |
+| `4.2.answers.canon-law` | search | PASS | 5 results, first Code of Canon Law, Can. 1066 [canon-law] | PASS |
+| `4.2.answers.summa` | search | PASS | 5 results, first Summa Theologiae II-II, q. 110, a. 3, co.: Whether every lie is a sin? [summa] | PASS |
+| `4.2.answers.medieval` | search | PASS | 5 results, first On Loving God, Chapter V. Of the Christian's debt of love, how great it is (part 2 of 2) [medieval] | PASS |
+| `4.2.reference.bible` | search | PASS | ok: found Psalms 23:1–6 [bible] \| ok: vector path found Psalms 23:1–6 [bible] | PASS |
+| `4.2.reference.catechism` | search | PASS | ok: found CCC §1471 [catechism] \| ok: vector path found CCC §1471 [catechism] | PASS |
+| `4.2.reference.canon-law` | search | PASS | ok: found Code of Canon Law, Can. 1055 [canon-law] \| ok: vector path found Code of Canon Law, Can. 1055 [canon-law] | PASS |
+| `4.2.reference.summa` | search | PASS | ok: found Summa Theologiae I, q. 2, a. 3, co.: Whether God exists? (part 1 of 2) [summa] \| ok: vector path found Summa Theologiae I, q. 2, a. 3, co.: Whether G | PASS |
+| `4.2.reference.councils` | search | PASS | ok: found Lumen Gentium, §25 (part 1 of 2) [councils] \| ok: vector path found Lumen Gentium, §25 (part 1 of 2) [councils] | PASS |
+| `4.2.reference.encyclicals` | search | PASS | ok: found Rerum Novarum, §20 [encyclicals] \| ok: vector path found Rerum Novarum, §20 [encyclicals] | PASS |
+| `4.2.reference.apostolic-exhortations` | search | PASS | ok: found Familiaris Consortio, §11 [apostolic-exhortations] \| ok: vector path found Familiaris Consortio, §11 [apostolic-exhortations] | PASS |
+| `4.2.reference.papal-documents` | search | PASS | ok: found Ordinatio Sacerdotalis, §4 [papal-documents] \| ok: vector path found Ordinatio Sacerdotalis, §4 [papal-documents] | PASS |
+| `4.2.reference.church-fathers` | search | PASS | ok: found The Confessions of Saint Augustine, Book X · Chapter XXVII [church-fathers] \| ok: vector path found The Confessions of Saint Augustine, Book X · Chap | PASS |
+| `4.2.reference.medieval` | search | PASS | ok: found Proslogium, Chapter II [medieval] \| ok: vector path found Proslogium, Chapter II [medieval] | PASS |
+| `4.2.no-short-results` | aggregate | PASS | all 221 results across 59 searches | PASS |
+| `4.2.results-searchable` | aggregate | PASS | all 221 results across 59 searches | PASS |
+| `4.2.summa-results-cite-their-article` | aggregate | PASS | all 27 Summa passages cite their own article | PASS |
+| `4.2.vatican-ii-results-not-notes` | aggregate | PASS | all 221 results across 59 searches | PASS |
