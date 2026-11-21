@@ -71,3 +71,23 @@ describe("Passage text labels (corpus cleanup 2.4f)", () => {
     expect(container.querySelectorAll("p")).toHaveLength(1);
   });
 });
+
+describe("Passage inline label", () => {
+  it("leaves the label off when the passage opens with it", () => {
+    // 6,166 Summa passages open "I answer that, ..." or "On the contrary, ...", and 44
+    // Catechism paragraphs with their own number (live corpus, 20 Nov 2026).
+    const { container } = render(<Passage passage={passage({
+      voice: undefined, unit_label: "I answer that",
+      content: "I answer that, This sacrament was appropriately instituted at the supper.",
+    })} highlighted={false} />);
+    expect(container.querySelector("sup")).toBeNull();
+  });
+
+  it("keeps the label when the text does not say it", () => {
+    const { container } = render(<Passage passage={passage({
+      voice: undefined, unit_label: "Objection 1",
+      content: "It would seem that the marriage act is not meritorious.",
+    })} highlighted={false} />);
+    expect(container.querySelector("sup")?.textContent).toBe("Objection 1");
+  });
+});

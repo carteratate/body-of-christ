@@ -20,7 +20,7 @@ import {
 import { AttachedPassage } from "./AttachedPassage";
 import { RelevanceExplanation } from "./RelevanceExplanation";
 import { getCollectionMeta } from "@/lib/collections";
-import { displayRole, rejectedLabel } from "@/lib/passageRole";
+import { displayRole, opensWithRole, rejectedLabel } from "@/lib/passageRole";
 import { RejectedVoice, RoleCaption } from "@/components/common/RejectedVoice";
 import { stripVerseMarkers } from "@/lib/verse-markers";
 import { contentWithMarkers, footnotesCopyText, parseFootnotes } from "@/lib/footnotes";
@@ -454,7 +454,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
             <AttachedPassage context={attached} color={color} rgb={rgb} />
           )}
           {result.status === "moved" && <MovedNote kind={result.redirect?.kind} />}
-          {!rejected && role && <RoleCaption role={role} />}
+          {!rejected && role && !opensWithRole(content, role) && <RoleCaption role={role} />}
           <RejectedVoice label={rejected}><PassageText content={content} footnotes={footnotes} /></RejectedVoice>
           <PassageNotes footnotes={footnotes} />
           {attached?.relation === "answered_by" && (
