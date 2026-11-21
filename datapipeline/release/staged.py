@@ -15,9 +15,10 @@ adds the publish checks:
 - `index.dedup_collision_rate:<collection>`: the share of same-document passage pairs
   within two positions whose vectors exceed the API's dedup threshold, beside the live
   figure; flagged above 5% (C-09). Informs RF-1; fails nothing.
-- the document-facts diff (2.3) and the works diff (3.2), user impact, the staging
-  storage and the projected database size, and the 10% shrink and churn warnings that
-  used to stop a publish.
+- the document-facts diff (2.3), the works diff (3.2), the held-texts diff (4.3:
+  `metadata.held_texts` entries added, removed or changed per document), user impact,
+  the staging storage and the projected database size, and the 10% shrink and churn
+  warnings that used to stop a publish.
 
 Writes publish.json and a "Publish checks" section at the end of report.md, then records
 `<sha256 of report.json and publish.json>:<sha256 of the staged rows>` in
@@ -317,6 +318,31 @@ async def works_diff(conn, collections: list[str]) -> list[dict]:
     return out
 
 
+async def held_texts_diff(conn, collections: list[str]) -> list[dict]:
+    """Per document, the held-text entries (4.3, `metadata.held_texts`) staging adds,
+    removes or changes against live, matched by `key`."""
+    rows = await conn.fetch(
+        """SELECT s.id::text AS id, s.collection, s.title,
+                  s.metadata->'held_texts' AS staged, d.metadata->'held_texts' AS live
+           FROM staging.documents s LEFT JOIN public.documents d ON d.id = s.id
+           WHERE s.collection = ANY($1::text[])
+             AND (s.metadata->'held_texts') IS DISTINCT FROM (d.metadata->'held_texts')
+           ORDER BY s.collection, s.title, s.id""", collections)
+    out = []
+    for r in rows:
+        staged = {h["key"]: h for h in json.loads(r["staged"] or "[]")}
+        live = {h["key"]: h for h in json.loads(r["live"] or "[]")}
+        changed = [{"key": k, "live": live[k], "staged": staged[k]}
+                   for k in staged.keys() & live.keys() if staged[k] != live[k]]
+        out.append({"id": r["id"], "collection": r["collection"], "title": r["title"],
+                    "added": [h for k, h in staged.items() if k not in live],
+                    "removed": sorted(live.keys() - staged.keys()),
+                    "changed": sorted(changed, key=lambda c: c["key"]),
+                    # Order matters to the reader even when no entry changes.
+                    "reordered": staged.keys() == live.keys() and list(staged) != list(live)})
+    return out
+
+
 def _plain(value):
     return str(value) if value is not None and not isinstance(value, (int, str, bool)) else value
 
@@ -433,6 +459,27 @@ def works_md(diff: list[dict]) -> list[str]:
     return lines + [""]
 
 
+def held_texts_md(diff: list[dict]) -> list[str]:
+    """4.3's "Held texts" section (`document.held_texts`): per document, every entry
+    added, removed or changed against live."""
+    lines = ["", "## Held texts (4.3)", ""]
+    if not diff:
+        return lines + ["No document's held texts differ from live.", ""]
+    for d in diff:
+        lines.append(f"- {d['collection']} `{d['id']}` {d['title']}: {len(d['added'])} added, "
+                     f"{len(d['removed'])} removed, {len(d['changed'])} changed"
+                     + (", reordered" if d["reordered"] else ""))
+        lines += [f"  - + {h['key']} {h['label']} · {h['heading']} (after "
+                  f"{h['after_anchor'] or 'the start'})" for h in d["added"]]
+        lines += [f"  - − {k}" for k in d["removed"]]
+        lines += [f"  - ~ {c['key']}: " + "; ".join(
+                      f"{f} {c['live'].get(f)!r} → {c['staged'].get(f)!r}"
+                      for f in sorted(c["staged"].keys() | c["live"].keys())
+                      if c["live"].get(f) != c["staged"].get(f))
+                  for c in d["changed"]]
+    return lines + [""]
+
+
 def publish_md(data: dict) -> str:
     ids = data["ids"]
     lines = ["", "## Publish checks (2.2w)", "",
@@ -444,7 +491,8 @@ def publish_md(data: dict) -> str:
              f"- Points: {len(data['points']['mismatches'])} mismatches; embedding input hash "
              f"failures {len(data['points']['hash_failures'])}.",
              f"- Document facts changed on {len(data['facts_diff'])} documents; works "
-             f"inside documents changed or new: {len(data['works_diff'])}.",
+             f"inside documents changed or new: {len(data['works_diff'])}; held texts "
+             f"changed on {len(data['held_texts_diff'])} documents.",
              f"- Staging holds {data['storage']['staging_bytes'] / 2**20:,.1f} MiB; database "
              f"{data['storage']['database_bytes'] / 2**20:,.1f} MiB, projected after apply "
              f"{data['storage']['projected_after_apply_bytes'] / 2**20:,.1f} MiB.", "",
@@ -460,6 +508,7 @@ def publish_md(data: dict) -> str:
         lines += ["", "Warnings (not failures):", ""] + [f"- {w}" for w in data["warnings"]]
     lines += facts_md(data["facts_diff"])
     lines += works_md(data["works_diff"])
+    lines += held_texts_md(data["held_texts_diff"])
     lines += [f"Publish checks {'PASS' if data['pass'] else 'FAIL'}."]
     if data["failures"]:
         lines += [""] + [f"- {f}" for f in data["failures"][:50]]
@@ -503,6 +552,7 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
         "dedup": await dedup_checks(conn, qdrant, row["qdrant_collection"], live, staged),
         "facts_diff": await facts_diff(conn, collections),
         "works_diff": await works_diff(conn, collections),
+        "held_texts_diff": await held_texts_diff(conn, collections),
         "user_impact": await user_impact(conn),
         "storage": await storage(conn),
         "warnings": await size_warnings(conn, collections),
