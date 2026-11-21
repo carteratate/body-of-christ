@@ -37,6 +37,8 @@ from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 from checks.language import latin_runs, mostly_foreign
 from ingest.editorial import PLAIN_CALLERS
 from ingest.editorial_keep import kept_quotes, quoted_text
+from ingest.stromata_chadwick import BOOK as _CHADWICK_BOOK
+from ingest.stromata_chadwick import SOURCE_FILE as _CHADWICK_FILE
 
 SOURCES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "sources")
 
@@ -167,10 +169,15 @@ def withheld_canons(path: str = REMOVALS_PATH) -> frozenset[str]:
 
 _withheld_chapters: dict[str, frozenset[tuple[str, str]]] = {}
 
+# (ThML file, div id) of each chapter whose untranslated text another edition's English
+# replaces: ANF's Latin Stromata III, built from Chadwick's translation (#399). Its Latin
+# is withheld under rule E as before; no passage reads it.
+REPLACED_CHAPTERS = frozenset({(_CHADWICK_FILE, _CHADWICK_BOOK)})
+
 
 def withheld_chapters(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
     """(ThML file, div id) of each chapter every passage of which the removal registry
-    retires because no English exists (rule E, 3.3): Stromata III ch. 3, Divine
+    retires because no English exists (rule E, 3.3): Divine
     Institutes VI.23, On the Workmanship of God 12. A chapter that keeps a passage is
     not listed; its Latin paragraphs are `mostly_foreign`. Read from the registry files
     beside `path`: a passage row's anchor is `<div>` or `<div>/<piece>`, and its work's
@@ -262,8 +269,9 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     listed in editorial_divs.json, and everything inside them, are "apparatus", and so
     is a paragraph a removal registry span entry records (`removed_paragraphs`), and the
     own paragraphs of a div `editorial_own_text` lists. A body paragraph mostly in another
-    language (`checks.language.mostly_foreign`), or in a chapter the removal registry
-    retires whole for rule E (`withheld_chapters`), is "withheld" (3.3); a body paragraph in
+    language (`checks.language.mostly_foreign`), in a chapter the removal registry
+    retires whole for rule E (`withheld_chapters`), or in one another edition's English
+    replaces (`REPLACED_CHAPTERS`), is "withheld" (3.3, #399); a body paragraph in
     a unit rules A to C take out (`excluded_divs`) is "excluded" (3.1). A quotation of the author that
     `ingest.editorial_keep` keeps from an editorial div is body under its passage's
     chapter key (`<div>/retractations`), and a footnote caller printed as a plain digit
@@ -311,7 +319,8 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                     own = "apparatus" if region == "body" and (
                         _paragraph_sha1(text) in removed or div_id in own_text) else region
                     if own == "body" and (mostly_foreign(text)
-                                          or (source_file, div_id) in withheld):
+                                          or (source_file, div_id) in withheld
+                                          or (source_file, div_id) in REPLACED_CHAPTERS):
                         own = "withheld"
                     for q in quotes.get(child.get("id"), [])[:1]:
                         a, b = quoted_text(text, q, child.get("id"))

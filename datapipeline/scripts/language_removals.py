@@ -104,7 +104,10 @@ def plan(reg: registry.WorkRegistry, today: str) -> list[dict]:
     redirected_into: dict[str, list[str]] = {}
     for r in reg.redirects:
         if not r.get("closed_by") or r.get("closed_by") == ITEM:
-            redirected_into.setdefault(r["new_passage_id"], []).append(r["old_passage_id"])
+            into = redirected_into.setdefault(r["new_passage_id"], [])
+            # The redirect a later item reopened (Stromata p12, #399) names the same piece.
+            if r["old_passage_id"] not in into:
+                into.append(r["old_passage_id"])
     for doc, anchors, detail in PASSAGES:
         for anchor in anchors:
             pid = registry.resolve_passage_id(doc, anchor, reg)
@@ -143,6 +146,18 @@ def apply(reg: registry.WorkRegistry, entries: list[dict], today: str) -> None:
             r["status"] = "retired"
 
 
+def keep_earlier(reg: registry.WorkRegistry, entries: list[dict]) -> list[dict]:
+    """`entries` with the date of each unchanged entry, and a later item's closing, kept
+    from the registry, so a rerun changes nothing."""
+    earlier = {e["id"]: e for e in reg.removals if e.get("added_by") == ITEM}
+    for e in entries:
+        old = earlier.get(e["id"], {})
+        e["added_on"] = old.get("added_on", e["added_on"])
+        if old.get("closed_by"):
+            e["closed_by"], e["closed_on"] = old["closed_by"], old["closed_on"]
+    return entries
+
+
 def sync_note_counts(reg: registry.WorkRegistry, documents) -> None:
     """Set each noted work's note-count entry to the notes its built passages still
     count (`editor_note_count`). `documents`: the Church Fathers build, retired
@@ -161,15 +176,7 @@ def main() -> None:
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     reg = registry.current()
-    # Keep the date of an unchanged entry, and a later item's closing, so a rerun changes
-    # nothing.
-    earlier = {e["id"]: e for e in reg.removals if e.get("added_by") == ITEM}
-    entries = plan(reg, args.today)
-    for e in entries:
-        old = earlier.get(e["id"], {})
-        e["added_on"] = old.get("added_on", e["added_on"])
-        if old.get("closed_by"):
-            e["closed_by"], e["closed_on"] = old["closed_by"], old["closed_on"]
+    entries = keep_earlier(reg, plan(reg, args.today))
     counts = {s: sum(e["scope"] == s for e in entries) for s in ("document", "passage", "span")}
     print(f"{len(entries)} entries ({counts}), rm-{FIRST_ID} to rm-{FIRST_ID + len(entries) - 1}")
     if args.dry_run:

@@ -7,6 +7,7 @@ import pytest
 import registry
 from checks import source_text
 from ingest import church_fathers as cf
+from ingest import stromata_chadwick
 from ingest.common import _block_text, _display_terminal_char, iter_chapters
 from ingest.church_fathers import build_documents, build_all
 
@@ -93,7 +94,9 @@ def test_split_passages_have_complete_reader_boundaries():
     for doc in docs:
         groups = defaultdict(list)
         for passage in doc.passages:
-            assert _cut_length(passage.content) <= 4_000
+            # Stromata III's English keeps the Latin pieces' bounds, and with them their
+            # IDs (#399); the English runs longer than the Latin.
+            assert _cut_length(passage.content) <= 4_000 or stromata_chadwick.is_restored(passage)
             match = re.match(r"^(.*)/p(\d+)$", passage.anchor)
             if match:
                 groups[match.group(1)].append((int(match.group(2)), passage))

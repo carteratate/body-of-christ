@@ -73,7 +73,10 @@ def test_every_verse_block_of_a_built_chapter_is_read(built):
     for (collection, name), passages in sorted(_by_file(built).items()):
         chapters = defaultdict(list)
         for p in passages:
-            chapters[p.chapter_key].append(p)
+            # A passage another edition's text replaces is not read from this file
+            # (Stromata III in Chadwick's English, #399).
+            if not (p.metadata or {}).get("text_replaced"):
+                chapters[p.chapter_key].append(p)
         divs = {e.get("id"): e for e in _root(collection, name).iter()
                 if isinstance(e.tag, str) and e.tag.startswith("div")}
         for key, members in chapters.items():

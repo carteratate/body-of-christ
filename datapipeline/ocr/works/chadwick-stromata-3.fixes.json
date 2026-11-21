@@ -24,10 +24,28 @@
   "why": "p. 45: no space after the quotation mark"
  },
  {
+  "passage": "ch03/s014",
+  "find": "I wept and wailed.\n\nAnd further",
+  "replace": "I wept and wailed.\"\n\nAnd further",
+  "why": "p. 47: the print reads wailed.” ; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
   "passage": "ch03/s023",
   "find": "\" Of what is mortal",
   "replace": "\"Of what is mortal",
   "why": "p. 51: no space after the quotation mark"
+ },
+ {
+  "passage": "ch03/s023",
+  "find": "happy without end.\"\"",
+  "replace": "happy without end.\"",
+  "why": "p. 51: one closing quotation mark, then a note number"
+ },
+ {
+  "passage": "ch04/s027",
+  "find": "that asks you She,",
+  "replace": "that asks you.'\" She,",
+  "why": "p. 52: the print reads asks you.’”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
  },
  {
   "passage": "ch04/s030",
@@ -46,6 +64,12 @@
   "find": "recognize t>y their",
   "replace": "recognize by their",
   "why": "p. 55: the print reads “by”"
+ },
+ {
+  "passage": "ch04/s039",
+  "find": "with your words, says Malachi",
+  "replace": "with your words,\" says Malachi",
+  "why": "p. 58: the print reads words,”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
  },
  {
   "passage": "ch05/s043",
@@ -72,10 +96,28 @@
   "why": "p. 64: the print reads “Cyrene”"
  },
  {
+  "passage": "ch06/s053",
+  "find": "food and drink, not indeed",
+  "replace": "food and drink,\" not indeed",
+  "why": "p. 65: the print reads drink,”"
+ },
+ {
+  "passage": "ch06/s054",
+  "find": "immoral \"communion is to",
+  "replace": "immoral \"communion\" is to",
+  "why": "p. 65: the print reads “communion”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
   "passage": "ch06/s056",
   "find": "ever.\" ^ For",
   "replace": "ever.\" For",
   "why": "p. 66: a note call, read as “^”"
+ },
+ {
+  "passage": "ch06/s056",
+  "find": "you have prepared?",
+  "replace": "you have prepared?\"",
+  "why": "p. 66: the print reads prepared?”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
  },
  {
   "passage": "ch07/s057",
@@ -102,6 +144,12 @@
   "why": "p. 67: the print reads “there is”"
  },
  {
+  "passage": "ch07/s058",
+  "find": "fulfil its desires. We are",
+  "replace": "fulfil its desires.\" We are",
+  "why": "p. 67: the print reads desires.”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
   "passage": "ch07/s060",
   "find": "Indian History* They",
   "replace": "Indian History. They",
@@ -114,6 +162,12 @@
   "why": "p. 69: the print reads “God forbid.”"
  },
  {
+  "passage": "ch08/s061",
+  "find": "under grace and others",
+  "replace": "under grace,\" and others",
+  "why": "p. 68: the print reads grace,”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
   "passage": "ch09/s064",
   "find": "says: \" Until when shall men die? '",
   "replace": "says: \"Until when shall men die?\"",
@@ -124,6 +178,18 @@
   "find": "answer \"As long as women bear children/'",
   "replace": "answer—\"As long as women bear children,\"",
   "why": "p. 70: the print reads answer—“As long as women bear children,”"
+ },
+ {
+  "passage": "ch10/s069",
+  "find": "the greatest honour.\" With",
+  "replace": "the greatest honour. With",
+  "why": "p. 72: a note call read as a quotation mark; the print has none"
+ },
+ {
+  "passage": "ch11/s076",
+  "find": "no good thing yet let",
+  "replace": "no good thing,\" yet let",
+  "why": "p. 75: the print reads thing,”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
  },
  {
   "passage": "ch12/s081",
@@ -148,6 +214,12 @@
   "find": "law^by",
   "replace": "law by",
   "why": "p. 79: the print reads “law by”"
+ },
+ {
+  "passage": "ch12/s083",
+  "find": "bear fruit unto God. '",
+  "replace": "bear fruit unto God.\"",
+  "why": "p. 79: the print reads God.”"
  },
  {
   "passage": "ch12/s084",

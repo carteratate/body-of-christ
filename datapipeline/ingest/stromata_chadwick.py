@@ -31,6 +31,7 @@ from ocr.fixes import read_text
 WORK = "chadwick-stromata-3"
 SCAN_URL = "https://archive.org/details/alexandrianchris012826mbp"
 STROMATA = "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38"
+SOURCE_FILE = "second-century.xml"   # ANF vol. 2, where Book III is the div `BOOK`
 BOOK = "vi.iv.iii"
 NOTE = "In Henry Chadwick's translation (1954)."
 TEXT_REPLACED = "Chadwick (1954) replaces ANF's Latin"
