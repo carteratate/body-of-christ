@@ -34,28 +34,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/church-fathers/alexandrianchris012826mbp/alexandrianchris012826mbp_djvu.txt",
-  "sha256": "4fb65241121f6796297524162a6d44bd8d8e357a59d4aa80cee9858d6e940d76",
-  "bytes": 1185560,
-  "url": "https://archive.org/download/alexandrianchris012826mbp/alexandrianchris012826mbp_djvu.txt",
-  "acquired": "2026-11-21",
-  "hashed_on": "2026-11-21",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/church-fathers/alexandrianchris012826mbp/alexandrianchris012826mbp_djvu.xml",
-  "sha256": "7ae2327e1efed4e54a38461c37994a1fe5744a5401bd997e49f171fee54be583",
-  "bytes": 10936566,
-  "url": "https://archive.org/download/alexandrianchris012826mbp/alexandrianchris012826mbp_djvu.xml",
-  "acquired": "2026-11-21",
-  "hashed_on": "2026-11-21",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/church-fathers/dionysius-works.xml",
   "sha256": "b28456f33db6ca2ffb42efa20200e5b98c4b6ec8b9134a87119c6de051b903d2",
   "bytes": 731266,
@@ -3251,6 +3229,28 @@
   "acquired": "2026-10-28",
   "hashed_on": "2026-10-28",
   "role": "adapter-input"
+ },
+ {
+  "collection": "church-fathers",
+  "path": "church-fathers/alexandrianchris012826mbp/alexandrianchris012826mbp_djvu.txt",
+  "sha256": "4fb65241121f6796297524162a6d44bd8d8e357a59d4aa80cee9858d6e940d76",
+  "bytes": 1185560,
+  "url": "https://archive.org/download/alexandrianchris012826mbp/alexandrianchris012826mbp_djvu.txt",
+  "acquired": "2026-11-21",
+  "hashed_on": "2026-11-21",
+  "role": "vendored-unregistered",
+  "note": "the scan Stromata III's English is read from, through ocr/texts/chadwick-stromata-3.json (#399)"
+ },
+ {
+  "collection": "church-fathers",
+  "path": "church-fathers/alexandrianchris012826mbp/alexandrianchris012826mbp_djvu.xml",
+  "sha256": "7ae2327e1efed4e54a38461c37994a1fe5744a5401bd997e49f171fee54be583",
+  "bytes": 10936566,
+  "url": "https://archive.org/download/alexandrianchris012826mbp/alexandrianchris012826mbp_djvu.xml",
+  "acquired": "2026-11-21",
+  "hashed_on": "2026-11-21",
+  "role": "vendored-unregistered",
+  "note": "the scan Stromata III's English is read from, through ocr/texts/chadwick-stromata-3.json (#399)"
  },
  {
   "collection": "church-fathers",
@@ -6997,7 +6997,7 @@
   "acquired": "2026-11-16",
   "hashed_on": "2026-11-16",
   "role": "vendored-unregistered",
-  "note": "the printed edition summa_recovered.json's text is read from (#360)"
+  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
  },
  {
   "collection": "summa",
@@ -7008,6 +7008,6 @@
   "acquired": "2026-11-16",
   "hashed_on": "2026-11-16",
   "role": "vendored-unregistered",
-  "note": "the printed edition summa_recovered.json's text is read from (#360)"
+  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
  }
 ]
