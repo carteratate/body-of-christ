@@ -264,19 +264,18 @@ def test_the_build_refuses_a_held_removal_no_entry_names():
     assert build("councils", source_adapters=adapters, registry=reg, held_coverage=False)
 
 
-def test_the_shipped_list_fits_the_build():
-    """Every entry follows a passage the build emits, in order (the build's own check)."""
-    from publication import build
-
-    held = {h["document_id"] for h in registry.open_held_texts(registry.current())}
-    seen = set()
-    for collection in ("councils", "encyclicals", "papal-documents"):
-        for d in build(collection):
-            if d.id in held:
-                seen.add(d.id)
-                assert len(d.metadata["held_texts"]) == sum(
-                    1 for h in registry.open_held_texts(registry.current()) if h["document_id"] == d.id)
-    assert seen == held
+def test_every_place_is_an_active_passage_of_its_document():
+    """Without the sources (CI): each entry follows a passage the registry holds as
+    active in that document. The build's own check, against the sources, is
+    tests/source_checks/test_held_texts_sources.py."""
+    shipped = registry.current()
+    entries = registry.open_held_texts(shipped)
+    assert entries
+    for h in entries:
+        if h["after_anchor"] is None:
+            continue
+        row = shipped.row_by_anchor.get((h["document_id"], h["after_anchor"]))
+        assert row is not None and row["status"] == "active", (h["id"], h["after_anchor"])
 
 
 # --------------------------------------------------------------------------- the draft
