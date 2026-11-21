@@ -16,9 +16,10 @@ passage opens inside a sentence (`from-p27-2`, `from-p67`), the English passage 
 the next sentence, or at the start of that sentence, so no sentence is cut.
 
 Chadwick's notes, his section numbers and chapter headings never reach the text; the
-scripture references ANF's Latin notes gave go with the Latin. Each passage carries the
-translator's note (`NOTE`; Carter, 21 Nov 2026) and `text_replaced`, since its text is
-replaced on purpose and keeps its ID.
+scripture references ANF's Latin notes gave go with the Latin. Each passage carries
+`text_replaced`, since its text is replaced on purpose and keeps its ID, and its scan's
+`scan_id`, by which 4.4's card names Chadwick as its translator
+(`card_notes.SCAN_TRANSLATORS`; Carter, 21 Nov 2026).
 """
 from __future__ import annotations
 
@@ -33,7 +34,6 @@ SCAN_URL = "https://archive.org/details/alexandrianchris012826mbp"
 STROMATA = "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38"
 SOURCE_FILE = "second-century.xml"   # ANF vol. 2, where Book III is the div `BOOK`
 BOOK = "vi.iv.iii"
-NOTE = "In Henry Chadwick's translation (1954)."
 TEXT_REPLACED = "Chadwick (1954) replaces ANF's Latin"
 SECTIONS = 110          # Stählin's sections of Book III, as `ocr.units.ChadwickSections`
 
@@ -157,7 +157,7 @@ def restore(document: Document, frozen: dict | None = None) -> Document:
             # The Latin unit the piece opens with still names where it starts; offsets
             # into the Latin mean nothing in the English.
             p = replace(p, content=texts[p.anchor], source_units=p.source_units[:1] and (
-                            (p.source_units[0][0], 0),), note=NOTE,
+                            (p.source_units[0][0], 0),),
                         metadata={**kept, "url": SCAN_URL, "text_replaced": TEXT_REPLACED,
                                   **meta})
         passages.append(p)

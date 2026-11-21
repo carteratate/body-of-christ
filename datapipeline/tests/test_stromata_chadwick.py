@@ -123,13 +123,20 @@ def test_no_latin_reaches_the_english():
 @vendored
 @pytest.mark.sources
 def test_build_restores_book_iii_in_english_with_its_ids():
+    import card_notes
     from ingest.church_fathers import build_all
-    doc = next(d for d in build_all() if d.id == sc.STROMATA)
+    reg = registry.current()
+    built = next(d for d in build_all() if d.id == sc.STROMATA)
+    # As `publication.prepare` stores the card's notes (4.4).
+    doc = card_notes.apply(built, reg.entry_by_document[sc.STROMATA])
+    assert doc.metadata["card_translator"] == "Ante-Nicene Fathers (1885–1896)"
     book = [p for p in doc.passages if p.anchor.split("/")[0] == sc.BOOK]
     assert [p.anchor for p in book] == [a for a, _, _ in sc.PIECES]
-    reg = registry.current()
+    assert not any((p.metadata or {}).get("translator") for p in doc.passages
+                   if p.anchor.split("/")[0] != sc.BOOK)
     for p in book:
-        assert p.note == sc.NOTE and p.metadata["text_replaced"] == sc.TEXT_REPLACED
+        assert p.note is None and p.metadata["text_replaced"] == sc.TEXT_REPLACED
+        assert p.metadata["translator"] == "Translated by Henry Chadwick (1954)"
         assert p.chapter_key == sc.BOOK and p.chapter_label == "Book III"
         assert "footnotes" not in p.metadata and "editor_note_count" not in p.metadata
         row = reg.row_by_anchor[(sc.STROMATA, p.anchor)]
