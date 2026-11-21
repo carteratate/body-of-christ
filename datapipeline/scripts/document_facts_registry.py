@@ -141,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
         raise ValueError(f"no card translator for {', '.join(nameless)}: add a rule to "
                          "card_notes.card_translator")
     updated = registry.WorkRegistry(works, passages, reg.redirects, reg.removals,
-                                    reg.kept_text)
+                                    reg.kept_text, held_texts=reg.held_texts)
     if args.check:
         with tempfile.TemporaryDirectory() as tmp:
             registry.write_registry(updated, tmp)

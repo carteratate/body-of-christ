@@ -14,6 +14,7 @@ import { excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
 import { OverviewNotes } from "@/components/common/PassageFacts";
 import { parseOverviewNotes } from "@/lib/card-notes";
 import { certaintyTag, formatAttribution, formatDate, formatTranslation } from "@/lib/attribution";
+import { heldCountLabel } from "@/lib/held-texts";
 
 /** How the Library's rows link to the reader: one href per document, one same-tab hook. */
 interface DocOpener {
@@ -57,6 +58,13 @@ function SourceMark({ doc }: { doc: SourceDocument }) {
   );
 }
 
+/** "· 17 texts read online": texts of the document held back and read online instead
+ *  (corpus cleanup 4.3). The row still opens the reader, where they are listed. */
+function HeldCount({ doc }: { doc: SourceDocument }) {
+  const count = doc.held_count ?? 0;
+  if (count <= 0) return null;
+  return <span className="text-brand-muted text-xs ml-1 whitespace-nowrap" data-testid="held-count">· {heldCountLabel(count)}</span>;
+}
 
 // Canonical Catholic ordering of the 73 books, used to sort the Bible book grid
 // (the /v1/sources API returns books alphabetically since they carry no year).
@@ -269,6 +277,7 @@ function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: Doc
                   <span className="text-brand-muted text-xs ml-2">
                     {num ? `#${num} · ` : ""}{d.year}
                   </span>
+                  <HeldCount doc={d} />
                   <ExcerptNotes doc={d} />
                 </div>
                 <span className="shrink-0 text-xs text-brand-muted whitespace-nowrap mt-0.5">
@@ -317,6 +326,7 @@ function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
           {doc.translation && (
             <span className="text-brand-muted text-xs ml-1">· {doc.translation}</span>
           )}
+          <HeldCount doc={doc} />
           <ExcerptNotes doc={doc} />
         </div>
         <span className="shrink-0 text-xs text-brand-accent whitespace-nowrap mt-0.5">

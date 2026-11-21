@@ -7,6 +7,7 @@ import {
   putReadingProgress,
   type DocumentInfo,
   type ReaderChapter,
+  type HeldText,
   type TocEntry,
   ReaderMovedError,
   ReaderRemovedError,
@@ -84,6 +85,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
 
   const [doc, setDoc] = useState<DocumentInfo | null>(null);
   const [toc, setToc] = useState<TocEntry[] | null>(null);
+  const [heldTexts, setHeldTexts] = useState<HeldText[]>([]);
   const [tocDocument, setTocDocument] = useState<DocumentInfo | null>(null);
   const [tocFailed, setTocFailed] = useState(false);
   const [chapters, setChapters] = useState<ReaderChapter[]>([]);
@@ -147,6 +149,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
       tocShownRef.current = true;
       setTocDocument(response.document);
       setToc(response.chapters);
+      setHeldTexts(response.held_texts ?? []);
       setTocFailed(false);
     }, () => {
       if (tocControllerRef.current !== controller || background) return;
@@ -192,6 +195,7 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
     setLoading(true);
     setDoc(null);
     setToc(null);
+    setHeldTexts([]);
     setTocDocument(null);
     setChapters([]);
     setCurrentKey(null);
@@ -504,7 +508,15 @@ function Inner({ docId, isGuest = false }: { docId: string; isGuest?: boolean })
         className="reader-content flex-1 overflow-y-auto"
         style={{ "--reader-font-size": fontPixels, "--reader-line-height": lineHeight } as React.CSSProperties}
       >
-        {chapters.map((chapter) => <ChapterSection key={chapter.chapter_key} chapter={chapter} highlightAnchor={highlight} />)}
+        {chapters.map((chapter) => (
+          <ChapterSection
+            key={chapter.chapter_key}
+            chapter={chapter}
+            highlightAnchor={highlight}
+            heldTexts={heldTexts}
+            first={toc?.[0]?.chapter_key === chapter.chapter_key}
+          />
+        ))}
         {chapterLoading && (
           <div className="animate-pulse space-y-3 px-6 py-8" aria-label="Loading chapter">
             <div className="h-4 w-2/3 rounded bg-brand-surface" />

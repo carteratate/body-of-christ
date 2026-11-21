@@ -110,7 +110,7 @@ def plan(reg: registry.WorkRegistry, entries: list[dict]) -> registry.WorkRegist
                        for div, (quote, verdict) in found]
             w = {**w, "attribution": {**w["attribution"], "editorial_judgments": listed}}
         works.append(w)
-    return registry.WorkRegistry(works, passages, reg.redirects, removals, reg.kept_text)
+    return registry.WorkRegistry(works, passages, reg.redirects, removals, reg.kept_text, held_texts=reg.held_texts)
 
 
 def main(argv: list[str] | None = None) -> int:

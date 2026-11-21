@@ -14,6 +14,10 @@ removals, as tracked files under `datapipeline/registry/`.
   on the Document (`apply_document_facts`): `scripts/document_facts.py` derives them.
 - `kept_text.json`: passages a review found still hold their live text though the
   release report's stability score says otherwise, each with its reason (1.10b).
+- `held_texts.json`: the texts a document holds back for now (4.3), one entry per text in
+  the document's reading order, each with its place and reader-facing heading and the
+  removal entries whose passages it stands for. The build writes them into the
+  document's `metadata.held_texts`, which the reader lists as links to read online.
 
 IDs, anchors and short fields only, never passage text. Adapters call
 `resolve_document_id`; writers and reports call `resolve_passage_id`. A unit the registry
@@ -37,6 +41,7 @@ PASSAGES_DIR = "passages"
 REDIRECTS_FILE = "redirects.json"
 REMOVALS_FILE = "removals.json"
 KEPT_TEXT_FILE = "kept_text.json"
+HELD_TEXTS_FILE = "held_texts.json"
 # A row whose anchor's text moved to another piece is renamed `<anchor>#moved-<item>`, a
 # name no build emits, and the anchor takes a new ID (Carter, 31 Oct 2026; 1.10b).
 MOVED_MARK = "#moved-"
@@ -94,6 +99,7 @@ class WorkRegistry:
     redirects: list[dict] = field(default_factory=list)
     removals: list[dict] = field(default_factory=list)
     kept_text: list[dict] = field(default_factory=list)
+    held_texts: list[dict] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         self.document_by_key = {(w["collection"], w["source_key"]): w["document_id"]
@@ -120,7 +126,7 @@ def load_registry(directory: str = REGISTRY_DIR) -> WorkRegistry:
                 with open(os.path.join(folder, name), encoding="utf-8") as f:
                     passages += [json.loads(line) for line in f if line.strip()]
     return WorkRegistry(read(WORKS_FILE), passages, read(REDIRECTS_FILE), read(REMOVALS_FILE),
-                        read(KEPT_TEXT_FILE))
+                        read(KEPT_TEXT_FILE), read(HELD_TEXTS_FILE))
 
 
 _current: WorkRegistry | None = None
@@ -337,6 +343,7 @@ def validate(registry: WorkRegistry) -> list[str]:
     problems += _validate_redirects(registry, documents)
     problems += _validate_removals(registry, documents)
     problems += _validate_kept_text(registry)
+    problems += _validate_held_texts(registry)
     return problems
 
 
@@ -656,6 +663,149 @@ def open_redirects(registry: WorkRegistry) -> list[dict]:
     return [r for r in registry.redirects if not r.get("closed_by")]
 
 
+# --------------------------------------------------------------------------- held texts
+
+_HELD_ID = re.compile(r"^ht-\d{4}$")
+HELD_LABEL_MAX = 60
+HELD_HEADING_MAX = 200
+
+
+def is_held_removal(entry: dict) -> bool:
+    """A removal entry whose passage is a held text (4.3): an open passage removal for a
+    translation in preparation in the councils (the gap register), or awaiting permission
+    (ADR 0001's partly published documents). Every other reason removes for good or
+    never removed the document's own text, and is never listed."""
+    if entry.get("closed_by") or entry.get("scope") != "passage":
+        return False
+    return entry.get("reason") == "awaiting-permission" or (
+        entry.get("reason") == "translation-in-preparation"
+        and entry.get("collection") == "councils")
+
+
+def _validate_held_texts(registry: WorkRegistry,
+                         documents: set[str] | None = None) -> list[str]:
+    """`held_texts.json` against the removal registry: every held removal belongs to
+    exactly one entry (`removal_ids`), so a closed or new one fails until the file is
+    changed with it. `shared_removal_ids` names a passage another entry owns, for a text
+    that lies wholly inside a passage straddling two texts; it counts for nothing else.
+    Where each entry sits in the build is the build's check (`held_texts_for`).
+    An entry is never deleted, so its ID is never reused: one whose text is no longer held
+    (a translation found) is closed with `closed_by` and `closed_on`, as removals are, and
+    counts for nothing else. `documents`, when given, limits the check to those documents' entries and removals
+    (the build checks the documents it builds)."""
+    out = []
+    if documents is not None:
+        registry = replace(
+            registry,
+            held_texts=[h for h in registry.held_texts if h.get("document_id") in documents],
+            removals=[e for e in registry.removals if e.get("document_id") in documents])
+    removals = {e.get("id"): e for e in registry.removals}
+    owner: dict[str, str] = {}
+    seen: set[str] = set()
+    for h in registry.held_texts:
+        name = h.get("id")
+        if not _HELD_ID.match(str(name)):
+            out.append(f"held text {name!r}: id is not ht-NNNN")
+        if name in seen:
+            out.append(f"held text {name} appears twice")
+        seen.add(name)
+        if h.get("document_id") not in registry.entry_by_document:
+            out.append(f"held text {name}: document {h.get('document_id')} is not in "
+                       f"{WORKS_FILE}")
+        for k, limit in (("label", HELD_LABEL_MAX), ("heading", HELD_HEADING_MAX)):
+            value = h.get(k)
+            if not isinstance(value, str) or not value.strip():
+                out.append(f"held text {name}: no {k}")
+            elif len(value) > limit:
+                out.append(f"held text {name}: {k} is over {limit} characters")
+        if h.get("after_anchor") is not None and not isinstance(h["after_anchor"], str):
+            out.append(f"held text {name}: after_anchor is not a string or null")
+        url = h.get("url")
+        if url is not None and not str(url).startswith(("https://", "http://")):
+            out.append(f"held text {name}: url {url!r} is not a web address")
+        if not h.get("added_by") or not _DATE.match(str(h.get("added_on"))):
+            out.append(f"held text {name}: needs added_by and an ISO added_on")
+        if bool(h.get("closed_by")) != bool(h.get("closed_on")):
+            out.append(f"held text {name}: closed_by and closed_on go together")
+        if h.get("closed_by"):
+            continue
+        own, shared = h.get("removal_ids") or [], h.get("shared_removal_ids") or []
+        if not own and not shared:
+            out.append(f"held text {name}: names no removal")
+        for rid in own + shared:
+            e = removals.get(rid)
+            if e is None:
+                out.append(f"held text {name}: removal {rid} is not in {REMOVALS_FILE}")
+            elif not is_held_removal(e):
+                out.append(f"held text {name}: removal {rid} is closed or not a held "
+                           "passage removal")
+            elif e.get("document_id") != h.get("document_id"):
+                out.append(f"held text {name}: removal {rid} is another document's")
+        for rid in own:
+            if rid in owner:
+                out.append(f"held text {name}: removal {rid} already belongs to "
+                           f"{owner[rid]}")
+            owner.setdefault(rid, name)
+    for h in open_held_texts(registry):
+        for rid in h.get("shared_removal_ids") or []:
+            if owner.get(rid) in (None, h.get("id")):
+                out.append(f"held text {h.get('id')}: shared removal {rid} belongs to no "
+                           "other entry")
+    for e in registry.removals:
+        if is_held_removal(e) and e.get("id") not in owner:
+            out.append(f"removal {e.get('id')} ({e.get('anchor')}) is held but belongs to "
+                       f"no entry of {HELD_TEXTS_FILE}")
+    return out
+
+
+def open_held_texts(registry: WorkRegistry) -> list[dict]:
+    """The entries the build writes: closed ones are kept as the record, not listed."""
+    return [h for h in registry.held_texts if not h.get("closed_by")]
+
+
+def held_text_problems(registry: WorkRegistry | None, documents: set[str]) -> list[str]:
+    """The registry check of `held_texts.json`, for the given documents only."""
+    return _validate_held_texts(registry or current(), documents)
+
+
+def held_texts_for(document: Document, registry: WorkRegistry | None = None) -> list[dict]:
+    """The document's held texts as `metadata.held_texts` carries them (4.3), in reading
+    order: `{key, label, heading, after_anchor, after_chapter_key, url}`. `after_anchor`
+    is the built passage the text follows, null before the first. Raises ValueError when
+    an entry's `after_anchor` is not a passage of this build or the entries' places go
+    backwards, so a rebuilt document cannot strand its list."""
+    entries = [h for h in open_held_texts(registry or current())
+               if h.get("document_id") == document.id]
+    index = {p.anchor: i for i, p in enumerate(document.passages)}
+    chapter = {p.anchor: p.chapter_key for p in document.passages}
+    out, previous = [], -1
+    for h in entries:
+        after = h.get("after_anchor")
+        if after is not None and after not in index:
+            raise ValueError(f"REFUSING: {document.title}: held text {h['id']} follows "
+                             f"{after}, which the build does not emit")
+        place = -1 if after is None else index[after]
+        if place < previous:
+            raise ValueError(f"REFUSING: {document.title}: held text {h['id']} comes "
+                             "before the entry above it; held_texts.json is out of order")
+        previous = place
+        out.append({"key": h["id"], "label": h["label"], "heading": h["heading"],
+                    "after_anchor": after,
+                    "after_chapter_key": None if after is None else chapter[after],
+                    "url": h.get("url")})
+    return out
+
+
+def attach_held_texts(document: Document, registry: WorkRegistry | None = None
+                      ) -> Document:
+    """The document with `metadata.held_texts` set from the registry, or unchanged when
+    it holds none (no key is written)."""
+    held = held_texts_for(document, registry)
+    if not held:
+        return document
+    return replace(document, metadata={**(document.metadata or {}), "held_texts": held})
+
+
 # --------------------------------------------------------------------------- reconcile
 
 @dataclass
@@ -876,6 +1026,8 @@ def write_registry(registry: WorkRegistry, directory: str = REGISTRY_DIR) -> Non
                                 key=lambda r: (r["document_id"], r["old_anchor"])))
     dump(KEPT_TEXT_FILE, sorted(registry.kept_text,
                                 key=lambda e: (e["document_id"], e["anchor"])))
+    if registry.held_texts:
+        dump(HELD_TEXTS_FILE, registry.held_texts)   # in reading order, never sorted
     dump(REMOVALS_FILE, sorted(registry.removals,
                                key=lambda e: (e["collection"], e["document_id"],
                                               e.get("anchor") or "")))

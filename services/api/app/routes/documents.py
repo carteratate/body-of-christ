@@ -6,7 +6,7 @@ import asyncpg
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app import card_notes, corpus_lifecycle, corpus_schema
+from app import card_notes, corpus_lifecycle, corpus_schema, held_texts
 from app.auth.verify import verify_supabase_jwt
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
@@ -103,6 +103,12 @@ _OUTLINE_NEIGHBORS_SQL = """
 _LEGACY_CHAPTER_KEYS_SQL = """
     SELECT chapter_key FROM chunks c WHERE document_id = $1 AND chapter_key IS NOT NULL{visible}
     GROUP BY chapter_key ORDER BY min(position)
+"""
+
+# The visible passages a document's held texts follow (4.3), with their chapters.
+_HELD_ANCHORS_SQL = """
+    SELECT anchor, chapter_key FROM chunks c
+    WHERE document_id = $1 AND anchor = ANY($2::text[]){visible}
 """
 
 # The contents tree (migration 0040), with a flag for any node whose anchor no longer
@@ -268,13 +274,16 @@ def _document_facts(doc_row) -> DocumentFacts | None:
 
 def _document_response(doc_row, works: list[WorkInfo] | None = None) -> DocumentResponse:
     access = doc_row["reader_access"]
+    metadata = doc_row["metadata"]
     return DocumentResponse(
         id=str(doc_row["id"]), collection=doc_row["collection"], title=doc_row["title"],
-        author=doc_row["author"], year=doc_row["year"], translation=doc_row.get("translation"), metadata=doc_row["metadata"],
+        author=doc_row["author"], year=doc_row["year"], translation=doc_row.get("translation"),
+        metadata=held_texts.public_metadata(metadata),
         chunk_count=doc_row["cnt"], reader_access=access,
-        source_url=(source_url(doc_row["collection"], doc_row["metadata"])
+        source_url=(source_url(doc_row["collection"], metadata)
                     if access == "excerpt" else None),
         facts=_document_facts(doc_row), works=works or [],
+        held_count=held_texts.held_count(metadata),
         overview_notes=card_notes.overview_notes(doc_row["metadata"]),
     )
 
@@ -415,8 +424,9 @@ async def get_document_toc(
     doc_id: str,
     user: AuthUser | None = Depends(require_document_access),
 ) -> TocResponse:
-    """Ordered chapter list for the reader's pickers + Contents drawer, and the
-    document's contents tree when it has a current one."""
+    """Ordered chapter list for the reader's pickers + Contents drawer, the document's
+    contents tree when it has a current one, and its held texts (4.3) when their list
+    is current."""
     doc_uuid = _parse_doc_id(doc_id)
     pool = _require_pool()
     try:
@@ -429,10 +439,13 @@ async def get_document_toc(
                 chapter_rows = await conn.fetch(toc_sql, doc_uuid)
                 contents_rows = await _fetch_contents_rows(conn, doc_uuid, schema)
                 works = await _fetch_works(conn, doc_uuid, schema)
-                return doc_row, chapter_rows, contents_rows, works
+                anchors = held_texts.anchors_to_check(doc_row["metadata"])
+                held_rows = (await conn.fetch(_with_visible(_HELD_ANCHORS_SQL, schema),
+                                              doc_uuid, anchors) if anchors else [])
+                return doc_row, chapter_rows, contents_rows, works, held_rows
 
-            (doc_row, chapter_rows, contents_rows,
-             works) = await corpus_schema.run_with_fallback(load, conn)
+            (doc_row, chapter_rows, contents_rows, works,
+             held_rows) = await corpus_schema.run_with_fallback(load, conn)
     except HTTPException:
         raise
     except Exception as exc:
@@ -441,9 +454,12 @@ async def get_document_toc(
 
     chapters = [TocEntry(chapter_key=r["chapter_key"], chapter_label=r["chapter_label"])
                 for r in chapter_rows]
-    contents = _contents_tree(doc_uuid, contents_rows, [c.chapter_key for c in chapters])
+    chapter_keys = [c.chapter_key for c in chapters]
+    contents = _contents_tree(doc_uuid, contents_rows, chapter_keys)
+    held = held_texts.resolve(doc_uuid, doc_row["metadata"], chapter_keys,
+                              {r["anchor"]: r["chapter_key"] for r in held_rows})
     return TocResponse(document=_document_response(doc_row, works), chapters=chapters,
-                       contents=contents)
+                       contents=contents, held_texts=held)
 
 
 _PASSAGE_FIELDS = f""",

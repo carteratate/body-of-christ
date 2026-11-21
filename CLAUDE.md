@@ -190,6 +190,16 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   check `datapipeline/checks/source_links.py` cannot place on the vendored page keep the
   plain URL through `app/source_link_misses.json`, which it generates; rerun it after a
   publish that changes those passages.
+- `documents.metadata.held_texts` — **held texts in their place** (item 4.3, #394; no
+  migration). The texts a document holds back (a council's gap text, a run of a papal
+  document's paragraphs awaiting permission) as `{key, label, heading, after_anchor,
+  after_chapter_key, url}`, in reading order. Source of truth is
+  `datapipeline/registry/held_texts.json`, checked against the removal registry by
+  `registry.validate` and placed against the build by `build()`, which writes the list;
+  a stage carries it and the release report lists it. `/toc` returns it as `held_texts`
+  with each link resolved (the entry's, else `held_text_url`, else `url`) and drops a stale
+  list whole; `/documents/{id}` and `/sources` return only `held_count`; no returned
+  `metadata` carries it. Held texts never reach search. Live has no list until 4.3's publish.
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
   Places for what the cleanup decides. 2.2w's writer fills them, and every existing row
@@ -439,9 +449,9 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | POST | `/guest/claim` | Transfer guest work into a new account |
 | GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
 | DELETE | `/searches/{id}` | Retrievals cascade |
-| GET | `/documents/{id}`, `/{id}/toc`, `/{id}/reader` | Reader: metadata, chapter list, one chapter. `/toc` and `/reader` return 403 `reader_restricted` for an excerpt-only document (§4); all three return 410 with a tombstone or 404 with a redirect for a retired one (§4, 2.4a) |
+| GET | `/documents/{id}`, `/{id}/toc`, `/{id}/reader` | Reader: metadata, chapter list, one chapter. `/toc` also returns `held_texts` and the document `held_count` (§4, 4.3). `/toc` and `/reader` return 403 `reader_restricted` for an excerpt-only document (§4); all three return 410 with a tombstone or 404 with a redirect for a retired one (§4, 2.4a) |
 | GET/PUT | `/reading-progress`, `/reading-progress/{doc_id}` | Reader position |
-| GET | `/sources` | All documents with chunk counts and `reader_access`; the list is cached 1h in memory, reader access is read fresh |
+| GET | `/sources` | All documents with chunk counts, `reader_access` and `held_count` (4.3); the list is cached 1h in memory, reader access is read fresh |
 | POST | `/evaluate`, `/evaluate/explain` | Collection scoring; 10/day |
 | POST/GET/PATCH/DELETE | `/bookmarks`, `/bookmarks/{id}` | PATCH body is `{note}` |
 | POST | `/product-feedback` | In-app feedback; allows anonymous |

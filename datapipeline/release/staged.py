@@ -15,9 +15,10 @@ adds the publish checks:
 - `index.dedup_collision_rate:<collection>`: the share of same-document passage pairs
   within two positions whose vectors exceed the API's dedup threshold, beside the live
   figure; flagged above 5% (C-09). Informs RF-1; fails nothing.
-- the document-facts diff (2.3) and the works diff (3.2), user impact, the staging
-  storage and the projected database size, and the 10% shrink and churn warnings that
-  used to stop a publish.
+- the document-facts diff (2.3), the works diff (3.2), the held-texts diff (4.3:
+  `metadata.held_texts` entries added, removed or changed per document), user impact,
+  the staging storage and the projected database size, and the 10% shrink and churn
+  warnings that used to stop a publish.
 
 Writes publish.json and a "Publish checks" section at the end of report.md, then records
 `<sha256 of report.json and publish.json>:<sha256 of the staged rows>` in
@@ -224,6 +225,61 @@ async def point_checks(conn, qdrant, name: str, documents: dict[str, list[Docume
     return {"counts": counts, "mismatches": mismatches, "hash_failures": hash_failures}
 
 
+async def text_changes(conn, collections: list[str]) -> dict[str, int]:
+    """Per staged collection, how many passages keep their live ID with different
+    stored text. Informs; fails nothing (4.3's publish shows 0)."""
+    rows = await conn.fetch(
+        """SELECT d.collection, count(*) AS n
+           FROM staging.chunks s JOIN staging.documents d ON d.id = s.document_id
+           JOIN public.chunks c ON c.id = s.id
+           WHERE d.collection = ANY($1::text[]) AND c.content IS DISTINCT FROM s.content
+           GROUP BY d.collection""", collections)
+    found = {r["collection"]: r["n"] for r in rows}
+    return {c: found.get(c, 0) for c in collections}
+
+
+async def live_point_changes(qdrant, name: str, live: str | None,
+                             documents: dict[str, list[Document]]) -> dict:
+    """Per staged collection, how many staged points differ from the live point of the
+    same ID: in any payload field (its `content` is the passage text), and in
+    `embed_sha256` (the embedding input); how many staged points have no live point of
+    their ID, and how many live points of the collection staging lacks (the switch drops
+    them). Informs; fails nothing. A publish that changes only document metadata (4.3's held texts)
+    shows 0 and 0."""
+    from writers.qdrant import retrieve, scroll_points
+
+    out = {}
+    if live is None:
+        return out
+    for collection, docs in documents.items():
+        payload = embed = compared = missing = 0
+        fields: set[str] = set()
+        for d in docs:
+            ids = [p.id for p in d.passages]
+            new = await retrieve(qdrant, name, ids, with_vectors=False)
+            old = await retrieve(qdrant, live, ids, with_vectors=False)
+            for i in ids:
+                if i not in new:
+                    continue
+                if i not in old:
+                    missing += 1
+                    continue
+                compared += 1
+                a, b = old[i].payload or {}, new[i].payload or {}
+                if a != b:
+                    payload += 1
+                    fields |= {k for k in a.keys() | b.keys() if a.get(k) != b.get(k)}
+                embed += a.get("embed_sha256") != b.get("embed_sha256")
+        staged_ids = {p.id for d in docs for p in d.passages}
+        live_only = 0
+        async for page in scroll_points(qdrant, live, collection):
+            live_only += sum(str(p.id) not in staged_ids for p in page)
+        out[collection] = {"compared": compared, "payload_changed": payload,
+                           "embed_sha256_changed": embed, "missing_live": missing,
+                           "live_only": live_only, "fields": sorted(fields)}
+    return out
+
+
 def collision_rate(vectors: dict[str, list[float]], order: list[str]) -> tuple[int, int]:
     """(collisions, pairs) among passages within DEDUP_WINDOW positions of each other."""
     ids = [i for i in order if i in vectors]
@@ -314,6 +370,55 @@ async def works_diff(conn, collections: list[str]) -> list[dict]:
             out.append({"document_id": r["document_id"], "work_key": r["work_key"],
                         "collection": r["collection"], "new_work": r["new_work"],
                         "changed": changed})
+    return out
+
+
+async def held_texts_diff(conn, collections: list[str]) -> list[dict]:
+    """Per document, the held-text entries (4.3, `metadata.held_texts`) staging adds,
+    removes or changes against live, matched by `key`."""
+    rows = await conn.fetch(
+        """SELECT s.id::text AS id, s.collection, s.title,
+                  s.metadata->'held_texts' AS staged, d.metadata->'held_texts' AS live
+           FROM staging.documents s LEFT JOIN public.documents d ON d.id = s.id
+           WHERE s.collection = ANY($1::text[])
+             AND (s.metadata->'held_texts') IS DISTINCT FROM (d.metadata->'held_texts')
+           ORDER BY s.collection, s.title, s.id""", collections)
+    out = []
+    for r in rows:
+        staged = {h["key"]: h for h in json.loads(r["staged"] or "[]")}
+        live = {h["key"]: h for h in json.loads(r["live"] or "[]")}
+        changed = [{"key": k, "live": live[k], "staged": staged[k]}
+                   for k in staged.keys() & live.keys() if staged[k] != live[k]]
+        out.append({"id": r["id"], "collection": r["collection"], "title": r["title"],
+                    "added": [h for k, h in staged.items() if k not in live],
+                    "removed": sorted(live.keys() - staged.keys()),
+                    "changed": sorted(changed, key=lambda c: c["key"]),
+                    # Order matters to the reader, also among entries that stay.
+                    "reordered": [k for k in staged if k in live] != [k for k in live
+                                                                       if k in staged]})
+    return out
+
+
+async def metadata_diff(conn, collections: list[str]) -> list[dict]:
+    """Per document, the `metadata` keys other than `held_texts` that staging changes
+    against live: the apply replaces the whole object, so this shows what else a
+    held-texts publish (4.3) would change."""
+    rows = await conn.fetch(
+        """SELECT s.id::text AS id, s.collection, s.title,
+                  coalesce(s.metadata, '{}') - 'held_texts' AS staged,
+                  coalesce(d.metadata, '{}') - 'held_texts' AS live
+           FROM staging.documents s JOIN public.documents d ON d.id = s.id
+           WHERE s.collection = ANY($1::text[])
+             AND coalesce(s.metadata, '{}') - 'held_texts'
+                 <> coalesce(d.metadata, '{}') - 'held_texts'
+           ORDER BY s.collection, s.title, s.id""", collections)
+    out = []
+    for r in rows:
+        staged, live = json.loads(r["staged"] or "{}"), json.loads(r["live"] or "{}")
+        out.append({"id": r["id"], "collection": r["collection"], "title": r["title"],
+                    "keys": sorted(k for k in staged.keys() | live.keys()
+                                   if (k in staged) != (k in live)
+                                   or staged.get(k) != live.get(k))})
     return out
 
 
@@ -433,6 +538,27 @@ def works_md(diff: list[dict]) -> list[str]:
     return lines + [""]
 
 
+def held_texts_md(diff: list[dict]) -> list[str]:
+    """4.3's "Held texts" section (`document.held_texts`): per document, every entry
+    added, removed or changed against live."""
+    lines = ["", "## Held texts (4.3)", ""]
+    if not diff:
+        return lines + ["No document's held texts differ from live.", ""]
+    for d in diff:
+        lines.append(f"- {d['collection']} `{d['id']}` {d['title']}: {len(d['added'])} added, "
+                     f"{len(d['removed'])} removed, {len(d['changed'])} changed"
+                     + (", reordered" if d["reordered"] else ""))
+        lines += [f"  - + {h['key']} {h['label']} · {h['heading']} (after "
+                  f"{h['after_anchor'] or 'the start'})" for h in d["added"]]
+        lines += [f"  - − {k}" for k in d["removed"]]
+        lines += [f"  - ~ {c['key']}: " + "; ".join(
+                      f"{f} {c['live'].get(f)!r} → {c['staged'].get(f)!r}"
+                      for f in sorted(c["staged"].keys() | c["live"].keys())
+                      if c["live"].get(f) != c["staged"].get(f))
+                  for c in d["changed"]]
+    return lines + [""]
+
+
 def publish_md(data: dict) -> str:
     ids = data["ids"]
     lines = ["", "## Publish checks (2.2w)", "",
@@ -443,8 +569,21 @@ def publish_md(data: dict) -> str:
              f"{len(ids['new']):,}.",
              f"- Points: {len(data['points']['mismatches'])} mismatches; embedding input hash "
              f"failures {len(data['points']['hash_failures'])}.",
+             "- Passages whose stored text differs from live (same ID): " + ", ".join(
+                 f"{c} {n:,}" for c, n in data["text_changes"].items()) + ".",
+             "- Points against live (same ID): " + ("; ".join(
+                 f"{c} {d['payload_changed']:,} of {d['compared']:,} with another payload "
+                 f"({', '.join(d['fields']) or 'no field'}), {d['embed_sha256_changed']:,} "
+                 f"with another embedding input, {d['missing_live']:,} with no live point, "
+                 f"{d['live_only']:,} live points not staged"
+                 for c, d in data["live_points"].items()) or "no live collection") + ".",
              f"- Document facts changed on {len(data['facts_diff'])} documents; works "
-             f"inside documents changed or new: {len(data['works_diff'])}.",
+             f"inside documents changed or new: {len(data['works_diff'])}; held texts "
+             f"changed on {len(data['held_texts_diff'])} documents; other metadata on "
+             f"{len(data['metadata_diff'])}"
+             + (": " + "; ".join(f"{d['title']} ({', '.join(d['keys'])})"
+                                 for d in data["metadata_diff"][:20])
+                if data["metadata_diff"] else "") + ".",
              f"- Staging holds {data['storage']['staging_bytes'] / 2**20:,.1f} MiB; database "
              f"{data['storage']['database_bytes'] / 2**20:,.1f} MiB, projected after apply "
              f"{data['storage']['projected_after_apply_bytes'] / 2**20:,.1f} MiB.", "",
@@ -460,6 +599,7 @@ def publish_md(data: dict) -> str:
         lines += ["", "Warnings (not failures):", ""] + [f"- {w}" for w in data["warnings"]]
     lines += facts_md(data["facts_diff"])
     lines += works_md(data["works_diff"])
+    lines += held_texts_md(data["held_texts_diff"])
     lines += [f"Publish checks {'PASS' if data['pass'] else 'FAIL'}."]
     if data["failures"]:
         lines += [""] + [f"- {f}" for f in data["failures"][:50]]
@@ -501,8 +641,12 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
         "points": await point_checks(conn, qdrant, row["qdrant_collection"], staged,
                                      row["embed_model"]),
         "dedup": await dedup_checks(conn, qdrant, row["qdrant_collection"], live, staged),
+        "live_points": await live_point_changes(qdrant, row["qdrant_collection"], live, staged),
+        "text_changes": await text_changes(conn, collections),
         "facts_diff": await facts_diff(conn, collections),
         "works_diff": await works_diff(conn, collections),
+        "held_texts_diff": await held_texts_diff(conn, collections),
+        "metadata_diff": await metadata_diff(conn, collections),
         "user_impact": await user_impact(conn),
         "storage": await storage(conn),
         "warnings": await size_warnings(conn, collections),
