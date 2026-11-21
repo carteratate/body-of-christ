@@ -131,6 +131,14 @@ describe("DocumentOverview held texts", () => {
     expect(cells()).toEqual(["2Session 13"]);
   });
 
+  it("counts mixed cells as entries when paging", async () => {
+    const many = Array.from({ length: 30 }, (_, i) => held(`ht-${i}`, `Session ${20 + i}`, `Text ${i}`, ["s15/3", "s15"]));
+    api.getToc.mockResolvedValue(constance(many));
+    render(<DocumentOverview docId="constance" mobileHeader={null} />);
+    expect(await screen.findByText("Showing 30 of 33 entries")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Show more entries" })).toBeTruthy();
+  });
+
   it("lists held texts under a contents tree", async () => {
     api.getToc.mockResolvedValue({
       ...constance([HELD[0]]),

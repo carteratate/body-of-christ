@@ -402,6 +402,7 @@ async def test_held_texts_publish_changes_no_passage_or_point(world, tmp_path):
                                                "embed_sha256_changed": 0, "missing_live": 0,
                                                "live_only": 0, "fields": []}
     assert data["text_changes"] == {"medieval": 0}
+    assert data["metadata_diff"] == []
     [diff] = data["held_texts_diff"]
     assert (diff["id"], [h["key"] for h in diff["added"]], diff["removed"],
             diff["changed"]) == (DOC_A, ["ht-0001"], [], [])
@@ -425,5 +426,22 @@ async def test_report_counts_a_stored_text_change(world):
         await conn.execute("UPDATE staging.chunks SET content = 'Grace perfects nature!' "
                            "WHERE id = $1::uuid", pid(DOC_A, "a/1"))
         assert await text_changes(conn, ["medieval"]) == {"medieval": 1}
+    finally:
+        await conn.close()
+
+
+async def test_report_lists_other_metadata_keys_a_stage_changes(world):
+    """The apply replaces the whole metadata object, so a changed link shows."""
+    from release.staged import metadata_diff
+
+    await world.runner().stage(STAGE)
+    conn = await world.connect()
+    try:
+        assert await metadata_diff(conn, ["medieval"]) == []
+        await conn.execute("""UPDATE staging.documents SET metadata = metadata
+                              || '{"held_text_url": "https://example.org/other"}'
+                              WHERE id = $1::uuid""", DOC_A)
+        [diff] = await metadata_diff(conn, ["medieval"])
+        assert (diff["id"], diff["keys"]) == (DOC_A, ["held_text_url"])
     finally:
         await conn.close()

@@ -399,6 +399,28 @@ async def held_texts_diff(conn, collections: list[str]) -> list[dict]:
     return out
 
 
+async def metadata_diff(conn, collections: list[str]) -> list[dict]:
+    """Per document, the `metadata` keys other than `held_texts` that staging changes
+    against live: the apply replaces the whole object, so this shows what else a
+    held-texts publish (4.3) would change."""
+    rows = await conn.fetch(
+        """SELECT s.id::text AS id, s.collection, s.title,
+                  coalesce(s.metadata, '{}') - 'held_texts' AS staged,
+                  coalesce(d.metadata, '{}') - 'held_texts' AS live
+           FROM staging.documents s JOIN public.documents d ON d.id = s.id
+           WHERE s.collection = ANY($1::text[])
+             AND coalesce(s.metadata, '{}') - 'held_texts'
+                 <> coalesce(d.metadata, '{}') - 'held_texts'
+           ORDER BY s.collection, s.title, s.id""", collections)
+    out = []
+    for r in rows:
+        staged, live = json.loads(r["staged"] or "{}"), json.loads(r["live"] or "{}")
+        out.append({"id": r["id"], "collection": r["collection"], "title": r["title"],
+                    "keys": sorted(k for k in staged.keys() | live.keys()
+                                   if staged.get(k) != live.get(k))})
+    return out
+
+
 def _plain(value):
     return str(value) if value is not None and not isinstance(value, (int, str, bool)) else value
 
@@ -556,7 +578,11 @@ def publish_md(data: dict) -> str:
                  for c, d in data["live_points"].items()) or "no live collection") + ".",
              f"- Document facts changed on {len(data['facts_diff'])} documents; works "
              f"inside documents changed or new: {len(data['works_diff'])}; held texts "
-             f"changed on {len(data['held_texts_diff'])} documents.",
+             f"changed on {len(data['held_texts_diff'])} documents; other metadata on "
+             f"{len(data['metadata_diff'])}"
+             + (": " + "; ".join(f"{d['title']} ({', '.join(d['keys'])})"
+                                 for d in data["metadata_diff"][:20])
+                if data["metadata_diff"] else "") + ".",
              f"- Staging holds {data['storage']['staging_bytes'] / 2**20:,.1f} MiB; database "
              f"{data['storage']['database_bytes'] / 2**20:,.1f} MiB, projected after apply "
              f"{data['storage']['projected_after_apply_bytes'] / 2**20:,.1f} MiB.", "",
@@ -619,6 +645,7 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
         "facts_diff": await facts_diff(conn, collections),
         "works_diff": await works_diff(conn, collections),
         "held_texts_diff": await held_texts_diff(conn, collections),
+        "metadata_diff": await metadata_diff(conn, collections),
         "user_impact": await user_impact(conn),
         "storage": await storage(conn),
         "warnings": await size_warnings(conn, collections),

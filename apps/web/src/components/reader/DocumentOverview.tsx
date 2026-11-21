@@ -253,6 +253,8 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
 
   const collectionMeta = getCollectionMeta(documentInfo.collection);
   const language = sectionLanguage(documentInfo.collection);
+  // With held texts among them the cells are not all sections.
+  const entryPlural = held.length > 0 ? "entries" : language.plural;
   const facts = documentInfo.facts ?? null;
   const attribution = [
     formatAttribution(documentInfo.author, facts),
@@ -389,7 +391,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
 
             {matchingChapters.length === 0 ? (
               <div className="rounded-md border border-brand-muted/20 bg-brand-surface px-4 py-8 text-center">
-                <p className="text-sm text-brand-muted">No {language.plural} match that search.</p>
+                <p className="text-sm text-brand-muted">No {entryPlural} match that search.</p>
                 <button type="button" onClick={() => { setQuery(""); setVisibleLimit(SECTION_BATCH_SIZE); }} className="mt-2 text-sm text-brand-accent hover:underline">Clear search</button>
               </div>
             ) : (
@@ -414,9 +416,9 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                 )}
                 {visibleLimit < matchingChapters.length && (
                   <div className="mt-4 flex flex-col items-center gap-2">
-                    <p className="text-xs text-brand-muted">Showing {visibleChapters.length.toLocaleString()} of {matchingChapters.length.toLocaleString()} {language.plural}</p>
+                    <p className="text-xs text-brand-muted">Showing {visibleChapters.length.toLocaleString()} of {matchingChapters.length.toLocaleString()} {entryPlural}</p>
                     <button type="button" onClick={() => setVisibleLimit((limit) => limit + SECTION_BATCH_SIZE)} className="min-h-11 rounded-md border border-brand-accent px-4 text-sm font-medium text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
-                      Show more {language.plural}
+                      Show more {entryPlural}
                     </button>
                   </div>
                 )}
