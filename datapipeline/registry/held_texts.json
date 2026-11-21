@@ -64,9 +64,7 @@
   "heading": "Decree on a papal election during the council",
   "after_anchor": null,
   "removal_ids": [
-   "rm-0638",
-   "rm-0639",
-   "rm-0640"
+   "rm-0638"
   ],
   "url": null,
   "added_by": "4.3",
@@ -78,7 +76,10 @@
   "label": "Basel, Session 8",
   "heading": "That there ought to be only one council",
   "after_anchor": null,
-  "removal_ids": [],
+  "removal_ids": [
+   "rm-0639",
+   "rm-0640"
+  ],
   "shared_removal_ids": [
    "rm-0638"
   ],

@@ -386,7 +386,8 @@ async def test_held_texts_publish_changes_no_passage_or_point(world, tmp_path):
             data["ids"]["new"]) == (5, 0, 0, [])
     assert data["points"]["mismatches"] == [] and data["points"]["hash_failures"] == []
     assert data["live_points"]["medieval"] == {"compared": 5, "payload_changed": 0,
-                                               "embed_sha256_changed": 0, "fields": []}
+                                               "embed_sha256_changed": 0, "missing_live": 0,
+                                               "fields": []}
     [diff] = data["held_texts_diff"]
     assert (diff["id"], [h["key"] for h in diff["added"]], diff["removed"],
             diff["changed"]) == (DOC_A, ["ht-0001"], [], [])

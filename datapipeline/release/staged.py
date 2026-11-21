@@ -228,8 +228,9 @@ async def point_checks(conn, qdrant, name: str, documents: dict[str, list[Docume
 async def live_point_changes(qdrant, name: str, live: str | None,
                              documents: dict[str, list[Document]]) -> dict:
     """Per staged collection, how many staged points differ from the live point of the
-    same ID: in any payload field, and in `embed_sha256` (the embedding input). Informs;
-    fails nothing. A publish that changes only document metadata (4.3's held texts)
+    same ID: in any payload field (its `content` is the passage text), and in
+    `embed_sha256` (the embedding input); and how many staged points have no live point
+    of their ID. Informs; fails nothing. A publish that changes only document metadata (4.3's held texts)
     shows 0 and 0."""
     from writers.qdrant import retrieve
 
@@ -237,14 +238,17 @@ async def live_point_changes(qdrant, name: str, live: str | None,
     if live is None:
         return out
     for collection, docs in documents.items():
-        payload = embed = compared = 0
+        payload = embed = compared = missing = 0
         fields: set[str] = set()
         for d in docs:
             ids = [p.id for p in d.passages]
             new = await retrieve(qdrant, name, ids, with_vectors=False)
             old = await retrieve(qdrant, live, ids, with_vectors=False)
             for i in ids:
-                if i not in new or i not in old:
+                if i not in new:
+                    continue
+                if i not in old:
+                    missing += 1
                     continue
                 compared += 1
                 a, b = old[i].payload or {}, new[i].payload or {}
@@ -253,7 +257,8 @@ async def live_point_changes(qdrant, name: str, live: str | None,
                     fields |= {k for k in a.keys() | b.keys() if a.get(k) != b.get(k)}
                 embed += a.get("embed_sha256") != b.get("embed_sha256")
         out[collection] = {"compared": compared, "payload_changed": payload,
-                           "embed_sha256_changed": embed, "fields": sorted(fields)}
+                           "embed_sha256_changed": embed, "missing_live": missing,
+                           "fields": sorted(fields)}
     return out
 
 
@@ -525,7 +530,7 @@ def publish_md(data: dict) -> str:
              "- Points against live (same ID): " + ("; ".join(
                  f"{c} {d['payload_changed']:,} of {d['compared']:,} with another payload "
                  f"({', '.join(d['fields']) or 'no field'}), {d['embed_sha256_changed']:,} "
-                 "with another embedding input"
+                 f"with another embedding input, {d['missing_live']:,} with no live point"
                  for c, d in data["live_points"].items()) or "no live collection") + ".",
              f"- Document facts changed on {len(data['facts_diff'])} documents; works "
              f"inside documents changed or new: {len(data['works_diff'])}; held texts "
