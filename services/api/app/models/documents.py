@@ -23,6 +23,9 @@ class DocumentResponse(BaseModel):
     facts: Optional[DocumentFacts] = None
     works: list[WorkInfo] = []
     status: Literal["current"] = "current"
+    # Texts of this document held back for now and read online instead (4.3). `/toc`
+    # lists them; `metadata` never carries them.
+    held_count: int = 0
 
 
 class ReaderChunk(BaseModel):
@@ -102,9 +105,24 @@ class ContentsNode(BaseModel):
     children: list["ContentsNode"] = []
 
 
+class HeldText(BaseModel):
+    """A text of the document that is not on TheoCorpus at present (corpus cleanup 4.3):
+    a council's gap text, or a run of paragraphs awaiting permission. It has no passage
+    and no text here; `url` opens it online. It follows the passage `after_anchor`, in
+    chapter `after_chapter_key`, or comes before every passage when both are None."""
+    key: str
+    label: str
+    heading: str
+    after_anchor: Optional[str] = None
+    after_chapter_key: Optional[str] = None
+    url: str
+
+
 class TocResponse(BaseModel):
     document: DocumentResponse
     chapters: list[TocEntry]
     # The contents tree's roots, or None when the document has no current tree; the
     # reader then navigates by `chapters` alone.
     contents: Optional[list[ContentsNode]] = None
+    # In reading order; empty when the document holds none or its list is stale.
+    held_texts: list[HeldText] = []
