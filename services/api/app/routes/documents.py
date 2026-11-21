@@ -6,7 +6,7 @@ import asyncpg
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app import corpus_lifecycle, corpus_schema
+from app import card_notes, corpus_lifecycle, corpus_schema
 from app.auth.verify import verify_supabase_jwt
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
@@ -275,6 +275,7 @@ def _document_response(doc_row, works: list[WorkInfo] | None = None) -> Document
         source_url=(source_url(doc_row["collection"], doc_row["metadata"])
                     if access == "excerpt" else None),
         facts=_document_facts(doc_row), works=works or [],
+        overview_notes=card_notes.overview_notes(doc_row["metadata"]),
     )
 
 

@@ -131,6 +131,7 @@ describe("consumeSearchStream", () => {
         text_source: null,
         text_status: null,
         official_latin_url: null,
+        card: null,
         reader_access: null,
         source_url: null,
         source_credit: null,

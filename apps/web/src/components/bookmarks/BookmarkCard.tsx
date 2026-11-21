@@ -13,6 +13,7 @@ import { excerptSourceCredit, excerptSourceUrl, isExcerptOnly } from "@/lib/read
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink, ThemedTooltip } from "@/components/common";
 import { MovedNote, PassageFacts, RemovalNotice } from "@/components/common/PassageFacts";
+import { copiedCredit, parsePassageCard } from "@/lib/card-notes";
 import { certaintyTag, formatAttribution, formatDate, sourceCreditOf, withoutAuthorPrefix } from "@/lib/attribution";
 import { parseTombstone } from "@/lib/corpus-lifecycle";
 import { PassageNotes, PassageText } from "@/components/common/PassageText";
@@ -96,7 +97,9 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
 
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
-    const credited = sourceCredit ? `\n\n${sourceCredit}` : "";
+    // With a 4.4 card, only the required notice travels with the text.
+    const copyCredit = copiedCredit(card, sourceCredit);
+    const credited = copyCredit ? `\n\n${copyCredit}` : "";
     // Text, then its notes, then the credit, which stays last.
     const notes = footnotes.length ? `\n\n${footnotesCopyText(footnotes)}` : "";
     const body = footnotes.length ? contentWithMarkers(content, footnotes) : stripVerseMarkers(content);
@@ -114,6 +117,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
   const excerptOnly = isExcerptOnly(source);
   const sourceHref = excerptSourceUrl(source);
   const sourceCredit = sourceCreditOf(source.facts, excerptSourceCredit(source));
+  const card = parsePassageCard(source.card);
   const contextHref = readerHref({
     docId: source.document_id,
     origin: "saved",
@@ -237,6 +241,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
             language={source.language}
             credit={sourceCredit}
             textLabels={passageTextLabels(source)}
+            card={card}
             supersededHref={source.facts?.superseded_by
               ? readerHref({ docId: source.facts.superseded_by, origin: "saved", returnKey: null })
               : null}

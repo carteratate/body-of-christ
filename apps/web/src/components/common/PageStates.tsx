@@ -6,6 +6,7 @@ import { DestinationPageSkeleton } from "./PageSkeletons";
 
 const PAGE_NAMES: Array<[string, string]> = [
   ["/guest/feedback", "Feedback"],
+  ["/guest/about/sources", "Sources"],
   ["/guest/about", "About TheoCorpus"],
   ["/sources", "Library"],
   ["/bookmarks", "Saved Passages"],
@@ -13,6 +14,7 @@ const PAGE_NAMES: Array<[string, string]> = [
   ["/discover", "Source Guide"],
   ["/settings", "Settings"],
   ["/feedback", "Feedback"],
+  ["/about/sources", "Sources"],
   ["/about", "About TheoCorpus"],
   ["/reader", "Document"],
   ["/signup", "Create Account"],
@@ -36,7 +38,7 @@ export function PageErrorState({ reset }: { reset: () => void }) {
   const isGuest = pathname.startsWith("/search/guest") || pathname.startsWith("/reader/guest") || pathname.startsWith("/guest/");
   const isPublic = pathname === "/" || pathname === "/login" || pathname === "/signup" || pathname === "/update-password" || pathname === "/onboarding-preview";
   const recoveryHref = isGuest
-    ? pathname === "/guest/about" || pathname === "/guest/feedback"
+    ? pathname === "/guest/about" || pathname === "/guest/about/sources" || pathname === "/guest/feedback"
       ? pathname
       : searchParams.get("preview") === "1" ? "/search/guest?preview=1" : "/search/guest"
     : isPublic ? "/" : "/search";
