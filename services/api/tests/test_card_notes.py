@@ -115,6 +115,16 @@ def test_cautions_come_from_the_passage_its_work_and_its_document_in_kind_order(
     assert card.cautions[-1].link.document_id == "doc-2"
 
 
+def test_a_document_note_leaves_out_the_works_it_names_in_except_work_keys():
+    notes = _notes({"text": "Preserved in Eusebius, Church History", "show": "record",
+                    "except_work_keys": ["mur"]})
+    assert _card(card_notes=notes, card_translator="").record == [
+        "Preserved in Eusebius, Church History"]
+    assert _card(card_notes=notes, card_translator="", work_key="other").record == [
+        "Preserved in Eusebius, Church History"]
+    assert _card(card_notes=notes, card_translator="", work_key="mur").record == []
+
+
 def test_a_passage_note_without_a_kind_is_still_shown_as_a_caution():
     assert [(c.kind, c.text) for c in _card(note="A note.").cautions] == [("wording", "A note.")]
 

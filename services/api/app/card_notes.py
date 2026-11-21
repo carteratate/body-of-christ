@@ -13,7 +13,8 @@ At most three slots under the text, each its own voice:
 The datapipeline stores each note with its kind and place (4.4 PR (b)): a document's,
 and its works', as `documents.metadata.card_notes` entries `{kind, text, show, work_key?}`
 (`show` is `card`, `record` or `overview`; a `record` or `overview` entry may have no
-kind); a passage's own note in `chunks.note` with its kind in `chunks.metadata.note_kind`;
+kind; a document's entry may name `except_work_keys`, works whose passages it does not
+cover, as the Muratorian Fragment is not covered by Caius's preservation note); a passage's own note in `chunks.note` with its kind in `chunks.metadata.note_kind`;
 the translator for the card in `documents.metadata.card_translator` (an empty string
 means the card names none, because the header or the notice already does), or a
 passage's own in `chunks.metadata.translator`. Every document such a publish writes
@@ -86,8 +87,11 @@ def entries(value: Any) -> list[dict]:
         if show == "card" and kind is None:
             continue
         work_key = e.get("work_key")
+        skip = e.get("except_work_keys")
         out.append({"kind": kind, "text": text, "show": show,
-                    "work_key": work_key if isinstance(work_key, str) else None})
+                    "work_key": work_key if isinstance(work_key, str) else None,
+                    "except_work_keys": [k for k in skip if isinstance(k, str)]
+                    if isinstance(skip, list) else []})
     return out
 
 
@@ -144,7 +148,8 @@ def build(*, card_version_value: Any, card_notes: Any, card_translator: Any,
     if card_version(card_version_value) is None:
         return None
     notes = [e for e in entries(card_notes)
-             if e["work_key"] is None or e["work_key"] == work_key]
+             if e["work_key"] == work_key
+             or (e["work_key"] is None and work_key not in e["except_work_keys"])]
     cautions: list[CardCaution] = []
     unofficial = text_labels.get("text_status") == "unofficial_english"
 
