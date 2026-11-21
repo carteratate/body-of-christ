@@ -41,11 +41,8 @@ import math
 from collections import defaultdict
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
-from datetime import timedelta
-
 from publication import lock_publishes
-
-ROLLBACK_WINDOW = timedelta(days=14)        # Carter, 4 Nov 2026 (4.1b step 12)
+from writers.apply import ROLLBACK_WINDOW
 BATCH_SIZE = 1000
 # The corpus's own tables. A reference from any other table is a user's (or a later
 # feature's) and keeps the row.
@@ -64,7 +61,6 @@ ACTIONS = {"a": "no action", "r": "restrict", "c": "cascade", "n": "set null",
 PAGE = 8192                 # a full-page image, before compression
 TUPLE_WAL = 100             # one heap delete or update record, generously
 TOAST_CHUNK = 1996          # bytes of a toasted value per toast row
-TOAST_THRESHOLD = 2000      # values above this may live in the toast table
 SAFETY = 2                  # WAL is kept until a checkpoint, and the last one's too
 MARGIN = 1 << 30            # room for Postgres to checkpoint and recover
 
@@ -145,6 +141,15 @@ async def passage_blocks(conn, refs: list[Reference], ids: Sequence[str],
             continue
         for i, n in (await _pointed_at(conn, ref, ids)).items():
             out[i][_user_reason(ref)] = n
+    # A reading position names a chapter, not a passage: its retired passages keep the
+    # chapter's label for the position (reading_progress.py's single-document GET).
+    if await conn.fetchval("SELECT to_regclass('public.reading_progress') IS NOT NULL"):
+        for r in await conn.fetch(
+                """SELECT c.id::text AS id, count(*) AS n FROM public.chunks c
+                   JOIN public.reading_progress rp ON rp.document_id = c.document_id
+                    AND rp.chapter_key = c.chapter_key
+                   WHERE c.id = ANY($1::uuid[]) GROUP BY 1""", list(ids)):
+            out[r["id"]]["users: public.reading_progress (its chapter)"] = r["n"]
     for r in await conn.fetch(
             """SELECT c.id::text AS id, t.reason_code FROM public.chunks c
                JOIN public.corpus_tombstones t
@@ -231,7 +236,7 @@ class WalEstimate:
     toast_pages: int = 0
     document_pages: int = 0         # documents and their parts
     document_rows: int = 0
-    outline_bytes: int = 0          # reader outlines rebuilt, at most twice their size
+    outline_bytes: int = 0          # reader outlines rebuilt, twice their size per batch
     tombstone_bytes: int = 0        # snapshots updated, at most twice their size
     vacuum_bytes: int = 0           # VACUUM (analyze) chunks, at most every page once
 
@@ -268,31 +273,53 @@ async def _distinct_pages(conn, table: str, column: str, ids: Sequence[str]) -> 
     return row["pages"], row["n"]
 
 
+# The columns of `chunks` that can be stored out of line.
+TOASTABLE = ("content", "annotation", "metadata", "search_vector", "annotation_vector",
+             "note")
+
+
 async def _estimate(conn, passages: list[str], documents: list[str]) -> WalEstimate:
     est = WalEstimate()
-    est.passage_pages, est.passage_rows = await _distinct_pages(conn, PASSAGES, "id", passages)
-    toast = await conn.fetchrow(
-        f"""SELECT coalesce(sum(
-                     ceil(CASE WHEN pg_column_size(content) > {TOAST_THRESHOLD}
-                               THEN pg_column_size(content) ELSE 0 END / {TOAST_CHUNK}.0)
-                   + ceil(CASE WHEN pg_column_size(annotation) > {TOAST_THRESHOLD}
-                               THEN pg_column_size(annotation) ELSE 0 END / {TOAST_CHUNK}.0)
-                   + ceil(CASE WHEN pg_column_size(metadata) > {TOAST_THRESHOLD}
-                               THEN pg_column_size(metadata) ELSE 0 END / {TOAST_CHUNK}.0)),
-                   0)::bigint AS rows,
-                   (SELECT coalesce(pg_relation_size(reltoastrelid), 0) FROM pg_class
-                    WHERE oid = 'public.chunks'::regclass) AS size
-            FROM public.chunks WHERE id = ANY($1::uuid[])""", passages)
-    est.toast_pages = min(toast["rows"], math.ceil(toast["size"] / PAGE))
+    # A heap page holding rows of two batches is written (and imaged) by each.
+    page = {r["id"]: r["page"] for r in await conn.fetch(
+        """SELECT id::text AS id, (ctid::text::point)[0] AS page FROM public.chunks
+           WHERE id = ANY($1::uuid[])""", passages)}
+    est.passage_rows = len(page)
+    est.passage_pages = sum(len({page[i] for i in passages[b:b + BATCH_SIZE] if i in page})
+                            for b in range(0, len(passages), BATCH_SIZE))
+    columns = [r["attname"] for r in await conn.fetch(
+        """SELECT attname FROM pg_attribute WHERE attrelid = 'public.chunks'::regclass
+           AND attname = ANY($1::text[]) AND NOT attisdropped""", list(TOASTABLE))]
+    # Every value stored out of line, whatever its size (Postgres moves values out once
+    # the whole row is too long); each toast row counted as its own page, per batch.
+    # Before Postgres 17 nothing says which values are out of line, so all count.
+    exact = await conn.fetchval("SELECT current_setting('server_version_num')::int >= 170000")
+    toasted = " + ".join(
+        (f"CASE WHEN pg_column_toast_chunk_id({c}) IS NULL THEN 0 ELSE " if exact else
+         f"CASE WHEN {c} IS NULL THEN 0 ELSE ")
+        + f"ceil(pg_column_size({c}) / {TOAST_CHUNK}.0) END" for c in columns) or "0"
+    est.toast_pages = await conn.fetchval(
+        f"""SELECT coalesce(sum({toasted}), 0)::bigint FROM public.chunks
+            WHERE id = ANY($1::uuid[])""", passages)
     for table, column in ((DOCUMENTS, "id"), *((t, "document_id") for t in sorted(DOCUMENT_PARTS))):
         pages, n = await _distinct_pages(conn, table, column, documents)
         est.document_pages += pages
         est.document_rows += n
+    size = await conn.fetchrow(
+        """SELECT pg_total_relation_size('public.documents') AS documents,
+                  pg_total_relation_size('public.document_chapters') AS chapters,
+                  pg_total_relation_size('public.document_contents')
+                  + pg_total_relation_size('public.document_works') AS parts,
+                  pg_total_relation_size('public.corpus_tombstones') AS tombstones""")
+    if documents:
+        # Their toast and indexes, at most all of each table once.
+        est.document_pages += math.ceil((size["documents"] + size["parts"]) / PAGE)
     if passages:
-        est.outline_bytes = 2 * await conn.fetchval(
-            "SELECT pg_total_relation_size('public.document_chapters')")
-        est.tombstone_bytes = 2 * await conn.fetchval(
-            "SELECT pg_total_relation_size('public.corpus_tombstones')")
+        # Each batch clears and rebuilds outlines (documents and document_chapters,
+        # deleted and inserted): at most twice both tables, per batch.
+        batches = math.ceil(len(passages) / BATCH_SIZE)
+        est.outline_bytes = batches * 2 * (size["documents"] + size["chapters"])
+        est.tombstone_bytes = 2 * size["tombstones"]
     est.vacuum_bytes = await conn.fetchval("SELECT pg_total_relation_size('public.chunks')")
     return est
 
@@ -319,7 +346,14 @@ async def plan(conn, release: str) -> Plan:
 async def read_plan(conn, release: str) -> Plan:
     """`plan` inside a READ ONLY transaction, so a dry run cannot write."""
     async with conn.transaction(readonly=True):
+        await _no_row_security(conn)
         return await plan(conn, release)
+
+
+async def _no_row_security(conn) -> None:
+    """A policy that hid user rows from the reference checks would let a delete cascade
+    to them unseen; with row security off, such a query errors instead."""
+    await conn.execute("SET LOCAL row_security = off")
 
 
 # --------------------------------------------------------------------------- report
@@ -362,7 +396,7 @@ def describe(p: Plan) -> list[str]:
               for reason, n, refs in _reasons(p.kept_documents)]
     batches = math.ceil(len(p.passages) / BATCH_SIZE) + math.ceil(len(p.documents) / BATCH_SIZE)
     lines += ["", f"Batches: {batches} of at most {BATCH_SIZE:,} rows, each its own transaction",
-              "", "Transaction log (WAL), upper estimates before compression:",
+              "", "Transaction log (WAL), estimated generously, before compression:",
               f"  passages: {w.passage_rows:,} rows on {w.passage_pages:,} heap pages, "
               f"{w.toast_pages:,} toast pages",
               f"  documents and their parts: {w.document_rows:,} rows on "
@@ -405,18 +439,25 @@ _KEEP_LOCATION_SQL = """
 """
 
 
-async def _batch_start(conn, release: str) -> None:
+async def _batch_start(conn, release: str) -> list[Reference]:
+    """Start a batch: the publish lock, the refusals again, and the foreign keys read
+    afresh under a table lock that keeps a new one from being added until the commit
+    (ADD FOREIGN KEY needs the same lock; only a publish writes these tables)."""
     await conn.execute("SET LOCAL lock_timeout = '2s'")
+    await _no_row_security(conn)
     await lock_publishes(conn)
+    await conn.execute(
+        "LOCK TABLE public.chunks, public.documents IN SHARE ROW EXCLUSIVE MODE")
     problems = await refusals(conn, release)
     if problems:
         raise RetentionRefused("REFUSING: " + "; ".join(problems))
+    return await references(conn)
 
 
-async def _delete_passages(conn, release: str, refs: list[Reference], batch: list[str],
+async def _delete_passages(conn, release: str, batch: list[str],
                            result: PurgeResult) -> None:
     async with conn.transaction():
-        await _batch_start(conn, release)
+        refs = await _batch_start(conn, release)
         # Locking the rows first makes any user row added from here on wait for this
         # commit (its foreign key check needs them), and the check below, a new
         # statement, sees every one committed before.
@@ -438,10 +479,10 @@ async def _delete_passages(conn, release: str, refs: list[Reference], batch: lis
     result.outlines += len(documents)
 
 
-async def _delete_documents(conn, release: str, refs: list[Reference], batch: list[str],
+async def _delete_documents(conn, release: str, batch: list[str],
                             result: PurgeResult) -> None:
     async with conn.transaction():
-        await _batch_start(conn, release)
+        refs = await _batch_start(conn, release)
         locked = [r["id"] for r in await conn.fetch(
             """SELECT id::text AS id FROM public.documents
                WHERE id = ANY($1::uuid[]) AND retired_at IS NOT NULL
@@ -476,7 +517,7 @@ async def execute(conn, release: str, *, disk_free_bytes: int | None,
     work += [("documents", _delete_documents, p.documents[i:i + batch_size])
              for i in range(0, len(p.documents), batch_size)]
     for number, (kind, run, batch) in enumerate(work, 1):
-        await run(conn, release, p.references, batch, result)
+        await run(conn, release, batch, result)
         result.batches = number
         progress(f"batch {number}/{len(work)} ({kind}) committed: {result.passages:,} "
                  f"passages and {result.documents:,} documents deleted so far, "
@@ -520,15 +561,20 @@ async def old_collection(conn, qdrant, release: str, alias: str) -> OldCollectio
     return OldCollection(name=name, points=points, problems=problems)
 
 
-async def drop_old_collection(conn, qdrant, release: str, alias: str, confirm: str) -> str:
-    """Delete the old collection, once nothing needs it and `confirm` names it."""
+async def drop_old_collection(conn, qdrant, release: str, alias: str,
+                              confirm: str) -> tuple[str, bool]:
+    """Delete the old collection, once nothing needs it and `confirm` names it.
+    Returns its name and whether this call deleted it (False: it was already gone)."""
     async with conn.transaction():
         await lock_publishes(conn)
         old = await old_collection(conn, qdrant, release, alias)
-        if old.problems:
+        gone = f"'{old.name}' does not exist (already deleted?)"
+        if old.problems and old.problems != [gone]:
             raise RetentionRefused("REFUSING: " + "; ".join(old.problems))
         if confirm != old.name:
             raise RetentionRefused(f"REFUSING: --confirm must name the collection, "
                                    f"'{old.name}'")
-        await qdrant.delete_collection(old.name)
-    return old.name
+        if not old.problems:
+            await qdrant.delete_collection(old.name)
+    # Already absent: a retry after a deletion whose response was lost has nothing to do.
+    return old.name, not old.problems

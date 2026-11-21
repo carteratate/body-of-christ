@@ -311,9 +311,37 @@ async def _retired_anchor(conn, doc_uuid: uuid.UUID, anchor: str,
         "SELECT id::text FROM chunks WHERE document_id = $1 AND anchor = $2",
         doc_uuid, anchor)
     if passage is None:
-        return await _deleted_passage_removal(conn, doc_uuid, "anchor", anchor, schema)
+        # The anchor as linked first, then without the `#retired-<release>` suffix 2.2w
+        # gave the row when a current passage took its anchor (its redirect keeps the old).
+        bare = anchor.split(_RETIRED_SUFFIX, 1)[0]
+        return (await _deleted_passage_redirect(conn, doc_uuid, anchor, schema)
+                or await _deleted_passage_removal(conn, doc_uuid, "anchor", anchor, schema)
+                or (await _deleted_passage_redirect(conn, doc_uuid, bare, schema)
+                    if bare != anchor else None))
     resolved = (await resolve_passages(conn, [passage], schema)).get(passage)
     return resolved if resolved is not None and resolved.status != "current" else None
+
+
+async def _deleted_passage_redirect(conn, doc_uuid: uuid.UUID, anchor: str,
+                                   schema: CorpusSchema) -> Resolution | None:
+    """Where a deleted passage went, by the passage redirect its old anchor names: the
+    redirect followed to a current passage, or the removal of the passage it ends at."""
+    if not schema.redirects:
+        return None
+    old = await conn.fetchval(
+        "SELECT old_id::text FROM corpus_redirects WHERE entity = 'passage' "
+        "AND old_document_id = $1 AND old_anchor = $2 ORDER BY id DESC LIMIT 1",
+        doc_uuid, anchor)
+    if old is None:
+        return None
+    moved, last = await _follow_passage_redirects(conn, {old})
+    if old in moved:
+        return Resolution("moved", redirect=moved[old])
+    if schema.tombstones and old in last:
+        rows = await conn.fetch(_TOMBSTONE_SQL, _uuids([last[old]]), [])
+        if rows:
+            return Resolution("removed", tombstone=tombstone(rows[0]))
+    return None
 
 
 async def _deleted_passage_removal(conn, doc_uuid: uuid.UUID, key: str, value: str,

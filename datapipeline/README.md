@@ -88,15 +88,16 @@ python3 publish.py rollback --release 2026-12-bible    # undo an applied publish
 python3 publish.py discard  --release 2026-12-bible    # abandon a publish never applied
 
 # After the 14-day rollback window (4.1b step 13); each is a dry run without --execute
-python3 publish.py purge-retired       --release 2026-12-bible [--execute --disk-free-gb <GB>]
-python3 publish.py drop-old-collection --release 2026-12-bible [--execute --confirm <name>]
+python3 publish.py purge-retired       --release republish-2026-10 [--execute --disk-free-gb <GB>]
+python3 publish.py drop-old-collection --release republish-2026-10 [--execute --confirm <name>]
 ```
 
 The release name is the publish ID: `corpus_publishes.id`, the lock entry's `release`,
 and the suffix of `chunks-<release>`. Use 3 to 63 lowercase letters, digits and hyphens.
 The lock entry's steps are `stage` for `stage` and `discard`, `apply` for `apply`,
 `switch`, `cleanup` and a live `purge-retired` or `drop-old-collection`, and `rollback`
-for `rollback`. `status` only reads. `report` reads
+for `rollback`. Those two work across the whole corpus, so only an `all` entry for the
+release approves them. `status` only reads. `report` reads
 too, but recording a passing report's hash needs the release's `stage` approval.
 
 Keep `DATABASE_URL` on a direct or session-mode connection (Supabase's pooler on port
@@ -128,7 +129,8 @@ which transaction mode (port 6543) could leave held on a pooled connection.
   `--retire-only --collection <name>` retires the documents an open `document` removal
   entry names, with nothing staged.
 - `switch` moves the alias after `apply --no-switch`. Qdrant applies the move atomically.
-- `rollback` is the only rollback path (D11). Within the 14-day rollback window it undoes
+- `rollback` is the only rollback path (D11). Within the 14-day rollback window (it refuses
+  after it, since step 13 may have deleted what it would restore) it undoes
   an applied publish from its before-snapshot in one transaction, retires every row the
   publish inserted under a `rolled-back` tombstone, moves user rows back from the remap's
   ledger, then points the alias back. Roll back
@@ -154,7 +156,8 @@ After the rollback window for a publish that was applied (`retention.py`, 4.1b s
 - `purge-retired` deletes retired passages and documents that nothing points at (D3).
   It reads the foreign keys into `chunks` and `documents` from the database, and keeps a
   retired row that any row outside the corpus tables points at (a later table included),
-  that a corpus row's `superseded_by` names, or whose removal reason holds the text for
+  that a corpus row's `superseded_by` names, that sits in the chapter a reading position
+  names (it labels the position), or whose removal reason holds the text for
   its return (`awaiting-permission`, `translation-in-preparation`; ADR 0001). The dry run
   lists the keys, what would go, what stays and why, and an upper estimate of the
   transaction log the deletes and the `VACUUM` after them write. A live run works in

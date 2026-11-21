@@ -348,8 +348,9 @@ async def purge_retired(args, lock_path=None) -> int:
         if not args.execute:
             print("\n".join(retention.describe(await retention.read_plan(conn, args.release))))
             return 0
-        row = await _publish_row(conn, args.release)
-        guard_publish("apply", row["collections"], args.release, lock_path)
+        await _publish_row(conn, args.release)
+        # Corpus-wide, whatever the release published: only an "all" entry approves it.
+        guard_publish("apply", sorted(SOURCE_ADAPTERS), args.release, lock_path)
         free = None if args.disk_free_gb is None else int(args.disk_free_gb * (1 << 30))
         result = await retention.execute(conn, args.release, disk_free_bytes=free)
     finally:
@@ -384,14 +385,16 @@ async def drop_old_collection(args, lock_path=None) -> int:
             for problem in old.problems:
                 print(f"  - {problem}")
             return 0
-        row = await _publish_row(conn, args.release)
-        guard_publish("apply", row["collections"], args.release, lock_path)
-        name = await retention.drop_old_collection(conn, client, args.release,
+        await _publish_row(conn, args.release)
+        # The old collection holds every collection's points: an "all" entry only.
+        guard_publish("apply", sorted(SOURCE_ADAPTERS), args.release, lock_path)
+        name, deleted = await retention.drop_old_collection(conn, client, args.release,
                                                    settings.QDRANT_LIVE_ALIAS, args.confirm)
     finally:
         await conn.close()
         await client.close()
-    print(f"deleted Qdrant collection '{name}'")
+    print(f"deleted Qdrant collection '{name}'" if deleted else
+          f"Qdrant collection '{name}' was already absent; nothing to delete")
     return 0
 
 

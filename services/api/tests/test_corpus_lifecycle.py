@@ -662,6 +662,8 @@ async def test_notices_and_redirects_survive_deleting_retired_rows(db, cluster):
     p_hop = "00000000-0000-0000-0000-0000000000d2"     # moved to p_cut, then p_cut removed
     gone_doc = "00000000-0000-0000-0000-00000000d005"  # removed document, deleted
     moved_doc = "00000000-0000-0000-0000-00000000d006"  # moved document, deleted
+    p_went = "00000000-0000-0000-0000-0000000000d3"    # merged into P_CURRENT, deleted
+    p_taken = "00000000-0000-0000-0000-0000000000d4"   # its anchor taken, merged, deleted
     cluster.sql(f"""
         INSERT INTO documents (id, collection, title, author, year, translation, metadata,
                                retired_at)
@@ -674,7 +676,11 @@ async def test_notices_and_redirects_survive_deleting_retired_rows(db, cluster):
         VALUES ('{p_cut}', '{LIVE}', -1000030, 'c9/p1', 'c9', 'Chapter 9', 'Works 9.1',
                 'cut text', now()),
                ('{p_hop}', '{LIVE}', -1000031, 'c8/p1', 'c8', 'Chapter 8', 'Works 8.1',
-                'hop text', now());
+                'hop text', now()),
+               ('{p_went}', '{LIVE}', -1000032, 'c7/p1', 'c7', 'Chapter 7', 'Works 7.1',
+                'went text', now()),
+               ('{p_taken}', '{LIVE}', -1000033, 'c6/p1#retired-rel-1', 'c6', 'Chapter 6',
+                'Works 6.1', 'taken text', now());
         INSERT INTO corpus_tombstones (entity, id, document_id, retired_at, publish_id,
             removal_key, rule, reason_code, public_reason, church_act, snapshot)
         VALUES ('passage', '{p_cut}', '{LIVE}', now(), 'rel-1', 'rm-30', 'G',
@@ -690,7 +696,11 @@ async def test_notices_and_redirects_survive_deleting_retired_rows(db, cluster):
         VALUES ('passage', '{p_hop}', '{LIVE}', 'c8/p1', '{p_cut}', '{LIVE}', 'c9/p1',
                 'moved', 'rel-1'),
                ('document', '{moved_doc}', '{moved_doc}', NULL, '{LIVE}', '{LIVE}', NULL,
-                'moved', 'rel-1');
+                'moved', 'rel-1'),
+               ('passage', '{p_went}', '{LIVE}', 'c7/p1', '{P_CURRENT}', '{LIVE}', 'c1/p1',
+                'merged', 'rel-1'),
+               ('passage', '{p_taken}', '{LIVE}', 'c6/p1', '{P_CURRENT}', '{LIVE}', 'c1/p1',
+                'merged', 'rel-1');
         INSERT INTO retrievals (search_id, chunk_id, rank, reranker_score, explanation)
         VALUES ('{SEARCH}', '{p_hop}', 5, 0.5, 'why 5');
 
@@ -699,7 +709,7 @@ async def test_notices_and_redirects_survive_deleting_retired_rows(db, cluster):
         SET snapshot = t.snapshot || jsonb_build_object('anchor', c.anchor,
                                                         'chapter_key', c.chapter_key)
         FROM chunks c WHERE t.entity = 'passage' AND t.id = c.id AND c.id = '{p_cut}';
-        DELETE FROM chunks WHERE id = '{p_cut}';
+        DELETE FROM chunks WHERE id IN ('{p_cut}', '{p_went}', '{p_taken}');
         DELETE FROM documents WHERE id IN ('{gone_doc}', '{moved_doc}');
     """)
     try:
@@ -710,6 +720,16 @@ async def test_notices_and_redirects_survive_deleting_retired_rows(db, cluster):
             tombstone = raised.value.body["tombstone"]
             assert tombstone["public_reason"] == "Editor-written, not Gregory."
             assert tombstone["reference"] == "Works 9.1"
+
+        # An old anchor whose passage had a passage redirect and no anchor redirect.
+        chapter = await get_document_reader(LIVE, anchor="c7/p1", chapter=None, user=_user())
+        assert (chapter.chapter_key, chapter.highlight_anchor) == ("c1", "c1/p1")
+        assert chapter.redirected_from.anchor == "c7/p1"
+        # The same, linked by the `#retired-` anchor the row carried (the redirect keeps
+        # the anchor before the suffix).
+        chapter = await get_document_reader(LIVE, anchor="c6/p1#retired-rel-1", chapter=None,
+                                            user=_user())
+        assert (chapter.chapter_key, chapter.highlight_anchor) == ("c1", "c1/p1")
 
         with pytest.raises(CorpusLifecycleError) as raised:
             await get_document(gone_doc, user=_user())
@@ -732,7 +752,7 @@ async def test_notices_and_redirects_survive_deleting_retired_rows(db, cluster):
     finally:
         cluster.sql(f"""
             DELETE FROM retrievals WHERE chunk_id = '{p_hop}';
-            DELETE FROM corpus_redirects WHERE old_id IN ('{p_hop}', '{moved_doc}');
+            DELETE FROM corpus_redirects WHERE old_id IN ('{p_hop}', '{moved_doc}', '{p_went}', '{p_taken}');
             DELETE FROM corpus_tombstones WHERE id IN ('{p_cut}', '{gone_doc}');
             DELETE FROM chunks WHERE id = '{p_hop}';
         """)

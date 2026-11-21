@@ -35,8 +35,8 @@ P_FEEDBACK, P_GAP = p(14), p(15)        # named in feedback (set null); held cou
 P_RETIRED_SUPER = p(16)                 # retired, but a live row's superseded_by names it
 P_GONE_1, P_GONE_2 = p(20), p(21)
 P_HELD = p(30)
-P_READ = p(40)
-DELETABLE = {P_TOMB, P_MOVED, P_GONE_1, P_GONE_2, P_READ}
+P_READ = p(40)                          # in the chapter a reading position names
+DELETABLE = {P_TOMB, P_MOVED, P_GONE_1, P_GONE_2}
 
 SEED = f"""
     SELECT public.drop_corpus_staging();
@@ -165,18 +165,20 @@ async def test_dry_run_counts_what_goes_and_what_stays_and_writes_nothing(db):
         P_GAP: {"held: translation-in-preparation (ADR 0001)"},
         P_RETIRED_SUPER: {"corpus: public.chunks.superseded_by (set null)"},
         P_HELD: {"held: awaiting-permission (ADR 0001)"},
+        P_READ: {"users: public.reading_progress (its chapter)"},
     }
     assert {i: set(r) for i, r in plan.kept_documents.items()} == {
         HELD: {"its passages that stay", "held: awaiting-permission (ADR 0001)"},
-        READ: {"users: public.reading_progress.document_id (cascade)"},
+        READ: {"users: public.reading_progress.document_id (cascade)",
+               "its passages that stay"},
     }
     w = plan.wal
-    assert w.passage_rows == 5 and 1 <= w.passage_pages <= 5
+    assert w.passage_rows == 4 and 1 <= w.passage_pages <= 4
     assert w.toast_pages >= 1                       # P_TOMB's 13,000 characters
     assert w.document_rows == 3                     # GONE, its work and its contents node
     assert w.purge_bytes > 0 and w.vacuum_bytes > 0
     text = "\n".join(R.describe(plan))
-    assert "would delete: 5" in text and "A live run now would pass" in text
+    assert "would delete: 4" in text and "A live run now would pass" in text
 
 
 async def test_dry_run_reads_the_foreign_keys_so_a_new_table_counts(db):
@@ -260,12 +262,15 @@ async def test_the_cli_asks_the_lock_for_apply_before_any_write(db, monkeypatch,
         return await _conn(db)
     monkeypatch.setattr(publish, "_connect", connect)
     lock = tmp_path / "PUBLISH_LOCK.json"
-    lock.write_text(json.dumps({"reason": "test", "approved_applies": [
-        {"collection": "medieval", "release": RELEASE, "steps": ["rollback"]}]}))
     args = publish.build_parser().parse_args(
         ["purge-retired", "--release", RELEASE, "--execute", "--disk-free-gb", "100"])
-    with pytest.raises(ValueError, match="step 'apply'"):
-        await publish.purge_retired(args, lock)
+    # Another step for every collection, or apply for the release's one collection only:
+    # the purge is corpus-wide, so neither approves it.
+    for entry in ({"collection": "all", "release": RELEASE, "steps": ["rollback"]},
+                  {"collection": "medieval", "release": RELEASE, "steps": ["apply"]}):
+        lock.write_text(json.dumps({"reason": "test", "approved_applies": [entry]}))
+        with pytest.raises(ValueError, match="step 'apply', collection 'all'"):
+            await publish.purge_retired(args, lock)
     conn = await _conn(db)
     try:
         assert DELETABLE <= await _ids(conn, "chunks")
@@ -282,8 +287,8 @@ async def test_execute_deletes_only_what_nobody_points_at(db):
         lines = []
         result = await R.execute(conn, RELEASE, disk_free_bytes=1 << 40, batch_size=2,
                                  progress=lines.append)
-        assert (result.passages, result.documents, result.newly_kept) == (5, 1, 0)
-        assert result.batches == len(lines) == 4        # 3 of passages, 1 of documents
+        assert (result.passages, result.documents, result.newly_kept) == (4, 1, 0)
+        assert result.batches == len(lines) == 3        # 2 of passages, 1 of documents
         assert not DELETABLE & await _ids(conn, "chunks")
         assert await _ids(conn, "documents") == {LIVE, HELD, READ}
         # Nothing a user made is gone, and every notice and redirect is kept.
@@ -332,7 +337,7 @@ async def test_each_batch_commits_on_its_own(db):
         assert set(plan.passages[2:]) <= left           # batch 2 rolled back, 3 never ran
         result = await R.execute(conn, RELEASE, disk_free_bytes=1 << 40, batch_size=2,
                                  progress=lambda line: None)
-        assert (result.passages, result.documents) == (3, 1)
+        assert (result.passages, result.documents) == (2, 1)
     finally:
         await holder.close()
         await conn.close()
@@ -353,10 +358,31 @@ async def test_a_row_someone_points_at_after_the_plan_stays(db):
 
         result = await R.execute(conn, RELEASE, disk_free_bytes=1 << 40, batch_size=1,
                                  progress=lambda line: None, after_batch=bookmark)
-        assert (result.newly_kept, result.passages, result.documents) == (1, 4, 1)
+        assert (result.newly_kept, result.passages, result.documents) == (1, 3, 1)
         assert late in await _ids(conn, "chunks")
         assert await conn.fetchval("SELECT count(*) FROM bookmarks WHERE chunk_id = $1",
                                    late) == 1
+    finally:
+        await conn.close()
+
+
+async def test_each_batch_reads_the_foreign_keys_again(db):
+    """A table that starts pointing at passages between batches keeps its passage."""
+    conn = await _conn(db)
+    plan = await R.read_plan(conn, RELEASE)
+    late = plan.passages[1]
+    try:
+        async def add_table(number):
+            if number == 1:
+                await conn.execute(f"""
+                    CREATE TABLE study_blocks (id serial PRIMARY KEY,
+                        chunk_id uuid REFERENCES chunks(id) ON DELETE SET NULL);
+                    INSERT INTO study_blocks (chunk_id) VALUES ('{late}')""")
+
+        result = await R.execute(conn, RELEASE, disk_free_bytes=1 << 40, batch_size=1,
+                                 progress=lambda line: None, after_batch=add_table)
+        assert result.newly_kept == 1
+        assert await conn.fetchval("SELECT chunk_id::text FROM study_blocks") == late
     finally:
         await conn.close()
 
@@ -405,9 +431,13 @@ async def test_the_old_collection_is_deleted_only_when_named_and_unused(db):
         with pytest.raises(R.RetentionRefused, match="--confirm must name"):
             await R.drop_old_collection(conn, q, RELEASE, "live", "chunks-rel-old")
         assert await q.collection_exists("old-points")
-        assert await R.drop_old_collection(conn, q, RELEASE, "live", "old-points") == "old-points"
+        assert await R.drop_old_collection(conn, q, RELEASE, "live", "old-points") == (
+            "old-points", True)
         assert not await q.collection_exists("old-points")
         assert await q.collection_exists("chunks-rel-old")
+        # A retry (the first response lost) finds it gone and succeeds.
+        assert await R.drop_old_collection(conn, q, RELEASE, "live", "old-points") == (
+            "old-points", False)
     finally:
         await conn.close()
         await q.close()
