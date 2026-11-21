@@ -242,10 +242,11 @@ async def live_point_changes(qdrant, name: str, live: str | None,
                              documents: dict[str, list[Document]]) -> dict:
     """Per staged collection, how many staged points differ from the live point of the
     same ID: in any payload field (its `content` is the passage text), and in
-    `embed_sha256` (the embedding input); and how many staged points have no live point
-    of their ID. Informs; fails nothing. A publish that changes only document metadata (4.3's held texts)
+    `embed_sha256` (the embedding input); how many staged points have no live point of
+    their ID, and how many live points of the collection staging lacks (the switch drops
+    them). Informs; fails nothing. A publish that changes only document metadata (4.3's held texts)
     shows 0 and 0."""
-    from writers.qdrant import retrieve
+    from writers.qdrant import retrieve, scroll_points
 
     out = {}
     if live is None:
@@ -269,9 +270,13 @@ async def live_point_changes(qdrant, name: str, live: str | None,
                     payload += 1
                     fields |= {k for k in a.keys() | b.keys() if a.get(k) != b.get(k)}
                 embed += a.get("embed_sha256") != b.get("embed_sha256")
+        staged_ids = {p.id for d in docs for p in d.passages}
+        live_only = 0
+        async for page in scroll_points(qdrant, live, collection):
+            live_only += sum(str(p.id) not in staged_ids for p in page)
         out[collection] = {"compared": compared, "payload_changed": payload,
                            "embed_sha256_changed": embed, "missing_live": missing,
-                           "fields": sorted(fields)}
+                           "live_only": live_only, "fields": sorted(fields)}
     return out
 
 
@@ -546,7 +551,8 @@ def publish_md(data: dict) -> str:
              "- Points against live (same ID): " + ("; ".join(
                  f"{c} {d['payload_changed']:,} of {d['compared']:,} with another payload "
                  f"({', '.join(d['fields']) or 'no field'}), {d['embed_sha256_changed']:,} "
-                 f"with another embedding input, {d['missing_live']:,} with no live point"
+                 f"with another embedding input, {d['missing_live']:,} with no live point, "
+                 f"{d['live_only']:,} live points not staged"
                  for c, d in data["live_points"].items()) or "no live collection") + ".",
              f"- Document facts changed on {len(data['facts_diff'])} documents; works "
              f"inside documents changed or new: {len(data['works_diff'])}; held texts "

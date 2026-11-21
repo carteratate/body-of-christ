@@ -81,7 +81,7 @@ def _document() -> Document:
 def test_the_shipped_list_covers_every_held_removal_once():
     shipped = registry.current()
     assert _problems(shipped) == []
-    owned = [r for h in shipped.held_texts for r in h["removal_ids"]]
+    owned = [r for h in registry.open_held_texts(shipped) for r in h["removal_ids"]]
     assert len(owned) == len(set(owned))
     assert set(owned) == {e["id"] for e in shipped.removals if registry.is_held_removal(e)}
 
@@ -93,7 +93,7 @@ def test_the_shipped_counts():
     titles = {w["document_id"]: (w["collection"], w["title"]) for w in shipped.works}
     by_collection: dict[str, int] = {}
     by_title: dict[str, int] = {}
-    for h in shipped.held_texts:
+    for h in registry.open_held_texts(shipped):
         collection, title = titles[h["document_id"]]
         by_collection[collection] = by_collection.get(collection, 0) + 1
         by_title[title] = by_title.get(title, 0) + 1
@@ -268,14 +268,14 @@ def test_the_shipped_list_fits_the_build():
     """Every entry follows a passage the build emits, in order (the build's own check)."""
     from publication import build
 
-    held = {h["document_id"] for h in registry.current().held_texts}
+    held = {h["document_id"] for h in registry.open_held_texts(registry.current())}
     seen = set()
     for collection in ("councils", "encyclicals", "papal-documents"):
         for d in build(collection):
             if d.id in held:
                 seen.add(d.id)
                 assert len(d.metadata["held_texts"]) == sum(
-                    1 for h in registry.current().held_texts if h["document_id"] == d.id)
+                    1 for h in registry.open_held_texts(registry.current()) if h["document_id"] == d.id)
     assert seen == held
 
 
@@ -400,7 +400,7 @@ async def test_held_texts_publish_changes_no_passage_or_point(world, tmp_path):
     assert data["points"]["mismatches"] == [] and data["points"]["hash_failures"] == []
     assert data["live_points"]["medieval"] == {"compared": 5, "payload_changed": 0,
                                                "embed_sha256_changed": 0, "missing_live": 0,
-                                               "fields": []}
+                                               "live_only": 0, "fields": []}
     assert data["text_changes"] == {"medieval": 0}
     [diff] = data["held_texts_diff"]
     assert (diff["id"], [h["key"] for h in diff["added"]], diff["removed"],
