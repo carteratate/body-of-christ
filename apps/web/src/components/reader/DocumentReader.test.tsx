@@ -1092,6 +1092,39 @@ describe("corpus cleanup 2.4b: overview and later chapters", () => {
     expect(await screen.findByText("Anon · 1990 · World English Bible, Catholic Edition")).toBeTruthy();
   });
 
+  it("shows a 4.4 document's own notes in place of its facts' notes", async () => {
+    navigation.params = new Map([["from", "library"]]);
+    api.getToc.mockResolvedValue({
+      document: {
+        ...documentInfo("doc-a"), author: "Pseudo-Justin",
+        facts: { attribution_note: "Not by Justin Martyr. Riedweg (1994) proposes…", source_credit: "Sourced via CCEL.org" },
+        overview_notes: [
+          { kind: "authorship", text: "Riedweg (1994) proposes Marcellus of Ancyra as the author." },
+          { kind: null, text: "Preserved in Eusebius, Church History." },
+        ],
+      },
+      chapters: [{ chapter_key: "chapter-a", chapter_label: "Chapter A" }],
+    });
+    render(<DocumentReader docId="doc-a" />);
+    const notes = await screen.findByTestId("overview-notes");
+    expect(notes.textContent).toBe(
+      "AuthorshipRiedweg (1994) proposes Marcellus of Ancyra as the author.Preserved in Eusebius, Church History.");
+    expect(screen.queryByText(/Not by Justin Martyr/)).toBeNull();
+    // Where the text came from stays on the overview.
+    expect(screen.getByText("Sourced via CCEL.org")).toBeTruthy();
+  });
+
+  it("keeps the facts' notes on the overview of a document from before 4.4", async () => {
+    navigation.params = new Map([["from", "library"]]);
+    api.getToc.mockResolvedValue({
+      document: { ...documentInfo("doc-a"), facts: { notes: "Preserved in Eusebius." } },
+      chapters: [{ chapter_key: "chapter-a", chapter_label: "Chapter A" }],
+    });
+    render(<DocumentReader docId="doc-a" />);
+    expect(await screen.findByText("Preserved in Eusebius.")).toBeTruthy();
+    expect(screen.queryByTestId("overview-notes")).toBeNull();
+  });
+
   it("says what a papal document is and how it was issued (issue #330)", async () => {
     navigation.params = new Map([["from", "library"]]);
     api.getToc.mockResolvedValue({

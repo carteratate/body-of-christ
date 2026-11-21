@@ -66,12 +66,12 @@ export default async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
-  if (pathname === "/guest/about" || pathname === "/guest/feedback") {
+  if (pathname === "/guest/about" || pathname === "/guest/about/sources" || pathname === "/guest/feedback") {
     if (auth === "signed-in") return redirect(pathname.replace("/guest", ""));
     return supabaseResponse;
   }
 
-  if (auth === "signed-out" && (pathname === "/about" || pathname === "/feedback")) {
+  if (auth === "signed-out" && (pathname === "/about" || pathname === "/about/sources" || pathname === "/feedback")) {
     return redirect(`/guest${pathname}`);
   }
 

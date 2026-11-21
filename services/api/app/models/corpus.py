@@ -34,6 +34,44 @@ class DocumentFacts(BaseModel):
     work_title: Optional[str] = None   # from document_works when the passage has a work_key
 
 
+CautionKind = Literal["incomplete", "wording", "authorship", "authority"]
+
+
+class CardLink(BaseModel):
+    """A caution's link: an external page (`href`, opened in a new tab), or the reader's
+    current text of a superseded document (`document_id`, which the client turns into
+    its own reader path)."""
+    label: str
+    href: Optional[str] = None
+    document_id: Optional[str] = None
+
+
+class CardCaution(BaseModel):
+    """Slot 1, "Read with care": TheoCorpus's caution about the passage (4.4)."""
+    kind: CautionKind
+    text: str
+    link: Optional[CardLink] = None
+
+
+class PassageCard(BaseModel):
+    """The notes under an opened passage (corpus cleanup 4.4, issue #407): at most three
+    slots, each left empty when it has nothing to say. Sent only for a passage whose
+    document a 4.4 publish wrote (`metadata.card_version`); its absence means a response
+    from before that data, which clients render as they did."""
+    cautions: list[CardCaution] = []
+    # Slot 2, "About this text": the items of one line, joined by " · " on screen.
+    record: list[str] = []
+    # Slot 3: the rights holder's required notice, verbatim, or None.
+    notice: Optional[str] = None
+
+
+class OverviewNote(BaseModel):
+    """A document-wide note for the reader overview or the Library row (4.4). `kind` is
+    the caution kind for a caution, None for a note that is part of the record."""
+    kind: Optional[CautionKind] = None
+    text: str
+
+
 class WorkInfo(BaseModel):
     """One work inside a document (D6), with its own attribution."""
     work_key: str

@@ -28,6 +28,11 @@
   --color-brand-contrast-dark:  #000000;
   --color-brand-contrast-light: #ffffff;
   --color-brand-focus:          #ffffff;
+  /* The "Read with care" panel under an opened passage (4.4): a quiet darkening of the
+     card's tint, never the gold accent, so it reads the same on every collection. */
+  --color-brand-caution-panel:  rgba(0, 0, 0, 0.22);
+  /* The hairline above a required notice (4.4). */
+  --color-brand-hairline:       rgba(234, 230, 220, 0.12);
 
   /* A raised card's shadow (shadow-lift): a soft drop plus a hairline edge. It is built
      from theme colors, so it follows the theme. Pair it with bg-brand-surface-hover. */
@@ -84,6 +89,8 @@ body {
     --color-brand-danger:  #c0392b;
     --color-brand-delete:  #b91c1c;
     --color-brand-focus:   #000000;
+    --color-brand-caution-panel: rgba(255, 255, 255, 0.42);
+    --color-brand-hairline:      rgba(26, 22, 16, 0.14);
   }
 
   [data-theme="light"] body {
