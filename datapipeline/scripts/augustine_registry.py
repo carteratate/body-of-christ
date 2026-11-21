@@ -86,7 +86,7 @@ def pin_volumes(reg: registry.WorkRegistry) -> registry.WorkRegistry:
             w = {**w, "source_key": PINS[w["source_key"]]}
         works.append(w)
     return registry.WorkRegistry(works, reg.passages, reg.redirects, reg.removals,
-                                 reg.kept_text)
+                                 reg.kept_text, held_texts=reg.held_texts)
 
 
 def volume_documents(documents: list) -> list:
@@ -99,7 +99,7 @@ def register_works(reg: registry.WorkRegistry, documents: list, today: str
     """Each work of the split volume in works.json, under its title: the two pinned ones
     retitled, the 14 others registered as new."""
     reg = registry.WorkRegistry([dict(w) for w in reg.works], reg.passages, reg.redirects,
-                                reg.removals, reg.kept_text)
+                                reg.removals, reg.kept_text, held_texts=reg.held_texts)
     by_key = {w["source_key"]: w for w in reg.works if w["collection"] == COLLECTION}
     for d in volume_documents(documents):
         w = by_key.get(d.metadata["source_key"])
@@ -132,7 +132,7 @@ def move_rows(reg: registry.WorkRegistry, documents: list) -> registry.WorkRegis
         redirects.append({**r, "document_id": doc})
     kept = [{**e, "document_id": document_of(e["document_id"], e["anchor"])}
             for e in reg.kept_text]
-    return registry.WorkRegistry(reg.works, rows, redirects, reg.removals, kept)
+    return registry.WorkRegistry(reg.works, rows, redirects, reg.removals, kept, held_texts=reg.held_texts)
 
 
 def _without_mine(reg: registry.WorkRegistry) -> registry.WorkRegistry:
@@ -164,7 +164,7 @@ def _without_mine(reg: registry.WorkRegistry) -> registry.WorkRegistry:
                                        and r["passage_id"] not in open_old):
             r = {**r, "status": "redirected" if r["passage_id"] in open_old else "active"}
         rows.append(r)
-    return registry.WorkRegistry(reg.works, rows, redirects, removals, reg.kept_text)
+    return registry.WorkRegistry(reg.works, rows, redirects, removals, reg.kept_text, held_texts=reg.held_texts)
 
 
 def class_entries(reg: registry.WorkRegistry, documents: list, today: str,
@@ -232,7 +232,7 @@ def plan(reg: registry.WorkRegistry, live: dict[str, str], today: str):
         return None, entries, unreviewed, problems
     staged = registry.WorkRegistry(staged.works, staged.passages, staged.redirects,
                                    class_entries(staged, documents, today, base.removals),
-                                   staged.kept_text)
+                                   staged.kept_text, held_texts=staged.held_texts)
     rec = registry.reconcile(staged, documents, item=ITEM, today=today,
                              settle=settle_by_text(live), moved=lost_text(live))
     problems += rec.problems
@@ -244,7 +244,7 @@ def plan(reg: registry.WorkRegistry, live: dict[str, str], today: str):
     problems += unexplained
     updated = registry.WorkRegistry(staged.works, rec.rows, rec.redirects, staged.removals,
                                     sorted(kept + found_kept,
-                                           key=lambda e: (e["document_id"], e["anchor"])))
+                                           key=lambda e: (e["document_id"], e["anchor"])), held_texts=staged.held_texts)
     problems += registry.validate(updated)
     return updated, entries, [], problems
 

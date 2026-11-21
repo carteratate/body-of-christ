@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { BookOpen, ChevronLeft, Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppContext } from "@/components/layout/AppShell";
-import { getReadingProgress, ReaderMovedError, ReaderRemovedError, ReaderRestrictedError, type ContentsNode, type DocumentInfo, type ReadingProgress, type TocEntry } from "@/lib/api";
+import { getReadingProgress, ReaderMovedError, ReaderRemovedError, ReaderRestrictedError, type ContentsNode, type DocumentInfo, type HeldText, type ReadingProgress, type TocEntry } from "@/lib/api";
 import { loadToc } from "@/lib/reader-cache";
 import { ReaderRestrictedNotice } from "./ReaderRestrictedNotice";
 import { ReaderRemovedNotice } from "./ReaderRemovedNotice";
@@ -19,6 +19,8 @@ import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
 import { countByKind, normalizeForSearch } from "@/lib/contents-tree";
 import { ContentsTree } from "./ContentsTree";
+import { heldCountLabel, placeHeldTexts, type OverviewEntry } from "@/lib/held-texts";
+import { HeldCell } from "./HeldText";
 
 const ORIGINS = new Set(["search", "saved", "library", "history"]);
 const SECTION_BATCH_SIZE = 30;
@@ -62,6 +64,12 @@ function matchesSection(entry: TocEntry, rawQuery: string, collection: string): 
   return normalizeForSearch(entry.chapter_label).includes(term);
 }
 
+function matchesEntry(item: OverviewEntry, rawQuery: string, collection: string): boolean {
+  if (item.kind === "chapter") return matchesSection(item.entry, rawQuery, collection);
+  const term = normalizeForSearch(rawQuery.trim());
+  return !term || normalizeForSearch(`${item.held.label} ${item.held.heading}`).includes(term);
+}
+
 interface Props {
   docId: string;
   mobileHeader: ReactNode;
@@ -82,6 +90,8 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const [documentInfo, setDocumentInfo] = useState<DocumentInfo | null>(null);
   const [chapters, setChapters] = useState<TocEntry[]>([]);
   const [contents, setContents] = useState<ContentsNode[] | null>(null);
+  // Texts of the document read online instead (4.3), in reading order.
+  const [held, setHeld] = useState<HeldText[]>([]);
   const [progress, setProgress] = useState<ReadingProgress | null>(null);
   const [query, setQuery] = useState("");
   const [visibleLimit, setVisibleLimit] = useState(SECTION_BATCH_SIZE);
@@ -121,6 +131,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
       setDocumentInfo(toc.document);
       setChapters(toc.chapters);
       setContents(toc.contents?.length ? toc.contents : null);
+      setHeld(toc.held_texts ?? []);
       setProgress(null);
       setQuery("");
       setVisibleLimit(SECTION_BATCH_SIZE);
@@ -158,12 +169,12 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const loading = resolvedRequest !== requestKey && failedRequest !== requestKey;
   const error = failedRequest === requestKey;
 
+  // Chapters, and the held texts in their places among them.
   const matchingChapters = useMemo(() => {
     if (contents) return [];   // the tree does its own filtering
-    return chapters
-      .map((entry, index) => ({ entry, ordinal: index + 1 }))
-      .filter(({ entry }) => matchesSection(entry, query, documentInfo?.collection ?? ""));
-  }, [chapters, contents, documentInfo?.collection, query]);
+    return placeHeldTexts(chapters, held)
+      .filter((item) => matchesEntry(item, query, documentInfo?.collection ?? ""));
+  }, [chapters, contents, documentInfo?.collection, held, query]);
   const visibleChapters = matchingChapters.slice(0, visibleLimit);
 
   function openChapter(chapterKey: string, anchor?: string | null) {
@@ -242,6 +253,8 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
 
   const collectionMeta = getCollectionMeta(documentInfo.collection);
   const language = sectionLanguage(documentInfo.collection);
+  // With held texts among them the cells are not all sections.
+  const entryPlural = held.length > 0 ? "entries" : language.plural;
   const facts = documentInfo.facts ?? null;
   const attribution = [
     formatAttribution(documentInfo.author, facts),
@@ -297,6 +310,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
               {documentInfo.chunk_count.toLocaleString()} passages · {contents
                 ? treeSummary(contents)
                 : `${chapters.length.toLocaleString()} ${chapters.length === 1 ? language.singular : language.plural}`}
+              {held.length > 0 && ` · ${heldCountLabel(held.length)}`}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               {progress && (
@@ -340,6 +354,16 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
               filter={query}
               onOpen={(node) => openChapter(node.chapter_key, node.anchor)}
             />
+            {/* No document with a tree holds texts today: until one does, they are a
+                flat list under it rather than placed in the tree. */}
+            {held.length > 0 && (
+              <div className="mt-5">
+                <h3 className="text-sm font-semibold text-brand-primary">Read online</h3>
+                <div className="mt-2 grid min-w-0 gap-2 sm:grid-cols-2">
+                  {held.map((text) => <HeldCell key={text.key} held={text} />)}
+                </div>
+              </div>
+            )}
           </section>
           ) : (
           <section className="mt-7 rounded-lg border border-brand-muted/20 bg-brand-surface p-4 sm:p-6" aria-labelledby="overview-contents-heading">
@@ -348,7 +372,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
               <p className="mt-1 text-xs text-brand-muted">Open directly at the place you want to read.</p>
             </div>
 
-            {chapters.length > 12 && (
+            {chapters.length + held.length > 12 && (
               <label className="mb-4 flex min-w-0 items-center gap-2 rounded-md border border-brand-muted/30 bg-brand-surface px-3 focus-within:border-brand-accent">
                 <Search size={17} className="shrink-0 text-brand-muted" aria-hidden="true" />
                 <span className="sr-only">Search {language.plural}</span>
@@ -367,34 +391,34 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
 
             {matchingChapters.length === 0 ? (
               <div className="rounded-md border border-brand-muted/20 bg-brand-surface px-4 py-8 text-center">
-                <p className="text-sm text-brand-muted">No {language.plural} match that search.</p>
+                <p className="text-sm text-brand-muted">No {entryPlural} match that search.</p>
                 <button type="button" onClick={() => { setQuery(""); setVisibleLimit(SECTION_BATCH_SIZE); }} className="mt-2 text-sm text-brand-accent hover:underline">Clear search</button>
               </div>
             ) : (
               <>
                 {documentInfo.collection === "bible" ? (
                   <div className="grid w-full grid-cols-5 gap-2 sm:grid-cols-8 md:grid-cols-10">
-                    {visibleChapters.map(({ entry }) => (
-                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} aria-label={`${documentInfo.title} chapter ${bibleChapterLabel(entry)}`} className={`flex aspect-square w-full items-center justify-center rounded-md border border-brand-muted/25 bg-brand-bg text-sm font-medium text-brand-primary ${LIFT}`}>
-                        {bibleChapterLabel(entry)}
+                    {visibleChapters.map((item) => item.kind === "chapter" && (
+                      <button key={item.entry.chapter_key} type="button" onClick={() => openChapter(item.entry.chapter_key)} aria-label={`${documentInfo.title} chapter ${bibleChapterLabel(item.entry)}`} className={`flex aspect-square w-full items-center justify-center rounded-md border border-brand-muted/25 bg-brand-bg text-sm font-medium text-brand-primary ${LIFT}`}>
+                        {bibleChapterLabel(item.entry)}
                       </button>
                     ))}
                   </div>
                 ) : (
                   <div className="grid min-w-0 gap-2 sm:grid-cols-2">
-                    {visibleChapters.map(({ entry, ordinal }) => (
-                      <button key={entry.chapter_key} type="button" onClick={() => openChapter(entry.chapter_key)} className={`flex min-h-12 min-w-0 items-start gap-3 rounded-md border border-brand-muted/20 bg-brand-surface px-3 py-3 text-left ${LIFT}`}>
-                        <span className="shrink-0 text-xs font-medium text-brand-accent">{ordinal}</span>
-                        <span className="min-w-0 text-sm leading-snug text-brand-primary">{entry.chapter_label}</span>
+                    {visibleChapters.map((item) => item.kind === "held" ? <HeldCell key={item.held.key} held={item.held} /> : (
+                      <button key={item.entry.chapter_key} type="button" onClick={() => openChapter(item.entry.chapter_key)} className={`flex min-h-12 min-w-0 items-start gap-3 rounded-md border border-brand-muted/20 bg-brand-surface px-3 py-3 text-left ${LIFT}`}>
+                        <span className="shrink-0 text-xs font-medium text-brand-accent">{item.ordinal}</span>
+                        <span className="min-w-0 text-sm leading-snug text-brand-primary">{item.entry.chapter_label}</span>
                       </button>
                     ))}
                   </div>
                 )}
                 {visibleLimit < matchingChapters.length && (
                   <div className="mt-4 flex flex-col items-center gap-2">
-                    <p className="text-xs text-brand-muted">Showing {visibleChapters.length.toLocaleString()} of {matchingChapters.length.toLocaleString()} {language.plural}</p>
+                    <p className="text-xs text-brand-muted">Showing {visibleChapters.length.toLocaleString()} of {matchingChapters.length.toLocaleString()} {entryPlural}</p>
                     <button type="button" onClick={() => setVisibleLimit((limit) => limit + SECTION_BATCH_SIZE)} className="min-h-11 rounded-md border border-brand-accent px-4 text-sm font-medium text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
-                      Show more {language.plural}
+                      Show more {entryPlural}
                     </button>
                   </div>
                 )}

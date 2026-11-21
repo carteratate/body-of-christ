@@ -181,7 +181,7 @@ def main(argv: list[str] | None = None) -> int:
     kept += found
     problems += unexplained
     kept.sort(key=lambda e: (e["document_id"], e["anchor"]))
-    updated = registry.WorkRegistry(reg.works, rec.rows, rec.redirects, reg.removals, kept)
+    updated = registry.WorkRegistry(reg.works, rec.rows, rec.redirects, reg.removals, kept, held_texts=reg.held_texts)
     problems += registry.validate(updated)
 
     before = {r["passage_id"]: r["status"] for r in reg.passages}

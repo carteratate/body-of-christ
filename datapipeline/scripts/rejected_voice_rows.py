@@ -76,7 +76,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{r.title}, {r.first_anchor} to {r.last_anchor}: "
               f"{len(rv.expand(documents[r.document_id], r))} passages")
     print(f"{len(wanted)} passages in {len(ranges)} ranges; {changed} rows changed")
-    new = registry.WorkRegistry(reg.works, rows, reg.redirects, reg.removals, reg.kept_text)
+    new = registry.WorkRegistry(reg.works, rows, reg.redirects, reg.removals, reg.kept_text, held_texts=reg.held_texts)
     problems = registry.validate(new)
     if problems:
         print("\n".join(problems), file=sys.stderr)

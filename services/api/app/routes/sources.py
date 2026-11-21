@@ -6,7 +6,7 @@ import asyncpg
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from app import corpus_schema
+from app import corpus_schema, held_texts
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
@@ -63,6 +63,9 @@ class SourceDocument(BaseModel):
     # "excerpt": no reader; the Library links to `source_url` instead.
     reader_access: Literal["full", "excerpt"] = "full"
     source_url: Optional[str] = None
+    # Texts of this document read online instead (4.3, `metadata.held_texts`, which
+    # `metadata` here leaves out). It changes only at a publish, before the restart.
+    held_count: int = 0
 
 
 class SourcesResponse(BaseModel):
@@ -136,8 +139,8 @@ async def _load_corpus(conn) -> SourcesResponse:
         SourceDocument(
             id=r["id"], collection=r["collection"], title=r["title"],
             author=r["author"] or None, year=r["year"], translation=r["translation"],
-            metadata=dict(r["metadata"]) if r["metadata"] else None,
-            chunk_count=r["chunk_count"],
+            metadata=held_texts.public_metadata(dict(r["metadata"])) if r["metadata"] else None,
+            chunk_count=r["chunk_count"], held_count=held_texts.held_count(r["metadata"]),
         ) for r in rows
     ]
     response = SourcesResponse(sources=sources)
