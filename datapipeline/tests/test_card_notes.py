@@ -203,6 +203,12 @@ def test_the_check_refuses_a_caution_without_a_kind():
         card_notes=[{"kind": "doubt", "text": "A caution.", "show": "card"}]))
 
 
+def test_the_check_refuses_an_overview_note_tied_to_a_work():
+    assert any("names work w" in p for p in _checked(
+        card_notes=[{"kind": None, "text": "A work's note.", "show": "overview",
+                     "work_key": "w"}]))
+
+
 def test_the_check_refuses_a_note_naming_the_translator_author_or_title():
     assert any("names Schroeder" in p for p in _checked(
         card_notes=[{"kind": "incomplete", "text": "Abridged by Schroeder.", "show": "card"}]))

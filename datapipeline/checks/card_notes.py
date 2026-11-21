@@ -5,6 +5,8 @@ has written. It refuses:
 
 - a caution without a kind: a passage note without `note_kind`, a `card_notes` entry
   shown on the card without one, or an unknown kind or place;
+- an overview note tied to a work (`work_key`): the overview lists only the document's
+  own notes, so it would show nowhere;
 - a note naming the passage's translator, author or document title (rules 1 and 3);
 - the same passage note on every passage of a document: it belongs on the document as a
   `card_notes` entry, which may still show on every card;
@@ -63,6 +65,10 @@ def problems(document: Document) -> list[str]:
             out.append(f"{name}: card note {text!r} has kind {kind!r}")
         if show == "card" and kind is None:
             out.append(f"{name}: caution without a kind: {text!r}")
+        # The overview lists the document's own notes; a work's would show nowhere.
+        if show == "overview" and e.get("work_key"):
+            out.append(f"{name}: overview note {text!r} names work {e['work_key']}; "
+                       "a work's note shows on its passages (card or record)")
         bad = named(text, _translator_names(card_translator), e.get("work_key"))
         if bad:
             out.append(f"{name}: card note {text!r} names {', '.join(bad)}")
