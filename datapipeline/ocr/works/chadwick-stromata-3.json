@@ -125,6 +125,7 @@
   "end": "^Given at Rome",
   "strip": "^\\d+\\.\\s"
  },
+ "check_note": "Left out on purpose: Chadwick's footnotes and their note numbers, Stählin's section numbers (\"12.\") and the \"CHAPTER\" headings. Set differently from the print, with no word changed: quotation marks are straight (\" and ') where the print has curly ones; a quoted line of verse runs on with the sentence around it. Words Chadwick prints in square brackets are his and stay.",
  "model": "claude-sonnet-5-5",
  "ceiling_usd": 2.0,
  "sample": {
