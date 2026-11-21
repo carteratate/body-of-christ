@@ -80,7 +80,7 @@ export function AboutPage({ isGuest = false }: { isGuest?: boolean }) {
           </p>
           <p className="text-brand-primary text-sm leading-relaxed">
             Where the texts come from, and on what basis:{" "}
-            <Link href={isGuest ? "/guest/about/sources" : "/about/sources"} className="underline underline-offset-2 hover:text-brand-accent">
+            <Link href={isGuest ? "/guest/about/sources" : "/about/sources"} className="underline underline-offset-2 hover:decoration-2">
               Sources
             </Link>
             .

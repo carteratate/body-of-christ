@@ -29,8 +29,12 @@ describe("SourceSitesPage", () => {
       expect(section.getByText(site.taken)).toBeTruthy();
       for (const basis of site.basis) expect(section.getByText(basis)).toBeTruthy();
       for (const basis of site.excerpt_bases) {
-        expect(section.getByRole("link", { name: new RegExp(basis.statement.slice(0, 30).replace(/[()]/g, "\\$&")) })
-          .getAttribute("href")).toBe(basis.url);
+        if (basis.url) {
+          expect(section.getByRole("link", { name: new RegExp(basis.statement.slice(0, 30).replace(/[()]/g, "\\$&")) })
+            .getAttribute("href")).toBe(basis.url);
+        } else {
+          expect(sections[i].textContent).toContain(basis.statement);
+        }
       }
       expect(sections[i].querySelectorAll("li")).toHaveLength(site.documents.length);
     }

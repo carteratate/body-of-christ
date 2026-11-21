@@ -1180,7 +1180,13 @@
    "basis": [
     "In copyright, held by Libreria Editrice Vaticana and, for the English translation, the USCCB. Its notice is shown with every passage, and the full text is read on the USCCB's site."
    ],
-   "excerpt_bases": [],
+   "excerpt_bases": [
+    {
+     "statement": "the USCCB's terms for using the Catechism of the Catholic Church: excerpts of up to 5,000 words, each with its notice",
+     "url": null,
+     "documents": 1
+    }
+   ],
    "documents": [
     {
      "document_id": "9679c400-d314-5394-b916-f6fc27b50104",

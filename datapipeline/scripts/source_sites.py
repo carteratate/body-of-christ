@@ -54,7 +54,12 @@ SITES = (
               "translation for use in the United States.",
      "in_copyright": "In copyright, held by Libreria Editrice Vaticana and, for the English "
                      "translation, the USCCB. Its notice is shown with every passage, and "
-                     "the full text is read on the USCCB's site."},
+                     "the full text is read on the USCCB's site.",
+     # The spec's basis for the Catechism (4.4 and 5.2: "the USCCB notice, excerpts up
+     # to 5,000 words, with its notice shown"), which its inventory row does not record.
+     "excerpt_basis": {"statement": "the USCCB's terms for using the Catechism of the "
+                                    "Catholic Church: excerpts of up to 5,000 words, each "
+                                    "with its notice", "url": None}},
     {"key": "ebible", "hosts": ("ebible.org",),
      "name": "eBible.org", "url": "https://ebible.org",
      "taken": "The World English Bible, Catholic Edition."},
@@ -114,7 +119,8 @@ def build(rows: list[dict], held: set[str]) -> dict:
         entry["basis"][basis] = entry["basis"].get(basis, 0) + 1
         # The basis recorded for quoting an in-copyright text in excerpts (1.3c), shown
         # as the inventory states it, with its source.
-        excerpt = edition_row.get("excerpt_basis") or {}
+        site = next(s for s in SITES if s["key"] == key)
+        excerpt = edition_row.get("excerpt_basis") or site.get("excerpt_basis") or {}
         if excerpt.get("statement"):
             seen = entry["excerpts"].setdefault(
                 excerpt["statement"], {"statement": excerpt["statement"],
