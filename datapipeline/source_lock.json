@@ -6997,7 +6997,7 @@
   "acquired": "2026-11-16",
   "hashed_on": "2026-11-16",
   "role": "vendored-unregistered",
-  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
+  "note": "the printed edition summa_recovered.json's text is read from (#360)"
  },
  {
   "collection": "summa",
@@ -7008,6 +7008,6 @@
   "acquired": "2026-11-16",
   "hashed_on": "2026-11-16",
   "role": "vendored-unregistered",
-  "note": "the printed edition summa_recovered.json's text is read from (1.7)"
+  "note": "the printed edition summa_recovered.json's text is read from (#360)"
  }
 ]

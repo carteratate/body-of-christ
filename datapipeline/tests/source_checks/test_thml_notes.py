@@ -11,7 +11,7 @@ import pytest
 
 import registry
 from checks.language import mostly_foreign
-from checks.source_text import SOURCES
+from checks.source_text import REPLACED_CHAPTERS, SOURCES
 from ingest.church_fathers import _read_root
 from ingest.common import _block_text, _blocks, _extract_p_text, _strip_tags, direct_blocks
 from ingest.scripture_notes import scripture_reference
@@ -73,9 +73,9 @@ def test_every_verse_block_of_a_built_chapter_is_read(built):
     for (collection, name), passages in sorted(_by_file(built).items()):
         chapters = defaultdict(list)
         for p in passages:
-            # A passage another edition's text replaces is not read from this file
+            # A chapter another edition's English replaces is not read from this file
             # (Stromata III in Chadwick's English, #399).
-            if not (p.metadata or {}).get("text_replaced"):
+            if (name, p.chapter_key) not in REPLACED_CHAPTERS:
                 chapters[p.chapter_key].append(p)
         divs = {e.get("id"): e for e in _root(collection, name).iter()
                 if isinstance(e.tag, str) and e.tag.startswith("div")}

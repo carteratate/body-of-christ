@@ -95,9 +95,12 @@ def _redirect(entity: str, *, old_id=None, old_document_id, old_anchor=None, new
 
 def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument],
             staged: list[Document], registry: reg.WorkRegistry, *, release: str,
-            at: datetime) -> Retirements:
+            at: datetime, tombstoned: list[LivePassage] = ()) -> Retirements:
     """Tombstones, redirects and problems for one stage. `staged` is every staged
-    document of the staged collections, with `Passage.id` set."""
+    document of the staged collections, with `Passage.id` set. `tombstoned` are the
+    retired live passages of those collections that show a tombstone: one whose
+    registry redirect has opened since (a merged piece whose text came back in English,
+    #399) gets its passage redirect, and the apply drops the tombstone."""
     out = Retirements()
     staged_by_id = {p.id: (d, p) for d in staged for p in d.passages}
     staged_documents = {d.id: d for d in staged}
@@ -134,6 +137,22 @@ def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument]
                                 "build does not emit it, and no removal entry or "
                                 "supersedes explains it")
 
+    def passage_redirect(p: LivePassage, declared: list[dict]) -> None:
+        targets = [r["new_passage_id"] for r in declared]
+        missing = [t for t in targets if t not in staged_by_id]
+        kinds = {r["kind"] for r in declared}
+        if missing or len(kinds) != 1:
+            out.problems.append(f"passage {p.id}: redirect {sorted(kinds)} to "
+                                f"{missing or targets} does not name staged passages "
+                                "of one kind")
+            return
+        d, q = staged_by_id[primary_target(targets, p.document_id, staged_by_id)]
+        out.redirects.append(_redirect("passage", old_id=p.id,
+                                       old_document_id=p.document_id,
+                                       old_anchor=p.anchor, new_id=q.id,
+                                       new_document_id=d.id, new_anchor=q.anchor,
+                                       kind=kinds.pop(), release=release))
+
     # Passages the build no longer emits.
     for p in live_passages:
         if p.id in staged_by_id:
@@ -144,20 +163,7 @@ def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument]
         # is held, its removal explains every passage it had.
         declared = None if p.document_id in removed_documents else redirects.get(p.id)
         if declared:
-            targets = [r["new_passage_id"] for r in declared]
-            missing = [t for t in targets if t not in staged_by_id]
-            kinds = {r["kind"] for r in declared}
-            if missing or len(kinds) != 1:
-                out.problems.append(f"passage {p.id}: redirect {sorted(kinds)} to "
-                                    f"{missing or targets} does not name staged passages "
-                                    "of one kind")
-                continue
-            d, q = staged_by_id[primary_target(targets, p.document_id, staged_by_id)]
-            out.redirects.append(_redirect("passage", old_id=p.id,
-                                           old_document_id=p.document_id,
-                                           old_anchor=p.anchor, new_id=q.id,
-                                           new_document_id=d.id, new_anchor=q.anchor,
-                                           kind=kinds.pop(), release=release))
+            passage_redirect(p, declared)
             continue
         entry = by_id.get(p.id) or by_anchor.get((p.document_id, p.anchor)) \
             or removed_documents.get(p.document_id)
@@ -171,6 +177,13 @@ def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument]
         out.problems.append(f"passage {p.id} ({p.collection}, document {p.document_id}, "
                             f"anchor {p.anchor!r}) is live, the build does not emit it, and "
                             "no redirect or removal entry explains it")
+
+    # Retired passages with a tombstone whose redirect has opened since; one the build
+    # emits again is un-retired by the apply instead.
+    for p in tombstoned:
+        declared = None if p.document_id in removed_documents else redirects.get(p.id)
+        if declared and p.id not in staged_by_id:
+            passage_redirect(p, declared)
 
     out.redirects += anchor_redirects(live_passages, staged, registry, release)
     out.redirects += chapter_redirects(live_passages, staged, redirects, release)

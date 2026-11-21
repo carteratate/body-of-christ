@@ -8,7 +8,8 @@
      anchors), so nothing collides on the unique keys;
   3. upsert passages by ID: changed text keeps its ID (D1), new IDs insert, a staged ID
      that was retired is un-retired and loses its tombstone, a reclaimed ID loses its
-     redirect, and a passage moved between documents keeps its ID;
+     redirect, a retired ID the publish redirects loses its tombstone, and a passage
+     moved between documents keeps its ID;
   4. retire the live passages staging lacks: `retired_at` set and moved below every
      retired position of the document, never deleted (D3);
   5. write the staged tombstones and redirects;
@@ -130,7 +131,9 @@ async def read_snapshot_rows(conn, collections: list[str] | None = None,
     if staged:
         out["corpus_tombstones"] = [dict(r) for r in await conn.fetch(
             f"""SELECT {', '.join(rw.TOMBSTONE_COLUMNS)} FROM public.corpus_tombstones t
-                WHERE t.id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)""")]
+                WHERE t.id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)
+                   OR (t.entity = 'passage' AND t.id IN (
+                         SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))""")]
         out["corpus_redirects"] = [dict(r) for r in await conn.fetch(
             f"""SELECT {', '.join(REDIRECT_ROW)} FROM public.corpus_redirects t
                 WHERE (t.entity = 'passage' AND t.old_id IN (
@@ -277,10 +280,13 @@ async def _core(conn, scope_documents: list[str], *, release: str,
             SELECT {chunk_cols} FROM staging.chunks
             ON CONFLICT (id) DO UPDATE SET {_set(rw.CHUNK_COLUMNS)}, retired_at = NULL""")
     if not rollback:
-        # A live passage never also shows a removal notice or resolves as moved.
+        # A live passage never also shows a removal notice or resolves as moved, and a
+        # retired one the publish redirects (#399) no longer shows its notice.
         await conn.execute(
             """DELETE FROM public.corpus_tombstones
-               WHERE id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)""")
+               WHERE id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)
+                  OR (entity = 'passage' AND id IN (
+                        SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))""")
         await conn.execute(
             """DELETE FROM public.corpus_redirects
                WHERE (entity = 'passage' AND old_id IN (SELECT id FROM staging.chunks))

@@ -362,6 +362,34 @@ async def test_reappearing_id_is_unretired_and_loses_its_tombstone(world):
     assert not await world.fetch("SELECT 1 FROM corpus_tombstones")
 
 
+async def test_a_tombstoned_id_whose_redirect_opens_is_redirected_and_rollback_restores(world):
+    """A passage retired with a tombstone (3.3's merged Stromata piece) whose registry
+    redirect opens later (#399): the next stage redirects its ID, the apply drops its
+    notice, and rolling that publish back brings the notice back."""
+    _retire_a4(world)
+    await _stage(world)
+    await _apply(world)
+    await _cleanup(world)
+    old, into = pid(DOC_A, "a/4"), pid(DOC_A, "a/3")
+    world.registry.removals[-1]["closed_by"] = "#399"
+    world.registry.removals[-1]["closed_on"] = "2026-11-21"
+    world.registry.redirects.append(
+        {"document_id": DOC_A, "old_passage_id": old, "old_anchor": "a/4",
+         "new_passage_id": into, "new_anchor": "a/3", "kind": "merged"})
+    next(r for r in world.registry.passages if r["passage_id"] == old)["status"] = "redirected"
+    world.registry.__post_init__()
+    await _stage(world, StageRequest(release="release-two", collections=("medieval",)))
+    await _apply(world, "release-two")
+    assert not await world.fetch("SELECT 1 FROM corpus_tombstones")
+    [r] = await world.fetch("SELECT old_id::text, new_id::text FROM corpus_redirects "
+                            "WHERE entity = 'passage'")
+    assert r == {"old_id": old, "new_id": into}
+    await _rollback(world, "release-two")
+    assert not await world.fetch("SELECT 1 FROM corpus_redirects WHERE entity = 'passage'")
+    [t] = await world.fetch("SELECT id::text, publish_id FROM corpus_tombstones")
+    assert t == {"id": old, "publish_id": RELEASE}
+
+
 async def test_passage_moved_between_documents_keeps_its_id(world):
     await _user_rows(world, pid(DOC_A, "a/4"))
     a, b = _doc(world, DOC_A), _doc(world, DOC_B)

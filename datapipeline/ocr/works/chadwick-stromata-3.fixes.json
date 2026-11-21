@@ -84,6 +84,12 @@
   "why": "p. 61: one full stop, and a speck"
  },
  {
+  "passage": "ch06/s046",
+  "find": "fulfil it.\" 27. \"To fulfil\"",
+  "replace": "fulfil it.\" \"To fulfil\"",
+  "why": "p. 61: note call 27 (Matt. 5:17), read with a full stop"
+ },
+ {
   "passage": "ch06/s050",
   "find": "Aristotle of Gyrene",
   "replace": "Aristotle of Cyrene",
