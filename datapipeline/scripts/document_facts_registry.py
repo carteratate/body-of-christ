@@ -133,6 +133,13 @@ def main(argv: list[str] | None = None) -> int:
     documents = build_all(reg)
     works = generate(reg, documents, rights_inventory.load())
     passages = generate_passages(reg, documents)
+    # Before anything is written: a published document whose card can name no
+    # translator (4.4) is a rule to add to card_notes.card_translator, not a null.
+    nameless = [w["work_id"] for w in works if "card_translator" in w
+                and w["card_translator"] is None]
+    if nameless:
+        raise ValueError(f"no card translator for {', '.join(nameless)}: add a rule to "
+                         "card_notes.card_translator")
     updated = registry.WorkRegistry(works, passages, reg.redirects, reg.removals,
                                     reg.kept_text)
     if args.check:

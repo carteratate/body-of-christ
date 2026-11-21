@@ -46,10 +46,12 @@ class Note:
     text: str
     show: str = "card"
 
-    def entry(self, work_key: str | None = None) -> dict:
+    def entry(self, work_key: str | None = None, except_work_keys: tuple = ()) -> dict:
         out = {"kind": self.kind, "text": self.text, "show": self.show}
         if work_key is not None:
             out["work_key"] = work_key
+        if except_work_keys:
+            out["except_work_keys"] = list(except_work_keys)
         return out
 
 
@@ -87,7 +89,7 @@ LATIN_OMITTED = overview(
 
 # A passage's note as the adapters and the passage registry write it, to the note the card
 # shows, or None where the role label or a document note already says it. Every note a
-# build carries must be here (or match `PASSAGE_NOTE_PATTERNS`): the check refuses one
+# build carries must be here: the check refuses one
 # that is not, so a new note is given its kind before it ships.
 PASSAGE_NOTES: dict[str, Note | None] = {
     "Abridged in Schroeder (1937).": ABRIDGED,
@@ -128,11 +130,11 @@ PASSAGE_NOTES: dict[str, Note | None] = {
         "incomplete", "The Latin text ends this article with a short reply to all the "
                       "objections together, which the English translation does not print."),
 }
-# Generated wordings (`summa._missing_note`), with the parts they name.
-PASSAGE_NOTE_PATTERNS: tuple[tuple[re.Pattern, str], ...] = (
-    (re.compile(r"The English translation omits part of this article's Latin text "
-                r"\((?P<units>[^()]+)\)\."), "incomplete"),
-)
+# `summa._missing_note`'s wordings, each exactly as built: a new one stops the build
+# until it is added here.
+for _units in ("ad 2, ad 3", "sc 2"):
+    _missing = f"The English translation omits part of this article's Latin text ({_units})."
+    PASSAGE_NOTES[_missing] = caution("incomplete", _missing)
 
 # A document's or work's note in the stored facts (`attribution_note`, `notes`), to the
 # notes the card and the overview show. An empty tuple drops it: the header already says
@@ -331,9 +333,6 @@ def passage_note(note: str) -> Note | None:
     """The card's note for a passage note as built, or None where it goes."""
     if note in PASSAGE_NOTES:
         return PASSAGE_NOTES[note]
-    for pattern, kind in PASSAGE_NOTE_PATTERNS:
-        if pattern.fullmatch(note):
-            return caution(kind, note)
     raise CardNoteError(f"no card wording for the passage note {note!r}: add it to "
                         "card_notes.PASSAGE_NOTES with its kind")
 
@@ -351,13 +350,11 @@ def document_entries(document: Document, work_id: str | None) -> list[dict]:
     """The document's `card_notes`: its own notes, then each work's, in stored order."""
     entries = []
     for field in ("attribution_note", "notes"):
-        notes = fact_notes(getattr(document, field))
         # A work that clears the field ("", 3.2: the Muratorian Fragment's notes) is not
-        # covered by the document's note, and an entry cannot leave out one work, so the
-        # note shows on the document's overview only.
-        if any(getattr(w, field) == "" for w in document.works):
-            notes = tuple(replace(n, show="overview") for n in notes)
-        entries += [n.entry() for n in notes]
+        # covered by the document's note: the entry leaves its passages out.
+        cleared = tuple(w.work_key for w in document.works if getattr(w, field) == "")
+        entries += [n.entry(except_work_keys=cleared)
+                    for n in fact_notes(getattr(document, field))]
     entries += [n.entry() for n in DOCUMENT_NOTES.get(work_id or "", ())]
     for w in document.works:
         entries += [n.entry(w.work_key) for f in (w.attribution_note, w.notes)

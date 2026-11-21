@@ -122,10 +122,11 @@ def test_document_and_work_notes_become_entries_and_header_repeats_go():
                     attribution_note="Its author is unknown; the editors printed it with "
                                      "Caius's fragments on one scholar's guess.", notes="")]),
         None)
-    # The Muratorian Fragment clears the volume's note (notes=""), so it is not on the
-    # fragment's card: the volume's note goes to the overview.
+    # The Muratorian Fragment clears the volume's note (notes=""): the note stays on
+    # Caius's own fragments and leaves the Fragment's passages out.
     assert doc.metadata["card_notes"] == [
-        {"kind": None, "text": "Preserved in Eusebius, Church History", "show": "overview"},
+        {"kind": None, "text": "Preserved in Eusebius, Church History", "show": "record",
+         "except_work_keys": ["w"]},
         {"kind": "authorship", "show": "card", "work_key": "w",
          "text": "The editors printed it with Caius's fragments on one scholar's guess."},
     ]
@@ -209,9 +210,24 @@ def test_the_supplements_generated_note_keeps_its_parts():
         "incomplete", "The English translation omits part of this article's Latin text (ad 2, ad 3).")
 
 
+def test_the_check_reads_a_works_author_for_a_document_note_on_its_passages():
+    doc = card_notes.apply(_document(
+        [_passage(0, work_key="w"), _passage(1)], collection="church-fathers", title="T",
+        author="Caius", works=[Work("w", 1, "W", author="Firmilian of Caesarea")]), None)
+    doc.metadata["card_notes"] = [{"kind": "authorship", "show": "card",
+                                   "text": "Firmilian of Caesarea wrote it."}]
+    assert any("names Firmilian of Caesarea" in p for p in check.problems(doc))
+    doc.metadata["card_notes"][0]["except_work_keys"] = ["w"]
+    assert check.problems(doc) == []
+
+
 def test_an_unknown_note_stops_the_build_until_it_has_a_kind():
     with pytest.raises(card_notes.CardNoteError, match="PASSAGE_NOTES"):
         card_notes.apply(_document([_passage(0, note="A new note.")]), None)
+    # A new generated Summa wording too: each is held exactly.
+    with pytest.raises(card_notes.CardNoteError, match="PASSAGE_NOTES"):
+        card_notes.passage_note("The English translation omits part of this article's Latin "
+                                "text (whatever).")
     with pytest.raises(card_notes.CardNoteError, match="FACT_NOTES"):
         card_notes.apply(_document([_passage(0)], notes="A new document note."), None)
 

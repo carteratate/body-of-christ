@@ -46,13 +46,14 @@ def problems(document: Document) -> list[str]:
     card_translator = metadata.get("card_translator")
     work_authors = {w.work_key: w.author for w in document.works if w.author}
 
-    def named(text: str, translators: set[str], work_key: str | None) -> list[str]:
-        """The names `text` repeats: a translator's, the author the passage's header
-        shows (its work's, inside a work) and the document's title."""
-        author = (work_authors.get(work_key or "") or document.author or "").strip()
+    def named(text: str, translators: set[str], passages) -> list[str]:
+        """The names `text` repeats on the passages it shows on: a translator's, the
+        author each one's header shows (its work's, inside a work) and the title."""
+        authors = {(work_authors.get(p.work_key or "") or document.author or "").strip()
+                   for p in passages}
         found = _names_in(text, translators)
-        if author and author not in _GENERIC_AUTHORS and author in text:
-            found.append(author)
+        found += sorted(a for a in authors
+                        if a and a not in _GENERIC_AUTHORS and a in text)
         if document.title and document.title in text:
             found.append(document.title)
         return found
@@ -70,11 +71,13 @@ def problems(document: Document) -> list[str]:
             out.append(f"{name}: overview note {text!r} names work {e['work_key']}; "
                        "a work's note shows on its passages (card or record)")
         # Every translator a passage it shows on names: the card's and the passages' own.
+        skip = e.get("except_work_keys") or []
         shown_on = [p for p in document.passages
-                    if not e.get("work_key") or p.work_key == e.get("work_key")]
+                    if p.work_key == e.get("work_key")
+                    or (not e.get("work_key") and p.work_key not in skip)]
         bad = named(text, _translator_names(
             card_translator, *((p.metadata or {}).get("translator") for p in shown_on)),
-            e.get("work_key"))
+            shown_on)
         if bad:
             out.append(f"{name}: card note {text!r} names {', '.join(bad)}")
 
@@ -89,7 +92,7 @@ def problems(document: Document) -> list[str]:
         if pm.get("note_kind") not in card_notes.KINDS:
             out.append(f"{name} {p.anchor}: passage note without a kind: {p.note!r}")
         bad = named(p.note, _translator_names(pm.get("translator") or card_translator),
-                    p.work_key)
+                    [p])
         if bad:
             out.append(f"{name} {p.anchor}: note {p.note!r} names {', '.join(bad)}")
     for note, count in notes.items():
