@@ -20,9 +20,11 @@ from importlib import import_module
 
 import asyncpg
 
+import card_notes
 import contents
 import registry as reg
 import retirements
+from checks import card_notes as card_notes_check
 from health import refuse_block_violations
 from model import Document
 from writers import reader_writer
@@ -109,12 +111,16 @@ def validate_documents(collection: str, documents: list[Document]) -> None:
 def prepare(documents: list[Document], registry: reg.WorkRegistry | None = None
             ) -> tuple[list[Document], list[str]]:
     """Each document with its passage-registry overrides applied (the registry wins over
-    the adapter, D11) and every `Passage.id` assigned (D1), and the genuinely new IDs."""
+    the adapter, D11), every `Passage.id` assigned (D1) and its card notes stored (4.4,
+    `card_notes.apply`, checked by `checks/card_notes.py`), and the genuinely new IDs.
+    A dry run and a stage both call this, so both refuse a note without its kind."""
     out, new = [], []
+    entries = (registry or reg.current()).entry_by_document
     for d in documents:
         d, fresh = reg.assign_ids(reg.apply_overrides(d, registry), registry)
-        out.append(d)
+        out.append(card_notes.apply(d, entries.get(d.id)))
         new += fresh
+    card_notes_check.check(out)
     return out, new
 
 

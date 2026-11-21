@@ -28,7 +28,6 @@ _SMYRNA = ("A letter of the Church of Smyrna on Polycarp's death; its writer, Ev
            "named in chapter XX.")
 _REBAPTISM_COUNCIL = "Its ruling on rebaptizing heretics was not adopted by the Church."
 _REBAPTISM_VIEW = "Its view on rebaptizing heretics was not adopted by the Church."
-_COMPILED = "Compiled after Aquinas's death from his earlier writings."
 _CATENAE = "catenae, medieval chains of comments on Scripture"
 _LATER = "Preserved in quotations by later writers."
 
@@ -232,11 +231,11 @@ WORKS: dict[tuple[str, str], dict] = {
                             "through Dionysius Exiguus; all 85 were confirmed by the "
                             "Council in Trullo (canon 2) and Nicaea II (canon 1).",
         "basis": f"{PLAN}, Decision log, Apostolic Canons; D10; {MEMO} §5, §6"},
+    # Their header says "compiled after 1274" (`document_facts.WORK_DATES`), so the note
+    # 3.2 gave them goes (4.4, Carter, 20 Nov 2026).
     ("summa", "XP"): {"author": "Thomas Aquinas", "certainty": "genuine",
-                      "attribution_note": _COMPILED,
                       "basis": f"{PLAN}, Labels for works that stay"},
     ("summa", "vii"): {"author": "Thomas Aquinas", "certainty": "genuine",
-                       "attribution_note": _COMPILED,
                        "basis": f"{PLAN}, Labels for works that stay"},
     **{(_EPISTLES, key): {"certainty": "genuine",
                           "basis": "1.8c's sender, from the letter's title line and greeting"}

@@ -85,8 +85,10 @@ def generate(reg: registry.WorkRegistry, documents: list, rows: list[dict]) -> l
         d = built.get(w["document_id"])
         entry["attribution"] = _attribution(w, d is not None)
         entry["works"] = _works(w, d)
+        entry.pop("card_translator", None)
         if d is not None:
             entry.update(document_facts.derive(d, by_document.get(d.id), w))
+            entry["card_translator"] = document_facts.card_translator(entry)
         works.append(entry)
     return works
 

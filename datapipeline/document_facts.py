@@ -40,6 +40,7 @@ from __future__ import annotations
 import re
 
 import attributions
+import card_notes
 import identity
 from model import Document
 
@@ -206,9 +207,19 @@ FATHERS_WORK_GENRES = {
 }
 
 
+# A work's date where it is not a Father's (4.4): the Summa's Supplement and its appendix
+# were compiled after Aquinas died in 1274 (Carter, 20 Nov 2026), and their header says
+# so in place of the Summa's "1265 to 1274".
+WORK_DATES = {
+    ("summa", "XP"): (None, "compiled after 1274", "Decision log, Supplement date (4.4)"),
+    ("summa", "vii"): (None, "compiled after 1274", "Decision log, Supplement date (4.4)"),
+}
+
+
 def work_facts(work_id: str, work_key: str) -> dict:
-    """A container work's date and genre (3.2), for its works.json row."""
-    year, display, _ = FATHERS_WORK_DATES.get((work_id, work_key), (None, None, None))
+    """A container work's date and genre (3.2, 4.4), for its works.json row."""
+    year, display, _ = {**FATHERS_WORK_DATES, **WORK_DATES}.get(
+        (work_id, work_key), (None, None, None))
     return {"year": year, "date_display": display,
             "genre": FATHERS_WORK_GENRES.get((work_id, work_key))}
 
@@ -337,3 +348,10 @@ def derive(document: Document, row: dict | None, entry: dict) -> dict:
         if entry.get(k) is not None:
             facts[k] = entry[k]
     return facts
+
+
+def card_translator(facts: dict) -> str:
+    """The translator the result card names (4.4), written once into works.json from the
+    credit line or the translation (`card_notes.card_translator`), where the Library and
+    the overview keep reading `translation` and `source_credit` as 2.3 set them."""
+    return card_notes.card_translator(facts.get("source_credit"), facts.get("translation"))
