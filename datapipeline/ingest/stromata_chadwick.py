@@ -35,6 +35,7 @@ SOURCE_FILE = "second-century.xml"   # ANF vol. 2, where Book III is the div `BO
 BOOK = "vi.iv.iii"
 NOTE = "In Henry Chadwick's translation (1954)."
 TEXT_REPLACED = "Chadwick (1954) replaces ANF's Latin"
+SECTIONS = 110          # Stählin's sections of Book III, as `ocr.units.ChadwickSections`
 
 # (ANF anchor, Stählin section, the words its English opens with), in order. The
 # section's own opening where the Latin passage opens with it.
@@ -98,8 +99,8 @@ def english(frozen: dict | None = None) -> dict[str, str]:
     in its section, or the pieces leave out or repeat any of the text."""
     by_section = sections(frozen)
     numbers = sorted(by_section)
-    if numbers != list(range(1, len(numbers) + 1)):
-        raise ValueError(f"{WORK}: sections are not 1 to {len(numbers)}")
+    if numbers != list(range(1, SECTIONS + 1)):
+        raise ValueError(f"{WORK}: sections are not 1 to {SECTIONS}")
     # Every section joined, each opening a paragraph; each piece's start in that text.
     starts, text, at = {}, "", {}
     for n in numbers:
