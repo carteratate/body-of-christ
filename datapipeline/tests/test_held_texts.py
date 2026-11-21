@@ -18,7 +18,7 @@ from model import Document, Passage
 from publication import StageRequest
 from scripts import held_texts as script
 from tests import pg_corpus
-from tests.stage_world import DOC_A, World, pid
+from tests.stage_world import DOC_A, DOC_B, World, pid
 
 DOC = "dddddddd-0000-0000-0000-000000000001"
 OTHER = "dddddddd-0000-0000-0000-000000000002"
@@ -352,14 +352,35 @@ async def world(cluster, tmp_path):
 STAGE = StageRequest(release="test-release", collections=("medieval",))
 
 
+async def _live_takes_staged_metadata(world) -> None:
+    """Live documents get the metadata the last stage wrote, as its apply would: every
+    key a stage writes (4.3's held_texts, 4.4's card_version, card_notes and
+    card_translator), so a later stage's metadata diff is against a published corpus."""
+    conn = await world.connect()
+    try:
+        await conn.execute("""UPDATE public.documents d SET metadata = s.metadata
+                              FROM staging.documents s WHERE s.id = d.id""")
+    finally:
+        await conn.close()
+
+
 async def test_stage_writes_held_texts_into_metadata(world):
+    """Each staged document's metadata is exactly what the build and prepare give it:
+    the held texts on the document that holds some, and 4.4's card keys on every one."""
+    from publication import build, prepare
+
     await world.runner().stage(STAGE)
-    rows = {r["id"]: r["metadata"] for r in await world.fetch(
+    rows = {r["id"]: json.loads(r["metadata"]) for r in await world.fetch(
         "SELECT id::text AS id, metadata FROM staging.documents")}
-    assert json.loads(rows[DOC_A])["held_texts"] == [
+    built, _ = prepare(build("medieval", source_adapters={"medieval": lambda: world.build},
+                             registry=world.registry), world.registry)
+    assert rows == {d.id: d.metadata for d in built}
+    card_keys = {"card_version", "card_notes", "card_translator"}
+    assert set(rows[DOC_A]) == {"held_texts"} | card_keys
+    assert rows[DOC_A]["held_texts"] == [
         {"key": "ht-0001", "label": "Chapter 1", "heading": "A held letter",
          "after_anchor": "a/2", "after_chapter_key": "c1", "url": None}]
-    assert rows[next(d for d in rows if d != DOC_A)] is None
+    assert set(rows[DOC_B]) == card_keys
     # No document metadata reaches a point.
     points, _ = await world.qdrant.scroll("chunks-test-release", limit=20)
     assert all("held_texts" not in json.dumps(p.payload) for p in points)
@@ -387,6 +408,7 @@ async def test_held_texts_publish_changes_no_passage_or_point(world, tmp_path):
     for collection in ("medieval", "summa"):
         await copy_points(world.qdrant, "chunks-test-release", "chunks-before", collection)
     await point_alias(world.qdrant, "chunks_live", "chunks-before")
+    await _live_takes_staged_metadata(world)
     world.registry.held_texts = held
     world.registry.removals.append(removal)
     await world.runner().stage(STAGE)
@@ -434,6 +456,7 @@ async def test_report_lists_other_metadata_keys_a_stage_changes(world):
     from release.staged import metadata_diff
 
     await world.runner().stage(STAGE)
+    await _live_takes_staged_metadata(world)
     conn = await world.connect()
     try:
         assert await metadata_diff(conn, ["medieval"]) == []
