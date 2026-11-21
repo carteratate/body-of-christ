@@ -78,6 +78,8 @@ ANASTASIUS = caution("wording", "From Anastasius's Latin version of the acts.")
 HEFELE = caution("wording", "From Hefele's account of the session, not the council's acts.")
 RECENSION = caution("wording", "Translated from another recension of this canon.")
 FROM_FRENCH = caution("wording", "Translated from a French translation, not from the Latin.")
+# How a document's own note says it is printed only in extract (1.3d's encyclicals).
+EXTRACT_DOCUMENT_OPENINGS = ("Only an extract is given:", "Only extracts are given:")
 LATIN_OMITTED = overview(
     "Some passages are omitted: the translators left them in Latin and no public-domain "
     "English translation exists.", "incomplete")
@@ -387,12 +389,14 @@ def apply(document: Document, entry: dict | None) -> Document:
 
 def _without_document_wide(passages: list[Passage], entries: list[dict]) -> list[Passage]:
     """The passages without the extract note when every one carries it and the document
-    has its own incomplete note, which says it for the whole document (rule 2): an
-    encyclical printed only in extract. Any other note on every passage stays, and the
-    check refuses it, so a repeated caution is never dropped unseen."""
+    says, in its own extract note, which part is given (rule 2): an encyclical printed
+    only in extract. Any other note on every passage, or the extract note beside any
+    other document note, stays, and the check refuses a note on every passage, so a
+    repeated caution is never dropped unseen."""
     if not passages or any(p.note != EXTRACT.text for p in passages):
         return passages
-    if not any(e["kind"] == "incomplete" and "work_key" not in e for e in entries):
+    if not any(e["text"].startswith(EXTRACT_DOCUMENT_OPENINGS) and "work_key" not in e
+               for e in entries):
         return passages
     out = []
     for p in passages:

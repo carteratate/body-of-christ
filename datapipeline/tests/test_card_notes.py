@@ -155,6 +155,17 @@ def test_only_the_extract_note_leaves_its_passages_for_the_documents_note():
     assert any("on every passage" in p for p in check.problems(doc))
 
 
+def test_an_unrelated_incomplete_note_keeps_the_extract_cautions():
+    extract = ("Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic "
+               "Dogma (1957).")
+    doc = card_notes.apply(_document(
+        [_passage(0, note=extract), _passage(1, note=extract)], collection="church-fathers",
+        title="T", notes="Some passages are omitted: the translators left them in Latin and "
+                         "no public-domain English translation exists."), None)
+    assert all(p.note is not None for p in doc.passages)
+    assert any("on every passage" in p for p in check.problems(doc))
+
+
 def test_the_check_reads_each_passages_own_translator_for_a_document_note():
     doc = card_notes.apply(_document([
         _passage(0, metadata={"scan_id": "authoritative01chry"}), _passage(1)],
