@@ -225,6 +225,19 @@ async def point_checks(conn, qdrant, name: str, documents: dict[str, list[Docume
     return {"counts": counts, "mismatches": mismatches, "hash_failures": hash_failures}
 
 
+async def text_changes(conn, collections: list[str]) -> dict[str, int]:
+    """Per staged collection, how many passages keep their live ID with different
+    stored text. Informs; fails nothing (4.3's publish shows 0)."""
+    rows = await conn.fetch(
+        """SELECT d.collection, count(*) AS n
+           FROM staging.chunks s JOIN staging.documents d ON d.id = s.document_id
+           JOIN public.chunks c ON c.id = s.id
+           WHERE d.collection = ANY($1::text[]) AND c.content IS DISTINCT FROM s.content
+           GROUP BY d.collection""", collections)
+    found = {r["collection"]: r["n"] for r in rows}
+    return {c: found.get(c, 0) for c in collections}
+
+
 async def live_point_changes(qdrant, name: str, live: str | None,
                              documents: dict[str, list[Document]]) -> dict:
     """Per staged collection, how many staged points differ from the live point of the
@@ -527,6 +540,8 @@ def publish_md(data: dict) -> str:
              f"{len(ids['new']):,}.",
              f"- Points: {len(data['points']['mismatches'])} mismatches; embedding input hash "
              f"failures {len(data['points']['hash_failures'])}.",
+             "- Passages whose stored text differs from live (same ID): " + ", ".join(
+                 f"{c} {n:,}" for c, n in data["text_changes"].items()) + ".",
              "- Points against live (same ID): " + ("; ".join(
                  f"{c} {d['payload_changed']:,} of {d['compared']:,} with another payload "
                  f"({', '.join(d['fields']) or 'no field'}), {d['embed_sha256_changed']:,} "
@@ -593,6 +608,7 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
                                      row["embed_model"]),
         "dedup": await dedup_checks(conn, qdrant, row["qdrant_collection"], live, staged),
         "live_points": await live_point_changes(qdrant, row["qdrant_collection"], live, staged),
+        "text_changes": await text_changes(conn, collections),
         "facts_diff": await facts_diff(conn, collections),
         "works_diff": await works_diff(conn, collections),
         "held_texts_diff": await held_texts_diff(conn, collections),

@@ -388,6 +388,7 @@ async def test_held_texts_publish_changes_no_passage_or_point(world, tmp_path):
     assert data["live_points"]["medieval"] == {"compared": 5, "payload_changed": 0,
                                                "embed_sha256_changed": 0, "missing_live": 0,
                                                "fields": []}
+    assert data["text_changes"] == {"medieval": 0}
     [diff] = data["held_texts_diff"]
     assert (diff["id"], [h["key"] for h in diff["added"]], diff["removed"],
             diff["changed"]) == (DOC_A, ["ht-0001"], [], [])
@@ -398,3 +399,18 @@ async def test_held_texts_publish_changes_no_passage_or_point(world, tmp_path):
     [point] = await world.qdrant.retrieve("chunks-test-release", [pid(DOC_A, "a/2")],
                                           with_payload=True)
     assert "held_texts" not in point.payload
+
+
+async def test_report_counts_a_stored_text_change(world):
+    """Even one whose point payload a hand edit left alone."""
+    from release.staged import text_changes
+
+    await world.runner().stage(STAGE)
+    conn = await world.connect()
+    try:
+        assert await text_changes(conn, ["medieval"]) == {"medieval": 0}
+        await conn.execute("UPDATE staging.chunks SET content = 'Grace perfects nature!' "
+                           "WHERE id = $1::uuid", pid(DOC_A, "a/1"))
+        assert await text_changes(conn, ["medieval"]) == {"medieval": 1}
+    finally:
+        await conn.close()
