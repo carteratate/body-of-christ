@@ -1,0 +1,164 @@
+[
+ {
+  "passage": "ch01/s002",
+  "find": "words: \" Abstain,",
+  "replace": "words: \"Abstain,",
+  "why": "p. 41: the print reads “Abstain, with no space after the quotation mark"
+ },
+ {
+  "passage": "ch02/s009",
+  "find": "saying c Thou shalt not covet'",
+  "replace": "saying 'Thou shalt not covet'",
+  "why": "p. 44: the OCR read the opening quotation mark as “c”"
+ },
+ {
+  "passage": "ch02/s009",
+  "find": "words c thy neighbour's wife'",
+  "replace": "words 'thy neighbour's wife'",
+  "why": "p. 44: the OCR read the opening quotation mark as “c”"
+ },
+ {
+  "passage": "ch02/s010",
+  "find": "(\" on repletion",
+  "replace": "(\"on repletion",
+  "why": "p. 45: no space after the quotation mark"
+ },
+ {
+  "passage": "ch03/s023",
+  "find": "\" Of what is mortal",
+  "replace": "\"Of what is mortal",
+  "why": "p. 51: no space after the quotation mark"
+ },
+ {
+  "passage": "ch04/s030",
+  "find": "talk? \" Everyone",
+  "replace": "talk? \"Everyone",
+  "why": "p. 54: no space after the quotation mark"
+ },
+ {
+  "passage": "ch04/s035",
+  "find": "JT o them",
+  "replace": "To them",
+  "why": "p. 55: the print reads “To”"
+ },
+ {
+  "passage": "ch04/s035",
+  "find": "recognize t>y their",
+  "replace": "recognize by their",
+  "why": "p. 55: the print reads “by”"
+ },
+ {
+  "passage": "ch05/s043",
+  "find": "loved. \" You are",
+  "replace": "loved. \"You are",
+  "why": "p. 60: no space after the quotation mark"
+ },
+ {
+  "passage": "ch06/s045",
+  "find": "nature.. For",
+  "replace": "nature. For",
+  "why": "p. 61: one full stop, and a speck"
+ },
+ {
+  "passage": "ch06/s050",
+  "find": "Aristotle of Gyrene",
+  "replace": "Aristotle of Cyrene",
+  "why": "p. 63: the print reads “Cyrene”"
+ },
+ {
+  "passage": "ch06/s051",
+  "find": "in Gyrene.",
+  "replace": "in Cyrene.",
+  "why": "p. 64: the print reads “Cyrene”"
+ },
+ {
+  "passage": "ch06/s056",
+  "find": "ever.\" ^ For",
+  "replace": "ever.\" For",
+  "why": "p. 66: a note call, read as “^”"
+ },
+ {
+  "passage": "ch07/s057",
+  "find": "at alli^ Our",
+  "replace": "at all. Our",
+  "why": "p. 66: the print reads “at all.”, with a note call"
+ },
+ {
+  "passage": "ch07/s057",
+  "find": "J us t as",
+  "replace": "Just as",
+  "why": "p. 67: the print reads “Just”"
+ },
+ {
+  "passage": "ch07/s057",
+  "find": "philosophers^ Where",
+  "replace": "philosophers. Where",
+  "why": "p. 67: the print reads “philosophers.”"
+ },
+ {
+  "passage": "ch07/s057",
+  "find": "there^is",
+  "replace": "there is",
+  "why": "p. 67: the print reads “there is”"
+ },
+ {
+  "passage": "ch07/s060",
+  "find": "Indian History* They",
+  "replace": "Indian History. They",
+  "why": "p. 68: the print reads “History.”, with a note call"
+ },
+ {
+  "passage": "ch08/s061",
+  "find": "God forbid. '",
+  "replace": "God forbid.\"",
+  "why": "p. 69: the print reads “God forbid.”"
+ },
+ {
+  "passage": "ch09/s064",
+  "find": "says: \" Until when shall men die? '",
+  "replace": "says: \"Until when shall men die?\"",
+  "why": "p. 70: the print reads “Until when shall men die?”"
+ },
+ {
+  "passage": "ch09/s064",
+  "find": "answer \"As long as women bear children/'",
+  "replace": "answer—\"As long as women bear children,\"",
+  "why": "p. 70: the print reads answer—“As long as women bear children,”"
+ },
+ {
+  "passage": "ch12/s081",
+  "find": "Saviour:* \"While",
+  "replace": "Saviour: \"While",
+  "why": "p. 77: a note call, read as “*”"
+ },
+ {
+  "passage": "ch12/s081",
+  "find": "'agreement/ but",
+  "replace": "'agreement,' but",
+  "why": "p. 77: the print reads ‘agreement,’"
+ },
+ {
+  "passage": "ch12/s083",
+  "find": "nature 5S the",
+  "replace": "nature the",
+  "why": "p. 79: a note call, read as “5S”"
+ },
+ {
+  "passage": "ch12/s083",
+  "find": "law^by",
+  "replace": "law by",
+  "why": "p. 79: the print reads “law by”"
+ },
+ {
+  "passage": "ch12/s084",
+  "find": "good/' We",
+  "replace": "good.\" We",
+  "why": "p. 79: the print reads “good.”"
+ },
+ {
+  "passage": "ch12/s084",
+  "find": "manifest.'* But",
+  "replace": "manifest.\" But",
+  "why": "p. 79: the print reads “manifest.”, with a note call"
+ }
+]

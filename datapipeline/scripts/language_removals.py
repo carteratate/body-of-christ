@@ -23,6 +23,10 @@ Every entry has reason `translation-in-preparation`; the `document` and `passage
 carry rule E's tombstone, and a passage entry names the row's live anchor (2.1). No entry
 holds the original text. IDs run from rm-4001 (3.3's
 block), in the order listed here.
+
+An entry a later item closed when an English translation was found (Stromata III,
+rm-4002 to rm-4035, closed by #399) keeps its closing on a rerun, and its passages
+are left as that item set them.
 """
 from __future__ import annotations
 
@@ -122,7 +126,8 @@ def apply(reg: registry.WorkRegistry, entries: list[dict], today: str) -> None:
     `retired`, close the redirects whose old piece they retire, and drop the kept-text
     entries of the passages they retire. Run once on a
     registry 3.3 has not touched, or again on its own output."""
-    retiring = {e["passage_id"] for e in entries if e["scope"] == "passage"}
+    retiring = {e["passage_id"] for e in entries
+                if e["scope"] == "passage" and not e.get("closed_by")}
     reg.removals[:] = sorted(
         [e for e in reg.removals if e.get("added_by") != ITEM] + entries,
         key=lambda e: (e["collection"], e["document_id"], e.get("anchor") or ""))
@@ -156,11 +161,15 @@ def main() -> None:
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     reg = registry.current()
-    # Keep the date of an unchanged entry, so a rerun changes nothing.
-    added_on = {e["id"]: e["added_on"] for e in reg.removals if e.get("added_by") == ITEM}
+    # Keep the date of an unchanged entry, and a later item's closing, so a rerun changes
+    # nothing.
+    earlier = {e["id"]: e for e in reg.removals if e.get("added_by") == ITEM}
     entries = plan(reg, args.today)
     for e in entries:
-        e["added_on"] = added_on.get(e["id"], e["added_on"])
+        old = earlier.get(e["id"], {})
+        e["added_on"] = old.get("added_on", e["added_on"])
+        if old.get("closed_by"):
+            e["closed_by"], e["closed_on"] = old["closed_by"], old["closed_on"]
     counts = {s: sum(e["scope"] == s for e in entries) for s in ("document", "passage", "span")}
     print(f"{len(entries)} entries ({counts}), rm-{FIRST_ID} to rm-{FIRST_ID + len(entries) - 1}")
     if args.dry_run:
