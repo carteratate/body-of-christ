@@ -28,7 +28,6 @@ _SMYRNA = ("A letter of the Church of Smyrna on Polycarp's death; its writer, Ev
            "named in chapter XX.")
 _REBAPTISM_COUNCIL = "Its ruling on rebaptizing heretics was not adopted by the Church."
 _REBAPTISM_VIEW = "Its view on rebaptizing heretics was not adopted by the Church."
-_COMPILED = "Compiled after Aquinas's death from his earlier writings."
 _CATENAE = "catenae, medieval chains of comments on Scripture"
 _LATER = "Preserved in quotations by later writers."
 
@@ -201,8 +200,8 @@ WORKS: dict[tuple[str, str], dict] = {
         "basis": "A church order; its title says it was wrongly ascribed to Hippolytus"},
     # An editor's judgment rule G removed, kept as a note (plan rule G; Carter, 15 Nov
     # 2026). The plan overrides the others 1.8a copied (works.json editorial_judgments).
+    # Its note sits on canon XI alone (PASSAGE_NOTES), the passage it is true of (4.4).
     ("church-fathers/third-century-3/iii.iii", "iii.iii.iii"): {
-        "notes": "The eleventh canon is a later addition.",
         "basis": "ANF 6, the editor's elucidation: a genuine epistle, all but the eleventh "
                  "canon"},
     ("church-fathers/third-century-2/iv.vii", "iv.vii.iii"): {
@@ -232,11 +231,11 @@ WORKS: dict[tuple[str, str], dict] = {
                             "through Dionysius Exiguus; all 85 were confirmed by the "
                             "Council in Trullo (canon 2) and Nicaea II (canon 1).",
         "basis": f"{PLAN}, Decision log, Apostolic Canons; D10; {MEMO} §5, §6"},
+    # Their header says "compiled after 1274" (`document_facts.WORK_DATES`), so the note
+    # 3.2 gave them goes (4.4, Carter, 20 Nov 2026).
     ("summa", "XP"): {"author": "Thomas Aquinas", "certainty": "genuine",
-                      "attribution_note": _COMPILED,
                       "basis": f"{PLAN}, Labels for works that stay"},
     ("summa", "vii"): {"author": "Thomas Aquinas", "certainty": "genuine",
-                       "attribution_note": _COMPILED,
                        "basis": f"{PLAN}, Labels for works that stay"},
     **{(_EPISTLES, key): {"certainty": "genuine",
                           "basis": "1.8c's sender, from the letter's title line and greeting"}
@@ -245,9 +244,12 @@ WORKS: dict[tuple[str, str], dict] = {
 WORKS[(_EPISTLES, "iv.iv.lxxiv")]["notes"] = _REBAPTISM_VIEW
 
 PASSAGE_NOTES: dict[tuple[str, str], str] = {
-    ("church-fathers/apostolic-fathers/iii.ii", key):
-        "Chapters 11 and 12 are a later addition by another hand."
-    for key in ("iii.ii.xi", "iii.ii.xii")
+    **{("church-fathers/apostolic-fathers/iii.ii", key):
+       "Chapters 11 and 12 are a later addition by another hand."
+       for key in ("iii.ii.xi", "iii.ii.xii")},
+    # The Canonical Epistle's eleventh canon (ANF 6's elucidation; 3.2, moved by 4.4).
+    ("church-fathers/third-century-3/iii.iii", "iii.iii.iii.xi"):
+        "This canon is a later addition.",
 }
 
 # Fields the registry's `attribution` object takes from DOCUMENTS; the rest are facts.

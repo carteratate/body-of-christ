@@ -426,6 +426,9 @@ def _validate_facts(registry: WorkRegistry) -> list[str]:
             out.append(f"{name}: translation is not a string")
         if not w.get("source_credit") and w["document_id"] not in held:
             out.append(f"{name}: no source_credit")
+        # The translator the result card names (4.4): a string, "" for none.
+        if w["document_id"] not in held and not isinstance(w.get("card_translator"), str):
+            out.append(f"{name}: no card_translator (rerun scripts/document_facts_registry.py)")
         target = w.get("superseded_by")
         if target is not None and (target not in registry.entry_by_document
                                    or target == w["document_id"]):
