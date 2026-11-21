@@ -20,9 +20,11 @@ from importlib import import_module
 
 import asyncpg
 
+import card_notes
 import contents
 import registry as reg
 import retirements
+from checks import card_notes as card_notes_check
 from health import refuse_block_violations
 from model import Document
 from writers import reader_writer
@@ -62,11 +64,11 @@ WORK_ORDINAL_LIMIT = 1_000_000
 # --------------------------------------------------------------------------- build
 
 def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOURCE_ADAPTERS,
-          limit: int | None = None, registry: reg.WorkRegistry | None = None
-          ) -> list[Document]:
+          limit: int | None = None, registry: reg.WorkRegistry | None = None,
+          held_coverage: bool = True) -> list[Document]:
     """Run the collection's source adapter, drop what the removal registry retires (D4),
-    set each document's facts from the work registry (2.3), and run the document checks.
-    Opens no store."""
+    set each document's facts from the work registry (2.3) and its held texts (4.3),
+    and run the document checks. Opens no store."""
     if collection not in source_adapters:
         raise ValueError(f"unknown collection: {collection}")
     if limit is not None and limit <= 0:
@@ -75,9 +77,17 @@ def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOU
     if limit is not None:
         documents = documents[:limit]
     removed = reg.removed_document_ids(registry)
-    documents = [reg.apply_document_facts(reg.drop_removed(d, registry), registry)
+    documents = [reg.attach_held_texts(
+                     reg.apply_document_facts(reg.drop_removed(d, registry), registry), registry)
                  for d in documents if d.id not in removed]
     validate_documents(collection, documents)
+    # 4.3: every held removal of these documents belongs to one held-text entry. Off
+    # only for scripts/held_texts.py, which drafts the entries that are missing.
+    problems = (reg.held_text_problems(registry, {d.id for d in documents})
+                if held_coverage else [])
+    if problems:
+        raise ValueError(f"REFUSING: {len(problems)} held-text problems: "
+                         + "; ".join(problems[:5]))
     return documents
 
 
@@ -109,12 +119,16 @@ def validate_documents(collection: str, documents: list[Document]) -> None:
 def prepare(documents: list[Document], registry: reg.WorkRegistry | None = None
             ) -> tuple[list[Document], list[str]]:
     """Each document with its passage-registry overrides applied (the registry wins over
-    the adapter, D11) and every `Passage.id` assigned (D1), and the genuinely new IDs."""
+    the adapter, D11), every `Passage.id` assigned (D1) and its card notes stored (4.4,
+    `card_notes.apply`, checked by `checks/card_notes.py`), and the genuinely new IDs.
+    A dry run and a stage both call this, so both refuse a note without its kind."""
     out, new = [], []
+    entries = (registry or reg.current()).entry_by_document
     for d in documents:
         d, fresh = reg.assign_ids(reg.apply_overrides(d, registry), registry)
-        out.append(d)
+        out.append(card_notes.apply(d, entries.get(d.id)))
         new += fresh
+    card_notes_check.check(out)
     return out, new
 
 

@@ -119,6 +119,25 @@ describe("SourcesPage excerpt-only documents (issue #265)", () => {
   });
 });
 
+describe("SourcesPage excerpt-only overview notes (4.4)", () => {
+  it("shows an excerpt-only document's own notes on its row, and no full document's", async () => {
+    state.sources = [
+      { id: "code", title: "Code of Canon Law", author: null, year: 1983, collection: "canon-law", translation: null, chunk_count: 1793, metadata: {},
+        reader_access: "excerpt", source_url: "https://www.vatican.va/cic_index_en.html",
+        overview_notes: [{ kind: "incomplete", text: "Six canons are not shown: their current text has no English translation." }] },
+      { id: "doc-2", title: "Rerum Novarum", author: "Pope Leo XIII", year: 1891, collection: "encyclicals", translation: null, chunk_count: 50, metadata: {},
+        reader_access: "full", overview_notes: [{ kind: null, text: "A full document's note." }] },
+    ] as unknown as SourceDocument[];
+    state.listReadingProgress.mockResolvedValue([]);
+    render(<SourcesPage />);
+
+    const code = await screen.findByRole("link", { name: /Code of Canon Law/ });
+    expect(code.textContent).toContain("Incomplete");
+    expect(code.textContent).toContain("Six canons are not shown");
+    expect(screen.queryByText("A full document's note.")).toBeNull();
+  });
+});
+
 describe("SourcesPage Bible book order (C-24)", () => {
   // Every title /v1/sources returns today (read 10 Nov 2026), and the titles the
   // rebuilt Bible gives the books (1.4a, `datapipeline/ingest/bible.py`), which
@@ -222,5 +241,31 @@ describe("SourcesPage Collection drop-down (issue #392)", () => {
     expect(screen.queryByText(/councils ·/)).toBeNull();
     expect(screen.getAllByRole("link").map((a) => a.textContent?.split(/\d/)[0].trim()))
       .toEqual(["Sacrosanctum Concilium", "Lumen Gentium"]);
+  });
+});
+
+describe("SourcesPage held texts (corpus cleanup 4.3)", () => {
+  it("says how many texts each row's document has read online, and still opens the reader", async () => {
+    state.sources = [
+      { id: "constance", title: "Council of Constance", author: null, year: 1414, collection: "councils", translation: null,
+        chunk_count: 13, metadata: { council_number: 16 }, held_count: 17 },
+      { id: "trent", title: "Council of Trent", author: null, year: 1545, collection: "councils", translation: null,
+        chunk_count: 400, metadata: { council_number: 19 } },
+      { id: "levate", title: "Levate", author: "Pope Pius IX", year: 1867, collection: "encyclicals", translation: "Unofficial",
+        chunk_count: 2, metadata: {}, held_count: 1 },
+      { id: "rn", title: "Rerum Novarum", author: "Pope Leo XIII", year: 1891, collection: "encyclicals", translation: null,
+        chunk_count: 50, metadata: {}, held_count: 0 },
+    ] as unknown as SourceDocument[];
+    state.listReadingProgress.mockResolvedValue([]);
+    render(<SourcesPage />);
+
+    const constance = await screen.findByRole("link", { name: /Council of Constance/ });
+    expect(constance.textContent).toContain("#16 · 1414· 17 texts read online");
+    expect(constance.textContent).toContain("13 passages");
+    expect(constance.getAttribute("href")).toMatch(/^\/reader\/constance\?/);
+    const levate = screen.getByRole("link", { name: /Levate/ });
+    expect(levate.textContent).toContain("· Unofficial· 1 text read online");
+    expect(levate.getAttribute("href")).toMatch(/^\/reader\/levate\?/);
+    expect(screen.getAllByTestId("held-count")).toHaveLength(2);
   });
 });

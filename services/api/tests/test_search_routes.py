@@ -532,7 +532,7 @@ def test_restore_without_0042_is_unchanged():
     result = body["results"][0]
     added_source = {k: result["source"].pop(k)
                     for k in ("facts", "language", "passage_note", "passage_author", "voice",
-                              "text_source", "text_status", "official_latin_url")}
+                              "text_source", "text_status", "official_latin_url", "card")}
     added_result = {k: result.pop(k) for k in ("status", "tombstone", "redirect")}
     assert added_source == dict.fromkeys(added_source)
     assert added_result == {"status": "current", "tombstone": None, "redirect": None}

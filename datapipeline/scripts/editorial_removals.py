@@ -562,7 +562,7 @@ def plan(reg: registry.WorkRegistry, entries: list[dict], found: list, item: str
         listed.append(row)
     if unreviewed:
         return None, unreviewed
-    return registry.WorkRegistry(works, passages, redirects, removals, reg.kept_text), []
+    return registry.WorkRegistry(works, passages, redirects, removals, reg.kept_text, held_texts=reg.held_texts), []
 
 
 def main(argv: list[str] | None = None) -> int:

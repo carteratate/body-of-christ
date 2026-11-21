@@ -31,6 +31,7 @@ import hashlib
 import json
 import os
 from dataclasses import dataclass, field
+from datetime import timedelta
 from typing import Protocol
 
 import reader_access
@@ -45,6 +46,7 @@ FLIPPED_POINTS = "flipped_points.json"
 ROLLED_BACK_SENTENCE = "This passage was added in a corpus update that has been undone."
 USER_TABLES = ("retrievals", "bookmarks", "retrieval_labels", "guest_trial_retrievals")
 RETIRED_BASE = -1_000_000
+ROLLBACK_WINDOW = timedelta(days=14)        # Carter, 4 Nov 2026 (4.1b step 12)
 
 
 class ApplyRefused(ValueError):
@@ -680,6 +682,12 @@ async def _rollback(conn, qdrant, release: str, *, alias: str,
         row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
         if row["rolled_back_at"] is not None:
             raise ApplyRefused(f"REFUSING: publish '{release}' was rolled back meanwhile")
+        # After the window, 4.1b step 13 may have deleted retired rows (which the
+        # snapshot cannot fully restore) and the previous Qdrant collection.
+        if await conn.fetchval("SELECT now() >= $1::timestamptz + $2::interval",
+                               row["applied_at"], ROLLBACK_WINDOW):
+            raise ApplyRefused(f"REFUSING: the {ROLLBACK_WINDOW.days}-day rollback window of "
+                               f"'{release}' has closed")
         await _refuse_if_superseded(conn, row)
         holder = await conn.fetchval(
             """SELECT id FROM corpus_publishes WHERE id <> $1 AND cleaned_up_at IS NULL

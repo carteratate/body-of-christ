@@ -112,6 +112,11 @@ export interface DocumentInfo {
    *  the document with their own attribution. Absent from an older API. */
   facts?: DocumentFacts | null;
   works?: WorkInfo[];
+  /** Corpus cleanup 4.3: how many texts of this document are read online instead. */
+  held_count?: number;
+  /** Corpus cleanup 4.4: the document-wide notes, shown in place of the facts' notes.
+   *  Absent or null for a document no 4.4 publish has written. */
+  overview_notes?: unknown;
 }
 
 export interface ReaderPassage {
@@ -168,11 +173,25 @@ export interface ContentsNode {
   children: ContentsNode[];
 }
 
+/** A text of the document that is not on TheoCorpus at present (corpus cleanup 4.3):
+ *  shown in its place with its heading and a link to read it online, never with text.
+ *  It follows the passage `after_anchor`; both keys are null for one that comes first. */
+export interface HeldText {
+  key: string;
+  label: string;
+  heading: string;
+  after_anchor: string | null;
+  after_chapter_key: string | null;
+  url: string;
+}
+
 export interface TocResponse {
   document: DocumentInfo;
   chapters: TocEntry[];
   /** The tree's roots; null or absent when the document has no current tree. */
   contents?: ContentsNode[] | null;
+  /** In reading order; absent from an older API, empty when the document holds none. */
+  held_texts?: HeldText[];
 }
 
 // ── V2 Bookmarks ───────────────────────────────────────────────────────────
@@ -206,6 +225,8 @@ export interface BookmarkChunkInfo {
     text_source?: TextSource | null;
     text_status?: TextStatus | null;
     official_latin_url?: string | null;
+    /** See ChunkSource.card (corpus cleanup 4.4); decoded by `parsePassageCard`. */
+    card?: unknown;
   };
   /** See ChunkResult.footnotes (issue #279). */
   footnotes?: Footnote[];
@@ -820,6 +841,11 @@ export interface SourceDocument {
   source_url?: string | null;
   /** Corpus cleanup 2.4b reads these when the API sends them; /sources does not yet. */
   facts?: DocumentFacts | null;
+  /** Corpus cleanup 4.3: how many texts of this document are read online instead. */
+  held_count?: number;
+  /** See DocumentInfo.overview_notes (4.4). The row of an excerpt-only document, whose
+   *  overview answers 403, shows them. */
+  overview_notes?: unknown;
 }
 
 export async function getSources(token: string): Promise<SourceDocument[]> {

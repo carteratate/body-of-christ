@@ -74,7 +74,7 @@ def pin(reg: registry.WorkRegistry) -> registry.WorkRegistry:
     works = [{**w, "source_key": NEW_KEY} if w["document_id"] == DOCUMENT_ID else w
              for w in reg.works]
     return registry.WorkRegistry(works, reg.passages, reg.redirects, reg.removals,
-                                 reg.kept_text)
+                                 reg.kept_text, held_texts=reg.held_texts)
 
 
 def lawson_passages(snapshot_dir: str) -> list[dict]:
@@ -190,7 +190,7 @@ def plan(reg: registry.WorkRegistry, snapshot_dir: str, today: str):
         return None, [], [f"{DOCUMENT_ID} is built from {document.metadata['source_key']}"]
     passages = lawson_passages(snapshot_dir)
     rows, redirected = redirects(reg, document, passages, today)
-    base = registry.WorkRegistry(reg.works, rows, redirected, reg.removals, reg.kept_text)
+    base = registry.WorkRegistry(reg.works, rows, redirected, reg.removals, reg.kept_text, held_texts=reg.held_texts)
     live = er.live_text(snapshot_dir)
     entries, found, problems = er.generate(base, documents, log, live, today, item=ITEM)
     staged, unreviewed = er.plan(base, entries, found, item=ITEM)
@@ -198,11 +198,11 @@ def plan(reg: registry.WorkRegistry, snapshot_dir: str, today: str):
         return None, entries, [f"unreviewed judgment: {u}" for u in unreviewed]
     staged = registry.WorkRegistry(staged.works, staged.passages, staged.redirects,
                                    class_entries(staged.removals, document, today),
-                                   staged.kept_text)
+                                   staged.kept_text, held_texts=staged.held_texts)
     rec = registry.reconcile(staged, [document], item=ITEM, today=today)
     problems += rec.problems
     updated = registry.WorkRegistry(staged.works, rec.rows, rec.redirects, staged.removals,
-                                    staged.kept_text)
+                                    staged.kept_text, held_texts=staged.held_texts)
     problems += registry.validate(updated)
     return updated, entries, problems
 

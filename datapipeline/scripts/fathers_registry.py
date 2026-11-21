@@ -273,7 +273,7 @@ def plan(reg: registry.WorkRegistry, documents: list, live: dict[str, str], toda
         if e.get("closed_by") == ITEM:
             e = {k: v for k, v in e.items() if k not in ("closed_by", "closed_on")}
         removals.append(e)
-    base = registry.WorkRegistry(reg.works, rows, redirects, removals, reg.kept_text)
+    base = registry.WorkRegistry(reg.works, rows, redirects, removals, reg.kept_text, held_texts=reg.held_texts)
     entries, split, retired, problems = generate(base, documents, live, today)
     notes = sync_note_counts(base.removals, documents, today)
     entries += [e for e in notes if e["id"] is None]
@@ -307,7 +307,7 @@ def plan(reg: registry.WorkRegistry, documents: list, live: dict[str, str], toda
                                    sorted(removals + entries,
                                           key=lambda e: (e["collection"], e["document_id"],
                                                          e.get("anchor") or "")),
-                                   reg.kept_text)
+                                   reg.kept_text, held_texts=reg.held_texts)
     rec = registry.reconcile(staged, documents, item=ITEM, today=today,
                              settle=settle_by_text(live), moved=lost_text(live))
     problems += rec.problems
@@ -320,7 +320,7 @@ def plan(reg: registry.WorkRegistry, documents: list, live: dict[str, str], toda
     works, passages = sync_works(reg, rec.rows, documents)
     updated = registry.WorkRegistry(works, passages, rec.redirects, staged.removals,
                                     sorted(kept + found,
-                                           key=lambda e: (e["document_id"], e["anchor"])))
+                                           key=lambda e: (e["document_id"], e["anchor"])), held_texts=reg.held_texts)
     problems += registry.validate(updated)
     return updated, entries, split, problems
 

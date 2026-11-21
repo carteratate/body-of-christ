@@ -1,6 +1,7 @@
 import { parseFootnotes, type Footnote } from "./footnotes";
 import { readerAccessValue, type ReaderAccess } from "./reader-access";
 import { parseFacts, type DocumentFacts } from "./attribution";
+import { parsePassageCard, type PassageCard } from "./card-notes";
 import {
   parsePassageLifecycle,
   type PassageStatus,
@@ -91,6 +92,10 @@ export interface ChunkSource {
   text_source?: TextSource | null;
   text_status?: TextStatus | null;
   official_latin_url?: string | null;
+  /** The notes under the opened passage (corpus cleanup 4.4). Absent from an older API
+   *  and for a passage whose document no 4.4 publish has written; the card then shows
+   *  the fields above as before. */
+  card?: PassageCard | null;
 }
 
 /** One passage attached to a matched Summa passage to make it intelligible. */
@@ -313,6 +318,7 @@ function normalizePassage(event: Record<string, unknown>): ChunkResult {
       passage_author: optionalText(source.passage_author),
       voice: passageVoice(source.voice),
       ...passageTextLabels(source),
+      card: parsePassageCard(source.card),
     },
     reranker_score: nullableNumber(event.reranker_score),
     explanation: nullableString(event.explanation),

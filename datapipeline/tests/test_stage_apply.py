@@ -282,7 +282,9 @@ async def test_document_facts_reach_staging_and_live_after_apply(world, monkeypa
     entry.update({k: None for k in registry.FACT_FIELDS})
     entry.update(genre="treatise", form="bull", year=1128, date_display="c. 1128",
                  translation="William Harman van Allen (1909)",
-                 source_credit="Sourced via CCEL.org", notes="A note.")
+                 source_credit="Sourced via CCEL.org",
+                 notes="Preserved in Eusebius, Church History.",
+                 card_translator="Translated by William Harman van Allen (1909)")
     entry["attribution"].update(certainty="genuine", clavis="PL 182")
     a = _doc(world, DOC_A)
     a.year, a.translation, a.genre = 1099, "adapter", "sermon"
@@ -292,10 +294,23 @@ async def test_document_facts_reach_staging_and_live_after_apply(world, monkeypa
                "certainty, clavis_ref, issuer")
     want = {"genre": "treatise", "form": "bull", "year": 1128, "date_display": "c. 1128",
             "translation": "William Harman van Allen (1909)",
-            "source_credit": "Sourced via CCEL.org", "notes": "A note.",
+            "source_credit": "Sourced via CCEL.org",
+            "notes": "Preserved in Eusebius, Church History.",
             "certainty": "genuine", "clavis_ref": "PL 182", "issuer": None}
     query = f"SELECT {columns} FROM {{}}.documents WHERE id = $1::uuid"
     assert await world.fetch(query.format("staging"), DOC_A) == [want]
+    # 4.4: the card's keys ride in the document's metadata.
+    card = ("SELECT metadata->>'card_version' AS v, metadata->>'card_translator' AS t, "
+            "metadata->'card_notes' AS notes FROM {}.documents WHERE id = $1::uuid")
+    card_want = {"v": "1", "t": "Translated by William Harman van Allen (1909)",
+                 "notes": [{"kind": None, "text": "Preserved in Eusebius, Church History",
+                            "show": "record"}]}
+
+    def decoded(rows):
+        return [{**r, "notes": json.loads(r["notes"]) if isinstance(r["notes"], str)
+                 else r["notes"]} for r in rows]
+
+    assert decoded(await world.fetch(card.format("staging"), DOC_A)) == [card_want]
 
     conn = await world.connect()
     try:
@@ -306,6 +321,7 @@ async def test_document_facts_reach_staging_and_live_after_apply(world, monkeypa
     finally:
         await conn.close()
     assert await world.fetch(query.format("public"), DOC_A) == [want]
+    assert decoded(await world.fetch(card.format("public"), DOC_A)) == [card_want]
 
 
 async def test_a_stage_refuses_a_database_without_0044(world):
