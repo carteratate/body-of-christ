@@ -382,10 +382,10 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
       - Restart the API.
       Bookmarks made after cutover on passages that exist only in the new corpus stay attached to rows that are now retired and show as unavailable; the reverse report counts them.
   13. **After the window closes (separate approvals).**
-      - Delete retired rows with no user references (D3) in batches of 1,000, after asserting zero references from every table in 4.1a. Retired rows that users still point at stay, with their tombstones.
-      - Plain `VACUUM (analyze) chunks`. The freed space is reused by later inserts; the database size figure only falls after another `VACUUM FULL`, which is a separate 4.0-style decision.
-      - Delete the Qdrant collection `chunks`. Irreversible; Carter approves it separately.
-      - Delete the private ledger and the step 4 dumps from Carter's Mac.
+      - Delete retired rows with no user references (D3) in batches of 1,000, after asserting zero references from every table in 4.1a (`publish.py purge-retired`, after the disk check of step 4). Retired rows that users still point at stay, with their tombstones, and so do texts held for their return (ADR 0001).
+      - Plain `VACUUM (analyze) chunks`, after the same disk check. The freed space is reused by later inserts; the database size figure only falls after another `VACUUM FULL`, which is a separate 4.0-style decision.
+      - Delete the Qdrant collection `chunks` (`publish.py drop-old-collection`). Irreversible; Carter approves it separately.
+      - Delete the private ledger and the step 4 dumps (on the Lenovo for this republish).
       - A reviewed lock-file change removes the `republish-2026-10` entry, leaving `approved_applies` empty.
       - Measure the database size again.
 - **Acceptance checks:**
@@ -422,6 +422,15 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - Step 9: the API's pool reconnected by itself; the restart only clears the 1-hour `/sources` cache.
   - Step 10: a live guest search showed Nostra Aetate §4 in full with its LEV notice and source link; Trent's Bull of Indiction opened in full in the reader; one production search per collection, 10 of 10. `cleanup` dropped staging: 729 → 531 MB. Carter's signed-in checks recorded on #192.
   - Step 11: 4.2's post-cutover run (4.2's as-built note). The rollback window closes on 4 Dec 2026 (step 13).
+- **Prepared, step 13 (21 Nov 2026).** Tooling built and tested; nothing run on production but dry runs. The checklist of every part, in order, is on #192.
+  - `publish.py purge-retired --release republish-2026-10` (`datapipeline/retention.py`). A dry run by default, inside a read-only transaction. It reads the foreign keys into `chunks` and `documents` from the database, so a later table such as Studies is covered. A retired row stays when any row outside the corpus tables points at it (cascade or set null), when a corpus row's `superseded_by` names it, or, for a document, when one of its passages stays. A live run (`--execute`) deletes in batches of 1,000, each its own transaction with `lock_timeout` under the publish lock; each batch locks its rows and checks references again, so a row someone points at after the plan stays. It refuses inside any publish's rollback window (14 days from `applied_at`, so from 4 Dec 2026 23:34 UTC), while a publish holds staging, and without the lock entry's `apply` step.
+  - Deleting a passage fires 0037's trigger, which clears its document's `chunk_count`; each batch refreshes the outlines of the documents it touched.
+  - The API's notice for an old reader link to a removed passage read the passage row (its anchor or chapter key). Each batch now copies both into the passage's tombstone snapshot before the delete, and `app/corpus_lifecycle.py` falls back to them when the row is gone. Without this, 1,083 removed passages in 117 documents that stay would have lost their notice: an old link would open the document's first chapter (anchor) or return 404 (chapter). The API change must deploy before the purge runs.
+  - Held texts stay. ADR 0001 keeps documents held for permission "in the database, retired, never deleted", so they can return unchanged and their notice keeps its papalencyclicals.net link, which the API reads from the document row. The purge therefore keeps every retired row whose tombstone reason is `awaiting-permission` or `translation-in-preparation` (Carter to confirm).
+  - Disk. The dry run estimates the WAL from the heap and toast pages the deletes touch (one full-page image each, before compression) plus the outline and tombstone rewrites, and the `VACUUM` after it from the table's total size. A live run needs `--disk-free-gb`, read from the dashboard just before, of at least twice the estimate plus 1 GB.
+  - Dry run on production, 21 Nov 2026: retired passages 6,646, of which 5,364 would be deleted and 1,282 stay (841 held for permission, 364 held for a translation, 98 in saved searches, holding 133 results). Retired documents 85, of which 18 would be deleted and 67 stay (51 held for permission, 1 for a translation, 4 with a reading position, the rest because some of their passages stay). 7 batches. WAL: at most 51 MB for the purge (needs 1.1 GB free) and 472 MB for the `VACUUM` (needs 1.9 GB free).
+  - `publish.py drop-old-collection --release republish-2026-10` deletes the collection the switch left (`previous_qdrant_collection`, `chunks`, 54,555 points), refusing while any alias or publish uses it or inside the window; `--execute` also needs `--confirm chunks`.
+  - The ledger and backups are on the Lenovo, not Carter's Mac: the before-snapshot with `user_remap_ledger.jsonl` (24 MB, `datapipeline/releases/snapshots/republish-2026-10-before/` in the main checkout) and `~/cutover-republish-2026-10/` (463 MB: the user and corpus `pg_dump`s, the Qdrant `chunks` snapshot, the run logs).
 - **Out of scope:** Collection renames (5.1b). Any new source. Any retrieval tuning (Retrieval follow-ups).
 
 ### 4.2. Accuracy checks on staging and production
