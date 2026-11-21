@@ -391,32 +391,42 @@ async def test_a_tombstoned_id_whose_redirect_opens_is_redirected_and_rollback_r
 
 
 async def test_rollback_puts_a_returning_retired_passage_back_as_it_was(world):
-    """A retired passage a publish brings back under a new anchor and text (Stromata
-    III, #399) is retired again by its rollback with its old anchor, text and position,
-    and its tombstone."""
-    _retire_a4(world)
+    """Retired passages a publish brings back under new anchors and text (Stromata III,
+    #399) are retired again by its rollback with their old anchors, text and positions,
+    and their tombstones; a passage the publish added, which the rollback retires, takes
+    none of those positions."""
+    a = _doc(world, DOC_A)
+    returning = ("a/3", "a/4")
+    for k, anchor in enumerate(returning, 921):
+        world.registry.removals.append(_removal(
+            id=f"rm-0{k}", scope="passage", document_id=DOC_A, anchor=anchor,
+            passage_id=pid(DOC_A, anchor), reason="debris", tombstone="Removed."))
+    kept = a.passages
+    a.passages = kept[:2]
     await _stage(world)
     await _apply(world)
     await _cleanup(world)
-    old = pid(DOC_A, "a/4")
-    [before] = await world.fetch("SELECT anchor, content, position, retired_at FROM chunks "
-                                 "WHERE id = $1::uuid", old)
-    world.registry.removals[-1]["closed_by"] = "#399"
-    world.registry.removals[-1]["closed_on"] = "2026-11-21"
-    row = next(r for r in world.registry.passages if r["passage_id"] == old)
-    row["anchor"], row["status"] = "a/4n", "active"
+    ids = [pid(DOC_A, x) for x in returning]
+    query = ("SELECT id::text, anchor, content, position, retired_at FROM chunks "
+             "WHERE id = ANY($1::uuid[]) ORDER BY id")
+    before = await world.fetch(query, ids)
+    for e in world.registry.removals[-2:]:
+        e["closed_by"], e["closed_on"] = "#399", "2026-11-21"
+    for r in world.registry.passages:
+        if r["passage_id"] in ids:
+            r["anchor"], r["status"] = r["anchor"] + "n", "active"
     world.registry.__post_init__()
-    world.build = __import__("tests.stage_world", fromlist=["x"]).live_documents()
-    a = _doc(world, DOC_A)
-    a.passages[-1] = replace(a.passages[-1], anchor="a/4n", content="In English now.")
+    # The new passage comes first, so the rollback retires it first.
+    a.passages = kept[:2] + [passage("a/5", "c2", "A new passage.", 2)] + [
+        replace(p, anchor=p.anchor + "n", content="In English now.", position=p.position + 1)
+        for p in kept[2:]]
     await _stage(world, StageRequest(release="release-two", collections=("medieval",)))
     await _apply(world, "release-two")
     await _rollback(world, "release-two")
-    [after] = await world.fetch("SELECT anchor, content, position, retired_at FROM chunks "
-                                "WHERE id = $1::uuid", old)
-    assert after == before
-    [t] = await world.fetch("SELECT id::text, publish_id FROM corpus_tombstones")
-    assert t == {"id": old, "publish_id": RELEASE}
+    assert await world.fetch(query, ids) == before
+    tombs = {r["id"]: r["publish_id"] for r in await world.fetch(
+        "SELECT id::text, publish_id FROM corpus_tombstones")}
+    assert tombs == {**{i: RELEASE for i in ids}, pid(DOC_A, "a/5"): "release-two"}
 
 
 async def test_a_tombstoned_chapter_that_comes_back_elsewhere_redirects(world):

@@ -221,10 +221,12 @@ def _set(columns: tuple[str, ...], skip: tuple[str, ...] = ("id",)) -> str:
 
 
 async def _core(conn, scope_documents: list[str], *, release: str,
-                rollback: bool = False) -> CoreResult:
+                rollback: bool = False, reserved: list[dict] = ()) -> CoreResult:
     """Steps 1 to 4 and the contents trees, from the staging tables. `scope_documents`
     are the live documents considered: any of them staging lacks is retired, and so is
-    any of their live passages staging lacks."""
+    any of their live passages staging lacks. `reserved` are retired rows a rollback
+    puts back after this (`_restore_retired`): what this retires goes below their
+    positions too."""
     staged_documents = [str(r["id"]) for r in await conn.fetch("SELECT id FROM staging.documents")]
     retire_documents = [d for d in scope_documents if d not in set(staged_documents)]
     touched = sorted(set(staged_documents) | set(scope_documents))
@@ -313,7 +315,9 @@ async def _core(conn, scope_documents: list[str], *, release: str,
             SELECT d AS document_id,
                    LEAST($2::int, coalesce((SELECT min(position) - 1 FROM public.chunks
                                             WHERE document_id = d AND retired_at IS NOT NULL),
-                                           $2::int)) AS base
+                                           $2::int),
+                         coalesce((SELECT min(x.p) - 1 FROM unnest($4::uuid[], $5::int[])
+                                   AS x(doc, p) WHERE x.doc = d), $2::int)) AS base
             FROM unnest($1::uuid[]) AS d)
         UPDATE public.chunks c
         SET retired_at = now(), position = b.base - (r.rn - 1)::int,
@@ -326,7 +330,8 @@ async def _core(conn, scope_documents: list[str], *, release: str,
         FROM r JOIN b USING (document_id)
         WHERE c.id = r.id
         RETURNING c.id
-        """, touched, RETIRED_BASE, release)
+        """, touched, RETIRED_BASE, release, [r["document_id"] for r in reserved],
+        [r["position"] for r in reserved])
     leftover = await conn.fetchval(
         """SELECT count(*) FROM public.chunks
            WHERE document_id = ANY($1::uuid[]) AND anchor LIKE '~%'""", touched)
@@ -685,7 +690,8 @@ async def _rollback(conn, qdrant, release: str, *, alias: str,
         await _load_snapshot_into_staging(conn, rows)
         scope = ([d["id"] for d in rows["documents"]] if retire_only
                  else await _live_documents(conn, list(row["collections"])))
-        core = await _core(conn, scope, release=release, rollback=True)
+        core = await _core(conn, scope, release=release, rollback=True,
+                           reserved=rows.get("retired_chunks", []))
         ledger = RemapLedger()
         if remap is not None:
             ledger = await remap.reverse(conn, release)
