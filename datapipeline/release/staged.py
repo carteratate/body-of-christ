@@ -417,7 +417,8 @@ async def metadata_diff(conn, collections: list[str]) -> list[dict]:
         staged, live = json.loads(r["staged"] or "{}"), json.loads(r["live"] or "{}")
         out.append({"id": r["id"], "collection": r["collection"], "title": r["title"],
                     "keys": sorted(k for k in staged.keys() | live.keys()
-                                   if staged.get(k) != live.get(k))})
+                                   if (k in staged) != (k in live)
+                                   or staged.get(k) != live.get(k))})
     return out
 
 
