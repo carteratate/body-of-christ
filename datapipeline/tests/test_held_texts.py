@@ -87,7 +87,7 @@ def test_the_shipped_list_covers_every_held_removal_once():
 
 
 def test_the_shipped_counts():
-    """Constance's 17 held texts and the councils' 68; 23 encyclical runs; Exsurge
+    """Constance's 18 held texts and the councils' 69; 23 encyclical runs; Exsurge
     Domine's opening and closing (measured against the build, 21 Nov 2026)."""
     shipped = registry.current()
     titles = {w["document_id"]: (w["collection"], w["title"]) for w in shipped.works}
@@ -97,8 +97,8 @@ def test_the_shipped_counts():
         collection, title = titles[h["document_id"]]
         by_collection[collection] = by_collection.get(collection, 0) + 1
         by_title[title] = by_title.get(title, 0) + 1
-    assert by_collection == {"councils": 68, "encyclicals": 23, "papal-documents": 2}
-    assert by_title["Council of Constance"] == 17
+    assert by_collection == {"councils": 69, "encyclicals": 23, "papal-documents": 2}
+    assert by_title["Council of Constance"] == 18
     assert by_title["Council of Basel-Ferrara-Florence"] == 30
 
 
@@ -106,7 +106,7 @@ def test_constance_lists_the_sentences_of_sessions_8_15_and_21():
     shipped = registry.current()
     constance = [h for h in shipped.held_texts
                  if shipped.entry_by_document[h["document_id"]]["title"] == "Council of Constance"]
-    sentences = {h["label"] for h in constance if h["heading"].startswith("Sentence")}
+    sentences = {h["label"] for h in constance if "sentence" in h["heading"].lower()}
     assert {"Session 8", "Session 15", "Session 21"} <= sentences
     assert [int(h["label"].split()[1]) for h in constance] == sorted(
         int(h["label"].split()[1]) for h in constance)
@@ -140,6 +140,19 @@ def test_a_piece_the_build_cut_needs_an_entry_like_any_other():
                    detail="Session 2, a decree (gap G9), a piece the 1.10c build cut")
     reg = _registry([_removal("rm-1", "s2/1"), cut], [_held("ht-0001", ["rm-1"])])
     assert any("rm-2" in p for p in _problems(reg))
+
+
+def test_a_closed_entry_keeps_its_id_and_is_not_listed():
+    """A held text no longer held is closed, never deleted, so its ID is never reused."""
+    reg = _registry([_removal("rm-1", "s2/1", closed_by="1.2x", closed_on="2026-12-01")],
+                    [_held("ht-0001", ["rm-1"], closed_by="1.2x", closed_on="2026-12-01")])
+    assert _problems(reg) == []
+    assert registry.attach_held_texts(_document(), reg).metadata is None
+    reg.held_texts[0].pop("closed_on")
+    assert any("closed_by and closed_on" in p for p in _problems(reg))
+    reg.held_texts[0]["closed_on"] = "2026-12-01"
+    reg.removals.append(_removal("rm-2", "s2/2"))
+    assert [e["id"] for e in script.draft(reg, [_document()], "2026-12-02")] == ["ht-0002"]
 
 
 def test_a_removal_in_two_entries_fails():

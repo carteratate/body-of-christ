@@ -388,8 +388,9 @@ async def held_texts_diff(conn, collections: list[str]) -> list[dict]:
                     "added": [h for k, h in staged.items() if k not in live],
                     "removed": sorted(live.keys() - staged.keys()),
                     "changed": sorted(changed, key=lambda c: c["key"]),
-                    # Order matters to the reader even when no entry changes.
-                    "reordered": staged.keys() == live.keys() and list(staged) != list(live)})
+                    # Order matters to the reader, also among entries that stay.
+                    "reordered": [k for k in staged if k in live] != [k for k in live
+                                                                       if k in staged]})
     return out
 
 

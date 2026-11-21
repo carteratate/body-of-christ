@@ -154,9 +154,9 @@ def _papal_place(first: int, document) -> str | None:
 
 
 def draft(reg: registry.WorkRegistry, documents: list, today: str) -> list[dict]:
-    """Proposed entries for every held removal no entry owns, per document in build
-    order, with IDs after the highest in use."""
-    owned = {rid for h in reg.held_texts for rid in h.get("removal_ids") or []}
+    """Proposed entries for every held removal no open entry owns, per document in build
+    order, with IDs after the highest ever given (closed entries stay in the file)."""
+    owned = {rid for h in registry.open_held_texts(reg) for rid in h.get("removal_ids") or []}
     pending: dict[str, list[dict]] = {}
     for e in reg.removals:
         if registry.is_held_removal(e) and e["id"] not in owned:

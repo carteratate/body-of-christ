@@ -544,13 +544,25 @@
   "added_on": "2026-11-21"
  },
  {
+  "id": "ht-0094",
+  "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
+  "label": "Session 8",
+  "heading": "Opening decree, and the sentence introducing John Wyclif's 45 articles",
+  "after_anchor": null,
+  "removal_ids": [
+   "rm-0754"
+  ],
+  "url": null,
+  "added_by": "4.3",
+  "added_on": "2026-11-21"
+ },
+ {
   "id": "ht-0033",
   "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
   "label": "Session 8",
-  "heading": "Sentence against John Wyclif, and the condemnation of his books and of 260 other articles",
+  "heading": "Condemnation of Wyclif's books and of 260 other articles, and the sentence on Wyclif as a heretic",
   "after_anchor": "council-of-constance/session-8/wyclif-articles/from-p35",
   "removal_ids": [
-   "rm-0754",
    "rm-0755",
    "rm-0756",
    "rm-0757",

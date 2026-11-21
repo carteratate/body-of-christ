@@ -686,7 +686,9 @@ def _validate_held_texts(registry: WorkRegistry,
     changed with it. `shared_removal_ids` names a passage another entry owns, for a text
     that lies wholly inside a passage straddling two texts; it counts for nothing else.
     Where each entry sits in the build is the build's check (`held_texts_for`).
-    `documents`, when given, limits the check to those documents' entries and removals
+    An entry is never deleted, so its ID is never reused: one whose text is no longer held
+    (a translation found) is closed with `closed_by` and `closed_on`, as removals are, and
+    counts for nothing else. `documents`, when given, limits the check to those documents' entries and removals
     (the build checks the documents it builds)."""
     out = []
     if documents is not None:
@@ -720,6 +722,10 @@ def _validate_held_texts(registry: WorkRegistry,
             out.append(f"held text {name}: url {url!r} is not a web address")
         if not h.get("added_by") or not _DATE.match(str(h.get("added_on"))):
             out.append(f"held text {name}: needs added_by and an ISO added_on")
+        if bool(h.get("closed_by")) != bool(h.get("closed_on")):
+            out.append(f"held text {name}: closed_by and closed_on go together")
+        if h.get("closed_by"):
+            continue
         own, shared = h.get("removal_ids") or [], h.get("shared_removal_ids") or []
         if not own and not shared:
             out.append(f"held text {name}: names no removal")
@@ -737,7 +743,7 @@ def _validate_held_texts(registry: WorkRegistry,
                 out.append(f"held text {name}: removal {rid} already belongs to "
                            f"{owner[rid]}")
             owner.setdefault(rid, name)
-    for h in registry.held_texts:
+    for h in open_held_texts(registry):
         for rid in h.get("shared_removal_ids") or []:
             if owner.get(rid) in (None, h.get("id")):
                 out.append(f"held text {h.get('id')}: shared removal {rid} belongs to no "
@@ -747,6 +753,11 @@ def _validate_held_texts(registry: WorkRegistry,
             out.append(f"removal {e.get('id')} ({e.get('anchor')}) is held but belongs to "
                        f"no entry of {HELD_TEXTS_FILE}")
     return out
+
+
+def open_held_texts(registry: WorkRegistry) -> list[dict]:
+    """The entries the build writes: closed ones are kept as the record, not listed."""
+    return [h for h in registry.held_texts if not h.get("closed_by")]
 
 
 def held_text_problems(registry: WorkRegistry | None, documents: set[str]) -> list[str]:
@@ -760,7 +771,7 @@ def held_texts_for(document: Document, registry: WorkRegistry | None = None) -> 
     is the built passage the text follows, null before the first. Raises ValueError when
     an entry's `after_anchor` is not a passage of this build or the entries' places go
     backwards, so a rebuilt document cannot strand its list."""
-    entries = [h for h in (registry or current()).held_texts
+    entries = [h for h in open_held_texts(registry or current())
                if h.get("document_id") == document.id]
     index = {p.anchor: i for i, p in enumerate(document.passages)}
     chapter = {p.anchor: p.chapter_key for p in document.passages}
