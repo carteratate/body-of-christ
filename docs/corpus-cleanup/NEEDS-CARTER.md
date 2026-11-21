@@ -468,6 +468,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-05: recommendation accepted: the CCEL 1907 text; the row now uses it.
 - **5.7** [Phase 5]. Approve the final About page wording, especially the list of excluded authors.
 - **5.8** [Phase 5]. Choose when to revisit paid licences (the Decision log says after the free phase ships). This blocks the Eastern Catholic code.
+- **5.9** [Phase 5]. Constance's condemned articles of Wyclif and Hus: add Martin V's *Inter cunctas* (1418), whose questions state the council's verdict on them, as its own document from Deferrari (n. 657–689), or only its question 11 as a note. Recommended answer: its own document, so a search can return the verdict. Exsurge Domine's censure is decided (21 Nov 2026).
+  Answered 2026-11-21: its own papal document (option A), as #422.
 - **RF** [after Phase 4]. Put the retrieval follow-up issues in priority order.
 
 ---
