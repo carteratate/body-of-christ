@@ -15,6 +15,7 @@ def _passage(n: int, note=None, metadata=None, work_key=None) -> Passage:
 
 
 def _document(passages, **fields) -> Document:
+    fields.setdefault("source_credit", "Translated by Roy J. Deferrari (1957)")
     return Document(id="d", collection=fields.pop("collection", "councils"),
                     title=fields.pop("title", "Council of Florence"), passages=passages,
                     **fields)
@@ -64,6 +65,28 @@ def test_a_passage_note_is_rewritten_with_its_kind_and_the_document_gets_its_key
                             "card_translator": "Translated by H. J. Schroeder (1937)"}
 
 
+def test_nothing_naming_a_translator_is_not_the_empty_badge_value():
+    assert card_notes.card_translator("Sourced via CCEL.org", "") is None
+    doc = card_notes.apply(_document([_passage(0)], source_credit="Sourced via CCEL.org"), None)
+    assert doc.metadata["card_translator"] is None
+    assert any("can name no translator" in p for p in check.problems(doc))
+
+
+def test_a_partly_printed_paragraph_keeps_its_caution_beside_the_documents_extract_note():
+    extract = ("Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic "
+               "Dogma (1957).")
+    doc = card_notes.apply(_document(
+        [_passage(0, note=extract), _passage(1, note="This printing gives only part of this "
+                                                     "paragraph.")],
+        collection="encyclicals", title="Quanto Conficiamur Moerore",
+        notes="Only extracts of this encyclical are given, in R. J. Deferrari's translation of "
+              "Denzinger (1957): paragraph 7, the first part of paragraph 8, and paragraph 9. "
+              "The rest is not available on TheoCorpus at present."), None)
+    assert [p.note for p in doc.passages] == [
+        None, "This printing gives only part of this paragraph."]
+    assert check.problems(doc) == []
+
+
 def test_works_json_card_translator_wins_over_the_rule():
     doc = card_notes.apply(_document([_passage(0)], source_credit="Sourced via CCEL.org",
                                      translation="X"), {"card_translator": ""})
@@ -97,9 +120,12 @@ def test_document_and_work_notes_become_entries_and_header_repeats_go():
         notes="Preserved in Eusebius, Church History.",
         works=[Work("w", 1, "The Muratorian Fragment", author="Anonymous",
                     attribution_note="Its author is unknown; the editors printed it with "
-                                     "Caius's fragments on one scholar's guess.")]), None)
+                                     "Caius's fragments on one scholar's guess.", notes="")]),
+        None)
+    # The Muratorian Fragment clears the volume's note (notes=""), so it is not on the
+    # fragment's card: the volume's note goes to the overview.
     assert doc.metadata["card_notes"] == [
-        {"kind": None, "text": "Preserved in Eusebius, Church History", "show": "record"},
+        {"kind": None, "text": "Preserved in Eusebius, Church History", "show": "overview"},
         {"kind": "authorship", "show": "card", "work_key": "w",
          "text": "The editors printed it with Caius's fragments on one scholar's guess."},
     ]

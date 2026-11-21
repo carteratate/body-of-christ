@@ -27,6 +27,7 @@ def _document(*anchors: str) -> Document:
         collection="medieval",
         title="On Loving God",
         author="Bernard of Clairvaux",
+        translation="William Harman van Allen (1909)",
         passages=[
             Passage(
                 content=f"Passage {anchor}",

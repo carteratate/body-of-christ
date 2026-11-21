@@ -78,6 +78,7 @@ ANASTASIUS = caution("wording", "From Anastasius's Latin version of the acts.")
 HEFELE = caution("wording", "From Hefele's account of the session, not the council's acts.")
 RECENSION = caution("wording", "Translated from another recension of this canon.")
 FROM_FRENCH = caution("wording", "Translated from a French translation, not from the Latin.")
+PARTIAL = caution("incomplete", "This printing gives only part of this paragraph.")
 # How a document's own note says it is printed only in extract (1.3d's encyclicals).
 EXTRACT_DOCUMENT_OPENINGS = ("Only an extract is given:", "Only extracts are given:")
 LATIN_OMITTED = overview(
@@ -117,6 +118,7 @@ PASSAGE_NOTES: dict[str, Note | None] = {
        for n in (29, 30)},
     "This canon is a later addition.": caution(
         "authorship", "This canon is a later addition."),
+    PARTIAL.text: PARTIAL,
     "This printing cuts the paragraph short with “&c.”": caution(
         "incomplete", "This printing cuts the paragraph short with “&c.”"),
     "Chapters 11 and 12 are a later addition by another hand.": caution(
@@ -233,9 +235,9 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "This English printing (The Jesuit, Boston, 1829) is abridged: it shortens several "
     "paragraphs and omits paragraphs 2, 8, 9, 11 and 13; what it leaves out is not "
     "available on TheoCorpus at present.": (
-        caution("incomplete", "This printing shortens several paragraphs."),
-        overview(f"This printing omits paragraphs 2, 8, 9, 11 and 13; what it leaves out is "
-                 f"{NOT_AVAILABLE}.", "incomplete")),
+        overview(f"This printing shortens several paragraphs, which it does not name, and "
+                 f"omits paragraphs 2, 8, 9, 11 and 13; what it leaves out is "
+                 f"{NOT_AVAILABLE}.", "incomplete"),),
     "This English printing (The Rambler, 1850) omits paragraphs 21–24, 26 and 31–33; they "
     "are not available on TheoCorpus at present.": (overview(
         f"This printing omits paragraphs 21–24, 26 and 31–33; they are {NOT_AVAILABLE}.",
@@ -261,6 +263,9 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
 # Notes a document gets that no stored fact holds, by works.json `work_id`: what a
 # passage note on every passage said about the document (rule 2).
 DOCUMENT_NOTES: dict[str, tuple[Note, ...]] = {
+    # Both of its paragraphs are printed only in part.
+    "encyclicals/levate": (caution("incomplete", "This printing gives only part of each "
+                                                 "paragraph."),),
     "papal-documents/exsurge-domine": (overview(
         f"Only the condemned propositions are given; the rest of the bull is "
         f"{NOT_AVAILABLE}.", "incomplete"),),
@@ -294,12 +299,13 @@ _SENTENCE = re.compile(r"^(Translated by|Translation|Official English|From Hefel
 _SERIES = ("Ante-Nicene Fathers", "Nicene and Post-Nicene Fathers")
 
 
-def card_translator(credit: str | None, translation: str | None) -> str:
+def card_translator(credit: str | None, translation: str | None) -> str | None:
     """The translator the card names, written once into works.json from 2.3's credit line
     or translation: the credit's translator sentence without where the text came from
     ("Sourced via …", "Text: …"), a second edition (after ";") or "abridged" (a caution
     says it); else the translation, named as a reader reads it; "" where the header's badge
-    or the required notice already names it."""
+    or the required notice already names it; None where nothing names one, which the
+    registry's validation and the build's check refuse."""
     credit = (credit or "").strip()
     if _SENTENCE.match(credit):
         return _TAILS.sub("", credit).strip()
@@ -307,7 +313,7 @@ def card_translator(credit: str | None, translation: str | None) -> str:
     if value in _TRANSLATIONS:
         return _TRANSLATIONS[value]
     if not value:
-        return ""
+        return None
     if value.startswith(_SERIES):
         return re.sub(r"(?<=\d)-(?=\d)", "–", value)  # a date range takes an en dash
     if value.startswith("Fathers of "):
@@ -343,8 +349,15 @@ def fact_notes(text: str | None) -> tuple[Note, ...]:
 
 def document_entries(document: Document, work_id: str | None) -> list[dict]:
     """The document's `card_notes`: its own notes, then each work's, in stored order."""
-    entries = [n.entry() for f in (document.attribution_note, document.notes)
-               for n in fact_notes(f)]
+    entries = []
+    for field in ("attribution_note", "notes"):
+        notes = fact_notes(getattr(document, field))
+        # A work that clears the field ("", 3.2: the Muratorian Fragment's notes) is not
+        # covered by the document's note, and an entry cannot leave out one work, so the
+        # note shows on the document's overview only.
+        if any(getattr(w, field) == "" for w in document.works):
+            notes = tuple(replace(n, show="overview") for n in notes)
+        entries += [n.entry() for n in notes]
     entries += [n.entry() for n in DOCUMENT_NOTES.get(work_id or "", ())]
     for w in document.works:
         entries += [n.entry(w.work_key) for f in (w.attribution_note, w.notes)
@@ -388,18 +401,17 @@ def apply(document: Document, entry: dict | None) -> Document:
 
 
 def _without_document_wide(passages: list[Passage], entries: list[dict]) -> list[Passage]:
-    """The passages without the extract note when every one carries it and the document
-    says, in its own extract note, which part is given (rule 2): an encyclical printed
-    only in extract. Any other note on every passage, or the extract note beside any
-    other document note, stays, and the check refuses a note on every passage, so a
-    repeated caution is never dropped unseen."""
-    if not passages or any(p.note != EXTRACT.text for p in passages):
-        return passages
+    """The passages without the extract note when the document says, in its own extract
+    note, which part is given (rule 2): an encyclical printed only in extract. A passage
+    printed only in part keeps its own caution. Any other note stays, and the check
+    refuses one on every passage, so a repeated caution is never dropped unseen."""
     if not any(e["text"].startswith(EXTRACT_DOCUMENT_OPENINGS) and "work_key" not in e
                for e in entries):
         return passages
     out = []
     for p in passages:
-        metadata = {k: v for k, v in (p.metadata or {}).items() if k != "note_kind"}
-        out.append(replace(p, note=None, metadata=metadata or None))
+        if p.note == EXTRACT.text:
+            metadata = {k: v for k, v in (p.metadata or {}).items() if k != "note_kind"}
+            p = replace(p, note=None, metadata=metadata or None)
+        out.append(p)
     return out

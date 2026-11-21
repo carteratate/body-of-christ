@@ -350,7 +350,7 @@ def derive(document: Document, row: dict | None, entry: dict) -> dict:
     return facts
 
 
-def card_translator(facts: dict) -> str:
+def card_translator(facts: dict) -> str | None:
     """The translator the result card names (4.4), written once into works.json from the
     credit line or the translation (`card_notes.card_translator`), where the Library and
     the overview keep reading `translation` and `source_credit` as 2.3 set them."""
