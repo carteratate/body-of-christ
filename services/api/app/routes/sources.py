@@ -6,10 +6,11 @@ import asyncpg
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from app import corpus_schema
+from app import card_notes, corpus_schema
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.models.corpus import OverviewNote
 from app.reader_access import source_url
 
 logger = logging.getLogger(__name__)
@@ -63,6 +64,9 @@ class SourceDocument(BaseModel):
     # "excerpt": no reader; the Library links to `source_url` instead.
     reader_access: Literal["full", "excerpt"] = "full"
     source_url: Optional[str] = None
+    # The document-wide notes (4.4), which the Library row of an excerpt-only document
+    # shows, since its overview answers 403. None for a document from before 4.4.
+    overview_notes: Optional[list[OverviewNote]] = None
 
 
 class SourcesResponse(BaseModel):
@@ -138,6 +142,7 @@ async def _load_corpus(conn) -> SourcesResponse:
             author=r["author"] or None, year=r["year"], translation=r["translation"],
             metadata=dict(r["metadata"]) if r["metadata"] else None,
             chunk_count=r["chunk_count"],
+            overview_notes=card_notes.overview_notes(r["metadata"]),
         ) for r in rows
     ]
     response = SourcesResponse(sources=sources)

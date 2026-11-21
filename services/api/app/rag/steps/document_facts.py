@@ -18,6 +18,12 @@ Three keys of the passage's `metadata` also leave the API here (2.4f): `text_sou
 A document's `form` (bull or brief, 0044, issue #330) is read only where the column
 exists, so the API deploys before that migration is applied.
 
+The notes under an opened passage (4.4, `app/card_notes.py`) are built here too, as the
+optional `card`, from the keys a 4.4 publish writes: the document's `metadata`
+`card_version`, `card_notes` and `card_translator`, and the passage's `metadata`
+`note_kind` and `translator`. A passage whose document has no `card_version` gets no
+card, and its payload is unchanged.
+
 Best-effort: on a database without 0042 it returns nothing and runs no query; on a
 failure or timeout it returns nothing and the caller sends today's payload.
 """
@@ -28,8 +34,8 @@ import logging
 import uuid
 from dataclasses import dataclass, field
 
-from app import corpus_schema
-from app.models.corpus import DocumentFacts
+from app import card_notes, corpus_schema, reader_access
+from app.models.corpus import DocumentFacts, PassageCard
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +54,13 @@ TEXT_STATUS_UNOFFICIAL_ENGLISH = "unofficial_english"
 TEXT_LABEL_COLUMNS = ("c.metadata->>'text_source' AS text_source, "
                        "c.metadata->>'text_status' AS text_status, "
                        "c.metadata->>'official_latin_url' AS official_latin_url")
+# What the card (4.4) reads besides the facts: only these keys of either `metadata`.
+CARD_COLUMNS = ("c.work_key, c.metadata->>'note_kind' AS note_kind, "
+                "c.metadata->>'translator' AS translator, d.collection, d.title, "
+                "d.metadata->>'url' AS document_url, "
+                "d.metadata->>'card_version' AS card_version, "
+                "d.metadata->'card_notes' AS card_notes, "
+                "d.metadata->>'card_translator' AS card_translator")
 
 
 def text_labels(row) -> dict:
@@ -78,7 +91,7 @@ def _sql(works: bool, form: bool = False) -> str:
             "AND w.work_key = c.work_key" if works else "")
     return f"""
     SELECT c.id::text AS chunk_id, c.language, c.note, c.passage_author, c.voice,
-           {TEXT_LABEL_COLUMNS},
+           {TEXT_LABEL_COLUMNS}, {CARD_COLUMNS},
            d.author, d.year, NULLIF(d.translation, '') AS translation, d.date_display,
            d.genre, {"d.form" if form else "NULL::text AS form"}, d.issuer, d.issuer_label,
            d.certainty, d.attribution_note, d.notes,
@@ -100,6 +113,7 @@ class PassageFacts:
     passage_author: str | None
     voice: str | None = None
     text_labels: dict = field(default_factory=dict)
+    card: PassageCard | None = None
 
     def source_fields(self, required_credit: str | None = None) -> dict:
         """The fields this adds to a passage's `source`, author included.
@@ -116,6 +130,9 @@ class PassageFacts:
             fields["voice"] = self.voice
         # Likewise only when set (2.4f): no passage carries them before Phase 4.
         fields.update(self.text_labels)
+        # Only for a document a 4.4 publish wrote; before it the payload is unchanged.
+        if self.card is not None:
+            fields["card"] = self.card.model_dump()
         return fields
 
 
@@ -126,13 +143,30 @@ def _passage_facts(row) -> PassageFacts:
         for f in _WORK_FIELDS:
             if row[f"work_{f}"] is not None:
                 values[f] = row[f"work_{f}"]
+    facts = DocumentFacts(**values, work_title=row["work_title"])
+    labels = text_labels(row)
     return PassageFacts(
         author=(row["work_author"] if in_work and row["work_author"] else row["author"]),
-        facts=DocumentFacts(**values, work_title=row["work_title"]),
+        facts=facts,
         language=row["language"], passage_note=row["note"],
         passage_author=row["passage_author"], voice=row["voice"],
-        text_labels=text_labels(row),
+        text_labels=labels, card=_card(row, facts, labels),
     )
+
+
+def _card(row, facts: DocumentFacts, labels: dict) -> PassageCard | None:
+    """The passage's 4.4 card, or None for a document from before 4.4. `row.get`, since
+    a row built before the card columns existed (a test's) has none of them."""
+    if card_notes.card_version(row.get("card_version")) is None:
+        return None
+    collection = row.get("collection") or ""
+    url = reader_access.source_url(collection, {"url": row.get("document_url")})
+    return card_notes.build(
+        card_version_value=row.get("card_version"), card_notes=row.get("card_notes"),
+        card_translator=row.get("card_translator"), facts=facts,
+        work_key=row.get("work_key"), note=row["note"], note_kind=row.get("note_kind"),
+        translator=row.get("translator"), language=row["language"], text_labels=labels,
+        notice=reader_access.source_credit(collection, url, row.get("title")))
 
 
 async def fetch(conn, chunk_ids) -> dict[str, PassageFacts]:
