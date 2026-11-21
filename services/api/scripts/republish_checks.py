@@ -788,12 +788,14 @@ DOCUMENT_LABELS: dict[str, dict] = {
     "85bd14cc-fd8a-5e72-a126-fc5b4c3e6ebd": {"author": "Bernard of Clairvaux",
                                               "certainty": "genuine"},
 }
-_COMPILED = "Compiled after Aquinas's death from his earlier writings."
+# The Supplement and its appendix say "compiled after 1274" in their header in place of
+# 3.2's note (4.4, Carter, 20 Nov 2026).
+_COMPILED = "compiled after 1274"
 WORK_LABELS: dict[str, dict] = {
     f"{SUMMA} XP": {"author": "Thomas Aquinas", "certainty": "genuine",
-                    "attribution_note": _COMPILED},
+                    "attribution_note": None, "date_display": _COMPILED},
     f"{SUMMA} vii": {"author": "Thomas Aquinas", "certainty": "genuine",
-                     "attribution_note": _COMPILED},
+                     "attribution_note": None, "date_display": _COMPILED},
     f"{BOOK_VIII} ix.ix.vi": {"author": "Attributed to the Apostles",
                               "certainty": "pseudonymous"},
     # An empty note, not NULL: the API falls back to the document's note on NULL, and
@@ -812,8 +814,8 @@ WORK_LABELS: dict[str, dict] = {
                                                      "certainty": "pseudonymous"},
     "8b42a526-e078-56f4-89ab-4a87b995ef3b iii.vi.ii": {"author": "Lactantius",
                                                        "certainty": "disputed"},
-    "685b8763-d3f3-5bb7-bf9f-c34efedaadf5 iii.iii.iii": {
-        "notes": "The eleventh canon is a later addition."},
+    # Its later-addition note sits on canon XI itself since 4.4, the passage it is true of.
+    "685b8763-d3f3-5bb7-bf9f-c34efedaadf5 iii.iii.iii": {"notes": None},
 }
 LABEL_NAMES = {
     HORTATORY_ADDRESS: "Hortatory Address", DIOGNETUS: "Diognetus", DIDACHE: "Didache",
@@ -1666,7 +1668,7 @@ CHECKS: list[Check] = [
                "anonymous treatises among Cyprian's.",
         sql="""
             SELECT document_id::text || ' ' || work_key AS key, author, certainty,
-                   attribution_note, notes
+                   attribution_note, notes, date_display
             FROM document_works
             WHERE document_id::text || ' ' || work_key = ANY($1::text[])
         """,
@@ -1739,8 +1741,8 @@ CHECKS: list[Check] = [
     ),
     SearchCheck(
         id="3.2.supplement", items="3.2",
-        proves="A question the Supplement answers returns it as its own work, which "
-               "carries the note that it was compiled after Aquinas's death.",
+        proves="A question the Supplement answers returns it as its own work, whose "
+               "header says it was compiled after 1274.",
         question="What qualities will the bodies of the blessed have after the resurrection?",
         collections=("summa",),
         expect=Some(Match(document=SUMMA, work_key="XP")),
