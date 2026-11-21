@@ -679,13 +679,21 @@ def is_held_removal(entry: dict) -> bool:
         and entry.get("collection") == "councils")
 
 
-def _validate_held_texts(registry: WorkRegistry) -> list[str]:
+def _validate_held_texts(registry: WorkRegistry,
+                         documents: set[str] | None = None) -> list[str]:
     """`held_texts.json` against the removal registry: every held removal belongs to
     exactly one entry (`removal_ids`), so a closed or new one fails until the file is
     changed with it. `shared_removal_ids` names a passage another entry owns, for a text
     that lies wholly inside a passage straddling two texts; it counts for nothing else.
-    Where each entry sits in the build is the build's check (`held_texts_for`)."""
+    Where each entry sits in the build is the build's check (`held_texts_for`).
+    `documents`, when given, limits the check to those documents' entries and removals
+    (the build checks the documents it builds)."""
     out = []
+    if documents is not None:
+        registry = replace(
+            registry,
+            held_texts=[h for h in registry.held_texts if h.get("document_id") in documents],
+            removals=[e for e in registry.removals if e.get("document_id") in documents])
     removals = {e.get("id"): e for e in registry.removals}
     owner: dict[str, str] = {}
     seen: set[str] = set()
@@ -739,6 +747,11 @@ def _validate_held_texts(registry: WorkRegistry) -> list[str]:
             out.append(f"removal {e.get('id')} ({e.get('anchor')}) is held but belongs to "
                        f"no entry of {HELD_TEXTS_FILE}")
     return out
+
+
+def held_text_problems(registry: WorkRegistry | None, documents: set[str]) -> list[str]:
+    """The registry check of `held_texts.json`, for the given documents only."""
+    return _validate_held_texts(registry or current(), documents)
 
 
 def held_texts_for(document: Document, registry: WorkRegistry | None = None) -> list[dict]:

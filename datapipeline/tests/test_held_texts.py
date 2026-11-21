@@ -87,7 +87,7 @@ def test_the_shipped_list_covers_every_held_removal_once():
 
 
 def test_the_shipped_counts():
-    """Constance's 17 held texts and the councils' 66; 23 encyclical runs; Exsurge
+    """Constance's 17 held texts and the councils' 68; 23 encyclical runs; Exsurge
     Domine's opening and closing (measured against the build, 21 Nov 2026)."""
     shipped = registry.current()
     titles = {w["document_id"]: (w["collection"], w["title"]) for w in shipped.works}
@@ -97,9 +97,9 @@ def test_the_shipped_counts():
         collection, title = titles[h["document_id"]]
         by_collection[collection] = by_collection.get(collection, 0) + 1
         by_title[title] = by_title.get(title, 0) + 1
-    assert by_collection == {"councils": 66, "encyclicals": 23, "papal-documents": 2}
+    assert by_collection == {"councils": 68, "encyclicals": 23, "papal-documents": 2}
     assert by_title["Council of Constance"] == 17
-    assert by_title["Council of Basel-Ferrara-Florence"] == 28
+    assert by_title["Council of Basel-Ferrara-Florence"] == 30
 
 
 def test_constance_lists_the_sentences_of_sessions_8_15_and_21():
@@ -238,6 +238,19 @@ def test_the_build_refuses_a_stranded_list():
         build("councils", source_adapters={"councils": lambda: [_document()]}, registry=reg)
 
 
+def test_the_build_refuses_a_held_removal_no_entry_names():
+    """The coverage check runs in the build too, dry runs included; the draft generator
+    alone turns it off."""
+    from publication import build
+
+    reg = _registry([_removal("rm-1", "s2/1"), _removal("rm-2", "s2/2")],
+                    [_held("ht-0001", ["rm-1"], after="s1/1")])
+    adapters = {"councils": lambda: [_document()]}
+    with pytest.raises(ValueError, match="rm-2"):
+        build("councils", source_adapters=adapters, registry=reg)
+    assert build("councils", source_adapters=adapters, registry=reg, held_coverage=False)
+
+
 def test_the_shipped_list_fits_the_build():
     """Every entry follows a passage the build emits, in order (the build's own check)."""
     from publication import build
@@ -310,9 +323,16 @@ def cluster():
 async def world(cluster, tmp_path):
     w = World(cluster, cluster.new_database(), tmp_path)
     await w.seed()
+    # A held passage no publish carried (like 1.10c's cut pieces): the list is the only
+    # change a stage of the unchanged build makes.
+    w.registry.removals.append(
+        {"id": "rm-9001", "scope": "passage", "collection": "medieval", "document_id": DOC_A,
+         "anchor": "a/held", "passage_id": pid(DOC_A, "a/held"), "reason": "awaiting-permission",
+         "tombstone": "Held until we have permission.", "detail": "Paragraph 3 is held",
+         "church_act": None, "added_by": "test", "added_on": "2026-11-21"})
     w.registry.held_texts = [
         {"id": "ht-0001", "document_id": DOC_A, "label": "Chapter 1",
-         "heading": "A held letter", "after_anchor": "a/2", "removal_ids": [],
+         "heading": "A held letter", "after_anchor": "a/2", "removal_ids": ["rm-9001"],
          "url": None, "added_by": "4.3", "added_on": "2026-11-21"}]
     return w
 
@@ -342,10 +362,21 @@ async def test_held_texts_publish_changes_no_passage_or_point(world, tmp_path):
         points, _ = await world.qdrant.scroll("chunks-test-release", limit=20)
         return {p.id: p.payload.get("embed_sha256") for p in points}
 
+    from qdrant_schema import create_chunks_collection
+    from writers.apply import point_alias
+    from writers.qdrant import copy_points
+
     held, world.registry.held_texts = world.registry.held_texts, []
+    removal = world.registry.removals.pop()
     await world.runner().stage(STAGE)
     without, calls = await inputs(), len(world.embedded)
+    # Live is now that stage's corpus, as after its apply and switch.
+    await create_chunks_collection(world.qdrant, "chunks-before")
+    for collection in ("medieval", "summa"):
+        await copy_points(world.qdrant, "chunks-test-release", "chunks-before", collection)
+    await point_alias(world.qdrant, "chunks_live", "chunks-before")
     world.registry.held_texts = held
+    world.registry.removals.append(removal)
     await world.runner().stage(STAGE)
     assert await inputs() == without       # every embedding input unchanged
     assert len(world.embedded) == calls    # so every vector is reused: no call
@@ -354,6 +385,8 @@ async def test_held_texts_publish_changes_no_passage_or_point(world, tmp_path):
     assert (data["ids"]["kept"], data["ids"]["retired"], data["ids"]["redirected"],
             data["ids"]["new"]) == (5, 0, 0, [])
     assert data["points"]["mismatches"] == [] and data["points"]["hash_failures"] == []
+    assert data["live_points"]["medieval"] == {"compared": 5, "payload_changed": 0,
+                                               "embed_sha256_changed": 0, "fields": []}
     [diff] = data["held_texts_diff"]
     assert (diff["id"], [h["key"] for h in diff["added"]], diff["removed"],
             diff["changed"]) == (DOC_A, ["ht-0001"], [], [])

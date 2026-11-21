@@ -62,8 +62,8 @@ WORK_ORDINAL_LIMIT = 1_000_000
 # --------------------------------------------------------------------------- build
 
 def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOURCE_ADAPTERS,
-          limit: int | None = None, registry: reg.WorkRegistry | None = None
-          ) -> list[Document]:
+          limit: int | None = None, registry: reg.WorkRegistry | None = None,
+          held_coverage: bool = True) -> list[Document]:
     """Run the collection's source adapter, drop what the removal registry retires (D4),
     set each document's facts from the work registry (2.3) and its held texts (4.3),
     and run the document checks. Opens no store."""
@@ -79,6 +79,13 @@ def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOU
                      reg.apply_document_facts(reg.drop_removed(d, registry), registry), registry)
                  for d in documents if d.id not in removed]
     validate_documents(collection, documents)
+    # 4.3: every held removal of these documents belongs to one held-text entry. Off
+    # only for scripts/held_texts.py, which drafts the entries that are missing.
+    problems = (reg.held_text_problems(registry, {d.id for d in documents})
+                if held_coverage else [])
+    if problems:
+        raise ValueError(f"REFUSING: {len(problems)} held-text problems: "
+                         + "; ".join(problems[:5]))
     return documents
 
 

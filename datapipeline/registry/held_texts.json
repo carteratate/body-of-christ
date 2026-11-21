@@ -73,6 +73,20 @@
   "added_on": "2026-11-21"
  },
  {
+  "id": "ht-0092",
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "label": "Basel, Session 8",
+  "heading": "That there ought to be only one council",
+  "after_anchor": null,
+  "removal_ids": [],
+  "shared_removal_ids": [
+   "rm-0638"
+  ],
+  "url": null,
+  "added_by": "4.3",
+  "added_on": "2026-11-21"
+ },
+ {
   "id": "ht-0006",
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
   "label": "Basel, Session 11",
@@ -137,13 +151,25 @@
   "added_on": "2026-11-21"
  },
  {
+  "id": "ht-0093",
+  "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
+  "label": "Basel, Session 18",
+  "heading": "Renewal of Constance's decree on the authority of general councils",
+  "after_anchor": null,
+  "removal_ids": [
+   "rm-0658"
+  ],
+  "url": null,
+  "added_by": "4.3",
+  "added_on": "2026-11-21"
+ },
+ {
   "id": "ht-0010",
   "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
   "label": "Basel, Session 19",
   "heading": "Agreements with the Greeks on union, and the decrees on Jews and neophytes",
   "after_anchor": null,
   "removal_ids": [
-   "rm-0658",
    "rm-0659",
    "rm-0660",
    "rm-0661",

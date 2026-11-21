@@ -213,11 +213,13 @@ def main(argv: list[str] | None = None) -> int:
 
     reg = registry.current()
     collections = sorted({e["collection"] for e in reg.removals if registry.is_held_removal(e)})
-    documents = [d for c in collections for d in build(c, registry=reg)]
+    documents = [d for c in collections for d in build(c, registry=reg, held_coverage=False)]
     proposals = draft(reg, documents, args.today)
-    if os.path.exists(args.out):
+    try:
+        f = open(args.out, "x", encoding="utf-8")
+    except FileExistsError:
         parser.error(f"{args.out} exists; move it aside first (a draft never overwrites)")
-    with open(args.out, "w", encoding="utf-8") as f:
+    with f:
         json.dump(proposals, f, ensure_ascii=False, indent=1)
         f.write("\n")
     print(f"{len(proposals)} draft entries for {len({p['document_id'] for p in proposals})} "

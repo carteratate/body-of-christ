@@ -132,7 +132,7 @@ def main(argv: list[str] | None = None) -> int:
     works = generate(reg, documents, rights_inventory.load())
     passages = generate_passages(reg, documents)
     updated = registry.WorkRegistry(works, passages, reg.redirects, reg.removals,
-                                    reg.kept_text)
+                                    reg.kept_text, held_texts=reg.held_texts)
     if args.check:
         with tempfile.TemporaryDirectory() as tmp:
             registry.write_registry(updated, tmp)

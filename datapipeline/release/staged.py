@@ -225,6 +225,38 @@ async def point_checks(conn, qdrant, name: str, documents: dict[str, list[Docume
     return {"counts": counts, "mismatches": mismatches, "hash_failures": hash_failures}
 
 
+async def live_point_changes(qdrant, name: str, live: str | None,
+                             documents: dict[str, list[Document]]) -> dict:
+    """Per staged collection, how many staged points differ from the live point of the
+    same ID: in any payload field, and in `embed_sha256` (the embedding input). Informs;
+    fails nothing. A publish that changes only document metadata (4.3's held texts)
+    shows 0 and 0."""
+    from writers.qdrant import retrieve
+
+    out = {}
+    if live is None:
+        return out
+    for collection, docs in documents.items():
+        payload = embed = compared = 0
+        fields: set[str] = set()
+        for d in docs:
+            ids = [p.id for p in d.passages]
+            new = await retrieve(qdrant, name, ids, with_vectors=False)
+            old = await retrieve(qdrant, live, ids, with_vectors=False)
+            for i in ids:
+                if i not in new or i not in old:
+                    continue
+                compared += 1
+                a, b = old[i].payload or {}, new[i].payload or {}
+                if a != b:
+                    payload += 1
+                    fields |= {k for k in a.keys() | b.keys() if a.get(k) != b.get(k)}
+                embed += a.get("embed_sha256") != b.get("embed_sha256")
+        out[collection] = {"compared": compared, "payload_changed": payload,
+                           "embed_sha256_changed": embed, "fields": sorted(fields)}
+    return out
+
+
 def collision_rate(vectors: dict[str, list[float]], order: list[str]) -> tuple[int, int]:
     """(collisions, pairs) among passages within DEDUP_WINDOW positions of each other."""
     ids = [i for i in order if i in vectors]
@@ -490,6 +522,11 @@ def publish_md(data: dict) -> str:
              f"{len(ids['new']):,}.",
              f"- Points: {len(data['points']['mismatches'])} mismatches; embedding input hash "
              f"failures {len(data['points']['hash_failures'])}.",
+             "- Points against live (same ID): " + ("; ".join(
+                 f"{c} {d['payload_changed']:,} of {d['compared']:,} with another payload "
+                 f"({', '.join(d['fields']) or 'no field'}), {d['embed_sha256_changed']:,} "
+                 "with another embedding input"
+                 for c, d in data["live_points"].items()) or "no live collection") + ".",
              f"- Document facts changed on {len(data['facts_diff'])} documents; works "
              f"inside documents changed or new: {len(data['works_diff'])}; held texts "
              f"changed on {len(data['held_texts_diff'])} documents.",
@@ -550,6 +587,7 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
         "points": await point_checks(conn, qdrant, row["qdrant_collection"], staged,
                                      row["embed_model"]),
         "dedup": await dedup_checks(conn, qdrant, row["qdrant_collection"], live, staged),
+        "live_points": await live_point_changes(qdrant, row["qdrant_collection"], live, staged),
         "facts_diff": await facts_diff(conn, collections),
         "works_diff": await works_diff(conn, collections),
         "held_texts_diff": await held_texts_diff(conn, collections),
