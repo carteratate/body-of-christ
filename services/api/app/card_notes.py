@@ -109,21 +109,31 @@ def language_name(code: str | None) -> str | None:
     return _LANGUAGE_NAMES.get(code, code)
 
 
-def kind_and_form(facts: DocumentFacts) -> str | None:
-    """"Apostolic constitution, issued as a bull": only a document with a recorded form
-    (issue #330), as the opened card showed it before 4.4."""
+# A papal document's kind (1.3b's genres). A Father's writer genre (treatise, letter) is
+# not shown on the card, as the approved design shows none.
+PAPAL_GENRES = ("encyclical", "apostolic-exhortation", "apostolic-letter",
+                "apostolic-constitution", "motu-proprio", "letter")
+# The kind a collection's badge already names (rule 1: the record does not repeat it).
+_BADGE_KINDS = {"encyclicals": "encyclical", "apostolic-exhortations": "apostolic-exhortation"}
+
+
+def kind_and_form(facts: DocumentFacts, collection: str = "") -> str | None:
+    """"Apostolic constitution, issued as a bull"; "Apostolic exhortation" for Evangelii
+    Gaudium under the Encyclicals badge. A kind the badge already names shows only with
+    its form ("Encyclical, issued as a brief"), and a writer's genre not at all."""
     form = _FORMS.get(facts.form or "")
-    if not form:
-        return None
-    genre = (facts.genre or "").strip()
-    if not genre or genre == "other":
-        return f"Issued as {form}"
+    genre = facts.genre if facts.genre in PAPAL_GENRES else None
+    if genre and not form and genre == _BADGE_KINDS.get(collection):
+        genre = None
+    if not genre:
+        return f"Issued as {form}" if form else None
     words = genre.replace("-", " ")
-    return f"{words[:1].upper()}{words[1:]}, issued as {form}"
+    kind = f"{words[:1].upper()}{words[1:]}"
+    return f"{kind}, issued as {form}" if form else kind
 
 
 def build(*, card_version_value: Any, card_notes: Any, card_translator: Any,
-          facts: DocumentFacts, work_key: str | None, note: str | None,
+          facts: DocumentFacts, collection: str = "", work_key: str | None, note: str | None,
           note_kind: str | None, translator: str | None, language: str | None,
           text_labels: dict, notice: str | None) -> PassageCard | None:
     """One passage's card, or None when its document has no `card_version`.
@@ -168,7 +178,7 @@ def build(*, card_version_value: Any, card_notes: Any, card_translator: Any,
     cautions = [c for c in cautions if not (c.text in seen or seen.add(c.text))]
 
     record: list[str] = []
-    kind = kind_and_form(facts)
+    kind = kind_and_form(facts, collection)
     if kind:
         record.append(kind)
     record += [e["text"] for e in notes if e["show"] == "record"]

@@ -48,3 +48,23 @@ def test_a_site_or_status_with_no_wording_stops_the_build():
     row = {**row, "source_url": "https://ccel.org/x", "status": "unknown"}
     with pytest.raises(ValueError, match="no Sources page basis"):
         source_sites.build([row], set())
+
+
+def test_every_extract_is_listed_under_its_site_and_an_excerpt_basis_is_quoted():
+    row = {"work": "W", "collection": "councils", "document_id": "d", "planned_for": None,
+           "source_url": "https://archive.org/details/a", "status": "pd-us-pre-1931",
+           "also_from": [
+               {"texts": "First extract", "source_url": "https://archive.org/details/b",
+                "status": "pd-us-pre-1931"},
+               {"texts": "Second extract", "source_url": "https://archive.org/details/c",
+                "status": "pd-us-non-renewal"}]}
+    vatican = {"work": "V", "collection": "encyclicals", "document_id": "v",
+               "planned_for": None, "source_url": "https://www.vatican.va/x",
+               "status": "in-copyright",
+               "excerpt_basis": {"statement": "A statement", "url": "https://example.org/s"}}
+    sites = {s["key"]: s for s in source_sites.build([row, vatican], set())["sites"]}
+    assert sites["archive"]["documents"] == [{"document_id": "d", "title": "W",
+                                              "collection": "councils",
+                                              "texts": ["First extract", "Second extract"]}]
+    assert sites["vatican"]["excerpt_bases"] == [
+        {"statement": "A statement", "url": "https://example.org/s", "documents": 1}]

@@ -28,6 +28,10 @@ describe("SourceSitesPage", () => {
       expect(link.getAttribute("target")).toBe("_blank");
       expect(section.getByText(site.taken)).toBeTruthy();
       for (const basis of site.basis) expect(section.getByText(basis)).toBeTruthy();
+      for (const basis of site.excerpt_bases) {
+        expect(section.getByRole("link", { name: new RegExp(basis.statement.slice(0, 30).replace(/[()]/g, "\\$&")) })
+          .getAttribute("href")).toBe(basis.url);
+      }
       expect(sections[i].querySelectorAll("li")).toHaveLength(site.documents.length);
     }
   });

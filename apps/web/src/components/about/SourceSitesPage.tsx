@@ -52,9 +52,21 @@ function SiteSection({ site }: { site: SourceSite }) {
       <p className="mt-2 text-sm leading-relaxed text-brand-primary">{site.taken}</p>
       <div className="mt-2 space-y-0.5 text-xs leading-snug text-brand-muted">
         {site.basis.map((basis) => <p key={basis}>{basis}</p>)}
+        {site.excerpt_bases.map((basis) => (
+          <p key={basis.statement}>
+            {basis.documents === 1 ? "1 document is" : `${basis.documents.toLocaleString()} documents are`}{" "}
+            quoted in excerpts on the basis of{" "}
+            {basis.url ? (
+              <a href={basis.url} target="_blank" rel="noopener noreferrer" className="text-brand-primary underline underline-offset-2">
+                {basis.statement}<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            ) : basis.statement}
+            .
+          </p>
+        ))}
       </div>
       <details className="mt-3 group">
-        <summary className="cursor-pointer text-xs font-medium text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
+        <summary className="cursor-pointer text-xs font-medium text-brand-primary underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">
           {count === 1 ? "1 document" : `${count.toLocaleString()} documents`}
         </summary>
         <ul className="mt-2 space-y-1 text-xs leading-snug">
@@ -62,7 +74,7 @@ function SiteSection({ site }: { site: SourceSite }) {
             <li key={doc.document_id}>
               <span className="text-brand-primary">{doc.title}</span>
               <span className="ml-2 text-brand-muted">{getCollectionMeta(doc.collection)?.label ?? doc.collection}</span>
-              {doc.texts && <span className="block text-brand-muted">{doc.texts}</span>}
+              {doc.texts?.map((text) => <span key={text} className="block text-brand-muted">{text}</span>)}
             </li>
           ))}
         </ul>

@@ -10,6 +10,7 @@
     "Public domain in the United States: published before 1931.",
     "Public domain in the United States: its copyright was not renewed."
    ],
+   "excerpt_bases": [],
    "documents": [
     {
      "document_id": "4b66fa28-684a-5e79-8596-6029d5de1a48",
@@ -641,6 +642,13 @@
    "basis": [
     "In copyright, held by Libreria Editrice Vaticana. Its notice is shown with every passage."
    ],
+   "excerpt_bases": [
+    {
+     "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
+     "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
+     "documents": 23
+    }
+   ],
    "documents": [
     {
      "document_id": "1302988d-7dbc-5bc0-9005-838053111c45",
@@ -1172,6 +1180,7 @@
    "basis": [
     "In copyright, held by Libreria Editrice Vaticana and, for the English translation, the USCCB. Its notice is shown with every passage, and the full text is read on the USCCB's site."
    ],
+   "excerpt_bases": [],
    "documents": [
     {
      "document_id": "9679c400-d314-5394-b916-f6fc27b50104",
@@ -1188,6 +1197,7 @@
    "basis": [
     "Dedicated to the public domain."
    ],
+   "excerpt_bases": [],
    "documents": [
     {
      "document_id": "35fbbfe6-48ae-547a-8d9f-7e5bb93f3b03",
@@ -1565,6 +1575,7 @@
     "Public domain in the United States: published before 1931.",
     "Public domain in the United States: its copyright was not renewed."
    ],
+   "excerpt_bases": [],
    "documents": [
     {
      "document_id": "f3196ac1-ae24-5da2-831b-207a9cd40b75",
@@ -1579,18 +1590,26 @@
     {
      "document_id": "706adce0-8af2-5a30-877b-82e701601a53",
      "title": "Council of Basel-Ferrara-Florence",
-     "collection": "councils"
+     "collection": "councils",
+     "texts": [
+      "Extracts of Laetentur caeli, Florence session 6 (pp. 219–220), Exultate Deo, Florence session 8 (pp. 220–225), and Cantate Domino, Florence session 11 (pp. 225–230)"
+     ]
     },
     {
      "document_id": "bfcce97d-adf8-5e3c-8b8f-7e7887a6b205",
      "title": "Council of Constance",
-     "collection": "councils"
+     "collection": "councils",
+     "texts": [
+      "Wyclif's 45 articles, session 8 (pp. 208–211); the definition on communion under one kind, session 13, an extract (pp. 211–212); Hus's 30 articles, session 15 (pp. 212–215); the sentence on tyrannicide, session 15, an extract (p. 218)"
+     ]
     },
     {
      "document_id": "5972a5c6-4f04-5ef0-901d-d9a4a189fc0f",
      "title": "Council of Ephesus",
      "collection": "councils",
-     "texts": "Nestorius's second letter to Cyril (pp. 155–166), without Chrystal's summaries or notes"
+     "texts": [
+      "Nestorius's second letter to Cyril (pp. 155–166), without Chrystal's summaries or notes"
+     ]
     },
     {
      "document_id": "8548da71-b46a-5411-ac69-204ccf7322e0",
@@ -1600,12 +1619,18 @@
     {
      "document_id": "d9189059-da4c-5528-aea5-3ec35864c077",
      "title": "Fifth Lateran Council",
-     "collection": "councils"
+     "collection": "councils",
+     "texts": [
+      "An extract of Pastor aeternus gregem, session 11 (pp. 238–239)"
+     ]
     },
     {
      "document_id": "6eb88704-07df-52f6-b8bf-64f2e026c23a",
      "title": "First Council of Lyons",
-     "collection": "councils"
+     "collection": "councils",
+     "texts": [
+      "The bull deposing the emperor Frederick II (pp. 77–86) and constitution I 7, \"Of the duty of the legate\" (pp. 96–97)"
+     ]
     },
     {
      "document_id": "37829660-f962-5b93-b9a7-c79b5d03f170",
@@ -1615,7 +1640,10 @@
     {
      "document_id": "ef2654f7-1d3f-5dd0-b69b-ce0cb8626a61",
      "title": "Fourth Council of Constantinople",
-     "collection": "councils"
+     "collection": "councils",
+     "texts": [
+      "Canons 1, 3, 11, 12 and 21, and an extract of canon 17, from the Latin of Anastasius (pp. 135–139)"
+     ]
     },
     {
      "document_id": "49b534a0-0692-5f8c-8ab7-9da0288e4de1",
@@ -1631,7 +1659,9 @@
      "document_id": "a1f27f39-1821-5eb8-b17f-fc9bd994c776",
      "title": "Second Council of Nicaea",
      "collection": "councils",
-     "texts": "The four anathemas concerning holy images (p. 376), from Hefele's account of the session"
+     "texts": [
+      "The four anathemas concerning holy images (p. 376), from Hefele's account of the session"
+     ]
     },
     {
      "document_id": "6410138e-f599-5155-a615-fc79250cf608",
@@ -1807,7 +1837,16 @@
      "document_id": "31b2bc0a-0b16-5002-822a-26d3215dd256",
      "title": "Summa Theologiae",
      "collection": "summa",
-     "texts": "Suppl. q.83 a.2 \"quite inconceivable\" (p. 216), where the CCEL text misprints \"quite conceivable\""
+     "texts": [
+      "I q.76 a.3 objection 3 (p. 35), I q.80 a.2 reply 3 (p. 126) and I q.89 a.3 the second sed contra (p. 243), which the CCEL text lacks",
+      "I q.112 a.2 the first half of reply 1 (p. 119) and I q.117 a.2 the end of the sed contra and the opening of the determination (p. 180), restored inside the CCEL paragraphs",
+      "I-II q.4 a.4 reply 1 (p. 58) and I-II q.29 a.3 replies 2 and 3 (p. 343), which the CCEL text lacks",
+      "I-II q.88 a.4 the sed contra (p. 485), which the CCEL text lacks",
+      "III q.7 a.5 \"inasmuch as these\" (p. 111), where the CCEL text misprints \"a[9]\"",
+      "II-II q.182 a.4 the sed contra (p. 249), missing from the Dominican translation itself",
+      "Suppl. q.62 a.6 reply 5 (p. 306), which the CCEL text lacks",
+      "Suppl. q.83 a.2 \"quite inconceivable\" (p. 216), where the CCEL text misprints \"quite conceivable\""
+     ]
     }
    ]
   },
@@ -1820,6 +1859,7 @@
     "Public domain in the United States: published before 1931.",
     "Public domain in the United States: its copyright was not renewed."
    ],
+   "excerpt_bases": [],
    "documents": [
     {
      "document_id": "e33e591b-9e2e-5059-974f-28c8e4ab6aae",
@@ -1841,6 +1881,7 @@
    "basis": [
     "Public domain in the United States: published before 1931."
    ],
+   "excerpt_bases": [],
    "documents": [
     {
      "document_id": "891ae0fa-5a7f-518c-9d1c-9ad4f180bc77",

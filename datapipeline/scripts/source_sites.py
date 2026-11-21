@@ -104,18 +104,27 @@ def _basis(key: str, row: dict) -> str:
 
 def build(rows: list[dict], held: set[str]) -> dict:
     """The page's data from the inventory rows, without the held documents' rows."""
-    sites: dict[str, dict] = {s["key"]: {"basis": {}, "documents": {}} for s in SITES}
+    sites: dict[str, dict] = {s["key"]: {"basis": {}, "excerpts": {}, "documents": {}}
+                              for s in SITES}
     unknown: set[str] = set()
 
     def add(key, row, edition_row, texts=None):
         entry = sites[key]
         basis = _basis(key, edition_row)
         entry["basis"][basis] = entry["basis"].get(basis, 0) + 1
+        # The basis recorded for quoting an in-copyright text in excerpts (1.3c), shown
+        # as the inventory states it, with its source.
+        excerpt = edition_row.get("excerpt_basis") or {}
+        if excerpt.get("statement"):
+            seen = entry["excerpts"].setdefault(
+                excerpt["statement"], {"statement": excerpt["statement"],
+                                       "url": excerpt.get("url"), "documents": 0})
+            seen["documents"] += 1
         doc = entry["documents"].setdefault(row["document_id"], {
             "document_id": row["document_id"], "title": row["work"],
-            "collection": row["collection"], "texts": None})
-        if texts:
-            doc["texts"] = texts
+            "collection": row["collection"], "texts": []})
+        if texts and texts not in doc["texts"]:
+            doc["texts"].append(texts)
 
     for row in rows:
         if row.get("planned_for") or not row.get("document_id") or row["document_id"] in held:
@@ -125,11 +134,13 @@ def build(rows: list[dict], held: set[str]) -> dict:
             unknown.add(_host(row["source_url"]) or "(no source_url)")
         else:
             add(key, row, row)
+        # Every edition an extract is printed from, on its own site's list, with what it
+        # supplies, including an edition on the row's own site (a second scan).
         for edition in row.get("also_from") or ():
             extra = _site_key(_host(edition.get("source_url")))
             if extra is None:
                 unknown.add(_host(edition.get("source_url")) or "(no source_url)")
-            elif extra != key:
+            else:
                 add(extra, row, edition, edition.get("texts"))
     if unknown:
         raise ValueError(f"no Sources page entry for: {', '.join(sorted(unknown))}; add "
@@ -146,7 +157,8 @@ def build(rows: list[dict], held: set[str]) -> dict:
             "key": site["key"], "name": site["name"], "url": site["url"],
             "taken": site["taken"],
             "basis": sorted(built["basis"], key=lambda b: -built["basis"][b]),
-            "documents": [{k: v for k, v in d.items() if v is not None} for d in documents],
+            "excerpt_bases": list(built["excerpts"].values()),
+            "documents": [{k: v for k, v in d.items() if v} for d in documents],
         })
     return {"_generated_by": "datapipeline/scripts/source_sites.py", "sites": out}
 

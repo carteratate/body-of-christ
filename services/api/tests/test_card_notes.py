@@ -157,11 +157,18 @@ def test_an_unknown_card_version_is_treated_as_before_4_4():
     assert card_notes.card_version(1) == card_notes.card_version("1") == 1
 
 
-def test_kind_and_form_only_for_a_recorded_form():
-    assert card_notes.kind_and_form(DocumentFacts(genre="encyclical")) is None
-    assert card_notes.kind_and_form(DocumentFacts(form="brief")) == "Issued as a brief"
-    assert card_notes.kind_and_form(DocumentFacts(genre="encyclical", form="brief")) == \
+def test_kind_and_form_name_a_papal_kind_the_badge_does_not():
+    kf = card_notes.kind_and_form
+    assert kf(DocumentFacts(genre="encyclical"), "encyclicals") is None
+    assert kf(DocumentFacts(genre="encyclical", form="brief"), "encyclicals") == \
         "Encyclical, issued as a brief"
+    # Evangelii Gaudium sits under the Encyclicals badge.
+    assert kf(DocumentFacts(genre="apostolic-exhortation"), "encyclicals") == \
+        "Apostolic exhortation"
+    assert kf(DocumentFacts(genre="apostolic-letter"), "papal-documents") == "Apostolic letter"
+    assert kf(DocumentFacts(form="brief"), "encyclicals") == "Issued as a brief"
+    assert kf(DocumentFacts(genre="treatise"), "church-fathers") is None
+    assert kf(DocumentFacts(genre="other", form="bull"), "papal-documents") == "Issued as a bull"
 
 
 def test_the_facts_query_reads_only_the_card_keys_of_either_metadata():
