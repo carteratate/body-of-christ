@@ -27,6 +27,7 @@ def _document(*anchors: str) -> Document:
         collection="medieval",
         title="On Loving God",
         author="Bernard of Clairvaux",
+        translation="William Harman van Allen (1909)",
         passages=[
             Passage(
                 content=f"Passage {anchor}",
@@ -81,10 +82,12 @@ def test_prepared_ids_come_from_the_registry_and_new_units_from_identity():
 
 def test_registry_override_beats_adapter_searchable():
     reg = _registry(passages=[_row("a/1", passage_id(DOC, "a/1"), searchable=False,
-                                   note="Earlier text.")])
-    [document], _ = prepare([_document("a/1")], reg)
+                                   note="Translated from another recension of this canon.")])
+    [document], _ = prepare([_document("a/1", "a/2")], reg)
     assert document.passages[0].searchable is False
-    assert document.passages[0].note == "Earlier text."
+    # The registry's note, stored with its kind (4.4).
+    assert document.passages[0].note == "Translated from another recension of this canon."
+    assert document.passages[0].metadata["note_kind"] == "wording"
 
 
 def test_history_passage_must_name_a_passage_of_its_document():

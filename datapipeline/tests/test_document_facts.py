@@ -25,7 +25,7 @@ def entry(**facts) -> dict:
                             document_id="dddddddd-0000-0000-0000-000000000001", title="X",
                             author="Y", frozen_on="2026-11-14")
     base = {k: None for k in registry.FACT_FIELDS}
-    base.update(translation="", source_credit="Sourced via CCEL.org")
+    base.update(translation="", source_credit="Sourced via CCEL.org", card_translator="")
     base.update(facts)
     w.update(base)
     return w
