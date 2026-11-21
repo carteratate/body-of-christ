@@ -390,6 +390,35 @@ async def test_a_tombstoned_id_whose_redirect_opens_is_redirected_and_rollback_r
     assert t == {"id": old, "publish_id": RELEASE}
 
 
+async def test_rollback_puts_a_returning_retired_passage_back_as_it_was(world):
+    """A retired passage a publish brings back under a new anchor and text (Stromata
+    III, #399) is retired again by its rollback with its old anchor, text and position,
+    and its tombstone."""
+    _retire_a4(world)
+    await _stage(world)
+    await _apply(world)
+    await _cleanup(world)
+    old = pid(DOC_A, "a/4")
+    [before] = await world.fetch("SELECT anchor, content, position, retired_at FROM chunks "
+                                 "WHERE id = $1::uuid", old)
+    world.registry.removals[-1]["closed_by"] = "#399"
+    world.registry.removals[-1]["closed_on"] = "2026-11-21"
+    row = next(r for r in world.registry.passages if r["passage_id"] == old)
+    row["anchor"], row["status"] = "a/4n", "active"
+    world.registry.__post_init__()
+    world.build = __import__("tests.stage_world", fromlist=["x"]).live_documents()
+    a = _doc(world, DOC_A)
+    a.passages[-1] = replace(a.passages[-1], anchor="a/4n", content="In English now.")
+    await _stage(world, StageRequest(release="release-two", collections=("medieval",)))
+    await _apply(world, "release-two")
+    await _rollback(world, "release-two")
+    [after] = await world.fetch("SELECT anchor, content, position, retired_at FROM chunks "
+                                "WHERE id = $1::uuid", old)
+    assert after == before
+    [t] = await world.fetch("SELECT id::text, publish_id FROM corpus_tombstones")
+    assert t == {"id": old, "publish_id": RELEASE}
+
+
 async def test_a_tombstoned_chapter_that_comes_back_elsewhere_redirects(world):
     """A chapter every live passage of which was tombstoned (Stromata III) gets its
     chapter redirect when its passages come back under another chapter key (#399)."""

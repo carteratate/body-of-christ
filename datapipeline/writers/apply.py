@@ -128,7 +128,13 @@ async def read_snapshot_rows(conn, collections: list[str] | None = None,
         out[table] = [dict(r) for r in await conn.fetch(
             _rows_sql(table, SNAPSHOT_TABLES[table], f"t.document_id IN ({documents})"), arg)]
     out["corpus_tombstones"], out["corpus_redirects"] = [], []
+    out["retired_chunks"] = []
     if staged:
+        # Retired passages the publish brings back: the apply overwrites them, and a
+        # rollback puts them back retired as they were (old anchor and text, #399).
+        out["retired_chunks"] = [dict(r) for r in await conn.fetch(
+            _rows_sql("chunks", rw.CHUNK_COLUMNS + ("retired_at",),
+                      "t.retired_at IS NOT NULL AND t.id IN (SELECT id FROM staging.chunks)"))]
         out["corpus_tombstones"] = [dict(r) for r in await conn.fetch(
             f"""SELECT {', '.join(rw.TOMBSTONE_COLUMNS)} FROM public.corpus_tombstones t
                 WHERE t.id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)
@@ -574,6 +580,17 @@ async def _reinsert(conn, rows: dict[str, list[dict]]) -> None:
             *[r[c] for c in REDIRECT_ROW])
 
 
+async def _restore_retired(conn, rows: dict[str, list[dict]]) -> None:
+    """Put the retired passages the forward apply brought back as they were, retired."""
+    cols = rw.CHUNK_COLUMNS[1:] + ("retired_at",)
+    casts = {"document_id": "::uuid", "metadata": "::jsonb", "superseded_by": "::uuid",
+             "retired_at": "::text::timestamptz"}
+    sets = ", ".join(f"{c} = ${k}{casts.get(c, '')}" for k, c in enumerate(cols, 2))
+    for r in rows.get("retired_chunks", []):
+        await conn.execute(f"UPDATE public.chunks SET {sets} WHERE id = $1::uuid",
+                           r["id"], *[r[c] for c in cols])
+
+
 async def _rolled_back_tombstones(conn, release: str, documents: list[str],
                                   passages: list[str]) -> None:
     await conn.execute(
@@ -675,6 +692,7 @@ async def _rollback(conn, qdrant, release: str, *, alias: str,
         await conn.execute("DELETE FROM public.corpus_redirects WHERE publish_id = $1", release)
         await conn.execute("DELETE FROM public.corpus_tombstones WHERE publish_id = $1", release)
         await _reinsert(conn, rows)
+        await _restore_retired(conn, rows)
         # Rows the publish inserted get a rolled-back tombstone. A row it un-retired is
         # retired again under the tombstone or redirect it had before, put back above.
         restored = {str(t["id"]) for t in rows.get("corpus_tombstones", [])} | {

@@ -210,6 +210,12 @@
   "why": "p. 77: the print reads ‘agreement,’"
  },
  {
+  "passage": "ch12/s081",
+  "find": "and the devil. This he says",
+  "replace": "and the devil.\" This he says",
+  "why": "p. 78: the print reads devil.”; the OCR read the closing quotation mark as “55”, taken as a note call"
+ },
+ {
   "passage": "ch12/s083",
   "find": "nature 5S the",
   "replace": "nature the",
