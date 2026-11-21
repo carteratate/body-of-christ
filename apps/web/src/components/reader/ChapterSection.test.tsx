@@ -106,3 +106,42 @@ describe("ChapterSection", () => {
     expect(historyYear("can/700")).toBeNull();
   });
 });
+
+describe("ChapterSection held texts (corpus cleanup 4.3)", () => {
+  const url = "https://www.papalencyclicals.net/councils/ecum16.htm";
+  const held = [
+    { key: "ht-1", label: "Session 1", heading: "John XXIII's bull", after_anchor: null, after_chapter_key: null, url },
+    { key: "ht-2", label: "Session 12", heading: "Sentence deposing John XXIII", after_anchor: "can/295", after_chapter_key: "c", url },
+  ];
+  const passages = [passage("p295", "can/295", "Current text of 295."), passage("p296", "can/296", "Current text of 296.")];
+
+  function order(container: HTMLElement): string[] {
+    return [...container.querySelectorAll("p, a")].map((el) => el.textContent ?? "");
+  }
+
+  it("shows a held line after the passage it follows, linking out, with none of its text", () => {
+    const view = render(<ChapterSection highlightAnchor={null} chapter={chapter(passages)} heldTexts={held} />);
+    const [line] = screen.getAllByTestId("held-text");
+    expect(line.textContent).toBe("Session 12: Sentence deposing John XXIII — not on TheoCorpus at present. Read online(opens in a new tab)");
+    expect(line.getAttribute("href")).toBe(url);
+    expect(line.getAttribute("target")).toBe("_blank");
+    expect(line.getAttribute("rel")).toBe("noopener noreferrer");
+    const texts = order(view.container);
+    expect(texts.indexOf(line.textContent!)).toBe(texts.indexOf("Current text of 295.") + 1);
+    expect(texts.indexOf(line.textContent!)).toBeLessThan(texts.indexOf("Current text of 296."));
+    // The one before every passage belongs to the first chapter only.
+    expect(screen.queryByText(/John XXIII's bull/)).toBeNull();
+  });
+
+  it("shows the held texts that open the document before the first chapter's first passage", () => {
+    const view = render(<ChapterSection highlightAnchor={null} chapter={chapter(passages)} heldTexts={held} first />);
+    const texts = order(view.container);
+    expect(texts[0]).toMatch(/^Session 1: John XXIII's bull — not on TheoCorpus at present\./);
+    expect(screen.getAllByTestId("held-text")).toHaveLength(2);
+  });
+
+  it("shows no held line without held texts", () => {
+    render(<ChapterSection highlightAnchor={null} chapter={chapter(passages)} first />);
+    expect(screen.queryAllByTestId("held-text")).toEqual([]);
+  });
+});

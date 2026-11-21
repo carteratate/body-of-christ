@@ -1,8 +1,11 @@
 "use client";
 
-import type { ReaderChapter, ReaderPassage } from "@/lib/api";
+import { Fragment } from "react";
+import type { HeldText, ReaderChapter, ReaderPassage } from "@/lib/api";
 import { certaintyTag, formatAttribution } from "@/lib/attribution";
 import { SourceCredit } from "@/components/common/SourceLink";
+import { heldAfter, heldBeforeFirst } from "@/lib/held-texts";
+import { HeldLine } from "./HeldText";
 import { Passage } from "./Passage";
 
 /** The work these passages belong to, when its attribution differs from the
@@ -21,9 +24,15 @@ function workLabel(chapter: ReaderChapter): { text: string; tag: string | null }
 export function ChapterSection({
   chapter,
   highlightAnchor,
+  heldTexts = [],
+  first = false,
 }: {
   chapter: ReaderChapter;
   highlightAnchor: string | null;
+  /** The document's held texts (4.3); each is shown after the passage it follows. */
+  heldTexts?: HeldText[];
+  /** The document's first chapter, where the held texts that open it are shown. */
+  first?: boolean;
 }) {
   // History passages (rule F) leave the reading flow and sit, collapsed, under the
   // passage that replaced them. One whose current passage is not in this chapter
@@ -51,10 +60,14 @@ export function ChapterSection({
           {work.tag && <span className="ml-1.5 rounded border border-brand-muted/40 px-1 text-[10px]">{work.tag}</span>}
         </p>
       )}
+      {first && heldBeforeFirst(heldTexts).map((held) => <HeldLine key={held.key} held={held} />)}
       {chapter.passages.map((p) => (
-        p.superseded_by && ids.has(p.superseded_by)
-          ? null
-          : <Passage key={p.id} passage={p} highlighted={p.anchor === highlightAnchor} history={history.get(p.id)} highlightAnchor={highlightAnchor} />
+        <Fragment key={p.id}>
+          {p.superseded_by && ids.has(p.superseded_by)
+            ? null
+            : <Passage passage={p} highlighted={p.anchor === highlightAnchor} history={history.get(p.id)} highlightAnchor={highlightAnchor} />}
+          {heldAfter(p.anchor, heldTexts).map((held) => <HeldLine key={held.key} held={held} />)}
+        </Fragment>
       ))}
       {credit && <SourceCredit text={credit} />}
     </section>

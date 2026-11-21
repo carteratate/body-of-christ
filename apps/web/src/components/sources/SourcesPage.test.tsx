@@ -224,3 +224,29 @@ describe("SourcesPage Collection drop-down (issue #392)", () => {
       .toEqual(["Sacrosanctum Concilium", "Lumen Gentium"]);
   });
 });
+
+describe("SourcesPage held texts (corpus cleanup 4.3)", () => {
+  it("says how many texts each row's document has read online, and still opens the reader", async () => {
+    state.sources = [
+      { id: "constance", title: "Council of Constance", author: null, year: 1414, collection: "councils", translation: null,
+        chunk_count: 13, metadata: { council_number: 16 }, held_count: 17 },
+      { id: "trent", title: "Council of Trent", author: null, year: 1545, collection: "councils", translation: null,
+        chunk_count: 400, metadata: { council_number: 19 } },
+      { id: "levate", title: "Levate", author: "Pope Pius IX", year: 1867, collection: "encyclicals", translation: "Unofficial",
+        chunk_count: 2, metadata: {}, held_count: 1 },
+      { id: "rn", title: "Rerum Novarum", author: "Pope Leo XIII", year: 1891, collection: "encyclicals", translation: null,
+        chunk_count: 50, metadata: {}, held_count: 0 },
+    ] as unknown as SourceDocument[];
+    state.listReadingProgress.mockResolvedValue([]);
+    render(<SourcesPage />);
+
+    const constance = await screen.findByRole("link", { name: /Council of Constance/ });
+    expect(constance.textContent).toContain("#16 · 1414· 17 texts read online");
+    expect(constance.textContent).toContain("13 passages");
+    expect(constance.getAttribute("href")).toMatch(/^\/reader\/constance\?/);
+    const levate = screen.getByRole("link", { name: /Levate/ });
+    expect(levate.textContent).toContain("· Unofficial· 1 text read online");
+    expect(levate.getAttribute("href")).toMatch(/^\/reader\/levate\?/);
+    expect(screen.getAllByTestId("held-count")).toHaveLength(2);
+  });
+});
