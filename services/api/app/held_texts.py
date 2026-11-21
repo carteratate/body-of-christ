@@ -80,6 +80,9 @@ def resolve(doc_id, metadata, chapter_keys: list[str],
         anchor, chapter = e.get("after_anchor"), e.get("after_chapter_key")
         if not all(isinstance(e.get(k), str) and e[k].strip() for k in ("key", "label", "heading")):
             problem = f"entry {e.get('key')!r} lacks a key, label or heading"
+        elif not all(e.get(k) is None or isinstance(e[k], str)
+                     for k in ("after_anchor", "after_chapter_key")):
+            problem = f"entry {e['key']!r} has a malformed place"
         elif anchor is None:
             index = -1
             if chapter is not None:

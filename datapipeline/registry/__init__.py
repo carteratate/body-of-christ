@@ -1023,6 +1023,8 @@ def write_registry(registry: WorkRegistry, directory: str = REGISTRY_DIR) -> Non
                                 key=lambda r: (r["document_id"], r["old_anchor"])))
     dump(KEPT_TEXT_FILE, sorted(registry.kept_text,
                                 key=lambda e: (e["document_id"], e["anchor"])))
+    if registry.held_texts:
+        dump(HELD_TEXTS_FILE, registry.held_texts)   # in reading order, never sorted
     dump(REMOVALS_FILE, sorted(registry.removals,
                                key=lambda e: (e["collection"], e["document_id"],
                                               e.get("anchor") or "")))

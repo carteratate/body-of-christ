@@ -179,6 +179,7 @@ async def test_an_entry_with_no_link_is_left_out_and_logged(db, caplog):
     ({3: {"after_anchor": "s8/2", "after_chapter_key": "s8"}}, "out of reading order"),
     ({0: {"after_chapter_key": "s8"}}, "names a chapter but no passage"),
     ({3: {"heading": ""}}, "lacks a key, label or heading"),
+    ({1: {"after_anchor": ["s8/2"]}}, "malformed place"),
 ])
 async def test_a_stale_list_is_dropped_whole_with_a_warning(db, cluster, caplog, change, why):
     entries = json.loads(json.dumps(COUNCIL_HELD))
