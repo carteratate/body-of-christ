@@ -1,18 +1,5 @@
 {
   "since": "2026-09-29",
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
-  "approved_applies": [
-    {
-      "collection": "all",
-      "release": "republish-2026-10",
-      "steps": [
-        "stage",
-        "apply",
-        "rollback"
-      ],
-      "reason": "The Phase 4 republish of every collection (#189, runbook 4.1b in docs/corpus-cleanup/P4-P5-republish-expand.md), built from this PR's merge commit. Each live step still needs Carter's own approval at the time it runs. The entry stays until the 14-day rollback window closes, and a later reviewed PR removes it.",
-      "approved_by": "Carter",
-      "pr": 406
-    }
-  ]
+  "approved_applies": []
 }
