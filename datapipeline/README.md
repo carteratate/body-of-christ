@@ -86,12 +86,18 @@ python3 publish.py status   [--release 2026-12-bible]
 python3 publish.py switch   --release 2026-12-bible    # after apply --no-switch
 python3 publish.py rollback --release 2026-12-bible    # undo an applied publish
 python3 publish.py discard  --release 2026-12-bible    # abandon a publish never applied
+
+# After the 14-day rollback window (4.1b step 13); each is a dry run without --execute
+python3 publish.py purge-retired       --release republish-2026-10 [--execute --disk-free-gb <GB>]
+python3 publish.py drop-old-collection --release republish-2026-10 [--execute --confirm <name>]
 ```
 
 The release name is the publish ID: `corpus_publishes.id`, the lock entry's `release`,
 and the suffix of `chunks-<release>`. Use 3 to 63 lowercase letters, digits and hyphens.
 The lock entry's steps are `stage` for `stage` and `discard`, `apply` for `apply`,
-`switch` and `cleanup`, and `rollback` for `rollback`. `status` only reads. `report` reads
+`switch`, `cleanup` and a live `purge-retired` or `drop-old-collection`, and `rollback`
+for `rollback`. Those two work across the whole corpus, so only an `all` entry for the
+release approves them. `status` only reads. `report` reads
 too, but recording a passing report's hash needs the release's `stage` approval.
 
 Keep `DATABASE_URL` on a direct or session-mode connection (Supabase's pooler on port
@@ -123,7 +129,8 @@ which transaction mode (port 6543) could leave held on a pooled connection.
   `--retire-only --collection <name>` retires the documents an open `document` removal
   entry names, with nothing staged.
 - `switch` moves the alias after `apply --no-switch`. Qdrant applies the move atomically.
-- `rollback` is the only rollback path (D11). Within the 14-day rollback window it undoes
+- `rollback` is the only rollback path (D11). Within the 14-day rollback window (it refuses
+  after it, since step 13 may have deleted what it would restore) it undoes
   an applied publish from its before-snapshot in one transaction, retires every row the
   publish inserted under a `rolled-back` tombstone, moves user rows back from the remap's
   ledger, then points the alias back. Roll back
@@ -144,11 +151,31 @@ keeps every change a user made since the apply, and counts each row it skips ins
 failing. `python3 -m remap_user_data --dry-run [--rows]` prints what the apply would move
 for the staged publish, in a read-only transaction.
 
-Deleting a Qdrant collection or a before-snapshot (and its ledger) is a separate ops step, after the
-rollback window for a publish that was applied. A lock entry stays until that window
-closes, and a follow-up PR removes it.
+After the rollback window for a publish that was applied (`retention.py`, 4.1b step 13):
 
-No code path left in the datapipeline deletes a live chunk or document row.
+- `purge-retired` deletes retired passages and documents that nothing points at (D3).
+  It reads the foreign keys into `chunks` and `documents` from the database, and keeps a
+  retired row that any row outside the corpus tables points at (a later table included),
+  that a corpus row's `superseded_by` names, that sits in the chapter a reading position
+  names (it labels the position), or whose removal reason holds the text for
+  its return (`awaiting-permission`, `translation-in-preparation`; ADR 0001). The dry run
+  lists the keys, what would go, what stays and why, and an upper estimate of the
+  transaction log the deletes and the `VACUUM` after them write. A live run works in
+  batches of 1,000, each its own transaction under the publish lock: it locks its rows,
+  checks the references again, copies each passage's anchor and chapter key into its
+  tombstone's snapshot (the API's notice for an old reader link reads them), deletes,
+  and refreshes the touched documents' outlines. It refuses inside any publish's
+  rollback window, while staging is held, and unless `--disk-free-gb`, read from the
+  Supabase dashboard (Database -> Disk) just before, covers twice its WAL estimate plus
+  1 GB. Run `VACUUM (analyze) chunks` afterwards, after the same disk check.
+- `drop-old-collection` deletes the Qdrant collection the publish's switch moved the
+  alias away from, once no alias or publish uses it. It cannot be undone, so it needs
+  `--confirm` with the collection's name.
+- Deleting the before-snapshot (and its ledger) and any backups is by hand, and the lock
+  entry is removed by a follow-up PR.
+
+No other code path in the datapipeline deletes a chunk or document row, and nothing
+deletes a live one.
 
 **Reading a staged corpus.** With `CORPUS_READ_SCHEMA=staging`, a process that imports
 the API reads the staged corpus with no write access: its pool sets `search_path` to

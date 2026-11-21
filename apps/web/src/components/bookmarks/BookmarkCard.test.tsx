@@ -497,6 +497,24 @@ describe("BookmarkCard corpus cleanup fields (2.4b)", () => {
     expect(lines).toEqual(["Translated by Marcus Dods", "Not by Justin Martyr.", "Sourced via CCEL.org"]);
   });
 
+  it("shows the 4.4 card in place of today's lines when the API sends one", () => {
+    renderBookmark({}, {
+      source: {
+        ...source,
+        facts: { translation: "Ante-Nicene Fathers (1885-1896)", source_credit: "Sourced via CCEL.org" },
+        card: {
+          cautions: [{ kind: "authorship", text: "Riedweg (1994) proposes Marcellus of Ancyra as the author." }],
+          record: ["Ante-Nicene Fathers (1885–1896)"], notice: null,
+        },
+      },
+    });
+    expect(screen.queryByTestId("passage-facts")).toBeNull();
+    expect(screen.getByTestId("card-cautions").textContent)
+      .toBe("Read with careAuthorshipRiedweg (1994) proposes Marcellus of Ancyra as the author.");
+    expect(screen.getByTestId("card-record").textContent).toBe("Ante-Nicene Fathers (1885–1896)");
+    expect(screen.queryByText(/CCEL/)).toBeNull();
+  });
+
   it("shows a removed passage's reason without its text, and keeps the note editable", async () => {
     renderBookmark({
       status: "removed",

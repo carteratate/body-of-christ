@@ -119,6 +119,25 @@ describe("SourcesPage excerpt-only documents (issue #265)", () => {
   });
 });
 
+describe("SourcesPage excerpt-only overview notes (4.4)", () => {
+  it("shows an excerpt-only document's own notes on its row, and no full document's", async () => {
+    state.sources = [
+      { id: "code", title: "Code of Canon Law", author: null, year: 1983, collection: "canon-law", translation: null, chunk_count: 1793, metadata: {},
+        reader_access: "excerpt", source_url: "https://www.vatican.va/cic_index_en.html",
+        overview_notes: [{ kind: "incomplete", text: "Six canons are not shown: their current text has no English translation." }] },
+      { id: "doc-2", title: "Rerum Novarum", author: "Pope Leo XIII", year: 1891, collection: "encyclicals", translation: null, chunk_count: 50, metadata: {},
+        reader_access: "full", overview_notes: [{ kind: null, text: "A full document's note." }] },
+    ] as unknown as SourceDocument[];
+    state.listReadingProgress.mockResolvedValue([]);
+    render(<SourcesPage />);
+
+    const code = await screen.findByRole("link", { name: /Code of Canon Law/ });
+    expect(code.textContent).toContain("Incomplete");
+    expect(code.textContent).toContain("Six canons are not shown");
+    expect(screen.queryByText("A full document's note.")).toBeNull();
+  });
+});
+
 describe("SourcesPage Bible book order (C-24)", () => {
   // Every title /v1/sources returns today (read 10 Nov 2026), and the titles the
   // rebuilt Bible gives the books (1.4a, `datapipeline/ingest/bible.py`), which

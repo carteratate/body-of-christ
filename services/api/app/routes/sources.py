@@ -6,10 +6,11 @@ import asyncpg
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from app import corpus_schema, held_texts
+from app import card_notes, corpus_schema, held_texts
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
+from app.models.corpus import OverviewNote
 from app.reader_access import source_url
 
 logger = logging.getLogger(__name__)
@@ -66,6 +67,9 @@ class SourceDocument(BaseModel):
     # Texts of this document read online instead (4.3, `metadata.held_texts`, which
     # `metadata` here leaves out). It changes only at a publish, before the restart.
     held_count: int = 0
+    # The document-wide notes (4.4), which the Library row of an excerpt-only document
+    # shows, since its overview answers 403. None for a document from before 4.4.
+    overview_notes: Optional[list[OverviewNote]] = None
 
 
 class SourcesResponse(BaseModel):
@@ -141,6 +145,7 @@ async def _load_corpus(conn) -> SourcesResponse:
             author=r["author"] or None, year=r["year"], translation=r["translation"],
             metadata=held_texts.public_metadata(dict(r["metadata"])) if r["metadata"] else None,
             chunk_count=r["chunk_count"], held_count=held_texts.held_count(r["metadata"]),
+            overview_notes=card_notes.overview_notes(r["metadata"]),
         ) for r in rows
     ]
     response = SourcesResponse(sources=sources)

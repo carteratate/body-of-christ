@@ -116,10 +116,12 @@ CURRENT = Resolution("current")
 
 # A passage's tombstone, or its document's. `document_scope` says whether the document
 # itself left (a passage of a removed document carries the document entry's reason).
+# A passage row deleted after its publish's rollback window (4.1b step 13) leaves its
+# anchor and chapter key in the snapshot, so nothing here needs the row.
 _TOMBSTONE_SQL = """
     SELECT t.entity, t.id::text AS id, t.document_id::text AS document_id, t.retired_at,
            t.rule, t.reason_code, t.public_reason, t.church_act, t.snapshot,
-           d.collection, d.metadata, c.anchor,
+           d.collection, d.metadata, coalesce(c.anchor, t.snapshot->>'anchor') AS anchor,
            EXISTS (SELECT 1 FROM corpus_tombstones dt
                    WHERE dt.entity = 'document' AND dt.id = t.document_id) AS document_scope
     FROM corpus_tombstones t
@@ -309,9 +311,55 @@ async def _retired_anchor(conn, doc_uuid: uuid.UUID, anchor: str,
         "SELECT id::text FROM chunks WHERE document_id = $1 AND anchor = $2",
         doc_uuid, anchor)
     if passage is None:
-        return None
+        # The anchor as linked first, then without the `#retired-<release>` suffix 2.2w
+        # gave the row when a current passage took its anchor (its redirect keeps the old).
+        bare = anchor.split(_RETIRED_SUFFIX, 1)[0]
+        return (await _deleted_passage_redirect(conn, doc_uuid, anchor, schema)
+                or await _deleted_passage_removal(conn, doc_uuid, "anchor", anchor, schema)
+                or (await _deleted_passage_redirect(conn, doc_uuid, bare, schema)
+                    if bare != anchor else None))
     resolved = (await resolve_passages(conn, [passage], schema)).get(passage)
     return resolved if resolved is not None and resolved.status != "current" else None
+
+
+async def _deleted_passage_redirect(conn, doc_uuid: uuid.UUID, anchor: str,
+                                   schema: CorpusSchema) -> Resolution | None:
+    """Where a deleted passage went, by the passage redirect its old anchor names: the
+    redirect followed to a current passage, or the removal of the passage it ends at."""
+    if not schema.redirects:
+        return None
+    old = await conn.fetchval(
+        "SELECT old_id::text FROM corpus_redirects WHERE entity = 'passage' "
+        "AND old_document_id = $1 AND old_anchor = $2 ORDER BY id DESC LIMIT 1",
+        doc_uuid, anchor)
+    if old is None:
+        return None
+    moved, last = await _follow_passage_redirects(conn, {old})
+    if old in moved:
+        return Resolution("moved", redirect=moved[old])
+    if schema.tombstones and old in last:
+        rows = await conn.fetch(_TOMBSTONE_SQL, _uuids([last[old]]), [])
+        if rows:
+            return Resolution("removed", tombstone=tombstone(rows[0]))
+    return None
+
+
+async def _deleted_passage_removal(conn, doc_uuid: uuid.UUID, key: str, value: str,
+                                   schema: CorpusSchema) -> Resolution | None:
+    """The removal of a passage whose row was deleted after its publish's rollback window
+    (4.1b step 13), found by the `anchor` or `chapter_key` its tombstone's snapshot kept.
+    The latest removal wins when a location was removed more than once."""
+    if not schema.tombstones:
+        return None
+    passage = await conn.fetchval(
+        f"""SELECT t.id::text FROM corpus_tombstones t
+            WHERE t.entity = 'passage' AND t.document_id = $1 AND t.snapshot->>'{key}' = $2
+              AND NOT EXISTS (SELECT 1 FROM chunks c WHERE c.id = t.id)
+            ORDER BY t.retired_at DESC, t.id LIMIT 1""", doc_uuid, value)
+    if passage is None:
+        return None
+    rows = await conn.fetch(_TOMBSTONE_SQL, _uuids([passage]), [])
+    return Resolution("removed", tombstone=tombstone(rows[0])) if rows else None
 
 
 async def _retired_chapter(conn, doc_uuid: uuid.UUID, chapter_key: str,
@@ -321,11 +369,10 @@ async def _retired_chapter(conn, doc_uuid: uuid.UUID, chapter_key: str,
     ids = [r["id"] for r in await conn.fetch(
         "SELECT id::text AS id FROM chunks WHERE document_id = $1 AND chapter_key = $2 "
         "AND retired_at IS NOT NULL ORDER BY position DESC", doc_uuid, chapter_key)]
-    if not ids:
-        return None
-    resolved = await resolve_passages(conn, ids, schema)
+    resolved = await resolve_passages(conn, ids, schema) if ids else {}
     return next((resolved[i] for i in ids
-                 if i in resolved and resolved[i].status == "removed"), None)
+                 if i in resolved and resolved[i].status == "removed"), None) or (
+        await _deleted_passage_removal(conn, doc_uuid, "chapter_key", chapter_key, schema))
 
 
 async def resolve_location(conn, doc_id, *, anchor: str | None, chapter: str | None,

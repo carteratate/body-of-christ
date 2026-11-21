@@ -211,7 +211,10 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   `app/corpus_lifecycle.py` turns a retired row into `moved` (redirect) or `removed`
   (tombstone, shown without its text). The reader answers a removed document or passage
   with 410 `{"detail": "removed", "tombstone"}` and a moved one with 404
-  `{"detail": "moved", "redirect"}`. Document facts on `documents` (`genre` → the
+  `{"detail": "moved", "redirect"}`. After a publish's rollback window,
+  `publish.py purge-retired` (4.1b step 13, `datapipeline/retention.py`) deletes retired
+  rows nothing points at, keeping held texts (ADR 0001); a deleted passage's tombstone
+  `snapshot` keeps its `anchor` and `chapter_key`, which the reader's notice reads. Document facts on `documents` (`genre` → the
   `corpus_genres` lookup, seeded from `datapipeline/registry/genres.py`; `issuer` slug and
   `issuer_label`; `date_display`, `certainty`, `attribution_note`, `notes`,
   `source_credit`, `clavis_ref`, `superseded_by`/`superseded_note`). Works inside one

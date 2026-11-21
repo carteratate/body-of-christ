@@ -11,6 +11,8 @@ import { ReaderRemovedNotice } from "./ReaderRemovedNotice";
 import { certaintyTag, formatAttribution, formatDate, formatKind, formatTranslation, factNotes, type WorkInfo } from "@/lib/attribution";
 import type { Tombstone } from "@/lib/corpus-lifecycle";
 import { SourceCredit } from "@/components/common/SourceLink";
+import { OverviewNotes } from "@/components/common/PassageFacts";
+import { parseOverviewNotes } from "@/lib/card-notes";
 import { getCollectionMeta } from "@/lib/collections";
 import { LIFT } from "@/lib/lift";
 import { hasReaderReturnMarker, isReaderReturnKey, movedReaderHref, type ReaderOrigin } from "@/lib/readerNavigation";
@@ -264,7 +266,10 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   ].filter(Boolean).join(" · ");
   const certainty = certaintyTag(facts?.certainty);
   const kind = formatKind(facts);
-  const notes = factNotes(facts);
+  // A document a 4.4 publish wrote names its document-wide notes, with their kinds, in
+  // place of the facts' notes.
+  const overviewNotes = parseOverviewNotes(documentInfo.overview_notes);
+  const notes = overviewNotes ? [] : factNotes(facts);
   const superseded = facts?.superseded_note?.trim() || null;
   const works = documentInfo.works ?? [];
   const credit = facts?.source_credit?.trim() || null;
@@ -292,6 +297,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
               </p>
             )}
             {kind && <p className="mt-1 text-sm text-brand-muted" data-testid="document-kind">{kind}</p>}
+            {overviewNotes && <OverviewNotes notes={overviewNotes} className="mt-3 text-sm" />}
             {(notes.length > 0 || superseded) && (
               <div className="mt-3 space-y-1 text-sm leading-snug text-brand-muted">
                 {notes.map((note) => <p key={note}>{note}</p>)}

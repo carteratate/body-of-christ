@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { ExternalLink } from "lucide-react";
 import { factNotes, formatKind, formatTranslation, type DocumentFacts } from "@/lib/attribution";
 import {
@@ -9,6 +10,14 @@ import {
   type Tombstone,
 } from "@/lib/corpus-lifecycle";
 import type { PassageTextLabels } from "@/lib/search-stream";
+import {
+  CAUTION_LABELS,
+  cardHasContent,
+  splitAtLink,
+  type CardCaution,
+  type OverviewNote,
+  type PassageCard,
+} from "@/lib/card-notes";
 import { IntentLink } from "./NavPending";
 import { SourceCredit } from "./SourceLink";
 
@@ -62,15 +71,117 @@ export function TextLabels({ labels }: { labels: PassageTextLabels | null | unde
   );
 }
 
+/** The word that opens a caution or an overview note: small bold capitals. */
+function KindWord({ kind }: { kind: CardCaution["kind"] }) {
+  return (
+    <span className="mr-2 whitespace-nowrap text-[9.5px] font-bold uppercase tracking-[0.09em]">
+      {CAUTION_LABELS[kind]}
+    </span>
+  );
+}
+
+function CautionText({ caution, supersededHref }: { caution: CardCaution; supersededHref?: string | null }) {
+  const { before, label, after } = splitAtLink(caution);
+  const link = caution.link;
+  let linked: ReactNode = label;
+  if (label && link?.href) {
+    linked = (
+      <a
+        href={link.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+      >
+        {label}<span className="sr-only"> (opens in a new tab)</span>
+      </a>
+    );
+  } else if (label && link?.document_id && supersededHref) {
+    linked = <IntentLink href={supersededHref} className="underline underline-offset-2">{label}</IntentLink>;
+  } else if (label && !caution.text.includes(label)) {
+    linked = null;
+  }
+  return <>{before}{linked}{after}</>;
+}
+
 /**
- * What an opened passage says about its text, under the text (corpus cleanup 2.4b):
- * what kind of document it is where a papal form is recorded (issue #330), the translation, then where the text came from (2.4f), then the notes, then the
- * source credit, which stays last. Shown
- * only where the passage is opened (the expanded search card, the bookmark), never
- * on a collapsed card (Decision log, "Source credits"). Renders nothing without facts
- * except the credit, so a response without them looks as it did.
+ * The notes under an opened passage (corpus cleanup 4.4), in three slots, each left out
+ * when it has nothing to say: "Read with care" (TheoCorpus's cautions, on a quiet panel,
+ * each opened by its kind), "About this text" (one muted line), and the rights holder's
+ * required notice (fine print under a hairline, last). Design reference:
+ * docs/corpus-cleanup/4.4-card-notes-look.html, variant A.
  */
-export function PassageFacts({ facts, passageNote, language, credit, supersededHref, textLabels }: {
+export function CardNotes({ card, supersededHref }: { card: PassageCard; supersededHref?: string | null }) {
+  if (!cardHasContent(card)) return null;
+  return (
+    <div className="mt-3" data-testid="card-notes">
+      {card.cautions.length > 0 && (
+        <div
+          className="grid gap-1.5 rounded-md bg-brand-caution-panel px-3 py-2 text-xs leading-snug text-brand-primary"
+          data-testid="card-cautions"
+        >
+          <p className="sr-only">Read with care</p>
+          {card.cautions.map((caution) => (
+            <p key={`${caution.kind}:${caution.text}`} data-testid="card-caution">
+              <KindWord kind={caution.kind} />
+              <CautionText caution={caution} supersededHref={supersededHref} />
+            </p>
+          ))}
+        </div>
+      )}
+      {card.record.length > 0 && (
+        <p
+          className={`${card.cautions.length > 0 ? "mt-2.5" : ""} text-xs leading-snug text-brand-muted`}
+          data-testid="card-record"
+        >
+          {card.record.join(" · ")}
+        </p>
+      )}
+      {card.notice && (
+        <p
+          className={`${card.cautions.length > 0 || card.record.length > 0 ? "mt-2.5" : ""} border-t border-brand-hairline pt-[7px] text-[11px] leading-snug text-brand-muted`}
+          data-testid="card-notice"
+        >
+          {card.notice}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/**
+ * A document's own notes, for its overview and an excerpt-only document's Library row
+ * (4.4): cautions opened by their kind, record notes plain. Muted, since the overview
+ * holds the document's record, not one passage's.
+ */
+export function OverviewNotes({ notes, className = "text-xs" }: {
+  notes: OverviewNote[];
+  /** Spacing and text size; the reader overview uses its own `text-sm`. */
+  className?: string;
+}) {
+  if (notes.length === 0) return null;
+  return (
+    <div className={`space-y-1 leading-snug text-brand-muted ${className}`} data-testid="overview-notes">
+      {notes.map((note) => (
+        <p key={`${note.kind}:${note.text}`}>
+          {note.kind && <KindWord kind={note.kind} />}
+          {note.text}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * What an opened passage says about its text, under the text. With a 4.4 `card` from
+ * the API, the three slots of `CardNotes`. Without one (a response from before 4.4's
+ * data), today's lines (corpus cleanup 2.4b): what kind of document it is where a papal
+ * form is recorded (issue #330), the translation, then where the text came from (2.4f),
+ * then the notes, then the source credit, which stays last. Shown only where the
+ * passage is opened (the expanded search card, the bookmark), never on a collapsed card
+ * (Decision log, "Source credits"). Renders nothing without facts except the credit, so
+ * a response without them looks as it did.
+ */
+export function PassageFacts({ facts, passageNote, language, credit, supersededHref, textLabels, card }: {
   facts: DocumentFacts | null | undefined;
   passageNote?: string | null;
   language?: string | null;
@@ -79,7 +190,10 @@ export function PassageFacts({ facts, passageNote, language, credit, supersededH
   supersededHref?: string | null;
   /** Decoded by `passageTextLabels` (2.4f). */
   textLabels?: PassageTextLabels | null;
+  /** Decoded by `parsePassageCard` (4.4); null for a response from before its data. */
+  card?: PassageCard | null;
 }) {
+  if (card) return <CardNotes card={card} supersededHref={supersededHref} />;
   const kind = formatKind(facts);
   const translation = formatTranslation(facts?.translation);
   const notes = factNotes(facts, passageNote);

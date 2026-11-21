@@ -11,6 +11,8 @@ import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink } from "@/components/common";
 import { LIFT } from "@/lib/lift";
 import { excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
+import { OverviewNotes } from "@/components/common/PassageFacts";
+import { parseOverviewNotes } from "@/lib/card-notes";
 import { certaintyTag, formatAttribution, formatDate, formatTranslation } from "@/lib/attribution";
 import { heldCountLabel } from "@/lib/held-texts";
 
@@ -276,6 +278,7 @@ function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: Doc
                     {num ? `#${num} · ` : ""}{d.year}
                   </span>
                   <HeldCount doc={d} />
+                  <ExcerptNotes doc={d} />
                 </div>
                 <span className="shrink-0 text-xs text-brand-muted whitespace-nowrap mt-0.5">
                   {d.chunk_count.toLocaleString()} passages
@@ -287,6 +290,15 @@ function CouncilsSection({ docs, opener }: { docs: SourceDocument[]; opener: Doc
       </ul>
     </section>
   );
+}
+
+/**
+ * An excerpt-only document's own notes on its row (4.4): its overview answers 403, so
+ * the Library is where a reader finds them (the Code of Canon Law's canons not shown).
+ */
+function ExcerptNotes({ doc }: { doc: SourceDocument }) {
+  const notes = isExcerptOnly(doc) ? parseOverviewNotes(doc.overview_notes) : null;
+  return notes ? <OverviewNotes notes={notes} className="mt-1 text-xs" /> : null;
 }
 
 function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
@@ -315,6 +327,7 @@ function DocRow({ doc, opener }: { doc: SourceDocument; opener: DocOpener }) {
             <span className="text-brand-muted text-xs ml-1">· {doc.translation}</span>
           )}
           <HeldCount doc={doc} />
+          <ExcerptNotes doc={doc} />
         </div>
         <span className="shrink-0 text-xs text-brand-accent whitespace-nowrap mt-0.5">
           {excerptSourceUrl(doc) ? <ExternalLink size={12} aria-label="Opens the source in a new tab" /> : "›"}

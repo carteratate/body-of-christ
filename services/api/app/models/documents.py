@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Literal, Optional
 
-from app.models.corpus import DocumentFacts, RedirectedFrom, WorkInfo
+from app.models.corpus import DocumentFacts, OverviewNote, RedirectedFrom, WorkInfo
 
 
 class DocumentResponse(BaseModel):
@@ -26,6 +26,9 @@ class DocumentResponse(BaseModel):
     # Texts of this document held back for now and read online instead (4.3). `/toc`
     # lists them; `metadata` never carries them.
     held_count: int = 0
+    # The document-wide notes (4.4, `card_notes.overview_notes`), which the overview
+    # shows in place of the facts' notes. None for a document from before 4.4.
+    overview_notes: Optional[list[OverviewNote]] = None
 
 
 class ReaderChunk(BaseModel):
