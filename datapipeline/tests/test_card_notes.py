@@ -141,6 +141,30 @@ def test_a_note_on_every_passage_goes_when_the_document_says_it():
     assert any("on every passage" in p for p in check.problems(alone))
 
 
+def test_only_the_extract_note_leaves_its_passages_for_the_documents_note():
+    """Another note on every passage stays, whatever the document's notes, and the
+    check refuses it: a repeated caution is never dropped unseen."""
+    doc = card_notes.apply(_document(
+        [_passage(0, note="Abridged in Schroeder (1937)."),
+         _passage(1, note="Abridged in Schroeder (1937).")],
+        collection="encyclicals", title="Vix Pervenit",
+        notes="Only an extract of this encyclical is given, in R. J. Deferrari's translation "
+              "of Denzinger (1957): the five teachings on usury in paragraph 3. The rest is "
+              "not available on TheoCorpus at present."), None)
+    assert [p.note for p in doc.passages] == ["Abridged by the translator."] * 2
+    assert any("on every passage" in p for p in check.problems(doc))
+
+
+def test_the_check_reads_each_passages_own_translator_for_a_document_note():
+    doc = card_notes.apply(_document([
+        _passage(0, metadata={"scan_id": "authoritative01chry"}), _passage(1)],
+        source_credit="Sourced via CCEL.org", translation="Nicene and Post-Nicene Fathers, "
+                                                          "Series II"), None)
+    doc.metadata["card_notes"] = [{"kind": "wording", "show": "card",
+                                   "text": "Chrystal's version of the letter."}]
+    assert any("names Chrystal" in p for p in check.problems(doc))
+
+
 def test_the_supplements_generated_note_keeps_its_parts():
     note = card_notes.passage_note(
         "The English translation omits part of this article's Latin text (ad 2, ad 3).")

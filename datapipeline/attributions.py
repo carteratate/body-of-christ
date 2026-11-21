@@ -200,8 +200,8 @@ WORKS: dict[tuple[str, str], dict] = {
         "basis": "A church order; its title says it was wrongly ascribed to Hippolytus"},
     # An editor's judgment rule G removed, kept as a note (plan rule G; Carter, 15 Nov
     # 2026). The plan overrides the others 1.8a copied (works.json editorial_judgments).
+    # Its note sits on canon XI alone (PASSAGE_NOTES), the passage it is true of (4.4).
     ("church-fathers/third-century-3/iii.iii", "iii.iii.iii"): {
-        "notes": "The eleventh canon is a later addition.",
         "basis": "ANF 6, the editor's elucidation: a genuine epistle, all but the eleventh "
                  "canon"},
     ("church-fathers/third-century-2/iv.vii", "iv.vii.iii"): {
@@ -244,9 +244,12 @@ WORKS: dict[tuple[str, str], dict] = {
 WORKS[(_EPISTLES, "iv.iv.lxxiv")]["notes"] = _REBAPTISM_VIEW
 
 PASSAGE_NOTES: dict[tuple[str, str], str] = {
-    ("church-fathers/apostolic-fathers/iii.ii", key):
-        "Chapters 11 and 12 are a later addition by another hand."
-    for key in ("iii.ii.xi", "iii.ii.xii")
+    **{("church-fathers/apostolic-fathers/iii.ii", key):
+       "Chapters 11 and 12 are a later addition by another hand."
+       for key in ("iii.ii.xi", "iii.ii.xii")},
+    # The Canonical Epistle's eleventh canon (ANF 6's elucidation; 3.2, moved by 4.4).
+    ("church-fathers/third-century-3/iii.iii", "iii.iii.iii.xi"):
+        "This canon is a later addition.",
 }
 
 # Fields the registry's `attribution` object takes from DOCUMENTS; the rest are facts.

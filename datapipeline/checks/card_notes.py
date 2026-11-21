@@ -69,7 +69,12 @@ def problems(document: Document) -> list[str]:
         if show == "overview" and e.get("work_key"):
             out.append(f"{name}: overview note {text!r} names work {e['work_key']}; "
                        "a work's note shows on its passages (card or record)")
-        bad = named(text, _translator_names(card_translator), e.get("work_key"))
+        # Every translator a passage it shows on names: the card's and the passages' own.
+        shown_on = [p for p in document.passages
+                    if not e.get("work_key") or p.work_key == e.get("work_key")]
+        bad = named(text, _translator_names(
+            card_translator, *((p.metadata or {}).get("translator") for p in shown_on)),
+            e.get("work_key"))
         if bad:
             out.append(f"{name}: card note {text!r} names {', '.join(bad)}")
 

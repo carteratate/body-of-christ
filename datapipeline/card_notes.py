@@ -113,6 +113,10 @@ PASSAGE_NOTES: dict[str, Note | None] = {
            "authority", f"Not enacted as a canon: a passage from the minutes of the fourth "
                         f"session, which later Greek collections count as canon {n}.")
        for n in (29, 30)},
+    "This canon is a later addition.": caution(
+        "authorship", "This canon is a later addition."),
+    "This printing cuts the paragraph short with “&c.”": caution(
+        "incomplete", "This printing cuts the paragraph short with “&c.”"),
     "Chapters 11 and 12 are a later addition by another hand.": caution(
         "authorship", "Chapters 11 and 12 are a later addition by another hand."),
     "The Latin text ends this article with a short reply to all the objections together, "
@@ -170,8 +174,6 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "Its author is unknown; the editors printed it with Caius's fragments on one scholar's "
     "guess.": (caution("authorship", "The editors printed it with Caius's fragments on one "
                                      "scholar's guess."),),
-    "The eleventh canon is a later addition.": (
-        caution("authorship", "The eleventh canon is a later addition."),),
     "Compiled about 380. The Latin West received canons 1 to 50 through Dionysius "
     "Exiguus; all 85 were confirmed by the Council in Trullo (canon 2) and Nicaea II "
     "(canon 1).": (record("Compiled about 380"), caution(
@@ -384,15 +386,13 @@ def apply(document: Document, entry: dict | None) -> Document:
 
 
 def _without_document_wide(passages: list[Passage], entries: list[dict]) -> list[Passage]:
-    """The passages without a note every one of them carries when the document has its
-    own note of that kind, which says it for the whole document (rule 2): the extract
-    note on each paragraph of an encyclical printed only in extract. One on every passage
-    of a document with no such note stays, and the check refuses it."""
-    notes = {(p.note, (p.metadata or {}).get("note_kind")) for p in passages}
-    if len(notes) != 1 or not passages:
+    """The passages without the extract note when every one carries it and the document
+    has its own incomplete note, which says it for the whole document (rule 2): an
+    encyclical printed only in extract. Any other note on every passage stays, and the
+    check refuses it, so a repeated caution is never dropped unseen."""
+    if not passages or any(p.note != EXTRACT.text for p in passages):
         return passages
-    note, kind = notes.pop()
-    if note is None or not any(e["kind"] == kind and "work_key" not in e for e in entries):
+    if not any(e["kind"] == "incomplete" and "work_key" not in e for e in entries):
         return passages
     out = []
     for p in passages:
