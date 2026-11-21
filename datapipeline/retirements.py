@@ -179,14 +179,19 @@ def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument]
                             "no redirect or removal entry explains it")
 
     # Retired passages with a tombstone whose redirect has opened since; one the build
-    # emits again is un-retired by the apply instead.
+    # emits again is un-retired by the apply instead. Both come back, so both show where
+    # their old chapter went (Stromata III's live chapter was all tombstoned, #399).
+    returning = []
     for p in tombstoned:
         declared = None if p.document_id in removed_documents else redirects.get(p.id)
-        if declared and p.id not in staged_by_id:
+        if p.id in staged_by_id:
+            returning.append(p)
+        elif declared:
             passage_redirect(p, declared)
+            returning.append(p)
 
     out.redirects += anchor_redirects(live_passages, staged, registry, release)
-    out.redirects += chapter_redirects(live_passages, staged, redirects, release)
+    out.redirects += chapter_redirects(live_passages + returning, staged, redirects, release)
     return out
 
 

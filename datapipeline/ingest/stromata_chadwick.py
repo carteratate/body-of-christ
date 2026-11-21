@@ -25,7 +25,7 @@ from __future__ import annotations
 import re
 from dataclasses import replace
 
-from model import Document, Passage
+from model import Document
 from ocr.fixes import read_text
 
 WORK = "chadwick-stromata-3"
@@ -161,7 +161,3 @@ def restore(document: Document, frozen: dict | None = None) -> Document:
                                   **meta})
         passages.append(p)
     return replace(document, passages=passages)
-
-
-def is_restored(passage: Passage) -> bool:
-    return (passage.metadata or {}).get("text_replaced") == TEXT_REPLACED

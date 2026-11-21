@@ -129,7 +129,7 @@ def test_build_restores_book_iii_in_english_with_its_ids():
     assert [p.anchor for p in book] == [a for a, _, _ in sc.PIECES]
     reg = registry.current()
     for p in book:
-        assert p.note == sc.NOTE and sc.is_restored(p)
+        assert p.note == sc.NOTE and p.metadata["text_replaced"] == sc.TEXT_REPLACED
         assert p.chapter_key == sc.BOOK and p.chapter_label == "Book III"
         assert "footnotes" not in p.metadata and "editor_note_count" not in p.metadata
         row = reg.row_by_anchor[(sc.STROMATA, p.anchor)]

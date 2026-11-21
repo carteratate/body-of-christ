@@ -390,6 +390,30 @@ async def test_a_tombstoned_id_whose_redirect_opens_is_redirected_and_rollback_r
     assert t == {"id": old, "publish_id": RELEASE}
 
 
+async def test_a_tombstoned_chapter_that_comes_back_elsewhere_redirects(world):
+    """A chapter every live passage of which was tombstoned (Stromata III) gets its
+    chapter redirect when its passages come back under another chapter key (#399)."""
+    a = _doc(world, DOC_A)
+    for k, anchor in enumerate(("a/3", "a/4"), 911):
+        world.registry.removals.append(_removal(
+            id=f"rm-0{k}", scope="passage", document_id=DOC_A, anchor=anchor,
+            passage_id=pid(DOC_A, anchor), reason="debris", tombstone="Removed."))
+    kept = a.passages
+    a.passages = kept[:2]
+    await _stage(world)
+    await _apply(world)
+    await _cleanup(world)
+    for e in world.registry.removals[-2:]:
+        e["closed_by"], e["closed_on"] = "#399", "2026-11-21"
+    world.registry.__post_init__()
+    a.passages = kept[:2] + [replace(p, chapter_key="c2-new", chapter_label="C2-NEW")
+                             for p in kept[2:]]
+    await _stage(world, StageRequest(release="release-two", collections=("medieval",)))
+    rows = await world.fetch("SELECT old_anchor, new_anchor FROM staging.corpus_redirects "
+                             "WHERE entity = 'chapter'")
+    assert rows == [{"old_anchor": "c2", "new_anchor": "c2-new"}]
+
+
 async def test_passage_moved_between_documents_keeps_its_id(world):
     await _user_rows(world, pid(DOC_A, "a/4"))
     a, b = _doc(world, DOC_A), _doc(world, DOC_B)

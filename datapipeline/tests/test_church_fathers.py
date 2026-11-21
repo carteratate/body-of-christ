@@ -96,7 +96,9 @@ def test_split_passages_have_complete_reader_boundaries():
         for passage in doc.passages:
             # Stromata III's English keeps the Latin pieces' bounds, and with them their
             # IDs (#399); the English runs longer than the Latin.
-            assert _cut_length(passage.content) <= 4_000 or stromata_chadwick.is_restored(passage)
+            assert _cut_length(passage.content) <= 4_000 or (
+                (doc.id, passage.chapter_key) == (stromata_chadwick.STROMATA,
+                                                  stromata_chadwick.BOOK))
             match = re.match(r"^(.*)/p(\d+)$", passage.anchor)
             if match:
                 groups[match.group(1)].append((int(match.group(2)), passage))

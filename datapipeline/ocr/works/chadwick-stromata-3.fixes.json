@@ -238,5 +238,29 @@
   "find": "manifest.'* But",
   "replace": "manifest.\" But",
   "why": "p. 79: the print reads “manifest.”, with a note call"
+ },
+ {
+  "passage": "ch13/s091",
+  "find": "unfruitful tree using",
+  "replace": "unfruitful tree,' using",
+  "why": "p. 83: the print reads tree,’; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch14/s095",
+  "find": "look for the Saviour.\"",
+  "replace": "look for the Saviour.'\"",
+  "why": "p. 85: the print reads Saviour.’” (the quotation inside Julius Cassianus's)"
+ },
+ {
+  "passage": "ch18/s109",
+  "find": "And we who used",
+  "replace": "And we,\" who used",
+  "why": "p. 92: the print reads And we,”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch18/s109",
+  "find": "'For the rest, brethren",
+  "replace": "\"For the rest, brethren",
+  "why": "p. 92: the print reads “For, an opening double quotation mark"
  }
 ]
