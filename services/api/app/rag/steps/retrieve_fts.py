@@ -22,7 +22,7 @@ _SQL_TEMPLATE = """
            d.title AS document_title, d.author, d.collection
     FROM chunks c
     JOIN documents d ON c.document_id = d.id
-    WHERE d.collection = $1{scope}
+    WHERE {collection}{scope}
       AND c.search_vector @@ plainto_tsquery('english', $2){searchable}
     ORDER BY ts_rank(c.search_vector, plainto_tsquery('english', $2)) DESC
     LIMIT $3
@@ -80,7 +80,7 @@ _MIN_MATCH_SQL_TEMPLATE = r"""
         SELECT c.id, c.search_vector
         FROM chunks c
         JOIN documents d ON c.document_id = d.id
-        WHERE d.collection = $1{scope}
+        WHERE {collection}{scope}
           AND (SELECT term_count FROM query) BETWEEN 3 AND 40
           AND c.search_vector @@ (SELECT any_pair FROM query){searchable}
     ),
@@ -88,7 +88,7 @@ _MIN_MATCH_SQL_TEMPLATE = r"""
         SELECT c.id, c.search_vector
         FROM chunks c
         JOIN documents d ON c.document_id = d.id
-        WHERE d.collection = $1{scope}
+        WHERE {collection}{scope}
           AND NOT EXISTS (SELECT 1 FROM pairs)
           AND c.search_vector @@ (SELECT any_term FROM query){searchable}
     ),
@@ -117,22 +117,29 @@ _MIN_MATCH_SQL_TEMPLATE = r"""
 """
 
 
+TODAYS_COLLECTION_SQL = "d.collection = $1"
+
+
 def build_sql(
     schema: corpus_schema.CorpusSchema, mode: FtsMode = "and", scope_sql: str = "",
+    collection_sql: str = TODAYS_COLLECTION_SQL,
 ) -> str:
     """Today's SQL without 0042, byte for byte; with it, only searchable live rows, and
     each row's `voice` (2.4d), so a candidate found only by keyword search carries it.
 
     `mode` "and" is that SQL unchanged; "min_match" is the query described above.
     `scope_sql` is `CollectionScope.to_sql`'s clause (5.1a), empty for a whole
-    collection, so a search without a scope runs the SQL it ran before scopes."""
+    collection, so a search without a scope runs the SQL it ran before scopes.
+    `collection_sql` is `CollectionScope.collection_sql`'s condition (5.1b.1), today's
+    `d.collection = $1` for a key 5.1b leaves alone."""
     voice = ", c.voice" if schema.facts else ""
     searchable = schema.searchable_sql("c", "d")
     if mode == "and":
-        return _SQL_TEMPLATE.format(voice=voice, searchable=searchable, scope=scope_sql)
+        return _SQL_TEMPLATE.format(voice=voice, searchable=searchable, scope=scope_sql,
+                                    collection=collection_sql)
     if mode == "min_match":
         return _MIN_MATCH_SQL_TEMPLATE.format(
-            voice=voice, searchable=searchable, scope=scope_sql)
+            voice=voice, searchable=searchable, scope=scope_sql, collection=collection_sql)
     raise ValueError(f"unknown FTS mode {mode!r}")
 
 
@@ -159,8 +166,18 @@ async def _search_fts(
     The TimeoutError drops this collection's lexical path (see run()).
     """
     collection = scope.collection
-    # Parameters $1 to $3 are the collection, question and limit; the scope's follow.
+    # Parameters $1 to $3 are the collection, question and limit; the scope's follow,
+    # then those of an old key's read of the new collection value (5.1b.1), which
+    # needs `documents.genre`.
     scope_sql, scope_args = scope.to_sql("d", 4)
+
+    def _fetch(conn, schema: corpus_schema.CorpusSchema):
+        condition, value, read_args = scope.collection_sql(
+            "d", 4 + len(scope_args), genre_column=schema.facts)
+        return conn.fetch(
+            build_sql(schema, mode, scope_sql, condition), value, query_text, limit,
+            *scope_args, *read_args,
+        )
     for attempt in range(2):
         pool = get_pool()
         if pool is None:
@@ -180,11 +197,7 @@ async def _search_fts(
             continue
         try:
             rows = await corpus_schema.run_with_fallback(
-                lambda schema: conn.fetch(
-                    build_sql(schema, mode, scope_sql), collection, query_text, limit,
-                    *scope_args,
-                ),
-                conn,
+                lambda schema: _fetch(conn, schema), conn,
             )
         except _TRANSIENT_CONNECTION_ERRORS:
             if attempt:
@@ -192,7 +205,9 @@ async def _search_fts(
         else:
             if attempt:
                 logger.info("retrieve_fts: %s recovered on fresh connection", collection)
-            return [dict(r) for r in rows]
+            # Labelled with the key searched, not the stored value (5.1b.1), so results
+            # come back in the vocabulary the request used.
+            return [{**dict(r), "collection": collection} for r in rows]
         finally:
             await pool.release(conn)
         # Small independent jitter prevents every collection from immediately

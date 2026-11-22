@@ -1,5 +1,18 @@
 {
   "since": "2026-09-29",
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
-  "approved_applies": []
+  "approved_applies": [
+    {
+      "collection": "all",
+      "release": "card-notes-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "4.4's data publish (#407, PR #419): each card note stored with its kind and place, staged from master commit bb1e541, which holds 4.4's data and not 4.3's. Every document gains card_version, so every collection is staged. Its report must show card-note metadata changes only: no passage, ID, payload or embedding change. Stage, report, apply, switch and cleanup run from bb1e541; a rollback runs from master. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
+      "approved_by": "Carter",
+      "pr": 434
+    }
+  ]
 }

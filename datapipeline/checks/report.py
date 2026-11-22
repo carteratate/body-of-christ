@@ -52,7 +52,7 @@ BODY_TOLERANCE = 0.01
 COVERAGE_ENTRY_BELOW = 95.0
 
 # The collections the datapipeline builds, from its one adapter registry (which a test
-# keeps equal to the API's VALID_COLLECTIONS), so a new collection is checked too.
+# keeps inside the API's VALID_COLLECTIONS), so a new collection is checked too.
 COLLECTIONS = tuple(sorted(SOURCE_ADAPTERS))
 SECTION_COLLECTIONS = ("apostolic-exhortations", "councils", "encyclicals", "papal-documents")
 THML_COLLECTIONS = ("church-fathers", "medieval")

@@ -295,7 +295,7 @@ Two layers, and the split is the point:
 - `rag/pipeline.py` owns the **SSE contract and DB side-effects only**.
 - `rag/pipelines/runner.py` owns the **compute**; `rag/pipelines/registry.py` names the configurations.
 
-Production runs the `hyde_cohere_luna_seats10t80_ftsminmatch` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → Qdrant vector retrieval, with Supabase FTS running alongside from the start → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
+Production runs the `hyde_cohere_luna_seats10t80_ftsminmatch` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → Qdrant vector retrieval, with Supabase FTS running alongside from the start → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`. The collection guarantee is per collection, never per genre (5.1c): a genre selection adds no slots.
 
 **How many Cohere candidates reach the listwise call is a per-pipeline seat rule**,
 `RerankConfig.terminal_seats` (`budget.TerminalSeats`, issue #235). Production seats
@@ -312,12 +312,16 @@ and it hands the runner three derived values: `focused`, `terminal_candidate_bud
 `max_passages_per_source`. `SearchPlanError` carries a stable `code` so routes translate
 failures consistently. See §18.
 
+**HyDE writes one passage per collection, except** the Bible (its genres, above) and `papal`
+(5.1b.1), which writes one per kind of papal document its genre filter leaves on, in the
+prompt of that kind's old key (`hyde_s25.papal_hyde_kinds`; Carter, 22 Nov 2026).
+
 **A plan can narrow a collection to some genres and issuers** (item 5.1a, `SearchPlan.scopes`,
 `rag/collection_scope.py`). The request lists what to search; a `CollectionScope` holds the
 complement, and retrieval excludes only those values (Qdrant `must_not`, SQL
 `genre IS NULL OR genre <> ALL(...)`), so a document without a genre or issuer is searched
 under every selection. Only the papal collections can be narrowed (`GENRES_BY_COLLECTION`,
-`ISSUERS_BY_COLLECTION` in `constants.py`, the genres a copy of `datapipeline/registry/genres.py`
+`ISSUERS_BY_COLLECTION` in `constants.py`, `papal` included, the genres a copy of `datapipeline/registry/genres.py`
 kept equal by a test). A search without scopes sends master's exact Qdrant filter and SQL
 (`tests/test_collection_scope.py`); keep it that way.
 
@@ -550,7 +554,15 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 15. Collections — Canonical Source
 
-- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`), 10 collections.
+- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`). It holds
+  two vocabularies while corpus cleanup 5.1b runs: the eight `CANONICAL_COLLECTIONS` (with
+  `papal`, `church-law` and `theologians`) and the five old keys in `LEGACY_COLLECTIONS`, which
+  map to them (`encyclicals`, `apostolic-exhortations` and `papal-documents` to genres of
+  `papal`; `canon-law` to `church-law`; `medieval` to `theologians`). The web still offers the
+  10 old keys until 5.1b.2. `collection_scope.reads` decides which stored values a key reads,
+  so both vocabularies work whether or not 5.1b.3 has rewritten the stored values, and a
+  search's results are labelled with the key it sent. A plan drops an old key named beside
+  its new one and logs `legacy_collection_key`; 5.1b.4 removes the old keys.
 - **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection).
 - **To add one:** update `constants.py`, sync `collections.ts`, add a `--color-collection-*` token in `globals.css`, and add a migration extending the DB collection constraint.
 
@@ -605,7 +617,7 @@ What focused changes, all derived from the plan:
 takes no cap; it is bounded by `min(quota, _FLOOR_N)` and spreads across sources itself.
 
 **The cap is per *source*, and a source is the reader chapter for the chapter-keyed
-collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law`, `bible`) — see
+collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law` and `church-law`, `bible`) — see
 `dedup.source_key`. Those four were each stored as a single document (the Bible as one per
 book; the Catechism collection gains the Compendium and the Roman Catechism in 5.5), so an earlier per-*document* cap limited a focused search to 4 results in total
 however many distinct articles or psalms ranked, which made issue #28's "return exactly
