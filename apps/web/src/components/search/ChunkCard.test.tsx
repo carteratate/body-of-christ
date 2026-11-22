@@ -166,7 +166,7 @@ describe("ChunkCard feedback", () => {
           chunk_id: "00000000-0000-0000-0000-000000000001",
           content: "A passage",
           source: {
-            collection: "apostolic-exhortations",
+            collection: "theologians",
             document_title: "Evangelii Gaudium",
             author: "Pope Francis",
             reference: "Evangelii Gaudium 1",
@@ -190,7 +190,7 @@ describe("ChunkCard feedback", () => {
     expect(container.firstElementChild?.className).toContain("overflow-hidden");
     const header = container.querySelector(".h-\\[96px\\]");
     expect(header?.className).toContain("sm:h-[68px]");
-    expect(screen.getAllByText("Apostolic Exhortations")[0].className).toContain("max-w-[10rem]");
+    expect(screen.getAllByText("Theology & Spirituality")[0].className).toContain("max-w-[10rem]");
     expect(screen.getAllByText("Evangelii Gaudium 1")[0].className).toContain("line-clamp-2");
   });
 
@@ -865,7 +865,7 @@ describe("ChunkCard rejected voice (corpus cleanup 2.4d)", () => {
     await userEvent.click(screen.getByRole("button", { expanded: false }));
     await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
     expect(writeText.mock.calls[0][0]).toBe(
-      `${TEXT} — Pope Leo X — Exsurge Domine, §31 [${LABEL}] (papal-documents)`,
+      `${TEXT} — Pope Leo X — Exsurge Domine, §31 [${LABEL}] (Papal documents)`,
     );
   });
 

@@ -720,7 +720,7 @@ The plan merges `encyclicals`, `apostolic-exhortations` and `papal-documents` in
 |---|---|---|
 | Papal documents | `papal` | `encyclicals`, `apostolic-exhortations`, `papal-documents` |
 | Church law | `church-law` | `canon-law` |
-| Theologians and spiritual writers | `theologians` | `medieval` |
+| Theology & Spirituality (label changed from "Theologians and spiritual writers" by Carter, 22 Nov 2026, in 5.1b.2) | `theologians` | `medieval` |
 
 A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing it would make one stored value mean two different sets during the transition, and old clients could not be told apart from new ones.
 
@@ -829,7 +829,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 
 - **Type:** PR
 - **Depends on:** 5.1b.1 deployed.
-- **Goal:** Users see nine collections instead of ten: Papal documents with a genre filter, Church law, and Theologians and spiritual writers. Saved preferences, history and bookmarks keep working.
+- **Goal:** Users see eight collections instead of ten (the plan said nine; nine includes Roman Curia, which 5.3a adds): Papal documents with a genre filter, Church law, and Theology & Spirituality. Saved preferences, history and bookmarks keep working.
 - **Current state:** See the web rows of the 5.1b table. Web drops unknown keys in drafts (`lib/search-draft.ts:45-52`) and in restore (`useSearchPageExperience.ts:296-301`), and falls back to defaults or result collections.
 - **Changes:**
   1. `lib/collections.ts`.
@@ -851,6 +851,22 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Production safety:** The web sends only keys the API accepts since 5.1b.1. Stored data still carries old keys and is translated on read. Rollback is a Vercel rollback or revert; the API accepts both.
 - **Needs Carter:** Approve colors and the interim About page and Discover wording.
 - **Out of scope:** Data rewrite. The full About rewrite (5.7).
+- **Done (22 Nov 2026).** Decisions and corrections:
+  - Carter: colours keep the old collections' (Papal documents gold `#e8c040` from Encyclicals, Church law red `#e84040`, Theology & Spirituality grey `#90a0a8`); every token passes §9's contrast rule in both themes. The label "Theologians and spiritual writers" became **Theology & Spirituality** (shorter; names the writing, so it fits every writer 5.6b adds); the key stays `theologians`. About and Discover wording approved with two edits (landing line says "the Summa", not "Aquinas"; the Theology & Spirituality About entry says "soon more writers will join").
+  - Step 3: the debounced PUT runs only on a deliberate change, so a translated preference is not written back on load. It is translated on every read until 5.1b.3 rewrites the rows; no silent save was added.
+  - Step 4: a restored search's genre selection is not displayed anywhere (5.1a shows no chips); it lives in the restored request, which a retry sends. The rule: per old papal key, the genres its own 5.1a selection named, or else the genres that key stands for; all three old keys without a selection are the whole collection; popes narrow only if every old papal key named some (`canonicalSearchFilters`). Old outcomes merge per new key (results if any had results, degraded if another failed; otherwise the most informative), and saved passages are relabelled.
+  - Found on the way: the copied citation ended with the internal key ("(papal)", "(theologians)"); it now ends with the collection's name, on result cards and bookmarks. A papal reference that already starts with the pope's name no longer repeats it in brackets.
+  - The genre filter's "no Kind list for a collection with one genre" test was removed: no collection has one genre now. The code path stays for Roman Curia (5.3a).
+- **File list re-verified on master `658d44a` (22 Nov 2026)**, every web location that named an old key, and what 5.1b.2 did there:
+  - `lib/collections.ts`: eight collections, `LEGACY_COLLECTIONS`, `canonicalCollectionKey`, `canonicalDocuments`; `getCollectionMeta` translates.
+  - `app/globals.css`: three new tokens (old tokens stay until 5.1b.4; no light-theme override block exists).
+  - `lib/collection-scopes.ts` and `.json` (*new since the table*): `SCOPED_COLLECTIONS` is `papal`; works group under their new key; `canonicalSearchFilters`.
+  - `lib/search-draft.ts`: old keys translated; guest default ends with `papal`.
+  - `lib/search-experience/useSearchPageExperience.ts`: restore and the guest's saved search translate collections, selections, outcomes and passages.
+  - `components/search/LoadingAnimation.tsx`, `QuotaControl.tsx` and `.module.css` (`.papalNumeral` removed with its collection), `ChunkCard.tsx` (key checks compare the translated key; copy suffix), `components/bookmarks/BookmarkCard.tsx` (*new*: copy suffix), `components/reader/DocumentOverview.tsx`, `ReaderChrome.tsx`, `components/sources/SourcesPage.tsx` (one section per new key, by date), `components/landing/LandingPage.tsx`, `components/about/AboutPage.tsx`.
+  - Left alone: `app/page.tsx:6` and `AboutPage.tsx:42` say "encyclicals" as content, which is still true; `lib/source-sites.json` (generated, 5.1b.3); `lib/attribution.ts` and `lib/corpus-lifecycle.ts` match only the site name "papalencyclicals.net".
+  - API half: `models/preferences.py` default collections; `routes/evaluate.py` scores eight collections.
+
 
 ### 5.1b.3. Rewrite stored collection keys (migration plus Qdrant payload)
 
