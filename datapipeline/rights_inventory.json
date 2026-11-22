@@ -3514,6 +3514,24 @@
   "planned_for": null
  },
  {
+  "work": "Who Is the Rich Man That Shall Be Saved?",
+  "author": "Clement of Alexandria",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/second-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 2, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf02.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
   "work": "A Treatise of Novatian Concerning the Trinity",
   "author": "Novatian",
   "collection": "church-fathers",
@@ -3530,6 +3548,24 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
+ },
+ {
+  "work": "Acts and Records of the Famous Controversy About the Baptism of Heretics",
+  "author": "Anonymous",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-century-2.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 5, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf05.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
  },
  {
   "work": "Anonymous Treatise Against the Heretic Novatian",
@@ -3656,6 +3692,24 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
+ },
+ {
+  "work": "The Life and Passion of Cyprian, Bishop and Martyr",
+  "author": "Pontius the Deacon",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-century-2.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 5, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf05.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
  },
  {
   "work": "The Refutation of All Heresies",
@@ -3802,6 +3856,24 @@
   "planned_for": null
  },
  {
+  "work": "Concerning Free-Will",
+  "author": "Methodius",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-century-3.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 6, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf06.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
   "work": "Dubious or Spurious Writings",
   "author": "Gregory Thaumaturgus",
   "collection": "church-fathers",
@@ -3946,6 +4018,24 @@
   "planned_for": null
  },
  {
+  "work": "Narrative of Events Happening in Persia on the Birth of Christ",
+  "author": "Julius Africanus",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-century-3.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 6, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf06.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
   "work": "Of the Manichaeans",
   "author": "Alexander of Lycopolis",
   "collection": "church-fathers",
@@ -3962,6 +4052,24 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
+ },
+ {
+  "work": "Oration Concerning Simeon and Anna",
+  "author": "Methodius",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-century-3.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 6, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf06.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
  },
  {
   "work": "Oration on the Palms",
@@ -4144,6 +4252,42 @@
   "planned_for": null
  },
  {
+  "work": "The Genuine Acts of Peter",
+  "author": "Peter of Alexandria",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-century-3.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 6, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf06.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
+  "work": "The Passion of St. Symphorosa and Her Seven Sons",
+  "author": "Julius Africanus",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-century-3.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 6, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf06.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
   "work": "The Seven Books of Arnobius Against the Heathen. (Adversus Gentes.)",
   "author": "Arnobius",
   "collection": "church-fathers",
@@ -4250,6 +4394,24 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
+ },
+ {
+  "work": "A Letter to Origen from Africanus About the History of Susanna",
+  "author": "Julius Africanus",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 4, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf04.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
  },
  {
   "work": "De Fuga in Persecutione",
@@ -4432,6 +4594,24 @@
   "planned_for": null
  },
  {
+  "work": "Poems ascribed to Tertullian (the Appendix: Jonah, Sodom, Genesis, the Judgment of the Lord, and the five books against Marcion)",
+  "author": "Pseudo-Tertullian",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 4, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf04.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
   "work": "The Instructions of Commodianus",
   "author": "Commodianus",
   "collection": "church-fathers",
@@ -4502,6 +4682,24 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
+ },
+ {
+  "work": "Against the Sabellians",
+  "author": "Dionysius of Rome",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-fourth-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 7, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf07.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
  },
  {
   "work": "Book I. Concerning the Laity",
@@ -4702,6 +4900,42 @@
   "planned_for": null
  },
  {
+  "work": "On Easter",
+  "author": "Venantius",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-fourth-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 7, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf07.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
+  "work": "On the Creation of the World",
+  "author": "Victorinus",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-fourth-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 7, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf07.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
   "work": "On the Workmanship of God, or the Formation of Man",
   "author": "Lactantius",
   "collection": "church-fathers",
@@ -4718,6 +4952,24 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
+ },
+ {
+  "work": "Second Clement (The Homily)",
+  "author": "Anonymous",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-fourth-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 7, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf07.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
  },
  {
   "work": "The Divine Institutes",
@@ -4738,6 +4990,42 @@
   "planned_for": null
  },
  {
+  "work": "The Divine Liturgy of James",
+  "author": "Anonymous",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-fourth-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 7, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf07.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
+  "work": "The Divine Liturgy of Mark",
+  "author": "Anonymous",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-fourth-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 7, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf07.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
   "work": "The Extant Writings of Asterius Urbanus",
   "author": "Asterius Urbanus",
   "collection": "church-fathers",
@@ -4754,6 +5042,42 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
+ },
+ {
+  "work": "The Liturgy of the Blessed Apostles",
+  "author": "Anonymous",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-fourth-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 7, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf07.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
+ },
+ {
+  "work": "The Nicene Creed",
+  "author": "First Council of Nicaea",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/third-fourth-century.xml",
+  "document_id": null,
+  "edition": "Ante-Nicene Fathers, vol. 7, ed. Alexander Roberts and James Donaldson, American edition by A. Cleveland Coxe (Christian Literature Publishing Co., 1885-1886)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://ccel.org/ccel/s/schaff/anf07.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6a"
  },
  {
   "work": "The Teaching of the Twelve Apostles",
@@ -9320,7 +9644,20 @@
   "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.3b"
+  "planned_for": "5.3b",
+  "excerpt_basis": {
+   "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
+   "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
+   "wording": "i testi originali del Magistero, che ogni privato ha la possibilità di scaricare liberamente dal sito internet della Santa Sede e di diffondere, purché non ne tragga profitto economico",
+   "read_on": "2026-11-16",
+   "conditions": [
+    "no economic profit: TheoCorpus stays free (Decision log \"Pricing\")",
+    "the text is taken from vatican.va",
+    "the text is shown verbatim and complete: the article names texts \"con errori o modifiche\" as what the Holy See acts against"
+   ],
+   "word_limit": null,
+   "source_host": "www.vatican.va"
+  }
  },
  {
   "work": "Doctrinal Commentary on the Concluding Formula of the Professio Fidei",
@@ -10268,7 +10605,20 @@
   "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.3b"
+  "planned_for": "5.3b",
+  "excerpt_basis": {
+   "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
+   "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
+   "wording": "i testi originali del Magistero, che ogni privato ha la possibilità di scaricare liberamente dal sito internet della Santa Sede e di diffondere, purché non ne tragga profitto economico",
+   "read_on": "2026-11-16",
+   "conditions": [
+    "no economic profit: TheoCorpus stays free (Decision log \"Pricing\")",
+    "the text is taken from vatican.va",
+    "the text is shown verbatim and complete: the article names texts \"con errori o modifiche\" as what the Holy See acts against"
+   ],
+   "word_limit": null,
+   "source_host": "www.vatican.va"
+  }
  },
  {
   "work": "Response on the Validity of Baptism Conferred by the Church of Jesus Christ of Latter-day Saints",
@@ -10927,6 +11277,42 @@
   ]
  },
  {
+  "work": "Anselm's Apologetic",
+  "author": "Anselm",
+  "collection": "theologians",
+  "source_path": "medieval/proslogium-monologium-and-cur-deus-homo.xml",
+  "document_id": null,
+  "edition": "S. N. Deane translation (Chicago: Open Court, 1903)",
+  "translator": "Sidney Norton Deane",
+  "first_published": 1903,
+  "source_url": "https://ccel.org/ccel/a/anselm/basic_works.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6b"
+ },
+ {
+  "work": "In Behalf of the Fool",
+  "author": "Gaunilo",
+  "collection": "theologians",
+  "source_path": "medieval/proslogium-monologium-and-cur-deus-homo.xml",
+  "document_id": null,
+  "edition": "S. N. Deane translation (Chicago: Open Court, 1903)",
+  "translator": "Sidney Norton Deane",
+  "first_published": 1903,
+  "source_url": "https://ccel.org/ccel/a/anselm/basic_works.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6b"
+ },
+ {
   "work": "On the Two Commandments of Charity and the Ten Commandments of the Law",
   "author": "Thomas Aquinas",
   "collection": "theologians",
@@ -10939,7 +11325,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by H. A. Rawes (1880)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -10957,7 +11343,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1912)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -10993,7 +11379,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by H. A. Rawes (1879)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11011,7 +11397,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1887)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11065,7 +11451,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by E. Gurney Salter (1904)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11101,7 +11487,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by Frederick William Faber (1863)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11119,7 +11505,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1911)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11155,7 +11541,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1887)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11173,7 +11559,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1889)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11191,7 +11577,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1889)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11209,7 +11595,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1889)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11227,7 +11613,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1890)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11245,7 +11631,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1891)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11263,7 +11649,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1892)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11353,7 +11739,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by T. B. (1616)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11407,7 +11793,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by George Lewis (1908)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11425,7 +11811,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by David Lewis (1871)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11443,7 +11829,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1924)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11461,7 +11847,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1886)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11474,12 +11860,12 @@
   "document_id": null,
   "edition": "Oxford translation, vol. 3 (Oxford: J. H. Parker; IA catalogues the set as 1841; this volume's title page was not read because IA returned a server error); Internet Archive scan catenaaureacomme03thom",
   "translator": "Oxford translation (Library of the Fathers), ed. John Henry Newman",
-  "first_published": null,
+  "first_published": 1843,
   "source_url": "https://archive.org/details/catenaaureacomme03thom",
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Oxford translation, edited by John Henry Newman (1843)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11497,7 +11883,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Oxford translation, edited by John Henry Newman (1845)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11551,7 +11937,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by a nun of Tyburn Convent (1924)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11569,7 +11955,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by a nun of Tyburn Convent (1922)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11587,7 +11973,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1913)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11713,7 +12099,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1912)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11731,7 +12117,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Edited by John E. B. Mayor (1876)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11749,7 +12135,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1917)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11803,7 +12189,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by a Benedictine monk of St. Meinrad's Abbey (1886)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11821,7 +12207,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by Walter Shewring, edited by Justin McCann (1930)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11839,7 +12225,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1915)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11857,7 +12243,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1921)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -11965,7 +12351,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by the Benedictines of Stanbrook (1904)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12019,7 +12405,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1914)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12037,7 +12423,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by John Mason Neale (1867)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12055,7 +12441,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1918)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12073,7 +12459,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1918)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12091,7 +12477,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1919)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12361,7 +12747,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by a Catholic clergyman (1854)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12415,7 +12801,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1915)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12433,7 +12819,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1915)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12451,7 +12837,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1916)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12469,7 +12855,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1917)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12487,7 +12873,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by Algar Thorold (1896)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12523,7 +12909,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Authorized English version by Arthur Preuss (1914)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12552,7 +12938,7 @@
   "collection": "theologians",
   "source_path": "theologians/spirituallife0000atan/",
   "document_id": null,
-  "edition": "Second and revised edition (Tournai: Society of St. John the Evangelist, Desclée & Co.; printed in Belgium), imprimatur Baltimore 24 May 1930; no year on the title page. IA and one catalogue say 1930, another says 1932; Internet Archive scan spirituallife0000atan",
+  "edition": "The Spiritual Life, tr. Herman Branderis, 'Second and revised edition', Society of St. John the Evangelist, Desclée, Tournai, imprimatur Baltimore 24 May 1930, no year on the title page or verso. Internet Archive spirituallife0000atan and MN41530ucmf_5 are later printings: their text cites works up to 1950 (Menti Nostrae). Open copies whose text cites nothing after 1930: spirituallifetre0000tanq (Tournai) and bwb_Y0-BXS-561 (Newman Press issue). Catalogues date the second and revised edition 1930, or 1932 (Library of Congress, LCCN 34038565); a Peter Reilly issue is dated 1938",
   "translator": "Herman Branderis",
   "first_published": null,
   "source_url": "https://archive.org/details/spirituallife0000atan",
@@ -12577,7 +12963,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by a Priest of Mount Melleray (1920)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12595,7 +12981,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by the English Dominican Fathers (1928)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12613,7 +12999,25 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by the English Dominican Fathers (1928)",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": "5.6c"
+ },
+ {
+  "work": "Summa contra Gentiles, Book 2",
+  "author": "Thomas Aquinas",
+  "collection": "theologians",
+  "source_path": "theologians/summacontragenti0002unse/",
+  "document_id": null,
+  "edition": "The Summa contra Gentiles of Saint Thomas Aquinas, the Second Book, literally translated by the English Dominican Fathers from the latest Leonine edition, Burns Oates & Washbourne, London, 1923 (imprimaturs 1923); Internet Archive summacontragenti0002unse. Chosen by Carter on 16 Nov 2026 over summacontragenti02thomuoft, a later printing with a second imprimatur of 15 February 1933",
+  "translator": "English Dominican Fathers (Laurence Shapcote)",
+  "first_published": 1923,
+  "source_url": "https://archive.org/details/summacontragenti0002unse",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Translated by the English Dominican Fathers (1923)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12631,25 +13035,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": "5.6c"
- },
- {
-  "work": "Summa contra Gentiles, Book 2",
-  "author": "Thomas Aquinas",
-  "collection": "theologians",
-  "source_path": "theologians/summacontragenti02thomuoft/",
-  "document_id": null,
-  "edition": "tr. the English Dominican Fathers (London: Burns, Oates & Washbourne); imprimatur 1923; Internet Archive scan summacontragenti02thomuoft",
-  "translator": "English Dominican Fathers (Laurence Shapcote)",
-  "first_published": 1923,
-  "source_url": "https://archive.org/details/summacontragenti02thomuoft",
-  "status": "pd-us-pre-1931",
-  "rights_holder": null,
-  "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by the English Dominican Fathers (1923)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12703,7 +13089,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by James Burton Robertson (1843)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12775,7 +13161,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by John Dalton (1847)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12793,7 +13179,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1888)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12811,7 +13197,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1887)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12829,7 +13215,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1887)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12847,7 +13233,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1894)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12865,7 +13251,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1896)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12883,7 +13269,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1897)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12901,7 +13287,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by John Dalton",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12937,7 +13323,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by the Benedictines of Stanbrook (1914)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -12973,7 +13359,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by the Benedictines of Stanbrook (1911)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -13009,7 +13395,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by Pauline P. Stump (1896)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -13027,7 +13413,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by Watkin W. Williams (1920)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -13045,7 +13431,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1888)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -13081,7 +13467,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Centenary Edition, edited by Eugene Grimm (1888)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"
@@ -13117,7 +13503,7 @@
   "status": "pd-us-pre-1931",
   "rights_holder": null,
   "renewal_search": null,
-  "credit_line": null,
+  "credit_line": "Translated by Paschal Robinson (1905)",
   "checked_by": null,
   "checked_on": null,
   "planned_for": "5.6c"

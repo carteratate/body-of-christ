@@ -595,6 +595,21 @@ async def test_rollback_retry_finishes_a_failed_alias_switch(world, monkeypatch)
     assert alias.collection_name == "chunks"
 
 
+async def test_rollback_refuses_once_the_previous_collection_is_deleted(world):
+    """A window closed early (--close-window-early) can delete the old collection before
+    the deadline; a rollback would then commit and fail to point the alias back, so it
+    refuses first."""
+    _doc(world, DOC_A).passages.append(passage("a/5", "c2", "A restored line.", 4))
+    await _stage(world)
+    await _apply(world)
+    await _switch(world)
+    before = await world.public_digest()
+    await world.qdrant.delete_collection("chunks")
+    with pytest.raises(A.ApplyRefused, match="no longer exists"):
+        await _rollback(world)
+    assert await world.public_digest() == before
+
+
 async def test_rollback_refuses_after_the_window(world):
     """Once the 14-day window has passed, 4.1b step 13 may have deleted retired rows and
     the previous collection, so a rollback refuses before it changes anything."""

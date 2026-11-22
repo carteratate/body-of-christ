@@ -448,10 +448,13 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.2, 5.6a** [Phase 5]. Choose between a paid Qdrant tier and reordering the additions once a publish's projected Qdrant peak passes 3.4 GB of the Free cluster's 4 GiB disk (5.2 step 5). Supabase Pro already covers the database.
 - **5.2** [Phase 5]. LEV texts from vatican.va have a basis (Decision log "LEV texts from vatican.va", 29 Oct 2026). Still open: whether to ask the LEV rights office (diritti.lev@spc.va) to confirm the use before any LEV document opens in the full reader; and the Pontifical Biblical Commission and social-doctrine Compendium rows, blocked until confirmed. The papalencyclicals.net translations have no basis and are listed for a decision.
   Answered 2026-10-29 (in part): no permission request has been sent. Carter will ask once everything is working, so nothing yet constrains the full-reader step.
+  Answered 2026-11-16 (in part): no letter to the LEV for now; the Pontifical Biblical Commission and social-doctrine Compendium rows stay blocked. The draft is in Carter's private folder.
 - **5.2** [Phase 5]. Seven of the 60 DDF documents print no papal approval in their vatican.va text (a 1975 study, a 2009 clarification, the 1992 considerations, a 1966 circular letter, the 1998 commentary on the Professio fidei, a 2005 note and the 1998 reflections on the primacy). Count them under the vatican.va basis, or hold them with the Biblical Commission rows until the LEV confirms. Recommended answer: count them.
   Answered 2026-11-16: recommendation accepted: all 60 are excerpt-only under the vatican.va basis (Decision log "DDF documents under the vatican.va basis (5.2)").
 - **5.2** [Phase 5]. CCEL's policy allows non-profit use and asks people to contact it before republishing its editions. Should additions from CCEL wait for its answer? Recommended answer: no; the rows are cleared on the texts' public-domain status, and Carter sends the request.
   Answered 2026-11-16: recommendation accepted (Decision log "CCEL editions without waiting for permission (5.2)"). The draft request is in Carter's private folder.
+- **5.2** [Phase 5]. Project Gutenberg's licence asks that references to it be removed from a text used freely. Does the planned credit "Sourced via Project Gutenberg" need its licence shown with each work? Recommended answer: no; its permission page says crediting it needs no permission, so keep the credit.
+  Answered 2026-11-16: recommendation accepted: "Sourced via Project Gutenberg", with links to each book's landing page.
 - **5.3b** [Phase 5]. Include the International Theological Commission in the Roman Curia collection, or leave it out. Default is out.
 - **5.4** [Phase 5]. A New Hope for Lebanon has no English on vatican.va, only French and Italian, and the vendored file is an empty English page. Recommended answer: keep the French text in the reader with a note, out of search, under the Decision log row "Non-English with no usable English" (R6).
   Answered 2026-10-05: recommendation accepted: the French text, in the reader with a note, out of search (Decision log "Non-English with no usable English").
@@ -460,11 +463,14 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Answered 2026-10-05: recommendation accepted: vendor the English PDF and extract its text in 5.4.
 - **5.4** [Phase 5]. Confirm that Universi Dominici Gregis (the law on electing a pope) goes in Church law, as the plan's collection table says.
 - **5.6b and 5.6c** [Phase 5]. Choose Rickaby's abridged Summa contra Gentiles or the complete English Dominican edition.
+  Answered 2026-11-16: the English Dominican translation, books 1 to 3 (Decision log "Summa contra Gentiles edition (5.6c)").
 - **5.6c** [Phase 5]. The English Dominican Summa contra Gentiles has open scans of books 1 to 3 only; book 4 (1929) has none. Choose the edition knowing that gap, or supply a scan of book 4 from a printing of 1930 or earlier. No recommendation (R6).
+  Answered 2026-11-16: the Dominican edition, books 1 to 3; book 4 waits for an open scan of a printing of 1930 or earlier.
 - **5.6c** [Phase 5]. Spiritual Combat: both editions the memos named (Burns 1846, Rivingtons 1875) were translated for the Church of England. Recommended answer: the Catholic edition, Philadelphia, Dornin, 1817 (R6).
   Answered 2026-10-05: recommendation accepted: the Catholic Dornin edition, Philadelphia 1817.
 - **5.6c** [Phase 5]. Tanquerey: the scans read "Second and revised edition" with no year, and catalogues say 1930 or 1932. Check the title-page verso before ingesting; ingest only a 1930 printing (R6).
   Answered 2026-10-05: recommendation accepted: check the title-page verso before 5.6c starts Tanquerey, and ingest only a 1930 printing.
+  Answered 2026-11-16: the verso was checked (5.2): no year, and both scans are later printings. Tanquerey is held until 1 January 2028 unless a dated 1930 printing is found (Decision log "Tanquerey held until 2028 (5.2)").
 - **5.6c** [Phase 5]. Catherine of Genoa: the clean CCEL text is a different translation (New York, 1907) from the 1858 Burns one the memo named. Recommended answer: use CCEL 1907 (R6).
   Answered 2026-10-05: recommendation accepted: the CCEL 1907 text; the row now uses it.
 - **5.7** [Phase 5]. Approve the final About page wording, especially the list of excluded authors.
