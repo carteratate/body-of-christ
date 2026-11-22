@@ -78,7 +78,7 @@ def test_castle_leaves_out_the_editors_and_keeps_teresas_headings_out_of_the_tex
     assert "THIS CHAPTER TREATS" not in text.upper()                 # Teresa's heading
     assert "WAS WRITTEN BY TERESA OF JESUS" not in text.upper()      # preface title line
     assert _castle().passages[0].metadata["heading"].startswith(
-        "This treatise, styled the interior castle, was written by Teresa of Jesus")
+        "This treatise, styled the Interior Castle, was written by Teresa of Jesus")
     first = next(p for p in _castle().passages if p.chapter_key == "v.i")
     assert first.metadata["heading"].startswith(
         "This chapter treats of the beauty and dignity of our souls")

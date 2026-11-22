@@ -140,7 +140,7 @@ _ALWAYS_CAPITAL = (
     "God", "Our Lord", "Lord", "His Majesty", "Majesty", "Christ", "Jesus", "Holy Ghost",
     "Holy Spirit", "Blessed Trinity", "Trinity", "He", "Him", "His", "Himself", "Bridegroom",
     "Spouse", "King", "Teresa", "Carmel", "Discalced", "Carmelite", "Martha", "Mary",
-    "Magdalen", "Mother of God", "Saviour", "St.", "Saint", "Church", "Catholic", "Gospel", "Communion", "I")
+    "Magdalen", "Mother of God", "Our Lady", "Interior Castle", "Saviour", "St.", "Saint", "Church", "Catholic", "Gospel", "Communion", "I")
 
 
 # The Life (Lewis, 1904): Teresa's prologue and forty chapters, then the Relations she
@@ -229,8 +229,8 @@ class _TeresaEditor(Editor):
     chapters open with Teresa's heading in capitals (`Centered`, kept as the chapter's
     `heading`) and Zimmerman's outline of the chapter's numbered paragraphs (`Outline`,
     "1. Plan of this book. 2. …"), and its preface with Teresa's title line in capitals
-    (`Centered`): none is passage text. The Life's Relations open with Teresa's title
-    page of them, Lewis's set lines.
+    (`Centered`): none is passage text. In the Life, two single paragraphs go by id
+    (`NOT_BODY_PARAGRAPHS`).
 
     The Castle also prints the first word of a chapter's first paragraph in capitals
     ("1. WHILE I was begging"), a printer's opening, which is set in normal case ("1.
