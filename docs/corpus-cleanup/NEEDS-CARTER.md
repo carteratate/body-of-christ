@@ -463,6 +463,8 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.4** [Phase 5]. Amoris Laetitia's English exists on vatican.va only as a PDF; the vendored HTML has no text. Recommended answer: vendor the PDF and extract its text (R6).
   Answered 2026-10-05: recommendation accepted: vendor the English PDF and extract its text in 5.4.
 - **5.4** [Phase 5]. Confirm that Universi Dominici Gregis (the law on electing a pope) goes in Church law, as the plan's collection table says.
+- **5.5** [Phase 5]. Found while building the Roman Catechism (22 Nov 2026). Its text is about 187,000 words, so a correction pass costs about $5 against the $2 per-work ceiling; the scan's word-position file and page map, and Fordham's page for checking, need vendoring; and the spec strips McHugh and Callan's notes, while rule G keeps scripture references from translators' notes. Raise the ceiling, vendor the files, and strip every note?
+  Answered 2026-11-22: raise this work's ceiling to $6; vendor all three files to `_incoming/catechism/` and lock them; strip all the notes, scripture references included (Decision log "Roman Catechism through the OCR tool (5.5)").
 - **5.6b and 5.6c** [Phase 5]. Choose Rickaby's abridged Summa contra Gentiles or the complete English Dominican edition.
   Answered 2026-11-16: the English Dominican translation, books 1 to 3 (Decision log "Summa contra Gentiles edition (5.6c)").
 - **5.6c** [Phase 5]. The English Dominican Summa contra Gentiles has open scans of books 1 to 3 only; book 4 (1929) has none. Choose the edition knowing that gap, or supply a scan of book 4 from a printing of 1930 or earlier. No recommendation (R6).
