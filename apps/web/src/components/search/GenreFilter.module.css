@@ -35,6 +35,17 @@
   box-shadow: 1px 1px 0 0 rgba(var(--rgb), 0.45);
 }
 
+/* Opened below the caret: grow down from it, pointer on top. */
+.panel[data-below] {
+  transform-origin: var(--pointer) 0;
+}
+
+.panel[data-below]::after {
+  bottom: auto;
+  top: -7px;
+  box-shadow: -1px -1px 0 0 rgba(var(--rgb), 0.45);
+}
+
 .head {
   display: flex;
   align-items: center;

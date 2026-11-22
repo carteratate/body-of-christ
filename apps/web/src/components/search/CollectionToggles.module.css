@@ -29,8 +29,9 @@
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
-  border-left: 1px solid transparent;
-  transition: width 0.22s ease, opacity 0.18s ease, border-color 0.22s ease;
+  /* The divider is a shadow, not a border, so the hidden caret takes no width at all. */
+  box-shadow: inset 1px 0 0 transparent;
+  transition: width 0.22s ease, opacity 0.18s ease, box-shadow 0.22s ease;
 }
 
 .scoped[data-active="true"] .name {
@@ -41,7 +42,12 @@
   width: 1.5rem;
   opacity: 1;
   pointer-events: auto;
-  border-left-color: rgba(var(--rgb), 0.7);
+  box-shadow: inset 1px 0 0 rgba(var(--rgb), 0.7);
+}
+
+.scoped[data-active="true"] .cue:disabled {
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 .caret {

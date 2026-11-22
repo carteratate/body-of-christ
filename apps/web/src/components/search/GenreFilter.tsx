@@ -22,6 +22,8 @@ interface GenreFilterProps {
 
 const MARGIN = 8;
 const GAP = 10;
+const HEADER = 48;
+const MIN_LIST = 160;
 
 /**
  * What to search inside one collection (5.1a): its kinds and its popes, all ticked to
@@ -30,7 +32,9 @@ const GAP = 10;
  */
 export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: GenreFilterProps) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const [place, setPlace] = useState<{ left: number; bottom: number; pointer: number; maxHeight: number } | null>(null);
+  const [place, setPlace] = useState<{
+    left: number; top?: number; bottom?: number; pointer: number; maxHeight: number;
+  } | null>(null);
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -45,12 +49,18 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
       const width = panel.offsetWidth;
       const centre = rect.left + rect.width / 2;
       const left = Math.max(MARGIN, Math.min(window.innerWidth - width - MARGIN, centre - width / 2));
+      // Above the caret, as a rule (the bar sits at the bottom); below it when a long
+      // question has pushed the caret near the top. The list takes what room is left,
+      // less the header.
+      const above = rect.top - GAP - MARGIN;
+      const below = window.innerHeight - rect.bottom - GAP - MARGIN;
+      const placeBelow = above < MIN_LIST + HEADER && below > above;
       setPlace({
         left,
-        bottom: window.innerHeight - rect.top + GAP,
         pointer: centre - left,
-        // The room above the caret, less the header; never taller than the screen allows.
-        maxHeight: Math.max(0, rect.top - GAP - MARGIN - 48),
+        ...(placeBelow
+          ? { top: rect.bottom + GAP, maxHeight: Math.max(0, below - HEADER) }
+          : { bottom: window.innerHeight - rect.top + GAP, maxHeight: Math.max(0, above - HEADER) }),
       });
     }
     measure();
@@ -99,7 +109,8 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
     "--c": collection.color,
     "--pointer": `${place?.pointer ?? 0}px`,
     left: place?.left ?? 0,
-    bottom: place?.bottom ?? 0,
+    top: place?.top,
+    bottom: place?.top === undefined ? place?.bottom ?? 0 : undefined,
     visibility: place ? "visible" : "hidden",
   } as CSSProperties;
 
@@ -115,6 +126,7 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
       role="dialog"
       aria-label={`Search within ${collection.label}`}
       className={styles.panel}
+      data-below={place?.top !== undefined || undefined}
       style={style}
     >
       <div className={styles.head}>

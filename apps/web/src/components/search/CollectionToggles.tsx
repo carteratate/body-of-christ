@@ -18,6 +18,8 @@ interface CollectionTogglesProps {
   /** Genre and issuer filters (5.1a); a collection without options has no caret. */
   excluded?: Readonly<Record<string, ScopeExclusions>>;
   onScopeEvent?: (event: ScopeEvent) => void;
+  /** While a search runs its request is frozen: the carets stay but do nothing. */
+  scopesLocked?: boolean;
 }
 
 function Caret() {
@@ -36,10 +38,13 @@ export function CollectionToggles({
   onTranslationChange,
   excluded = {},
   onScopeEvent,
+  scopesLocked = false,
 }: CollectionTogglesProps) {
   const [translationOpen, setTranslationOpen] = useState(false);
   const [scopeOpen, setScopeOpen] = useState<string | null>(null);
   const openCue = useRef<HTMLButtonElement | null>(null);
+  // A search starting closes the panel for good, not just while it runs.
+  if (scopesLocked && scopeOpen !== null) setScopeOpen(null);
 
   return (
     <div className="flex flex-wrap items-center gap-1.5">
@@ -137,6 +142,7 @@ export function CollectionToggles({
                 aria-expanded={open}
                 aria-label={`Filter ${col.label} by kind and pope`}
                 aria-hidden={!isActive}
+                disabled={scopesLocked}
                 tabIndex={isActive ? 0 : -1}
               >
                 <Caret />

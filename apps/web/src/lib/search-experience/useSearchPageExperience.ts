@@ -114,7 +114,8 @@ export function saveGuestSearch(continuity: GuestContinuitySnapshot) {
     outcome: continuity.outcome,
     collectionOutcomes: { ...continuity.collectionOutcomes },
     deliveryOutcome: continuity.deliveryOutcome ?? null,
-    ...(continuity.request.scopes ? { scopes: structuredClone(continuity.request.scopes) } : {}),
+    ...(continuity.request.scopes
+      ? { scopes: continuity.request.scopes as Record<string, ScopeSelection> } : {}),
   };
   try { sessionStorage.setItem(GUEST_CONTINUITY_KEY, JSON.stringify(snapshot)); } catch {}
 }
@@ -124,7 +125,8 @@ export function filtersFor(request: SearchRequest): SearchFilters {
   return {
     collections: [...request.collections],
     translation: request.translation,
-    ...(request.scopes ? { scopes: structuredClone(request.scopes) as Record<string, ScopeSelection> } : {}),
+    // The runtime froze its own copy; the transport only serialises it.
+    ...(request.scopes ? { scopes: request.scopes as Record<string, ScopeSelection> } : {}),
   };
 }
 

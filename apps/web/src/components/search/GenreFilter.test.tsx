@@ -111,3 +111,48 @@ describe("genre and issuer filter focus (5.1a)", () => {
     expect(document.activeElement).toBe(cue("Encyclicals"));
   });
 });
+
+describe("genre and issuer filter while searching and near the top (5.1a)", () => {
+  afterEach(cleanup);
+
+  function toggles(locked: boolean) {
+    return (
+      <CollectionToggles
+        activeCollections={["encyclicals"]}
+        onToggle={() => {}}
+        translation="CPDV"
+        onTranslationChange={() => {}}
+        excluded={{}}
+        onScopeEvent={() => {}}
+        scopesLocked={locked}
+      />
+    );
+  }
+
+  it("closes the panel and disables the caret while a search runs", () => {
+    const { rerender } = render(toggles(false));
+    fireEvent.click(cue("Encyclicals"));
+    expect(screen.queryByRole("dialog")).not.toBeNull();
+    rerender(toggles(true));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(cue("Encyclicals").disabled).toBe(true);
+    rerender(toggles(false));
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it.each([
+    ["above, from a caret low on the screen", 700, "bottom"],
+    ["below, from a caret near the top", 40, "top"],
+  ])("opens %s", (_label, caretTop, side) => {
+    render(toggles(false));
+    const caret = cue("Encyclicals");
+    caret.getBoundingClientRect = () => ({
+      top: caretTop, bottom: caretTop + 24, left: 200, right: 224, width: 24, height: 24, x: 200, y: caretTop,
+      toJSON: () => ({}),
+    });
+    fireEvent.click(caret);
+    const panel = screen.getByRole("dialog");
+    expect(panel.style[side as "top" | "bottom"]).not.toBe("");
+    expect(panel.hasAttribute("data-below")).toBe(side === "top");
+  });
+});

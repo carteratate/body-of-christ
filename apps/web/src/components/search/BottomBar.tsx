@@ -71,6 +71,7 @@ export function BottomBar({
           onTranslationChange={onTranslationChange}
           excluded={excluded}
           onScopeEvent={onScopeEvent}
+          scopesLocked={loading}
         />
         <div className="flex shrink-0 flex-col items-end gap-1">
           <QuotaControl
