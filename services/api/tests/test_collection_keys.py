@@ -287,13 +287,25 @@ def test_get_preferences_drops_a_stored_key_it_does_not_know(stored, collections
     ("church-law", ["canon-law"], "canon-law"),
     ("encyclicals", ["encyclicals"], "encyclicals"),
     ("papal", ["encyclicals", "bible"], "encyclicals"),
-    ("papal", ["encyclicals", "papal-documents"], "papal"),
     ("summa", None, "summa"),
 ])
 def test_a_restored_passage_takes_the_saved_requests_key(stored, saved, label):
     from app.rag.collection_scope import requested_label
 
     assert requested_label(stored, saved) == label
+
+
+@pytest.mark.parametrize("genre, label", [
+    ("encyclical", "encyclicals"),
+    ("apostolic-letter", "papal-documents"),
+    (None, "papal-documents"),
+    ("apostolic-exhortation", "papal"),
+])
+def test_the_genre_settles_which_old_papal_key_a_rewritten_passage_restores_as(genre, label):
+    from app.rag.collection_scope import requested_label
+
+    assert requested_label("papal", ["encyclicals", "papal-documents"], genre) == label
+    assert requested_label("papal", ["encyclicals", "papal-documents"]) == "papal"
 
 
 def test_a_focused_preference_left_without_one_collection_returns_to_standard():

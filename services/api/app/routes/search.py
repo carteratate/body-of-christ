@@ -26,7 +26,7 @@ from app.models.search import (
     SearchResultsResponse,
     SearchSummary,
 )
-from app.rag.collection_scope import requested_label
+from app.rag.collection_scope import GENRE_UNKNOWN, requested_label
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 from app.rag.pipeline import run_search_pipeline
@@ -421,7 +421,8 @@ async def get_search_results(
         card_access = access_fields(access, row["document_id"], row["unit_label"],
                                     chunk_id=row["chunk_id"], content=content)
         return ChunkSource(**{
-            "collection": requested_label(row["collection"], requested),
+            "collection": requested_label(row["collection"], requested,
+                                          passage.facts.genre if passage else GENRE_UNKNOWN),
             "document_title": row["document_title"],
             "author": row["author"],
             "reference": row["reference"],

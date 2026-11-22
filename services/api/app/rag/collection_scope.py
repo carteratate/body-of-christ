@@ -44,19 +44,26 @@ def reads(key: str) -> StoredRead:
     return StoredRead((key,))
 
 
-def requested_label(stored: str, requested) -> str:
+GENRE_UNKNOWN = object()
+
+
+def requested_label(stored: str, requested, genre: object = GENRE_UNKNOWN) -> str:
     """The key of `requested` whose search reads `stored`, for labelling a saved
     passage as its search did; the stored value when none does. A key that reads it
-    whole wins. Otherwise an old papal key reads the new value by genre, which the
-    stored value alone cannot settle, so it is used only when it is the one such key
-    saved; with several, the passage keeps the new value."""
+    whole wins. Otherwise an old papal key reads the new value by genre: the one whose
+    genres hold the passage's `genre` (None, a document without one, included), or,
+    when the genre is `GENRE_UNKNOWN` or no key holds it, the one such key saved."""
     keys = [k for k in (requested if isinstance(requested, list) else ())
             if isinstance(k, str)]
     for key in keys:
         if stored in reads(key).whole:
             return key
-    by_genre = [k for k in keys if (part := reads(k).part) and part[0] == stored]
-    return by_genre[0] if len(by_genre) == 1 else stored
+    by_genre = [(k, part[1]) for k in keys if (part := reads(k).part) and part[0] == stored]
+    for key, legacy in by_genre if genre is not GENRE_UNKNOWN else ():
+        if (genre in legacy.genres if legacy.genres is not None
+                else genre not in legacy.without_genres):
+            return key
+    return by_genre[0][0] if len(by_genre) == 1 else stored
 
 
 @dataclass(frozen=True)
