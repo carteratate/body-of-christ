@@ -103,6 +103,7 @@
   "6ea66f28-83b1-5d1d-a98c-3394b659c275",
   "6f3d604d-e922-583a-a26f-4a9d307c61ee",
   "6fc4fb64-a376-59ea-9794-614c2fb90564",
+  "7022565e-7abd-5b46-a1ea-3a95f16bcdb7",
   "702b3a71-0e75-5cf5-9192-c6715ffb9bdf",
   "727a8ac1-c81f-565b-b736-bbc23a051010",
   "72d3c352-e6c5-56fb-8461-77a75cd7a975",
@@ -134,6 +135,7 @@
   "90f0f0d1-6e3a-5850-aa50-3a4b6923e7ec",
   "91370759-227d-5263-a53c-dd2b0904451b",
   "91f46bbf-80b6-5fed-8f06-a0a8552fa943",
+  "92f43681-b372-5e16-b78a-7368f3bc00a2",
   "9374a19e-0377-59f2-abd6-75b4606233ba",
   "9414d6f0-0d10-5eb0-a429-e20feb57b19a",
   "953beb1e-05b3-5d5b-beb1-a26d05668483",
@@ -168,7 +170,9 @@
   "bc35bd89-94a5-5c74-8fbf-d76a35c4acc2",
   "bc803b76-913b-5687-9d2f-3c47cf2c7e6a",
   "bd948cab-5b0e-568c-b995-ee95e5130aa9",
+  "bd99ab8f-8ff7-5b30-bf81-9afbce92f9d8",
   "bdace897-4e8a-5db8-9df9-23ce741d0e4a",
+  "be11b07d-c84a-530c-9d39-4534dbfc82c4",
   "c14c0fca-5038-5543-8bdb-066eb35b4052",
   "c1ea2f55-fa2b-5c08-b41f-1eaa50cc618b",
   "c3347e63-64cd-5597-88e7-e1fe99bdbd17",
@@ -184,8 +188,11 @@
   "cad760dc-f1b0-5732-b084-78afb7a1b662",
   "cc31ef1f-3987-5b27-bbaf-a163790d1f94",
   "cefc02b9-5980-5063-91f6-124ffc781258",
+  "d0143da9-413a-599e-b684-c5ecce653cb3",
   "d129be1d-df3b-5904-8007-a0697770d93a",
+  "d2cf81d3-f2ff-5a58-bbed-88b4ed843e2f",
   "d3880257-0d83-53f5-97ec-e5f34ccfa171",
+  "d56bf4f7-5e31-5c7d-9cde-555b1e5d67fe",
   "d6aea032-1273-59d4-a138-3e6201ccd59a",
   "d7f7d7f0-c07f-50c7-b909-7db488cac368",
   "d96d04ee-0d2c-56cb-8b8f-fa431234dd8f",
@@ -216,6 +223,7 @@
   "f990245b-d011-5f55-8737-6ff9840e759a",
   "f9c3cbea-584f-5d40-81e5-2c78773f5f95",
   "fafb25aa-e95e-524b-a03a-ee3a757f8d75",
+  "fc0accc8-4974-5448-8c62-c012f16b4655",
   "fc7df2f4-b2ba-53f5-a95d-8e6268a6978e",
   "fc89c143-9e89-566a-87fe-524055c57538",
   "fce65677-389f-5e46-821d-c961727b7b4b",
@@ -225,8 +233,9 @@
   "ff8f03eb-aaf0-5f3b-acf4-38847a495dc8"
  ],
  "from_build": {
-  "generated": "2026-11-10",
+  "generated": "2026-11-21",
   "source_keys": [
+   "catechism/compendium",
    "councils/vat2-ad-gentes",
    "councils/vat2-apostolicam-actuositatem",
    "councils/vat2-christus-dominus",
@@ -268,9 +277,9 @@
    "encyclicals/spiritus-paraclitus"
   ],
   "counts": {
-   "found": 663,
+   "found": 590,
    "missing": 2,
-   "repeated": 1
+   "repeated": 6
   },
   "chunk_ids": [
    "12304cf9-0613-5a1c-8910-29f7c3702b32",
@@ -278,11 +287,19 @@
    "282487aa-bca0-5d09-877a-eb032dd8b903",
    "4f0aa9ca-053e-501e-9de7-458fbb3b4175",
    "65be47aa-fc27-5447-a5f8-e1d3ccb090e5",
+   "7022565e-7abd-5b46-a1ea-3a95f16bcdb7",
    "83e6efc5-3e1c-5cfa-8fc2-430b227e0c66",
+   "92f43681-b372-5e16-b78a-7368f3bc00a2",
    "ac82c55b-89cc-5c82-aa24-f2fce80ba0a3",
+   "bd99ab8f-8ff7-5b30-bf81-9afbce92f9d8",
+   "be11b07d-c84a-530c-9d39-4534dbfc82c4",
    "c6c312be-2702-544f-b074-e0e72ea39b08",
+   "d0143da9-413a-599e-b684-c5ecce653cb3",
+   "d2cf81d3-f2ff-5a58-bbed-88b4ed843e2f",
+   "d56bf4f7-5e31-5c7d-9cde-555b1e5d67fe",
    "dfdd4b23-b01d-57b7-a60b-b2ea2c671a89",
-   "ebc14888-6d7b-5971-a7c5-2cac64af6c2b"
+   "ebc14888-6d7b-5971-a7c5-2cac64af6c2b",
+   "fc0accc8-4974-5448-8c62-c012f16b4655"
   ]
  }
 }

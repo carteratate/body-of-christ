@@ -23,17 +23,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/catechism/compendium-ccc.html",
-  "sha256": "a35594fda5cf56333ff59388de407e152f5cd41e012d68e34f2bf75bbfa691a8",
-  "bytes": 378892,
-  "url": "https://www.vatican.va/archive/compendium_ccc/documents/archive_2005_compendium-ccc_en.html",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/church-fathers/dionysius-works.xml",
   "sha256": "b28456f33db6ca2ffb42efa20200e5b98c4b6ec8b9134a87119c6de051b903d2",
   "bytes": 731266,
@@ -3218,6 +3207,16 @@
   "url": "https://github.com/nossbigg/catechism-ccc-json",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "catechism",
+  "path": "catechism/compendium-ccc.html",
+  "sha256": "a35594fda5cf56333ff59388de407e152f5cd41e012d68e34f2bf75bbfa691a8",
+  "bytes": 378892,
+  "url": "https://www.vatican.va/archive/compendium_ccc/documents/archive_2005_compendium-ccc_en.html",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
   "role": "adapter-input"
  },
  {

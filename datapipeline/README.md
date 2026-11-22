@@ -21,7 +21,7 @@ for all ten collections live in [`SOURCES.md`](SOURCES.md). The adapters registe
 | `apostolic-exhortations` | `ingest/apostolic_exhortations.py` |
 | `bible` | `ingest/bible.py` |
 | `canon-law` | `ingest/canon_law.py` |
-| `catechism` | `ingest/catechism.py` |
+| `catechism` | `ingest/catechism.py`, then `ingest/catechism_compendium.py` (the Compendium) |
 | `church-fathers` | `ingest/church_fathers.py` |
 | `councils` | `ingest/councils.py` |
 | `encyclicals` | `ingest/encyclicals.py` |
