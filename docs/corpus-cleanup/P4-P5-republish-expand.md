@@ -1089,7 +1089,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - Chapters follow the page's headings: Part, Section, Chapter and up to two levels below (92 chapters). No contents tree yet (the document is excerpt-only, so `/toc` would refuse it).
   - Coverage reads the page through its own extractor (`checks/source_text.compendium_units`): 84.64% of its body text, everything uncovered being the parts listed under Needs Carter.
   - Release report against a stand-in snapshot of master's own catechism build (no snapshot of live after the republish exists, and each export needs Carter's approval): 788 CCC passages `same`, 598 `new`, nothing else. The live comparison is the publish's own `publish.py report`.
-  - vatican.va text fragments (2.4e) checked from the build: 590 of 598 found; 8 keep the plain link (`source_link_misses.json`, `from_build`).
+  - vatican.va text fragments (2.4e) checked from the build: 588 of 598 found; 10 keep the plain link (`source_link_misses.json`, `from_build`), among them questions printed alike (Q310 and Q319), since the check now takes a tie between two places as unresolved.
 - **Out of scope:** Other catechisms (Baltimore, Pius X).
 
 ### 5.6a. Church Fathers additions and the Pseudo-Dionysius addition
