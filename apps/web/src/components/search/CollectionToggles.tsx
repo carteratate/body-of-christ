@@ -39,7 +39,6 @@ export function CollectionToggles({
 }: CollectionTogglesProps) {
   const [translationOpen, setTranslationOpen] = useState(false);
   const [scopeOpen, setScopeOpen] = useState<string | null>(null);
-  const cueRefs = useRef(new Map<string, HTMLButtonElement>());
   const openCue = useRef<HTMLButtonElement | null>(null);
 
   return (
@@ -113,6 +112,7 @@ export function CollectionToggles({
               style={{
                 ...(isActive ? activeStyle : inactiveStyle),
                 "--rgb": rgb,
+                "--c": col.color,
               } as CSSProperties}
             >
               <button
@@ -128,13 +128,9 @@ export function CollectionToggles({
               </button>
               <button
                 type="button"
-                ref={(element) => {
-                  if (element) cueRefs.current.set(col.key, element);
-                  else cueRefs.current.delete(col.key);
-                }}
                 className={styles.cue}
-                onClick={() => {
-                  openCue.current = cueRefs.current.get(col.key) ?? null;
+                onClick={(event) => {
+                  openCue.current = event.currentTarget;
                   setScopeOpen(open ? null : col.key);
                 }}
                 aria-haspopup="dialog"

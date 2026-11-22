@@ -4,8 +4,6 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import {
-  COLLECTION_SCOPES,
-  SCOPED_COLLECTIONS,
   buildCollectionScopes,
   parseScopeSelections,
   scopeGenreLabel,
@@ -20,10 +18,6 @@ describe("collection scopes", () => {
     const works = JSON.parse(readFileSync(WORKS, "utf8")) as RegistryWork[];
     const built = `${JSON.stringify(buildCollectionScopes(works), null, 1)}\n`;
     await expect(built).toMatchFileSnapshot("./collection-scopes.json");
-  });
-
-  it("covers exactly the collections the API can narrow", () => {
-    expect(Object.keys(COLLECTION_SCOPES).sort()).toEqual([...SCOPED_COLLECTIONS].sort());
   });
 
   it("labels genres as the cards do and popes without the title", () => {
@@ -54,14 +48,20 @@ describe("reading a stored selection back (restore)", () => {
     expect(parseScopeSelections(saved, ["encyclicals", "bible"])).toEqual(saved);
   });
 
-  it("drops what the filter cannot show: other collections, unknown values, bad shapes", () => {
+  it("drops other collections and bad shapes", () => {
     expect(parseScopeSelections({
-      encyclicals: { genres: ["encyclical", "sermon"], issuers: "pope-leo-xiii" },
+      encyclicals: { genres: ["encyclical", 7], issuers: "pope-leo-xiii" },
       bible: { genres: ["encyclical"] },
       "papal-documents": { genres: ["motu-proprio"] },
     }, ["encyclicals", "bible"])).toEqual({ encyclicals: { genres: ["encyclical"] } });
     expect(parseScopeSelections(null, ["encyclicals"])).toBeUndefined();
     expect(parseScopeSelections(["encyclicals"], ["encyclicals"])).toBeUndefined();
-    expect(parseScopeSelections({ encyclicals: { genres: ["sermon"] } }, ["encyclicals"])).toBeUndefined();
+  });
+
+  it("never reads a selection back broader than it was searched", () => {
+    // `letter` is a valid papal genre with no Encyclicals today; dropping it would read
+    // "letters only" back as every Encyclical.
+    expect(parseScopeSelections({ encyclicals: { genres: ["letter"] } }, ["encyclicals"]))
+      .toEqual({ encyclicals: { genres: ["letter"] } });
   });
 });

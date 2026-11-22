@@ -10,6 +10,7 @@ import {
   type DeliveryOutcome,
   type SearchFilters,
   type SearchOutcome,
+  type SearchResultsResponse,
 } from "@/lib/api";
 import { trackErrorOccurred, trackSearchPerformed } from "@/lib/analytics";
 import { parseScopeSelections, type ScopeSelection } from "@/lib/collection-scopes";
@@ -100,7 +101,7 @@ function clearGuestSearch() {
   try { sessionStorage.removeItem(GUEST_CONTINUITY_KEY); } catch {}
 }
 
-function saveGuestSearch(continuity: GuestContinuitySnapshot) {
+export function saveGuestSearch(continuity: GuestContinuitySnapshot) {
   const snapshot: GuestContinuityStorage = {
     savedAt: continuity.savedAt,
     query: continuity.request.query,
@@ -124,6 +125,44 @@ function filtersFor(request: SearchRequest): SearchFilters {
     collections: [...request.collections],
     translation: request.translation,
     ...(request.scopes ? { scopes: structuredClone(request.scopes) as Record<string, ScopeSelection> } : {}),
+  };
+}
+
+/**
+ * The request a saved search was made with, read from its stored filters: the
+ * collections, translation, quota and genre and issuer selection it asked for, with
+ * today's settings where a field is missing or invalid.
+ */
+export function savedSearchRequest(
+  data: Pick<SearchResultsResponse, "query" | "filters" | "results">,
+  fallback: { readonly storedCollections?: unknown; readonly translation: string; readonly quota: number },
+): SearchRequest {
+  const responseCollections = data.filters?.collections;
+  const storedCollections = Array.isArray(responseCollections)
+    ? responseCollections
+    : fallback.storedCollections;
+  const askedCollections = Array.isArray(storedCollections)
+    ? storedCollections.filter((collection): collection is string =>
+        typeof collection === "string" && ALL_COLLECTION_KEYS.includes(collection))
+    : [];
+  const collections = askedCollections.length > 0
+    ? askedCollections
+    : [...new Set(data.results.map((passage) => passage.source.collection))];
+  const translation = typeof data.filters?.translation === "string" && data.filters.translation
+    ? data.filters.translation
+    : fallback.translation;
+  const savedQuota = data.filters?.quota;
+  const quota = typeof savedQuota === "number"
+    && ([3, 4, 5].includes(savedQuota) || (savedQuota === 10 && collections.length === 1))
+    ? savedQuota
+    : fallback.quota;
+  const scopes = parseScopeSelections(data.filters?.scopes, collections);
+  return {
+    query: data.query,
+    collections,
+    translation,
+    quota,
+    ...(scopes ? { scopes } : {}),
   };
 }
 
@@ -351,25 +390,12 @@ function createSearchPageExperience(options: SearchPageExperienceOptions): Searc
               "None of the Passages linked to this saved search remain available.",
             );
           }
-          const responseCollections = data.filters?.collections;
-          const storedCollections = Array.isArray(responseCollections)
-            ? responseCollections
-            : current.searches.find((search) => search.id === searchId)?.filters?.collections;
-          const askedCollections = Array.isArray(storedCollections)
-            ? storedCollections.filter((collection): collection is string =>
-                typeof collection === "string" && ALL_COLLECTION_KEYS.includes(collection))
-            : [];
-          const collections = askedCollections.length > 0
-            ? askedCollections
-            : [...new Set(data.results.map((passage) => passage.source.collection))];
-          const translation = typeof data.filters?.translation === "string" && data.filters.translation
-            ? data.filters.translation
-            : current.translation;
-          const savedQuota = data.filters?.quota;
-          const quota = typeof savedQuota === "number"
-            && ([3, 4, 5].includes(savedQuota) || (savedQuota === 10 && collections.length === 1))
-            ? savedQuota
-            : current.quota;
+          const request = savedSearchRequest(data, {
+            storedCollections: current.searches.find((search) => search.id === searchId)?.filters?.collections,
+            translation: current.translation,
+            quota: current.quota,
+          });
+          const { collections, quota } = request;
           const deliveryOutcome = quota === 10 && isDeliveryOutcome(data.delivery_outcome)
             ? data.delivery_outcome : null;
           const outcome = isSearchOutcome(data.outcome) ? data.outcome : null;
@@ -380,16 +406,9 @@ function createSearchPageExperience(options: SearchPageExperienceOptions): Searc
                   .filter(([collection]) => collections.includes(collection)),
               )
             : {};
-          const scopes = parseScopeSelections(data.filters?.scopes, collections);
           return {
             searchId: data.search_id,
-            request: {
-              query: data.query,
-              collections,
-              translation,
-              quota,
-              ...(scopes ? { scopes } : {}),
-            },
+            request,
             // A null explanation in a saved search is one the stream never reached
             // (the page left before it was written). The card reads null as "still
             // streaming", so hide it instead of showing a skeleton that never fills.

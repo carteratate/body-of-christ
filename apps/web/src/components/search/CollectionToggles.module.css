@@ -18,7 +18,10 @@
   transition: padding 0.22s ease;
 }
 
+/* The caret in the collection's colour mixed into the text colour, as the panel's
+   buttons are, so it stands out on the pill in both themes. */
 .cue {
+  color: color-mix(in srgb, var(--c) 35%, var(--color-brand-primary));
   display: inline-flex;
   align-items: center;
   justify-content: center;

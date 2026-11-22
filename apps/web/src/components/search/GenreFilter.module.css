@@ -1,9 +1,8 @@
 /* The genre and issuer panel (5.1a). --rgb and --c are the collection's colour, set
-   inline; --ink is that colour as text, darkened toward the text colour in Ivory Vault
-   so it reads on the light surface. */
+   inline; --ink is that colour as text: 35% of it in the theme's text colour, which
+   reads at 4.5:1 or more on these tints for every papal collection in both themes. */
 .panel {
-  --scope-ink: 100%;
-  --ink: color-mix(in srgb, var(--c) var(--scope-ink), var(--color-brand-primary));
+  --ink: color-mix(in srgb, var(--c) 35%, var(--color-brand-primary));
   position: fixed;
   z-index: 50;
   width: 18.75rem;
@@ -16,10 +15,6 @@
     0 0 0 1px rgba(var(--rgb), 0.45);
   transform-origin: var(--pointer) 100%;
   animation: emerge 0.16s ease-out;
-}
-
-:global(html[data-theme="light"]) .panel {
-  --scope-ink: 48%;
 }
 
 @keyframes emerge {

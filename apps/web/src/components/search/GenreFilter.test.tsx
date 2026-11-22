@@ -93,3 +93,21 @@ describe("genre and issuer filter (5.1a)", () => {
     expect(scopes()).toBeNull();
   });
 });
+
+describe("genre and issuer filter focus (5.1a)", () => {
+  afterEach(cleanup);
+
+  it("moves focus into the panel once it is placed, and back to the caret on close or Escape", () => {
+    render(<Harness collections={["encyclicals"]} />);
+    fireEvent.click(cue("Encyclicals"));
+    const first = screen.getByRole("checkbox", { name: /^Encyclical/ });
+    expect(screen.getByRole("dialog").style.visibility).toBe("visible");
+    expect(document.activeElement).toBe(first);
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(document.activeElement).toBe(cue("Encyclicals"));
+
+    fireEvent.click(cue("Encyclicals"));
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(document.activeElement).toBe(cue("Encyclicals"));
+  });
+});

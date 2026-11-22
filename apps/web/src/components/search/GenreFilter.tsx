@@ -57,6 +57,15 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
     return () => window.removeEventListener("resize", measure);
   }, [anchor]);
 
+  // Focus moves into the panel when it opens, so Tab walks its lists; Escape and the
+  // close button hand it back to the caret. A press elsewhere keeps its own target.
+  // Only once it is placed and visible: a browser does not focus a hidden element.
+  const placed = place !== null;
+  useEffect(() => {
+    if (!placed) return;
+    panelRef.current?.querySelector<HTMLElement>('[role="checkbox"]')?.focus({ preventScroll: true });
+  }, [placed]);
+
   useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
       const target = event.target as Node;
@@ -110,7 +119,15 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
       <div className={styles.head}>
         <span className={styles.dot} aria-hidden />
         Search within {collection.label}
-        <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
+        <button
+          type="button"
+          className={styles.close}
+          onClick={() => {
+            onClose();
+            anchor.current?.focus();
+          }}
+          aria-label="Close"
+        >
           <X size={14} />
         </button>
       </div>

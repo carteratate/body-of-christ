@@ -94,9 +94,10 @@ export function buildCollectionScopes(
 }
 
 /**
- * A stored selection (a restored search, a guest's last search) read back: only
- * selected collections that can be narrowed, and only values the filter lists.
- * Undefined when nothing narrows.
+ * A stored selection (a restored search, a guest's last search) read back as it was
+ * sent: only selected collections that can be narrowed, and only string values. Values
+ * the filter no longer lists are kept, so a selection is never read back broader than
+ * it was searched. Undefined when nothing narrows.
  */
 export function parseScopeSelections(
   value: unknown,
@@ -105,16 +106,14 @@ export function parseScopeSelections(
   if (typeof value !== "object" || value === null || Array.isArray(value)) return undefined;
   const scopes: Record<string, ScopeSelection> = {};
   for (const [collection, raw] of Object.entries(value as Record<string, unknown>)) {
-    const options = scopeOptions(collection);
-    if (!options || !collections.includes(collection)) continue;
+    if (!scopeOptions(collection) || !collections.includes(collection)) continue;
     if (typeof raw !== "object" || raw === null) continue;
     const selection: ScopeSelection = {};
     for (const facet of ["genres", "issuers"] as const) {
       const values = (raw as Record<string, unknown>)[facet];
       if (!Array.isArray(values)) continue;
-      const known = options[facet].map((option) => option.value)
-        .filter((option) => values.includes(option));
-      if (known.length > 0) selection[facet] = known;
+      const kept = [...new Set(values.filter((v): v is string => typeof v === "string"))];
+      if (kept.length > 0) selection[facet] = kept;
     }
     if (selection.genres || selection.issuers) scopes[collection] = selection;
   }
