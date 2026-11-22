@@ -1354,28 +1354,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/teresa-castle2.xml",
-  "sha256": "8ff410eb6ad0bb12f3003fc902c1ff706f506d01de3cb0e4e36ef9523b10eaf7",
-  "bytes": 582155,
-  "url": "https://ccel.org/ccel/t/teresa/castle2.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/teresa-life.xml",
-  "sha256": "00e8143f2480767ce63c52159be78dab9a717ffc6defd9abd6d116c5ea9e86f0",
-  "bytes": 1639686,
-  "url": "https://ccel.org/ccel/t/teresa/life.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/theartofdyingwel00belluoft/theartofdyingwel00belluoft_djvu.txt",
   "sha256": "6bb746648b3e51e7df9d521a96cf654513e2f4108725fab867f9896ab25f477f",
   "bytes": 231603,
@@ -6987,5 +6965,25 @@
   "hashed_on": "2026-11-16",
   "role": "vendored-unregistered",
   "note": "the printed edition summa_recovered.json's text is read from (#360)"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/teresa-castle2.xml",
+  "sha256": "8ff410eb6ad0bb12f3003fc902c1ff706f506d01de3cb0e4e36ef9523b10eaf7",
+  "bytes": 582155,
+  "url": "https://ccel.org/ccel/t/teresa/castle2.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/teresa-life.xml",
+  "sha256": "00e8143f2480767ce63c52159be78dab9a717ffc6defd9abd6d116c5ea9e86f0",
+  "bytes": 1639686,
+  "url": "https://ccel.org/ccel/t/teresa/life.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
  }
 ]

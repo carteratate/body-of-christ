@@ -35,6 +35,7 @@ import defusedxml.ElementTree as ET
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from checks.language import latin_runs, mostly_foreign
+from ingest import theologians
 from ingest.editorial import PLAIN_CALLERS
 from ingest.editorial_keep import kept_quotes, quoted_text
 
@@ -277,6 +278,8 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     removed = removed_paragraphs()
     withheld = withheld_chapters()
     excluded = {d for f, d in excluded_divs() if f == source_file}
+    # 5.6b's headings and editors' paragraphs inside the author's chapters.
+    class_regions, heading_divs = theologians.not_body(source_file)
     quotes = {}
     for q in kept_quotes(source_file):
         quotes.setdefault(q.first, []).append(q)
@@ -293,6 +296,8 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                 child_region = _thml_div_region(child.get("title") or "", region)
                 if child.get("id") in editorial:
                     child_region = "apparatus"
+                elif child.get("id") in heading_divs:
+                    child_region = "heading"
                 elif child.get("id") in excluded and child_region == "body":
                     child_region = "excluded"
                 walk(child, child.get("id") or div_id, child_region, True)
@@ -310,6 +315,8 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                         text = text.replace(printed, without)
                     own = "apparatus" if region == "body" and (
                         _paragraph_sha1(text) in removed or div_id in own_text) else region
+                    if own == "body" and child.get("class") in class_regions:
+                        own = class_regions[child.get("class")]
                     if own == "body" and (mostly_foreign(text)
                                           or (source_file, div_id) in withheld):
                         own = "withheld"
@@ -989,7 +996,11 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
             entries = [e for e in entries if resolve_document_id(
                 collection, f"{collection}/{e['slug']}", (collection, e["slug"])) not in held
                 and printing(collection, e["slug"]) is None]
-        return [e["file"] for e in entries]
+        files = [e["file"] for e in entries]
+        if collection == theologians.COLLECTION:
+            # 5.6b's works, read from sources/theologians/ (`ingest.theologians`).
+            files += [f"../{theologians.SOURCE_DIR}/{w.file}" for w in theologians.WORKS]
+        return files
     if collection == "canon-law":
         with open(os.path.join(base, "pages.json"), encoding="utf-8") as f:
             return [p["file"] for p in json.load(f) if p.get("parsed", True)]

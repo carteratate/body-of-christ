@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
+  "medieval": "worktree-bridge-cse_01MzvQViNfxsHobrHPrfit6W bb4816e",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1112,6 +1112,16 @@
    "covered_chars": 239555,
    "pct": 99.97
   },
+  "medieval/../theologians/teresa-castle2.xml": {
+   "body_chars": 331680,
+   "covered_chars": 331680,
+   "pct": 100.0
+  },
+  "medieval/../theologians/teresa-life.xml": {
+   "body_chars": 833568,
+   "covered_chars": 833568,
+   "pct": 100.0
+  },
   "medieval/consolation-of-philosophy.xml": {
    "body_chars": 218421,
    "covered_chars": 218421,
@@ -1773,6 +1783,13 @@
    "source_file": "pastores-gregis.html",
    "body_chars": 237884,
    "covered_chars": 237884,
+   "pct": 100.0
+  },
+  "4451945f-fec4-5ab0-8d9e-5da62287ed24": {
+   "collection": "medieval",
+   "source_file": "../theologians/teresa-castle2.xml",
+   "body_chars": 331680,
+   "covered_chars": 331680,
    "pct": 100.0
   },
   "4451c2f8-e836-58ab-a2eb-495a9cacef89": {
@@ -2649,6 +2666,13 @@
    "body_chars": 76004,
    "covered_chars": 75973,
    "pct": 99.96
+  },
+  "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2": {
+   "collection": "medieval",
+   "source_file": "../theologians/teresa-life.xml",
+   "body_chars": 833568,
+   "covered_chars": 833568,
+   "pct": 100.0
   },
   "bb35c577-ee5b-546e-abb6-41a0764cd6a7": {
    "collection": "church-fathers",

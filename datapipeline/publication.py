@@ -26,6 +26,7 @@ import registry as reg
 import retirements
 from checks import card_notes as card_notes_check
 from health import refuse_block_violations
+from ingest.theologians import COLLECTION as THEOLOGIANS
 from model import Document
 from writers import reader_writer
 
@@ -52,7 +53,10 @@ SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
     "church-fathers": lambda: _build_from("church_fathers", "build_all"),
     "councils": lambda: _build_from("councils", "build_documents"),
     "encyclicals": lambda: _build_from("encyclicals", "build_documents"),
-    "medieval": lambda: _build_from("medieval", "build_documents"),
+    # Today's medieval works, then 5.6b's theologians and spiritual writers; 5.1b.3
+    # renames the key in `ingest.theologians.COLLECTION`.
+    THEOLOGIANS: lambda: (_build_from("medieval", "build_documents")
+                          + _build_from("theologians", "build_documents")),
     "papal-documents": lambda: _build_from("papal_documents", "build_documents"),
     "summa": lambda: _build_from("summa", "build_document", single=True),
 }

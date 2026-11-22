@@ -108,6 +108,9 @@ PLAIN_CALLERS = {
     ("confessions.xml", "viii.xi-p1"): (("immutably.2 ", "immutably. "), ("God,3 ", "God, "),
                                         ("things.4 ", "things. "),
                                         ("gooodness.5", "gooodness.")),
+    # Note 255's caller in the Interior Castle (VI, ch. iii, 19; 5.6b), left after the
+    # <note> as " 8". The checks name 5.6b's files from the medieval folder.
+    ("../theologians/teresa-castle2.xml", "x.iv-p21"): ((" 8 It takes", " It takes"),),
 }
 
 BRACKET = re.compile(r"\[[^\[\]]*\]")

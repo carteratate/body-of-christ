@@ -299,6 +299,8 @@ _TRANSLATIONS = {
 _TAILS = re.compile(r"(?:\.\s+(?:Sourced via|Text:).*|;.*|,\s*(?:abridged|extract)\s*)$")
 _SENTENCE = re.compile(r"^(Translated by|Translation|Official English|From Hefele)")
 _SERIES = ("Ante-Nicene Fathers", "Nicene and Post-Nicene Fathers")
+# Translators that are a community, read with "the": "the Benedictines of Stanbrook" (5.6b).
+_BODIES = ("Fathers of ", "Benedictines of ")
 
 
 def card_translator(credit: str | None, translation: str | None) -> str | None:
@@ -318,7 +320,7 @@ def card_translator(credit: str | None, translation: str | None) -> str | None:
         return None
     if value.startswith(_SERIES):
         return re.sub(r"(?<=\d)-(?=\d)", "–", value)  # a date range takes an en dash
-    if value.startswith("Fathers of "):
+    if value.startswith(_BODIES):
         return f"Translated by the {value}"
     return f"Translated by {value}"
 
