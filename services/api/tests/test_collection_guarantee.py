@@ -64,8 +64,10 @@ def test_skips_injection_below_min_score():
 # A genre selection (5.1a) narrows a collection at retrieval; the guarantee keys on
 # the collection alone. These run the real runner over an in-memory Qdrant, so the
 # candidates the guarantee chooses from are filtered by the plan's scopes exactly as
-# in production. Rerank is stubbed: it scores each document by SCORES and ranks only
-# RANKED, so a collection outside RANKED is absent after dedup and needs its slot.
+# in production. Rerank is stubbed as production's listwise mode returns: one scored
+# list for both dedup and the guarantee, each passage scored by SCORES and included
+# when it clears the listwise floor. A collection whose passages all fall between the
+# guarantee floor and the listwise floor is absent after dedup and needs its slot.
 
 THREE_GENRES = ["encyclical", "apostolic-letter", "apostolic-constitution"]
 
@@ -81,12 +83,14 @@ DOCUMENTS = {
     "ccc-1": ("catechism", None),
     "ccc-2": ("catechism", None),
 }
-# Every candidate clears guarantee_min_score, and the excluded genres score highest,
-# so a leaked one would be the passage the guarantee picks.
+# The papal passages score between guarantee_min_score (0.25) and the listwise
+# include floor (0.30), so only the guarantee can return them; the excluded genres
+# score highest, so a leaked one would be the passage it picks. The Catechism's are
+# included and survive dedup.
 SCORES = {
-    "enc-motu-proprio": 0.99, "enc-exhortation": 0.98,
-    "enc-encyclical": 0.70, "enc-letter": 0.65, "enc-constitution": 0.60,
-    "pd-motu-proprio": 0.97, "pd-letter": 0.55,
+    "enc-motu-proprio": 0.299, "enc-exhortation": 0.298, "pd-motu-proprio": 0.297,
+    "enc-encyclical": 0.29, "enc-letter": 0.28, "enc-constitution": 0.27,
+    "pd-letter": 0.26,
     "ccc-1": 0.90, "ccc-2": 0.85,
 }
 
@@ -114,7 +118,7 @@ async def corpus(monkeypatch):
 
 
 async def _search(collections: list[str], quota: int, scopes: dict | None,
-                  ranked_docs: set[str]) -> tuple[list[RankedChunk], list[RankedChunk]]:
+                  ) -> tuple[list[RankedChunk], list[RankedChunk]]:
     """The runner's final results and the scored pool the guarantee chose from."""
     from app.rag.pipelines import runner
     from app.rag.pipelines.registry import PIPELINES
@@ -129,13 +133,14 @@ async def _search(collections: list[str], quota: int, scopes: dict | None,
                     collection=c.collection, document_id=c.document_id,
                     document_title=c.document_title, author=c.author,
                     reranker_score=SCORES[c.document_id],
+                    include=SCORES[c.document_id] >= settings.listwise_include_floor,
                 )
                 for chunks in candidates.values() for c in chunks
             ),
             key=lambda r: r.reranker_score, reverse=True,
         )
         pool.extend(scored)
-        return [r for r in scored if r.document_id in ranked_docs], scored
+        return scored, scored
 
     plan = resolve_search_plan(collections, quota, scopes)
     with (
@@ -157,7 +162,7 @@ def _genre(chunk: RankedChunk) -> str | None:
 async def test_three_genres_in_one_collection_get_one_slot(corpus):
     """Each selected genre has an above-threshold candidate; still one injected passage."""
     final, pool = await _search(
-        ["encyclicals"], 4, {"encyclicals": {"genres": THREE_GENRES}}, ranked_docs=set())
+        ["encyclicals"], 4, {"encyclicals": {"genres": THREE_GENRES}})
 
     assert {_genre(c) for c in pool} == set(THREE_GENRES), "every selected genre was a candidate"
     assert [c.document_id for c in final] == ["enc-encyclical"]
@@ -169,24 +174,19 @@ async def test_an_injected_passage_never_has_an_excluded_genre(corpus):
         ["encyclicals", "papal-documents", "catechism"], 5,
         {"encyclicals": {"genres": THREE_GENRES},
          "papal-documents": {"genres": ["apostolic-letter"]}},
-        ranked_docs={"ccc-1", "ccc-2"},
     )
 
     assert {c.document_id for c in pool}.isdisjoint(
         {"enc-motu-proprio", "enc-exhortation", "pd-motu-proprio"})
     injected = [c for c in final if c.collection != "catechism"]
     assert [c.document_id for c in injected] == ["enc-encyclical", "pd-letter"]
-    assert _genre(injected[0]) in THREE_GENRES
-    assert _genre(injected[1]) == "apostolic-letter"
 
 
 async def test_several_collections_get_one_slot_each(corpus):
     """Two absent collections with several candidates each gain one slot apiece; the
     represented one gains none."""
     final, _ = await _search(
-        ["encyclicals", "papal-documents", "catechism"], 5, None,
-        ranked_docs={"ccc-1", "ccc-2"},
-    )
+        ["encyclicals", "papal-documents", "catechism"], 5, None)
 
     by_collection: dict[str, int] = {}
     for c in final:
