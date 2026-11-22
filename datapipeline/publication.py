@@ -181,6 +181,20 @@ ORDER BY id
 """
 
 
+LIVE_ANCHOR_REDIRECTS_SQL = """
+SELECT old_document_id::text AS old_document_id, old_anchor,
+       new_document_id::text AS new_document_id
+FROM public.corpus_redirects WHERE entity = 'anchor'
+ORDER BY old_document_id, old_anchor
+"""
+
+
+async def live_anchor_redirects(conn: asyncpg.Connection
+                                ) -> list[retirements.LiveAnchorRedirect]:
+    return [retirements.LiveAnchorRedirect(**dict(r))
+            for r in await conn.fetch(LIVE_ANCHOR_REDIRECTS_SQL)]
+
+
 async def live_rows(conn: asyncpg.Connection, collections: list[str]
                     ) -> tuple[list[retirements.LivePassage], list[retirements.LiveDocument]]:
     passages = [retirements.LivePassage(**dict(r))
@@ -322,8 +336,10 @@ class StageRunner:
                     await reader_writer.write_staged_document(conn, d)
                 await reader_writer.copy_live_annotations(conn, collections)
                 live_passages, live_documents = await live_rows(conn, collections)
-                found = retirements.compute(live_passages, live_documents, documents,
-                                            registry, release=request.release, at=at)
+                found = retirements.compute(
+                    live_passages, live_documents, documents, registry,
+                    release=request.release, at=at,
+                    live_anchor_redirects=await live_anchor_redirects(conn))
                 if found.problems:
                     raise StageRefused(
                         f"REFUSING: {len(found.problems)} live IDs the build drops are "
