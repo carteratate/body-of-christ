@@ -1228,7 +1228,7 @@ describe("SearchPage animation-gated stream reveal", () => {
       "guest-session-token-with-at-least-32-chars",
       "grace",
       {
-        collections: ["bible", "catechism", "church-fathers", "summa", "councils", "encyclicals"],
+        collections: ["bible", "catechism", "church-fathers", "summa", "councils", "papal"],
         translation: "CPDV",
       },
       3,

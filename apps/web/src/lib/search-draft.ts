@@ -1,6 +1,6 @@
 import type { SearchPreferenceDraft } from "./api";
 import { scopeOptions, type ScopeFacet, type ScopeSelection } from "./collection-scopes";
-import { ALL_COLLECTION_KEYS } from "./collections";
+import { ALL_COLLECTION_KEYS, canonicalCollectionKey } from "./collections";
 
 
 export type StandardQuota = 3 | 4 | 5;
@@ -45,7 +45,7 @@ const STANDARD_QUOTAS = new Set<unknown>([3, 4, 5]);
 export const DEFAULT_GUEST_SEARCH_PREFERENCES: SearchPreferenceDraft = {
   preferred_translation: "CPDV",
   default_collections: [
-    "bible", "catechism", "church-fathers", "summa", "councils", "encyclicals",
+    "bible", "catechism", "church-fathers", "summa", "councils", "papal",
   ],
   default_quota: 3,
   last_standard_quota: 3,
@@ -55,11 +55,14 @@ function isStandardQuota(value: unknown): value is StandardQuota {
   return STANDARD_QUOTAS.has(value);
 }
 
+/** Saved collections in today's vocabulary: an old key (a preference or a guest's draft
+ * from before 5.1b.2) becomes its new one, whole, and the debounced save stores it. */
 function normalizeCollections(values: unknown): string[] {
   if (!Array.isArray(values)) return [...DEFAULT_GUEST_SEARCH_PREFERENCES.default_collections];
-  const valid = values.filter(
-    (value): value is string => typeof value === "string" && ALL_COLLECTION_KEYS.includes(value),
-  );
+  const valid = values
+    .filter((value): value is string => typeof value === "string")
+    .map(canonicalCollectionKey)
+    .filter((value) => ALL_COLLECTION_KEYS.includes(value));
   const unique = [...new Set(valid)];
   return unique.length > 0 ? unique : [...DEFAULT_GUEST_SEARCH_PREFERENCES.default_collections];
 }

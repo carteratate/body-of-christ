@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Flag, Settings2 } from "lucide-react";
 import type { DocumentInfo, ReaderChapter, TocEntry } from "@/lib/api";
 import { IntentLink, NavPendingBar } from "@/components/common/NavPending";
 import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
+import { canonicalCollectionKey } from "@/lib/collections";
 
 export type ReaderFontSize = "small" | "medium" | "large";
 export type ReaderSpacing = "compact" | "comfortable" | "relaxed";
@@ -71,7 +72,7 @@ export function ReaderChrome({
       ? "Browse Paragraphs"
       : document.collection === "summa"
         ? "Browse Articles"
-        : document.collection === "canon-law"
+        : canonicalCollectionKey(document.collection) === "church-law"
           ? "Browse Books & Sections"
           : "Browse Sections";
 

@@ -24,7 +24,7 @@ describe("guest preference draft", () => {
     expect(getGuestPreferenceDraft()).toEqual({
       preferred_translation: "CPDV",
       default_collections: [
-        "bible", "catechism", "church-fathers", "summa", "councils", "encyclicals",
+        "bible", "catechism", "church-fathers", "summa", "councils", "papal",
       ],
       default_quota: 3,
       last_standard_quota: 3,
