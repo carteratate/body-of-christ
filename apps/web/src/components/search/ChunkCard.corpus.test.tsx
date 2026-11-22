@@ -82,12 +82,14 @@ describe("result card header (collapsed)", () => {
     expect(screen.getAllByText("Chrysostom, quoted in Thomas Aquinas's Catena Aurea").length).toBeGreaterThan(0);
   });
 
-  it("takes the Bible translation badge from facts", () => {
+  it("labels a Bible passage's badge with the collection only, not its translation", () => {
     renderCard(result({}, {
       collection: "bible", author: null, document_title: "Genesis", reference: "Genesis 1:1",
       facts: { translation: "WEB-C" },
     }));
-    expect(screen.getAllByText("Bible · WEB-C").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Bible").length).toBeGreaterThan(0);
+    expect(screen.queryByText(/WEB-C/)).toBeNull();
+    expect(screen.getByRole("button", { name: /^Expand result: Bible, / }).getAttribute("aria-label")).not.toMatch(/WEB-C/);
   });
 });
 
