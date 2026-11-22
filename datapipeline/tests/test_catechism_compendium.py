@@ -178,3 +178,22 @@ def test_the_ccc_paragraph_checks_read_only_the_ccc(page):
     ccc = Document(id="ccc", collection="catechism", title="Catechism of the Catholic Church",
                    metadata={"source_key": "catechism"})
     assert ccc_documents([ccc, C.build(page, questions=3).document]) == [ccc]
+
+
+@needs_page
+def test_the_ccc_1471_sentinel_reads_only_the_ccc(page):
+    from checks.report import SENTINELS, sentinel_value
+    from checks.source_text import CCC_FILE, file_units
+    from model import Document, Passage
+
+    units = file_units("catechism", CCC_FILE)
+    [paragraph] = [u.text for u in units if u.region == "body" and u.unit_id == "1471"]
+    compendium = C.build(page, questions=3).document
+    compendium.passages[0].content = paragraph
+    ccc = Document(id="ccc", collection="catechism", title="Catechism of the Catholic Church",
+                   metadata={"source_key": "catechism"},
+                   passages=[Passage("Other words.", "CCC §1", "ccc/1", "k", "l", 0)])
+    sentinel = next(s for s in SENTINELS if s.name == "ccc_1471_definition")
+    assert sentinel_value(sentinel, [ccc, compendium], units) == 0
+    assert sentinel_value(sentinel, [Document(**{**vars(ccc), "passages": compendium.passages})],
+                          units) == 1

@@ -107,7 +107,7 @@ def sentinel_value(sentinel: Sentinel, documents: list[Document],
     """`units` are the collection's source units, which the 0.1d sentinels read."""
     name = sentinel.name
     if name == "ccc_1471_definition":
-        return unit_coverage.ccc_1471_definition(documents, units or [])
+        return unit_coverage.ccc_1471_definition(ccc_documents(documents), units or [])
     if name == "sirach_prologue":
         return unit_coverage.sirach_prologue(documents, sources)
     if name == "nostra_aetate_4":
