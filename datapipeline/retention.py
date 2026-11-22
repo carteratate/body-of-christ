@@ -191,8 +191,10 @@ async def document_blocks(conn, refs: list[Reference], ids: Sequence[str],
 
 # --------------------------------------------------------------------------- refusals
 
-async def refusals(conn, release: str) -> list[str]:
-    """Why a live step-13 run must not run now; empty when it may."""
+async def refusals(conn, release: str, early_close: str | None = None) -> list[str]:
+    """Why a live step-13 run must not run now; empty when it may. `early_close` names
+    the decision that closes this release's own rollback window before its 14 days
+    (`--close-window-early`); it lifts that one refusal and nothing else."""
     from writers.reader_writer import staging_exists
 
     row = await conn.fetchrow(
@@ -204,7 +206,7 @@ async def refusals(conn, release: str) -> list[str]:
         out.append(f"publish '{release}' was never applied")
     elif row["rolled_back_at"] is not None:
         out.append(f"publish '{release}' was rolled back")
-    elif row["db_now"] < row["applied_at"] + ROLLBACK_WINDOW:
+    elif row["db_now"] < row["applied_at"] + ROLLBACK_WINDOW and not early_close:
         out.append(f"the rollback window of '{release}' is open until "
                    f"{row['applied_at'] + ROLLBACK_WINDOW:%Y-%m-%d %H:%M %Z} "
                    f"(applied {row['applied_at']:%Y-%m-%d %H:%M %Z}, "
@@ -225,6 +227,22 @@ async def refusals(conn, release: str) -> list[str]:
     if await staging_exists(conn):
         out.append("the staging tables exist; a publish is in progress")
     return out
+
+
+async def early_close_note(conn, release: str, early_close: str | None) -> str | None:
+    """The line every output carries when `--close-window-early` closes a window that
+    is still open, or None (no flag, or the window has closed by itself)."""
+    if not early_close:
+        return None
+    row = await conn.fetchrow(
+        "SELECT applied_at, now() AS db_now FROM corpus_publishes WHERE id = $1", release)
+    if row is None or row["applied_at"] is None:
+        return None
+    due = row["applied_at"] + ROLLBACK_WINDOW
+    if row["db_now"] >= due:
+        return None
+    return (f"EARLY CLOSE: the rollback window of '{release}', due to close "
+            f"{due:%Y-%m-%d %H:%M %Z}, is closed early by decision: {early_close}")
 
 
 # --------------------------------------------------------------------------- plan
@@ -263,6 +281,7 @@ class Plan:
     kept_documents: dict[str, dict[str, int]]
     wal: WalEstimate = field(default_factory=WalEstimate)
     refusals: list[str] = field(default_factory=list)
+    early_close: str | None = None              # the early-close line, when one applies
 
 
 async def _distinct_pages(conn, table: str, column: str, ids: Sequence[str]) -> tuple[int, int]:
@@ -324,7 +343,7 @@ async def _estimate(conn, passages: list[str], documents: list[str]) -> WalEstim
     return est
 
 
-async def plan(conn, release: str) -> Plan:
+async def plan(conn, release: str, early_close: str | None = None) -> Plan:
     """What a live run would delete and keep now, with its WAL estimate. Reads only."""
     refs = await references(conn)
     retired = [r["id"] for r in await conn.fetch(
@@ -340,14 +359,15 @@ async def plan(conn, release: str) -> Plan:
                 retired_documents=len(retired_docs), passages=passages, documents=documents,
                 kept_passages=kept_passages, kept_documents=kept_documents,
                 wal=await _estimate(conn, passages, documents),
-                refusals=await refusals(conn, release))
+                refusals=await refusals(conn, release, early_close),
+                early_close=await early_close_note(conn, release, early_close))
 
 
-async def read_plan(conn, release: str) -> Plan:
+async def read_plan(conn, release: str, early_close: str | None = None) -> Plan:
     """`plan` inside a READ ONLY transaction, so a dry run cannot write."""
     async with conn.transaction(readonly=True):
         await _no_row_security(conn)
-        return await plan(conn, release)
+        return await plan(conn, release, early_close)
 
 
 async def _no_row_security(conn) -> None:
@@ -381,6 +401,7 @@ def describe(p: Plan) -> list[str]:
     """The dry run's report, in plain lines."""
     w = p.wal
     lines = [f"purge-retired {p.release}: dry run, nothing written", "",
+             *([p.early_close, ""] if p.early_close else []),
              "Foreign keys into the corpus (read from the database):"]
     lines += [f"  {r.label} -> {r.target}{'  [corpus]' if r.corpus else ''}"
               for r in p.references]
@@ -439,7 +460,7 @@ _KEEP_LOCATION_SQL = """
 """
 
 
-async def _batch_start(conn, release: str) -> list[Reference]:
+async def _batch_start(conn, release: str, early_close: str | None) -> list[Reference]:
     """Start a batch: the publish lock, the refusals again, and the foreign keys read
     afresh under a table lock that keeps a new one from being added until the commit
     (ADD FOREIGN KEY needs the same lock; only a publish writes these tables)."""
@@ -448,16 +469,16 @@ async def _batch_start(conn, release: str) -> list[Reference]:
     await lock_publishes(conn)
     await conn.execute(
         "LOCK TABLE public.chunks, public.documents IN SHARE ROW EXCLUSIVE MODE")
-    problems = await refusals(conn, release)
+    problems = await refusals(conn, release, early_close)
     if problems:
         raise RetentionRefused("REFUSING: " + "; ".join(problems))
     return await references(conn)
 
 
-async def _delete_passages(conn, release: str, batch: list[str],
+async def _delete_passages(conn, release: str, early_close: str | None, batch: list[str],
                            result: PurgeResult) -> None:
     async with conn.transaction():
-        refs = await _batch_start(conn, release)
+        refs = await _batch_start(conn, release, early_close)
         # Locking the rows first makes any user row added from here on wait for this
         # commit (its foreign key check needs them), and the check below, a new
         # statement, sees every one committed before.
@@ -479,10 +500,10 @@ async def _delete_passages(conn, release: str, batch: list[str],
     result.outlines += len(documents)
 
 
-async def _delete_documents(conn, release: str, batch: list[str],
+async def _delete_documents(conn, release: str, early_close: str | None, batch: list[str],
                             result: PurgeResult) -> None:
     async with conn.transaction():
-        refs = await _batch_start(conn, release)
+        refs = await _batch_start(conn, release, early_close)
         locked = [r["id"] for r in await conn.fetch(
             """SELECT id::text AS id FROM public.documents
                WHERE id = ANY($1::uuid[]) AND retired_at IS NOT NULL
@@ -497,11 +518,14 @@ async def _delete_documents(conn, release: str, batch: list[str],
 
 
 async def execute(conn, release: str, *, disk_free_bytes: int | None,
+                  early_close: str | None = None,
                   batch_size: int = BATCH_SIZE, progress: Callable[[str], None] = print,
                   after_batch: Callable | None = None) -> PurgeResult:
     """Delete what `plan` finds, in batches. `after_batch` is a test hook, awaited
     with the batch number after each commit."""
-    p = await read_plan(conn, release)
+    p = await read_plan(conn, release, early_close)
+    if p.early_close:
+        progress(p.early_close)
     if p.refusals:
         raise RetentionRefused("REFUSING: " + "; ".join(p.refusals))
     need = WalEstimate.headroom(p.wal.purge_bytes)
@@ -517,7 +541,7 @@ async def execute(conn, release: str, *, disk_free_bytes: int | None,
     work += [("documents", _delete_documents, p.documents[i:i + batch_size])
              for i in range(0, len(p.documents), batch_size)]
     for number, (kind, run, batch) in enumerate(work, 1):
-        await run(conn, release, batch, result)
+        await run(conn, release, early_close, batch, result)
         result.batches = number
         progress(f"batch {number}/{len(work)} ({kind}) committed: {result.passages:,} "
                  f"passages and {result.documents:,} documents deleted so far, "
@@ -536,11 +560,12 @@ class OldCollection:
     problems: list[str]
 
 
-async def old_collection(conn, qdrant, release: str, alias: str) -> OldCollection:
+async def old_collection(conn, qdrant, release: str, alias: str,
+                         early_close: str | None = None) -> OldCollection:
     """The Qdrant collection the publish's switch moved the live alias away from, and
     why deleting it must wait. Reads only."""
     row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
-    problems = await refusals(conn, release)
+    problems = await refusals(conn, release, early_close)
     name = row["previous_qdrant_collection"] if row is not None else None
     if row is not None and name is None:
         problems.append(f"publish '{release}' records no previous collection")
@@ -561,13 +586,13 @@ async def old_collection(conn, qdrant, release: str, alias: str) -> OldCollectio
     return OldCollection(name=name, points=points, problems=problems)
 
 
-async def drop_old_collection(conn, qdrant, release: str, alias: str,
-                              confirm: str) -> tuple[str, bool]:
+async def drop_old_collection(conn, qdrant, release: str, alias: str, confirm: str,
+                              early_close: str | None = None) -> tuple[str, bool]:
     """Delete the old collection, once nothing needs it and `confirm` names it.
     Returns its name and whether this call deleted it (False: it was already gone)."""
     async with conn.transaction():
         await lock_publishes(conn)
-        old = await old_collection(conn, qdrant, release, alias)
+        old = await old_collection(conn, qdrant, release, alias, early_close)
         gone = f"'{old.name}' does not exist (already deleted?)"
         if old.problems and old.problems != [gone]:
             raise RetentionRefused("REFUSING: " + "; ".join(old.problems))

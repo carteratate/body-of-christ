@@ -113,7 +113,19 @@ def build_parser() -> argparse.ArgumentParser:
     drop.add_argument("--execute", action="store_true",
                       help="delete; without it, a dry run that changes nothing")
     drop.add_argument("--confirm", help="with --execute: the collection's name, typed out")
+    for command in (purge, drop):
+        command.add_argument(
+            "--close-window-early", metavar="DECISION", type=_decision,
+            help="close the release's rollback window before its 14 days, naming the "
+                 "decision (who and when); printed in the output and to be logged on the "
+                 "release's tracking issue. Lifts that one refusal only")
     return parser
+
+
+def _decision(value: str) -> str:
+    if len(value.strip()) < 10:
+        raise argparse.ArgumentTypeError("name the decision: who decided, and when")
+    return value.strip()
 
 
 def guard_publish(step: str, collections: Sequence[str], release: str, lock_path=None) -> None:
@@ -346,13 +358,15 @@ async def purge_retired(args, lock_path=None) -> int:
     conn = await _connect()
     try:
         if not args.execute:
-            print("\n".join(retention.describe(await retention.read_plan(conn, args.release))))
+            print("\n".join(retention.describe(await retention.read_plan(
+                conn, args.release, args.close_window_early))))
             return 0
         await _publish_row(conn, args.release)
         # Corpus-wide, whatever the release published: only an "all" entry approves it.
         guard_publish("apply", sorted(SOURCE_ADAPTERS), args.release, lock_path)
         free = None if args.disk_free_gb is None else int(args.disk_free_gb * (1 << 30))
-        result = await retention.execute(conn, args.release, disk_free_bytes=free)
+        result = await retention.execute(conn, args.release, disk_free_bytes=free,
+                                         early_close=args.close_window_early)
     finally:
         await conn.close()
     print(f"purged {args.release}: {result.passages:,} passages and {result.documents:,} "
@@ -375,8 +389,13 @@ async def drop_old_collection(args, lock_path=None) -> int:
         if not args.execute:
             async with conn.transaction(readonly=True):
                 old = await retention.old_collection(conn, client, args.release,
-                                                     settings.QDRANT_LIVE_ALIAS)
+                                                     settings.QDRANT_LIVE_ALIAS,
+                                                     args.close_window_early)
+                note = await retention.early_close_note(conn, args.release,
+                                                        args.close_window_early)
             print(f"drop-old-collection {args.release}: dry run, nothing changed")
+            if note:
+                print(f"  {note}")
             print(f"  would delete Qdrant collection '{old.name}' "
                   f"({'?' if old.points is None else f'{old.points:,}'} points). "
                   "It cannot be undone; the only copy after that is a snapshot, if one is kept.")
@@ -388,8 +407,12 @@ async def drop_old_collection(args, lock_path=None) -> int:
         await _publish_row(conn, args.release)
         # The old collection holds every collection's points: an "all" entry only.
         guard_publish("apply", sorted(SOURCE_ADAPTERS), args.release, lock_path)
-        name, deleted = await retention.drop_old_collection(conn, client, args.release,
-                                                   settings.QDRANT_LIVE_ALIAS, args.confirm)
+        note = await retention.early_close_note(conn, args.release, args.close_window_early)
+        if note:
+            print(note)
+        name, deleted = await retention.drop_old_collection(
+            conn, client, args.release, settings.QDRANT_LIVE_ALIAS, args.confirm,
+            args.close_window_early)
     finally:
         await conn.close()
         await client.close()

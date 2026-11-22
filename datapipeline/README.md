@@ -168,6 +168,11 @@ After the rollback window for a publish that was applied (`retention.py`, 4.1b s
   rollback window, while staging is held, and unless `--disk-free-gb`, read from the
   Supabase dashboard (Database -> Disk) just before, covers twice its WAL estimate plus
   1 GB. Run `VACUUM (analyze) chunks` afterwards, after the same disk check.
+- `--close-window-early "<who, when>"` on either command closes the release's own
+  rollback window before its 14 days, by a recorded decision (the republish's, Carter,
+  21 Nov 2026). It lifts that one refusal; every other refusal, the lock and the disk
+  check stay. Each output then opens with an `EARLY CLOSE:` line naming the decision; log
+  it on the release's issue. After the old collection is gone, `rollback` refuses.
 - `drop-old-collection` deletes the Qdrant collection the publish's switch moved the
   alias away from, once no alias or publish uses it. It cannot be undone, so it needs
   `--confirm` with the collection's name.
