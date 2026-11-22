@@ -1,5 +1,6 @@
 "use client";
 
+import type { ScopeExclusions, SearchDraftEvent } from "@/lib/search-draft";
 import { CollectionToggles } from "./CollectionToggles";
 import { QuotaControl } from "./QuotaControl";
 import { SearchBar } from "./SearchBar";
@@ -11,6 +12,8 @@ interface BottomBarProps {
   onToggleCollection: (c: string) => void;
   translation: string;
   onTranslationChange: (t: string) => void;
+  excluded?: Readonly<Record<string, ScopeExclusions>>;
+  onScopeEvent?: (event: Extract<SearchDraftEvent, { readonly collection: string }>) => void;
   quota: number;
   onQuotaChange: (q: number) => void;
   preferenceSaveStatus?: "pending" | "saving" | "saved" | "failed" | null;
@@ -31,6 +34,8 @@ export function BottomBar({
   onToggleCollection,
   translation,
   onTranslationChange,
+  excluded,
+  onScopeEvent,
   quota,
   onQuotaChange,
   preferenceSaveStatus = null,
@@ -64,6 +69,9 @@ export function BottomBar({
           onToggle={onToggleCollection}
           translation={translation}
           onTranslationChange={onTranslationChange}
+          excluded={excluded}
+          onScopeEvent={onScopeEvent}
+          scopesLocked={loading}
         />
         <div className="flex shrink-0 flex-col items-end gap-1">
           <QuotaControl

@@ -117,6 +117,19 @@ describe("search-experience runtime", () => {
     expect(listener).toHaveBeenCalledOnce();
   });
 
+  it("hands a frozen copy of the genre and issuer scopes to the search, and none when absent (5.1a)", () => {
+    const { runtime, runs } = authenticatedFixture();
+    const scopes = { encyclicals: { genres: ["encyclical"], issuers: ["pope-leo-xiii"] } };
+    runtime.send({ type: "submit", request: { ...REQUEST, collections: ["encyclicals"], scopes } });
+    scopes.encyclicals.genres.push("other");
+
+    expect(runs[0].request.scopes).toEqual({ encyclicals: { genres: ["encyclical"], issuers: ["pope-leo-xiii"] } });
+    expect(Object.isFrozen(runs[0].request.scopes?.encyclicals.genres)).toBe(true);
+
+    runtime.send({ type: "submit", request: REQUEST });
+    expect("scopes" in runs[1].request).toBe(false);
+  });
+
   it("buffers Passages and explanations until authenticated completion and animation reveal", () => {
     const { runtime, runs } = authenticatedFixture();
     runtime.send({ type: "submit", request: REQUEST });

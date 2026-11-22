@@ -1,0 +1,243 @@
+{
+ "encyclicals": {
+  "genres": [
+   {
+    "value": "encyclical",
+    "label": "Encyclical"
+   },
+   {
+    "value": "apostolic-letter",
+    "label": "Apostolic letter"
+   },
+   {
+    "value": "apostolic-constitution",
+    "label": "Apostolic constitution"
+   },
+   {
+    "value": "apostolic-exhortation",
+    "label": "Apostolic exhortation"
+   },
+   {
+    "value": "other",
+    "label": "Other"
+   }
+  ],
+  "issuers": [
+   {
+    "value": "pope-benedict-xiv",
+    "label": "Benedict XIV"
+   },
+   {
+    "value": "pope-clement-xiv",
+    "label": "Clement XIV"
+   },
+   {
+    "value": "pope-pius-vii",
+    "label": "Pius VII"
+   },
+   {
+    "value": "pope-leo-xii",
+    "label": "Leo XII"
+   },
+   {
+    "value": "pope-pius-viii",
+    "label": "Pius VIII"
+   },
+   {
+    "value": "pope-gregory-xvi",
+    "label": "Gregory XVI"
+   },
+   {
+    "value": "pope-pius-ix",
+    "label": "Pius IX"
+   },
+   {
+    "value": "pope-leo-xiii",
+    "label": "Leo XIII"
+   },
+   {
+    "value": "pope-pius-x",
+    "label": "Pius X"
+   },
+   {
+    "value": "pope-benedict-xv",
+    "label": "Benedict XV"
+   },
+   {
+    "value": "pope-pius-xi",
+    "label": "Pius XI"
+   },
+   {
+    "value": "pope-pius-xii",
+    "label": "Pius XII"
+   },
+   {
+    "value": "pope-john-xxiii",
+    "label": "John XXIII"
+   },
+   {
+    "value": "pope-paul-vi",
+    "label": "Paul VI"
+   },
+   {
+    "value": "pope-john-paul-ii",
+    "label": "John Paul II"
+   },
+   {
+    "value": "pope-benedict-xvi",
+    "label": "Benedict XVI"
+   },
+   {
+    "value": "pope-francis",
+    "label": "Francis"
+   },
+   {
+    "value": "pope-leo-xiv",
+    "label": "Leo XIV"
+   }
+  ],
+  "documents": {
+   "apostolic-constitution": {
+    "pope-pius-ix": 1,
+    "pope-pius-xii": 1
+   },
+   "apostolic-exhortation": {
+    "pope-francis": 1,
+    "pope-paul-vi": 1
+   },
+   "apostolic-letter": {
+    "pope-clement-xiv": 1,
+    "pope-gregory-xvi": 1,
+    "pope-pius-ix": 1
+   },
+   "encyclical": {
+    "pope-benedict-xiv": 1,
+    "pope-benedict-xv": 1,
+    "pope-benedict-xvi": 3,
+    "pope-clement-xiv": 1,
+    "pope-francis": 4,
+    "pope-gregory-xvi": 3,
+    "pope-john-paul-ii": 13,
+    "pope-john-xxiii": 2,
+    "pope-leo-xii": 1,
+    "pope-leo-xiii": 7,
+    "pope-leo-xiv": 1,
+    "pope-paul-vi": 4,
+    "pope-pius-ix": 18,
+    "pope-pius-vii": 1,
+    "pope-pius-viii": 1,
+    "pope-pius-x": 1,
+    "pope-pius-xi": 5,
+    "pope-pius-xii": 4
+   },
+   "other": {
+    "pope-pius-ix": 1
+   }
+  }
+ },
+ "apostolic-exhortations": {
+  "genres": [
+   {
+    "value": "apostolic-exhortation",
+    "label": "Apostolic exhortation"
+   }
+  ],
+  "issuers": [
+   {
+    "value": "pope-pius-x",
+    "label": "Pius X"
+   },
+   {
+    "value": "pope-pius-xii",
+    "label": "Pius XII"
+   },
+   {
+    "value": "pope-paul-vi",
+    "label": "Paul VI"
+   },
+   {
+    "value": "pope-john-paul-ii",
+    "label": "John Paul II"
+   },
+   {
+    "value": "pope-benedict-xvi",
+    "label": "Benedict XVI"
+   },
+   {
+    "value": "pope-francis",
+    "label": "Francis"
+   },
+   {
+    "value": "pope-leo-xiv",
+    "label": "Leo XIV"
+   }
+  ],
+  "documents": {
+   "apostolic-exhortation": {
+    "pope-benedict-xvi": 4,
+    "pope-francis": 5,
+    "pope-john-paul-ii": 14,
+    "pope-leo-xiv": 1,
+    "pope-paul-vi": 4,
+    "pope-pius-x": 1,
+    "pope-pius-xii": 1
+   }
+  }
+ },
+ "papal-documents": {
+  "genres": [
+   {
+    "value": "apostolic-letter",
+    "label": "Apostolic letter"
+   },
+   {
+    "value": "apostolic-constitution",
+    "label": "Apostolic constitution"
+   },
+   {
+    "value": "motu-proprio",
+    "label": "Motu proprio"
+   }
+  ],
+  "issuers": [
+   {
+    "value": "pope-boniface-viii",
+    "label": "Boniface VIII"
+   },
+   {
+    "value": "pope-leo-x",
+    "label": "Leo X"
+   },
+   {
+    "value": "pope-paul-iii",
+    "label": "Paul III"
+   },
+   {
+    "value": "pope-john-paul-ii",
+    "label": "John Paul II"
+   },
+   {
+    "value": "pope-benedict-xvi",
+    "label": "Benedict XVI"
+   },
+   {
+    "value": "pope-francis",
+    "label": "Francis"
+   }
+  ],
+  "documents": {
+   "apostolic-constitution": {
+    "pope-boniface-viii": 1,
+    "pope-leo-x": 1
+   },
+   "apostolic-letter": {
+    "pope-francis": 2,
+    "pope-john-paul-ii": 8,
+    "pope-paul-iii": 1
+   },
+   "motu-proprio": {
+    "pope-benedict-xvi": 1
+   }
+  }
+ }
+}
