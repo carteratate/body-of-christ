@@ -13,7 +13,7 @@ chapter treats of…"; Teresa's arguments of the Life's chapters stand together 
 book), it is kept whole as `metadata["heading"]` on the chapter's passages.
 
 The documents join the collection `COLLECTION`, today's `medieval`, which 5.1b.3 renames
-to `theologians`: that rename changes this one constant. The files stay in
+to `theologians`: that rename changes the one constant `ingest.keys.THEOLOGIANS`. The files stay in
 `sources/theologians/` (5.1b.3 keeps source directory names), and each document's source
 key is its file's path there, so neither changes with the key.
 """
@@ -29,11 +29,12 @@ import defusedxml.ElementTree as ET
 from model import Document
 from normalize.caps import roman_capitals
 from ingest.common import _block_text, _build_parent_map
+from ingest.keys import THEOLOGIANS
 from ingest.editorial import PLAIN_CALLERS, ChapterEdit, Editor, Removed
 from ingest.thml_doc import ChapterPlan, make_doc
 
-# The collection these works publish under; 5.1b.3 renames it to "theologians".
-COLLECTION = "medieval"
+# The collection these works publish under; 5.1b.3 renames it in `ingest.keys`.
+COLLECTION = THEOLOGIANS
 SOURCE_DIR = "theologians"
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", SOURCE_DIR)
 

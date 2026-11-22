@@ -20,7 +20,7 @@ from model import Document
 from normalize.caps import smart_title_case
 from ingest.common import _block_text, _build_parent_map, _cf_skippable, iter_chapters
 from ingest.editorial import ChapterEdit, Editor, Removed
-from ingest.theologians import COLLECTION
+from ingest.keys import THEOLOGIANS as COLLECTION
 from ingest.thml_doc import ChapterPlan, distinct_titles, make_doc
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "medieval")

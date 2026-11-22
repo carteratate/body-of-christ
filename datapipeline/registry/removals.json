@@ -44587,6 +44587,25 @@
   "added_on": "2026-11-12"
  },
  {
+  "id": "rm-10601",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "4451945f-fec4-5ab0-8d9e-5da62287ed24",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 427
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-22"
+ },
+ {
   "id": "rm-0127",
   "scope": "class",
   "collection": "medieval",
@@ -44719,6 +44738,25 @@
   "judgment": null,
   "added_by": "1.9",
   "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-10602",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 652
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-22"
  },
  {
   "id": "rm-0129",
