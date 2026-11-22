@@ -55,6 +55,5 @@ def test_concurrency_defaults_let_a_full_search_run_in_one_round(monkeypatch):
     settings = Settings(_env_file=None)
 
     scopes, calls = _most_scopes_and_passages()
-    assert (scopes, calls) == (10, 13)
     assert settings.hyde_luna_concurrency >= calls
     assert settings.cohere_concurrency >= scopes

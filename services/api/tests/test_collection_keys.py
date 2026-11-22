@@ -286,7 +286,8 @@ def test_get_preferences_drops_a_stored_key_it_does_not_know(stored, collections
     ("canon-law", ["church-law"], "church-law"),
     ("church-law", ["canon-law"], "canon-law"),
     ("encyclicals", ["encyclicals"], "encyclicals"),
-    ("papal", ["encyclicals"], "papal"),
+    ("papal", ["encyclicals", "bible"], "encyclicals"),
+    ("papal", ["encyclicals", "papal-documents"], "papal"),
     ("summa", None, "summa"),
 ])
 def test_a_restored_passage_takes_the_saved_requests_key(stored, saved, label):
@@ -512,3 +513,23 @@ async def test_another_bad_request_naming_genre_is_not_retried(qdrant, monkeypat
     with pytest.raises(UnexpectedResponse):
         await retrieve_vector._search_vector(
             CollectionScope("encyclicals"), [1.0, 0.0, 0.0, 0.0], 10, "query")
+
+
+def test_a_passage_read_by_two_old_keys_mid_rewrite_is_kept_once():
+    """Between 5.1b.3's database apply and its alias switch, Evangelii Gaudium can come
+    back from Qdrant as `encyclicals` and from Postgres as `apostolic-exhortations`."""
+    from app.rag.steps import rrf
+    from app.rag.steps.types import RetrievalPath
+
+    def row(collection):
+        return {"id": "eg", "content": "joy of the gospel", "collection": collection,
+                "document_id": EG, "document_title": "Evangelii Gaudium"}
+
+    other = {"id": "rn", "content": "workers", "collection": "encyclicals",
+             "document_id": ENC, "document_title": "Rerum Novarum"}
+    merged = rrf.run(
+        {"encyclicals": [RetrievalPath(family="query", rows=[other, row("encyclicals")])]},
+        {"apostolic-exhortations": [row("apostolic-exhortations")]}, 4, k=20,
+    )
+    assert [c.chunk_id for c in merged["apostolic-exhortations"]] == ["eg"]
+    assert [c.chunk_id for c in merged["encyclicals"]] == ["rn"]

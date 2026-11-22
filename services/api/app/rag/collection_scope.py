@@ -45,14 +45,18 @@ def reads(key: str) -> StoredRead:
 
 
 def requested_label(stored: str, requested) -> str:
-    """The key of `requested` whose search reads `stored` whole, for labelling a saved
-    passage as its search did; the stored value when none does. An old papal key reads
-    the new value only by genre, which a stored value alone cannot settle, so after the
-    rewrite such a passage keeps the new value."""
-    for key in requested if isinstance(requested, list) else ():
-        if isinstance(key, str) and stored in reads(key).whole:
+    """The key of `requested` whose search reads `stored`, for labelling a saved
+    passage as its search did; the stored value when none does. A key that reads it
+    whole wins. Otherwise an old papal key reads the new value by genre, which the
+    stored value alone cannot settle, so it is used only when it is the one such key
+    saved; with several, the passage keeps the new value."""
+    keys = [k for k in (requested if isinstance(requested, list) else ())
+            if isinstance(k, str)]
+    for key in keys:
+        if stored in reads(key).whole:
             return key
-    return stored
+    by_genre = [k for k in keys if (part := reads(k).part) and part[0] == stored]
+    return by_genre[0] if len(by_genre) == 1 else stored
 
 
 @dataclass(frozen=True)
