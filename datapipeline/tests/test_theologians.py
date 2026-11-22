@@ -7,6 +7,8 @@ os.environ.setdefault("QDRANT_URL", "http://localhost")
 os.environ.setdefault("QDRANT_API_KEY", "x")
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+import re
+
 import pytest
 
 from ingest import theologians as T
@@ -75,6 +77,8 @@ def test_castle_leaves_out_the_editors_and_keeps_teresas_headings_out_of_the_tex
     assert "Plan of this book" not in text                           # chapter outline
     assert "THIS CHAPTER TREATS" not in text.upper()                 # Teresa's heading
     assert "WAS WRITTEN BY TERESA OF JESUS" not in text.upper()      # preface title line
+    assert _castle().passages[0].metadata["heading"].startswith(
+        "This treatise, styled the interior castle, was written by Teresa of Jesus")
     first = next(p for p in _castle().passages if p.chapter_key == "v.i")
     assert first.metadata["heading"].startswith(
         "This chapter treats of the beauty and dignity of our souls")
@@ -143,6 +147,18 @@ def test_no_heading_or_note_leaks_and_passages_are_not_empty():
         for p in doc.passages:
             assert p.content.strip() and p.chapter_label and p.chapter_key
             assert not p.content.startswith(("CHAPTER", "Chapter ")), p.anchor
+
+
+def test_a_paragraph_split_at_a_page_break_is_one_paragraph():
+    text = _text(_life())
+    assert "most grievously tormented; and then it was that these two assaults" in text
+    # Across the page marker the build drops (Relation XI).
+    assert "for so many years when I thought I was under a delusion" in text
+    for doc in _built().values():
+        for p in doc.passages:
+            assert not re.search(r"(?:[a-z,]|\bI)\n\n(?!\d+\. )|\n\n[a-z]", p.content), p.anchor
+    # A numbered paragraph after "Amen" stays its own (VI ch. i).
+    assert "for ever blessed! Amen\n\n25. The devils" in _text(_castle())
 
 
 def test_genres_by_source_key():

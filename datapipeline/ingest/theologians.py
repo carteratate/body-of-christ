@@ -88,7 +88,10 @@ _CHAPTER_TITLE = re.compile(r"^Chapter ([IVXLC]+)\.\s+(.+?)\.?$")
 
 
 def _castle_chapters(root):
-    out = [(None, _div(root, "iv"), ChapterPlan(label="Preface"))]
+    preface = _div(root, "iv")
+    title = _castle_heading(preface)      # Teresa's title line over her preface
+    out = [(None, preface, ChapterPlan(label="Preface",
+                                       meta={"heading": title} if title else None))]
     for mansion_id in _CASTLE_MANSIONS:
         mansion = _div(root, mansion_id)
         book = (mansion.get("title") or "").strip()
@@ -110,8 +113,9 @@ def _castle_chapters(root):
 
 
 def _castle_heading(chapter) -> str | None:
-    """Teresa's heading of a Castle chapter ("This chapter treats of…"), printed in
-    capitals as the chapter's first `Centered` paragraph, in sentence case."""
+    """Teresa's heading of a Castle chapter ("This chapter treats of…"), or her title line
+    over the preface, printed in capitals as the div's first `Centered` paragraph, in
+    sentence case."""
     for block in chapter:
         if block.tag != "p" or not _text(block):
             continue          # an empty paragraph stands before it in VI ch. ii and IV
@@ -286,13 +290,65 @@ WORKS: tuple[ThmlWork, ...] = (
 )
 
 
+# A paragraph the file closes mid-sentence: it ends on a lower-case word, a comma, a
+# semicolon, a dash or the word "I", or the next part starts in lower case. A next part
+# that opens with its section number ("25. The devils") is a paragraph of its own.
+_OPEN_END = re.compile(r"(?:[a-z,;—-]|\bI)$")
+_SECTION_START = re.compile(r"^\d+\.?\s")
+
+
+def _rejoin_split_paragraphs(chapters, work: ThmlWork) -> int:
+    """Join each paragraph of the chapters the build reads that the CCEL file splits at a
+    page break (`<pb>` between two `<p>`; the Life, 25 times) back into one, so a
+    sentence is not cut by a paragraph break. A paragraph the build drops by id
+    (`NOT_BODY_PARAGRAPHS`) between the two parts is passed over. Returns how many were
+    joined."""
+    skipped = NOT_BODY_PARAGRAPHS.get(work.file, {})
+    joined = 0
+    for parent in chapters:
+        kids = list(parent)
+        k = 0
+        while k < len(kids):
+            first = kids[k]
+            if first.tag != "p" or first.get("id") in skipped:
+                k += 1
+                continue
+            j = k + 1
+            while j < len(kids) and (kids[j].tag == "pb" or kids[j].get("id") in skipped):
+                j += 1
+            nxt = kids[j] if j < len(kids) else None
+            head, tail = _text(first), _text(nxt) if nxt is not None else ""
+            if nxt is None or nxt.tag != "p" or not head or not tail or nxt.get("class") \
+                    or _SECTION_START.match(tail) \
+                    or not (_OPEN_END.search(head) or tail[0].islower()):
+                k += 1
+                continue
+            _append(first, nxt)
+            parent.remove(nxt)
+            kids.pop(j)
+            joined += 1
+    return joined
+
+
+def _append(first, nxt) -> None:
+    """Move `nxt`'s text and children to the end of `first`, a space between."""
+    text = " " + (nxt.text or "").lstrip()
+    if len(first):
+        first[-1].tail = (first[-1].tail or "").rstrip() + text
+    else:
+        first.text = (first.text or "").rstrip() + text
+    first.extend(list(nxt))
+
+
 def build_work(work: ThmlWork) -> Document:
     root = _read_root(os.path.join(_SRC, work.file))
+    chapters = work.chapters(root)
+    _rejoin_split_paragraphs([div for _, div, _ in chapters], work)
     parent_map = _build_parent_map(root)
     editor = _TeresaEditor(work.file, work.source_key, parent_map)
     doc = make_doc(collection=COLLECTION, filename=f"../{SOURCE_DIR}/{work.file}",
                    author=work.author, title=work.title,
-                   chapters=work.chapters(root), source_key=work.source_key,
+                   chapters=chapters, source_key=work.source_key,
                    year=work.year, extra_meta={"source_url": work.url}, editor=editor)
     if doc is None:
         raise ValueError(f"{work.file}: no passages")
