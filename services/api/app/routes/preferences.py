@@ -22,8 +22,14 @@ _DEFAULT_PREFERENCES = PreferencesResponse(
 
 
 def _merge_preferences(body: PreferencesUpdate, current_row: Mapping[str, Any] | None) -> PreferencesResponse:
-    current = (PreferencesResponse.from_stored(current_row) if current_row is not None
-               else _DEFAULT_PREFERENCES).model_dump()
+    # A stored key the API does not know is dropped only when the PUT keeps the stored
+    # collections; replacing them makes the stored list irrelevant, quota included.
+    if current_row is None:
+        current = _DEFAULT_PREFERENCES.model_dump()
+    elif body.default_collections is None:
+        current = PreferencesResponse.from_stored(current_row).model_dump()
+    else:
+        current = dict(current_row)
     try:
         return PreferencesResponse(
             preferred_translation=(body.preferred_translation if body.preferred_translation is not None else current["preferred_translation"]),

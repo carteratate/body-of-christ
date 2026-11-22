@@ -43,12 +43,6 @@ LEGACY_COLLECTIONS: dict[str, LegacyCollection] = {
 VALID_COLLECTIONS: frozenset[str] = CANONICAL_COLLECTIONS | frozenset(LEGACY_COLLECTIONS)
 
 
-def canonical_collection(key: str) -> str:
-    """The new key for an old one; any other key unchanged."""
-    legacy = LEGACY_COLLECTIONS.get(key)
-    return legacy.canonical if legacy else key
-
-
 # Genre and issuer filters (corpus cleanup 5.1a). The genre values are a copy of the
 # datapipeline's one vocabulary, `datapipeline/registry/genres.py`, which the API cannot
 # import; `test_api_genres_match_registry_module` fails on any difference. Issuers are

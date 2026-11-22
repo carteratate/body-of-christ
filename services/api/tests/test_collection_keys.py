@@ -49,8 +49,6 @@ def test_both_vocabularies_are_valid():
     assert len(constants.VALID_COLLECTIONS) == 13
     for old, legacy in constants.LEGACY_COLLECTIONS.items():
         assert legacy.canonical in constants.CANONICAL_COLLECTIONS, old
-        assert constants.canonical_collection(old) == legacy.canonical
-    assert constants.canonical_collection("bible") == "bible"
 
 
 def test_the_old_papal_keys_split_the_papal_genres_between_them():
@@ -298,6 +296,15 @@ def test_put_accepts_new_keys():
     assert body.default_collections == ["papal", "church-law", "theologians"]
 
 
+def test_a_put_replacing_a_focused_unknown_key_keeps_focused():
+    from app.models.preferences import PreferencesUpdate
+    from app.routes.preferences import _merge_preferences
+
+    merged = _merge_preferences(PreferencesUpdate(default_collections=["summa"]),
+                                _row(["saints"], quota=10, standard=3))
+    assert merged.default_collections == ["summa"] and merged.default_quota == 10
+
+
 def test_a_put_merges_over_a_stored_key_it_does_not_know():
     from app.models.preferences import PreferencesUpdate
     from app.routes.preferences import _merge_preferences
@@ -312,14 +319,18 @@ def _ids(prefix: int, n: int) -> list[str]:
     return [str(uuid.UUID(int=prefix * 100 + i)) for i in range(n)]
 
 
-ENC, EXH, LETTER, NO_GENRE, CANON = _ids(51, 5)
-TITLES = {ENC: "Rerum Novarum", EXH: "Amoris Laetitia", LETTER: "Ineffabilis Deus",
-          NO_GENRE: "Unsorted", CANON: "Code of Canon Law"}
-GENRES = {ENC: "encyclical", EXH: "apostolic-exhortation", LETTER: "apostolic-constitution",
-          NO_GENRE: None, CANON: "code"}
+ENC, EXH, LETTER, NO_GENRE, CANON, EG = _ids(51, 6)
+TITLES = {ENC: "Rerum Novarum", EXH: "Amoris Laetitia", LETTER: "Ad Tuendam Fidem",
+          NO_GENRE: "Unsorted", CANON: "Code of Canon Law", EG: "Evangelii Gaudium"}
+GENRES = {ENC: "encyclical", EXH: "apostolic-exhortation", LETTER: "apostolic-letter",
+          NO_GENRE: None, CANON: "code", EG: "apostolic-exhortation"}
+# Evangelii Gaudium is stored under `encyclicals` today with genre apostolic-exhortation
+# (works.json), like seven other searchable papal documents. A rewrite moves it to the
+# old key its genre names; 5.1b.3 decides whether that stands.
 BEFORE = {ENC: "encyclicals", EXH: "apostolic-exhortations", LETTER: "papal-documents",
-          NO_GENRE: "papal-documents", CANON: "canon-law"}
-AFTER = {doc: constants.canonical_collection(key) for doc, key in BEFORE.items()}
+          NO_GENRE: "papal-documents", CANON: "canon-law", EG: "encyclicals"}
+AFTER = {ENC: "papal", EXH: "papal", LETTER: "papal", NO_GENRE: "papal",
+         CANON: "church-law", EG: "papal"}
 
 
 def _seed(stored: dict[str, str]) -> str:
@@ -361,23 +372,29 @@ async def _keyword(cluster, key: str, scope: CollectionScope | None = None) -> l
     return found.get(key, [])
 
 
-# What each key returns, the same before and after the rewrite.
+# What each key returns, the same before and after the rewrite except for a document
+# stored under one old key whose genre belongs to another (`MOVES`).
 EXPECTED = {
-    "papal": {ENC, EXH, LETTER, NO_GENRE},
+    "papal": {ENC, EXH, LETTER, NO_GENRE, EG},
     "encyclicals": {ENC},
     "apostolic-exhortations": {EXH},
     "papal-documents": {LETTER, NO_GENRE},
     "canon-law": {CANON},
     "church-law": {CANON},
 }
+MOVES = {"before": {"encyclicals": {EG}}, "after": {"apostolic-exhortations": {EG}}}
+
+
+def _expected(when: str, key: str) -> set[str]:
+    return EXPECTED[key] | MOVES[when].get(key, set())
 
 
 @pytest.mark.real_corpus_schema
 @pytest.mark.parametrize("key", sorted(EXPECTED))
 async def test_keyword_search_reads_both_vocabularies(stored, key):
-    _, cluster = stored
+    when, cluster = stored
     rows = await _keyword(cluster, key)
-    assert {row["document_id"] for row in rows} == EXPECTED[key]
+    assert {row["document_id"] for row in rows} == _expected(when, key)
     assert {row["collection"] for row in rows} == {key}
 
 
@@ -386,7 +403,7 @@ async def test_keyword_search_narrows_papal_by_genre(stored):
     _, cluster = stored
     scope = CollectionScope("papal", constants.GENRES_BY_COLLECTION["papal"] - {"encyclical"})
     assert {row["document_id"] for row in await _keyword(cluster, "papal", scope)} == {
-        ENC, NO_GENRE}
+        ENC, NO_GENRE}  # EG: an exhortation, whatever its stored value
 
 
 @pytest.fixture(params=["before", "after"])
@@ -414,7 +431,7 @@ async def qdrant(request, monkeypatch):
 async def test_vector_search_reads_both_vocabularies(qdrant, key):
     rows = await retrieve_vector._search_vector(
         CollectionScope(key), [1.0, 0.0, 0.0, 0.0], 10, "query")
-    assert {row["document_id"] for row in rows} == EXPECTED[key]
+    assert {row["document_id"] for row in rows} == _expected(qdrant, key)
     assert {row["collection"] for row in rows} == {key}
 
 
@@ -423,4 +440,27 @@ async def test_vector_search_without_the_genre_index_reads_only_the_old_value(
     monkeypatch.setattr(qdrant_client, "_genre_indexed", False)
     rows = await retrieve_vector._search_vector(
         CollectionScope("encyclicals"), [1.0, 0.0, 0.0, 0.0], 10, "query")
-    assert {row["document_id"] for row in rows} == ({ENC} if qdrant == "before" else set())
+    assert {row["document_id"] for row in rows} == (
+        {ENC, EG} if qdrant == "before" else set())
+
+
+async def test_a_refused_genre_filter_falls_back_to_todays(qdrant, monkeypatch):
+    """After a rollback to a collection without the genre index, the cached answer is
+    stale for up to five minutes; the refused query is rerun with today's filter."""
+    client = retrieve_vector.get_qdrant_client()
+    real = client.query_points
+    filters = []
+
+    async def strict(**kwargs):
+        filters.append(kwargs["query_filter"])
+        if kwargs["query_filter"].should:
+            raise RuntimeError("Bad request: Index required but not found for \"genre\"")
+        return await real(**kwargs)
+
+    monkeypatch.setattr(client, "query_points", strict)
+    rows = await retrieve_vector._search_vector(
+        CollectionScope("encyclicals"), [1.0, 0.0, 0.0, 0.0], 10, "query")
+    assert [bool(f.should) for f in filters] == [True, False]
+    assert qdrant_client._genre_indexed is None
+    assert {row["document_id"] for row in rows} == (
+        {ENC, EG} if qdrant == "before" else set())

@@ -6,9 +6,10 @@ import logging
 from typing import Mapping
 
 from app.config import settings
-from app.rag.collection_scope import CollectionScope
+from app.rag.collection_scope import CollectionScope, reads
 from app.rag.qdrant_client import (
-    genre_indexed, get_qdrant_client, read_collection, searchable_indexed,
+    forget_searchable_index, genre_indexed, get_qdrant_client, read_collection,
+    searchable_indexed,
 )
 from app.rag.steps import degradation
 from app.rag.steps.types import RetrievalPath
@@ -41,14 +42,31 @@ async def _search_vector(
         [FieldCondition(key="searchable", match=MatchValue(value=False))]
         if await searchable_indexed() else None
     )
-    response = await client.query_points(
-        collection_name=read_collection(),
-        query=vec,
-        query_filter=scope.to_qdrant_filter(must_not, genre_indexed=await genre_indexed()),
-        limit=limit,
-        with_payload=True,
-        score_threshold=_QDRANT_SCORE_THRESHOLD,
-    )
+    async def _query(by_genre: bool):
+        return await client.query_points(
+            collection_name=read_collection(),
+            query=vec,
+            query_filter=scope.to_qdrant_filter(must_not, genre_indexed=by_genre),
+            limit=limit,
+            with_payload=True,
+            score_threshold=_QDRANT_SCORE_THRESHOLD,
+        )
+
+    # An old papal key reads the new value's genres only where `genre` is indexed
+    # (5.1b.1). The answer is cached for five minutes, so after a rollback points the
+    # alias at a collection without the index, strict mode refuses the genre filter
+    # until the cache expires. Such a refusal forgets the cache and runs today's
+    # filter, which is all a collection without the index can match.
+    by_genre = reads(collection).part is not None and await genre_indexed()
+    try:
+        response = await _query(by_genre)
+    except Exception as exc:
+        if not by_genre:
+            raise
+        logger.warning("retrieve_vector: %s genre filter refused (%s); retrying without it",
+                       collection, exc.__class__.__name__)
+        forget_searchable_index()
+        response = await _query(False)
     results: list[dict] = []
     for r in response.points:
         payload = r.payload or {}
