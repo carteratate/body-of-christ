@@ -28,7 +28,7 @@ concern, and duplicating it in a component is the usual way this codebase regres
 |---|---|---|
 | SSE decoding | `src/lib/search-stream.ts` | Add a second decoder, or parse events in a component. Add a new event field here **once**. |
 | Search + restore lifecycle | `src/lib/search-experience/` | Put AbortControllers, run generations, stream buffers, terminal flags, or animation timers in `SearchPage.tsx`. |
-| Draft quota/collection rules | `src/lib/search-draft.ts` | Re-derive focused eligibility from a raw quota int. |
+| Draft quota/collection rules, and genre/issuer selections (5.1a) | `src/lib/search-draft.ts` | Re-derive focused eligibility from a raw quota int. |
 
 (Root §12, §14, §18)
 

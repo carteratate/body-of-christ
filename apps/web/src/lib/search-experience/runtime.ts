@@ -43,6 +43,7 @@ function freezeRequest(request: SearchRequest): SearchRequest {
     collections: Object.freeze([...request.collections]),
     translation: request.translation,
     quota: request.quota,
+    ...(request.scopes ? { scopes: deepFreeze(structuredClone(request.scopes)) } : {}),
   });
 }
 

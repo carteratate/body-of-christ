@@ -1,0 +1,95 @@
+// @vitest-environment jsdom
+
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { useState } from "react";
+import { afterEach, describe, expect, it } from "vitest";
+
+import { createSearchDraft, transitionSearchDraft, type SearchDraftEvent } from "@/lib/search-draft";
+import { CollectionToggles } from "./CollectionToggles";
+
+function Harness({ collections }: { collections: string[] }) {
+  const [draft, setDraft] = useState(() => createSearchDraft({
+    preferred_translation: "CPDV", default_collections: collections, default_quota: 4, last_standard_quota: 4,
+  }));
+  return (
+    <>
+      <CollectionToggles
+        activeCollections={draft.collections}
+        onToggle={(collection) => setDraft((d) => transitionSearchDraft(d, { type: "collection-toggled", collection }))}
+        translation={draft.translation}
+        onTranslationChange={() => {}}
+        excluded={draft.excluded}
+        onScopeEvent={(event: SearchDraftEvent) => setDraft((d) => transitionSearchDraft(d, event))}
+      />
+      <output data-testid="scopes">{JSON.stringify(draft.scopes ?? null)}</output>
+      <button type="button">Elsewhere</button>
+    </>
+  );
+}
+
+const scopes = () => JSON.parse(screen.getByTestId("scopes").textContent ?? "null");
+const cue = (name: string) => {
+  // An unselected collection's caret is aria-hidden, so it has no accessible name to query.
+  const element = document.querySelector<HTMLButtonElement>(`[aria-label="Filter ${name} by kind and pope"]`);
+  if (!element) throw new Error(`no caret for ${name}`);
+  return element;
+};
+
+describe("genre and issuer filter (5.1a)", () => {
+  afterEach(cleanup);
+
+  it("offers the caret only on a selected collection that can be narrowed", () => {
+    render(<Harness collections={["encyclicals", "bible"]} />);
+    expect(cue("Encyclicals").getAttribute("tabindex")).toBe("0");
+    expect(cue("Papal Documents").getAttribute("tabindex")).toBe("-1");
+    expect(cue("Papal Documents").getAttribute("aria-hidden")).toBe("true");
+    expect(screen.queryByRole("button", { name: /Filter Bible/ })).toBeNull();
+  });
+
+  it("narrows with Only and a tick, and All returns to everything", () => {
+    render(<Harness collections={["encyclicals"]} />);
+    fireEvent.click(cue("Encyclicals"));
+    const dialog = screen.getByRole("dialog", { name: "Search within Encyclicals" });
+    expect(dialog.textContent).toContain("Kind");
+    expect(dialog.textContent).toContain("Pope");
+
+    fireEvent.click(screen.getByRole("button", { name: "Only Encyclical" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: /Apostolic letter/ }));
+    expect(scopes()).toEqual({ encyclicals: { genres: ["encyclical", "apostolic-letter"] } });
+
+    fireEvent.click(screen.getByRole("button", { name: "Only Leo XIII" }));
+    expect(scopes().encyclicals.issuers).toEqual(["pope-leo-xiii"]);
+
+    fireEvent.click(screen.getByRole("button", { name: "All kinds" }));
+    fireEvent.click(screen.getByRole("button", { name: "All popes" }));
+    expect(scopes()).toBeNull();
+  });
+
+  it("has no Kind list for a collection with one genre", () => {
+    render(<Harness collections={["apostolic-exhortations"]} />);
+    fireEvent.click(cue("Apostolic Exhortations"));
+    expect(screen.getByRole("dialog").textContent).not.toContain("Kind");
+  });
+
+  it("closes on a press outside and on Escape, not on a press inside", () => {
+    render(<Harness collections={["encyclicals"]} />);
+    fireEvent.click(cue("Encyclicals"));
+    fireEvent.pointerDown(screen.getByRole("checkbox", { name: /^Encyclical/ }));
+    expect(screen.queryByRole("dialog")).not.toBeNull();
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Elsewhere" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    fireEvent.click(cue("Encyclicals"));
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("deselecting a narrowed collection closes its panel and drops its filter", () => {
+    render(<Harness collections={["encyclicals", "bible"]} />);
+    fireEvent.click(cue("Encyclicals"));
+    fireEvent.click(screen.getByRole("button", { name: "Only Encyclical" }));
+    fireEvent.click(screen.getByRole("button", { name: "Encyclicals", pressed: true }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(scopes()).toBeNull();
+  });
+});

@@ -641,7 +641,11 @@ changing quota rules.
 ### Frontend
 
 **`lib/search-draft.ts` owns draft quota/collection state and focused eligibility** —
-`SearchQuota`, `StandardQuota`, `focusedEligible`, and the draft reducer. This is the one
+`SearchQuota`, `StandardQuota`, `focusedEligible`, and the draft reducer. It also owns the
+genre and issuer selections (5.1a: `excluded`, `scopes`, and the `genre-toggled`,
+`issuer-toggled`, `scope-only` and `scope-all` events), which never change focused
+eligibility. `lib/collection-scopes.json`, the values each papal collection offers, is
+generated from `datapipeline/registry/works.json` by its test. This is the one
 exception to §12's "draft controls stay in the page": the page renders it, but the
 transition rules live here and are unit-tested directly. `QuotaControl.tsx` and
 `BottomBar.tsx` render it. `LoadingAnimation` takes `quota` as a prop and scales its

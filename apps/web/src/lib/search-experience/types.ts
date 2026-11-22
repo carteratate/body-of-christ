@@ -4,6 +4,7 @@ import type {
   DeliveryOutcome,
   SearchOutcome,
 } from "@/lib/search-stream";
+import type { ScopeSelection } from "@/lib/collection-scopes";
 
 export type Audience = "authenticated" | "guest";
 
@@ -15,6 +16,8 @@ export interface SearchRequest {
   readonly collections: readonly string[];
   readonly translation: string;
   readonly quota: number;
+  /** Genre and issuer selections (5.1a); absent when no collection is narrowed. */
+  readonly scopes?: Readonly<Record<string, ScopeSelection>>;
 }
 
 export type SearchPhase = "searching" | "ranking";

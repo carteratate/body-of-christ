@@ -129,3 +129,88 @@ describe("search draft", () => {
     expect(changed.collections).not.toBe(draft.collections);
   });
 });
+
+
+describe("genre and issuer scopes (5.1a)", () => {
+  const papal = () => createSearchDraft({
+    preferred_translation: "CPDV",
+    default_collections: ["encyclicals", "bible"],
+    default_quota: 4,
+    last_standard_quota: 4,
+  });
+  const genres = ["encyclical", "apostolic-letter", "apostolic-constitution", "apostolic-exhortation", "other"];
+
+  it("searches everything until something is turned off", () => {
+    const draft = papal();
+    expect(draft.excluded).toEqual({});
+    expect(draft.scopes).toBeUndefined();
+  });
+
+  it("turns one genre off and sends the rest", () => {
+    const draft = transitionSearchDraft(papal(), { type: "genre-toggled", collection: "encyclicals", genre: "other" });
+    expect(draft.excluded).toEqual({ encyclicals: { genres: ["other"], issuers: [] } });
+    expect(draft.scopes).toEqual({ encyclicals: { genres: genres.filter((g) => g !== "other") } });
+  });
+
+  it("narrows to one with Only, adds a second, and returns to all", () => {
+    let draft = transitionSearchDraft(papal(), {
+      type: "scope-only", collection: "encyclicals", facet: "genres", value: "encyclical",
+    });
+    expect(draft.scopes).toEqual({ encyclicals: { genres: ["encyclical"] } });
+    draft = transitionSearchDraft(draft, { type: "genre-toggled", collection: "encyclicals", genre: "apostolic-letter" });
+    expect(draft.scopes).toEqual({ encyclicals: { genres: ["encyclical", "apostolic-letter"] } });
+    draft = transitionSearchDraft(draft, { type: "scope-all", collection: "encyclicals", facet: "genres" });
+    expect(draft.scopes).toBeUndefined();
+    expect(draft.excluded).toEqual({});
+  });
+
+  it("keeps the last ticked value ticked", () => {
+    const only = transitionSearchDraft(papal(), {
+      type: "scope-only", collection: "encyclicals", facet: "genres", value: "encyclical",
+    });
+    expect(transitionSearchDraft(only, { type: "genre-toggled", collection: "encyclicals", genre: "encyclical" }))
+      .toBe(only);
+  });
+
+  it("narrows genres and popes together", () => {
+    let draft = transitionSearchDraft(papal(), {
+      type: "scope-only", collection: "encyclicals", facet: "issuers", value: "pope-leo-xiii",
+    });
+    draft = transitionSearchDraft(draft, { type: "issuer-toggled", collection: "encyclicals", issuer: "pope-pius-ix" });
+    draft = transitionSearchDraft(draft, { type: "genre-toggled", collection: "encyclicals", genre: "other" });
+    expect(draft.scopes).toEqual({ encyclicals: {
+      genres: genres.filter((g) => g !== "other"),
+      issuers: ["pope-pius-ix", "pope-leo-xiii"],
+    } });
+  });
+
+  it("ignores collections that are not selected or have no such value", () => {
+    const draft = papal();
+    expect(transitionSearchDraft(draft, { type: "genre-toggled", collection: "papal-documents", genre: "motu-proprio" }))
+      .toBe(draft);
+    expect(transitionSearchDraft(draft, { type: "genre-toggled", collection: "bible", genre: "encyclical" }))
+      .toBe(draft);
+    expect(transitionSearchDraft(draft, { type: "genre-toggled", collection: "encyclicals", genre: "sermon" }))
+      .toBe(draft);
+  });
+
+  it("drops a collection's filter when it is deselected, and keeps it through other changes", () => {
+    let draft = transitionSearchDraft(papal(), { type: "genre-toggled", collection: "encyclicals", genre: "other" });
+    draft = transitionSearchDraft(draft, { type: "quota-selected", quota: 5 });
+    draft = transitionSearchDraft(draft, { type: "translation-selected", translation: "douay-rheims" });
+    expect(draft.excluded.encyclicals?.genres).toEqual(["other"]);
+    draft = transitionSearchDraft(draft, { type: "collection-toggled", collection: "encyclicals" });
+    expect(draft.scopes).toBeUndefined();
+    draft = transitionSearchDraft(draft, { type: "collection-toggled", collection: "encyclicals" });
+    expect(draft.scopes).toBeUndefined();
+  });
+
+  it("a genre selection does not change focused eligibility", () => {
+    let draft = createSearchDraft({
+      preferred_translation: "CPDV", default_collections: ["encyclicals"], default_quota: 10, last_standard_quota: 4,
+    });
+    draft = transitionSearchDraft(draft, { type: "scope-only", collection: "encyclicals", facet: "genres", value: "encyclical" });
+    expect(draft.quota).toBe(10);
+    expect(draft.focusedEligible).toBe(true);
+  });
+});

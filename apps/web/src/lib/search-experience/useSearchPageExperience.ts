@@ -8,9 +8,11 @@ import {
   streamSearch,
   type CollectionOutcome,
   type DeliveryOutcome,
+  type SearchFilters,
   type SearchOutcome,
 } from "@/lib/api";
 import { trackErrorOccurred, trackSearchPerformed } from "@/lib/analytics";
+import { parseScopeSelections, type ScopeSelection } from "@/lib/collection-scopes";
 import { ALL_COLLECTION_KEYS } from "@/lib/collections";
 import { loadSavedSearchResults } from "@/lib/saved-search-cache";
 import {
@@ -26,6 +28,7 @@ import type {
   GuestContinuitySnapshot,
   Passage,
   SearchExperience,
+  SearchRequest,
   SearchTransportCallbacks,
 } from "./types";
 import { useSearchExperience } from "./useSearchExperience";
@@ -46,6 +49,7 @@ interface GuestContinuityStorage {
   outcome: SearchOutcome | null;
   collectionOutcomes: Record<string, CollectionOutcome>;
   deliveryOutcome?: DeliveryOutcome | null;
+  scopes?: Record<string, ScopeSelection>;
 }
 
 export interface RestoredGuestSearch {
@@ -66,6 +70,7 @@ export function readGuestSearch(): RestoredGuestSearch | null {
     if (typeof value.translation !== "string" || typeof value.quota !== "number"
       || !Array.isArray(value.visibleCollections)) return null;
     const snapshot = value as unknown as Omit<GuestContinuityStorage, "passages">;
+    const scopes = parseScopeSelections(snapshot.scopes, snapshot.collections);
     return {
       continuity: {
         savedAt: snapshot.savedAt,
@@ -74,6 +79,7 @@ export function readGuestSearch(): RestoredGuestSearch | null {
           collections: snapshot.collections,
           translation: snapshot.translation,
           quota: snapshot.quota,
+          ...(scopes ? { scopes } : {}),
         },
         searchId: snapshot.searchId,
         passages: passages as Passage[],
@@ -107,8 +113,18 @@ function saveGuestSearch(continuity: GuestContinuitySnapshot) {
     outcome: continuity.outcome,
     collectionOutcomes: { ...continuity.collectionOutcomes },
     deliveryOutcome: continuity.deliveryOutcome ?? null,
+    ...(continuity.request.scopes ? { scopes: structuredClone(continuity.request.scopes) } : {}),
   };
   try { sessionStorage.setItem(GUEST_CONTINUITY_KEY, JSON.stringify(snapshot)); } catch {}
+}
+
+/** The request's filters as the API takes them; `scopes` only when something narrows. */
+function filtersFor(request: SearchRequest): SearchFilters {
+  return {
+    collections: [...request.collections],
+    translation: request.translation,
+    ...(request.scopes ? { scopes: structuredClone(request.scopes) as Record<string, ScopeSelection> } : {}),
+  };
 }
 
 class InvalidSavedSearchIdError extends Error {}
@@ -284,7 +300,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions): Searc
           search: (request, callbacks, signal) => streamGuestSearch(
             getGuestSessionToken(),
             request.query,
-            { collections: [...request.collections], translation: request.translation },
+            filtersFor(request),
             request.quota,
             adaptTransportCallbacks(callbacks),
             signal,
@@ -318,7 +334,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions): Searc
         search: (credential, request, callbacks, signal) => streamSearch(
           credential,
           request.query,
-          { collections: [...request.collections], translation: request.translation },
+          filtersFor(request),
           request.quota,
           adaptTransportCallbacks(callbacks),
           signal,
@@ -364,6 +380,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions): Searc
                   .filter(([collection]) => collections.includes(collection)),
               )
             : {};
+          const scopes = parseScopeSelections(data.filters?.scopes, collections);
           return {
             searchId: data.search_id,
             request: {
@@ -371,6 +388,7 @@ function createSearchPageExperience(options: SearchPageExperienceOptions): Searc
               collections,
               translation,
               quota,
+              ...(scopes ? { scopes } : {}),
             },
             // A null explanation in a saved search is one the stream never reached
             // (the page left before it was written). The card reads null as "still

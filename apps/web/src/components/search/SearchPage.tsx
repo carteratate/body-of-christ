@@ -17,6 +17,7 @@ import {
   DEFAULT_GUEST_SEARCH_PREFERENCES,
   transitionSearchDraft,
   type SearchDraft,
+  type SearchDraftEvent,
 } from "@/lib/search-draft";
 import { useGuestGate } from "@/components/layout/guestGate";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
@@ -186,10 +187,11 @@ function SearchPageInner({
           collections: activeCollections,
           translation,
           quota,
+          ...(draft.scopes ? { scopes: draft.scopes } : {}),
         },
       });
     },
-    [activeCollections, experience, quota, searchValue, translation]
+    [activeCollections, draft.scopes, experience, quota, searchValue, translation]
   );
 
   // ── Animation ─────────────────────────────────────────────────────────────
@@ -269,6 +271,13 @@ function SearchPageInner({
     });
     saveDefault(next);
     setDraft(next);
+  }
+
+  // Genre and issuer filters (5.1a) live in the draft only: they are not saved as a
+  // default (a follow-up would need a migration).
+  function handleScopeEvent(event: Extract<SearchDraftEvent, { readonly collection: string }>) {
+    const next = transitionSearchDraft(draft, event);
+    if (next !== draft) setDraft(next);
   }
 
   function handleTranslationChange(value: string) {
@@ -406,6 +415,8 @@ function SearchPageInner({
         onToggleCollection={handleToggleCollection}
         translation={searchView.loading && searchView.submittedTranslation ? searchView.submittedTranslation : translation}
         onTranslationChange={handleTranslationChange}
+        excluded={draft.excluded}
+        onScopeEvent={handleScopeEvent}
         quota={searchView.loading && searchView.submittedQuota !== null ? searchView.submittedQuota : quota}
         onQuotaChange={handleQuotaChange}
         preferenceSaveStatus={isGuest ? null : preferenceSaveStatus.phase}
