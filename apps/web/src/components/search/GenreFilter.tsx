@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import { createPortal } from "react-dom";
 import { Check, X } from "lucide-react";
 
-import { scopeOptions, type ScopeFacet } from "@/lib/collection-scopes";
+import { scopeOptions, visibleScopeValues, type ScopeFacet } from "@/lib/collection-scopes";
 import { hexToRgb, type CollectionMeta } from "@/lib/collections";
 import type { ScopeExclusions, SearchDraftEvent } from "@/lib/search-draft";
 import styles from "./GenreFilter.module.css";
@@ -98,6 +98,8 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
 
   const options = scopeOptions(collection.key);
   if (!options) return null;
+  // Each list shows what the other's ticks leave, with those counts.
+  const shown = visibleScopeValues(options, excluded);
 
   const sections: { facet: ScopeFacet; heading: string }[] = [
     ...(options.genres.length > 1 ? [{ facet: "genres" as const, heading: "Kind" }] : []),
@@ -161,9 +163,12 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
                   All
                 </button>
               </div>
-              {options[facet].map((option) => {
+              {shown[facet].map((option) => {
                 const ticked = !off.includes(option.value);
-                const onlyTicked = ticked && off.length === options[facet].length - 1;
+                // The last ticked value shown cannot be unticked, or the search would
+                // find nothing in this collection.
+                const onlyTicked = ticked
+                  && shown[facet].filter((other) => !off.includes(other.value)).length === 1;
                 return (
                   <div key={option.value} className={styles.row}>
                     <button

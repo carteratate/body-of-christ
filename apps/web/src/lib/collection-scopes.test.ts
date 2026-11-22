@@ -6,6 +6,8 @@ import { describe, expect, it } from "vitest";
 import {
   buildCollectionScopes,
   parseScopeSelections,
+  visibleScopeValues,
+  type CollectionScopeOptions,
   scopeGenreLabel,
   scopeIssuerLabel,
   type RegistryWork,
@@ -36,9 +38,12 @@ describe("collection scopes", () => {
     ]);
     expect(scopes.encyclicals.genres.map((g) => g.value)).toEqual(["encyclical", "other"]);
     expect(scopes.encyclicals.issuers).toEqual([
-      { value: "pope-leo-xiii", label: "Leo XIII", documents: 2 },
-      { value: "pope-francis", label: "Francis", documents: 1 },
+      { value: "pope-leo-xiii", label: "Leo XIII" },
+      { value: "pope-francis", label: "Francis" },
     ]);
+    expect(scopes.encyclicals.documents).toEqual({
+      encyclical: { "pope-leo-xiii": 2 }, other: { "pope-francis": 1 },
+    });
   });
 });
 
@@ -63,5 +68,45 @@ describe("reading a stored selection back (restore)", () => {
     // "letters only" back as every Encyclical.
     expect(parseScopeSelections({ encyclicals: { genres: ["letter"] } }, ["encyclicals"]))
       .toEqual({ encyclicals: { genres: ["letter"] } });
+  });
+});
+
+describe("the lists follow each other's ticks", () => {
+  const options: CollectionScopeOptions = {
+    genres: [
+      { value: "encyclical", label: "Encyclical" },
+      { value: "apostolic-letter", label: "Apostolic letter" },
+      { value: "motu-proprio", label: "Motu proprio" },
+    ],
+    issuers: [
+      { value: "pope-leo-xiii", label: "Leo XIII" },
+      { value: "pope-francis", label: "Francis" },
+    ],
+    documents: {
+      encyclical: { "pope-leo-xiii": 7, "pope-francis": 4 },
+      "apostolic-letter": { "pope-francis": 2 },
+      "motu-proprio": { "pope-francis": 1 },
+    },
+  };
+  const counts = (values: { value: string; documents: number }[]) =>
+    Object.fromEntries(values.map((v) => [v.value, v.documents]));
+
+  it("counts every document when nothing is unticked", () => {
+    const shown = visibleScopeValues(options, undefined);
+    expect(counts(shown.genres)).toEqual({ encyclical: 11, "apostolic-letter": 2, "motu-proprio": 1 });
+    expect(counts(shown.issuers)).toEqual({ "pope-leo-xiii": 7, "pope-francis": 7 });
+  });
+
+  it("shows only the chosen pope's kinds, with his counts", () => {
+    const shown = visibleScopeValues(options, { genres: [], issuers: ["pope-francis"] });
+    expect(counts(shown.genres)).toEqual({ encyclical: 7 });
+    // The Pope list is counted by kind, so it still offers Francis to tick back.
+    expect(counts(shown.issuers)).toEqual({ "pope-leo-xiii": 7, "pope-francis": 7 });
+  });
+
+  it("shows only the popes who wrote the chosen kinds", () => {
+    const shown = visibleScopeValues(options, { genres: ["encyclical"], issuers: [] });
+    expect(counts(shown.issuers)).toEqual({ "pope-francis": 3 });
+    expect(counts(shown.genres)).toEqual({ encyclical: 11, "apostolic-letter": 2, "motu-proprio": 1 });
   });
 });

@@ -13,12 +13,13 @@ export type ScopeFacet = "genres" | "issuers";
 export interface ScopeValue {
   readonly value: string;
   readonly label: string;
-  readonly documents: number;
 }
 
 export interface CollectionScopeOptions {
   readonly genres: readonly ScopeValue[];
   readonly issuers: readonly ScopeValue[];
+  /** Published documents per genre and issuer: `documents[genre][issuer]`. */
+  readonly documents: Readonly<Record<string, Readonly<Record<string, number>>>>;
 }
 
 /** One collection's selection as the API takes it: the values searched, absent = all. */
@@ -61,7 +62,8 @@ export function buildCollectionScopes(
   const out: Record<string, CollectionScopeOptions> = {};
   for (const collection of SCOPED_COLLECTIONS) {
     const genres = new Map<string, number>();
-    const issuers = new Map<string, { label: string; documents: number; first: number }>();
+    const issuers = new Map<string, { label: string; first: number }>();
+    const documents: Record<string, Record<string, number>> = {};
     for (const work of works) {
       // A work without a genre is not published (held for permission).
       if (work.collection !== collection || !work.genre) continue;
@@ -71,26 +73,64 @@ export function buildCollectionScopes(
         const year = work.year ?? Number.MAX_SAFE_INTEGER;
         issuers.set(work.issuer, {
           label: work.issuer_label,
-          documents: (seen?.documents ?? 0) + 1,
           first: Math.min(seen?.first ?? Number.MAX_SAFE_INTEGER, year),
         });
+        const row = (documents[work.genre] ??= {});
+        row[work.issuer] = (row[work.issuer] ?? 0) + 1;
       }
     }
     out[collection] = {
-      // Most documents first; "other" always last.
+      // The kind with most documents first; "other" always last.
       genres: [...genres]
         .sort(([a, an], [b, bn]) =>
           Number(a === "other") - Number(b === "other") || bn - an || a.localeCompare(b))
-        .map(([value, documents]) => ({ value, label: scopeGenreLabel(value), documents })),
+        .map(([value]) => ({ value, label: scopeGenreLabel(value) })),
       // Popes in the order of their first document here: the order of their pontificates.
       issuers: [...issuers]
         .sort(([, a], [, b]) => a.first - b.first)
-        .map(([value, { label, documents }]) => ({
-          value, label: scopeIssuerLabel(label), documents,
-        })),
+        .map(([value, { label }]) => ({ value, label: scopeIssuerLabel(label) })),
+      // Keys sorted so the generated file only changes when the counts do.
+      documents: Object.fromEntries(Object.keys(documents).sort().map((genre) => [
+        genre,
+        Object.fromEntries(Object.entries(documents[genre]).sort(([a], [b]) => a.localeCompare(b))),
+      ])),
     };
   }
   return out;
+}
+
+export interface ScopeValueCount extends ScopeValue {
+  readonly documents: number;
+}
+
+/**
+ * The values each list shows for the current selection, with their counts: a kind
+ * counts the documents of the popes still ticked, and a pope the documents of the
+ * kinds still ticked. A value with none is left out, so choosing a pope narrows the
+ * Kind list to that pope's kinds, and choosing a kind narrows the Pope list.
+ */
+export function visibleScopeValues(
+  options: CollectionScopeOptions,
+  excluded: { readonly genres: readonly string[]; readonly issuers: readonly string[] } | undefined,
+): Record<ScopeFacet, ScopeValueCount[]> {
+  const offGenres = new Set(excluded?.genres ?? []);
+  const offIssuers = new Set(excluded?.issuers ?? []);
+  const count = (genre: string, issuer: string) => options.documents[genre]?.[issuer] ?? 0;
+  const genres = options.genres
+    .map((genre) => ({
+      ...genre,
+      documents: options.issuers.reduce((sum, issuer) =>
+        sum + (offIssuers.has(issuer.value) ? 0 : count(genre.value, issuer.value)), 0),
+    }))
+    .filter((genre) => genre.documents > 0);
+  const issuers = options.issuers
+    .map((issuer) => ({
+      ...issuer,
+      documents: options.genres.reduce((sum, genre) =>
+        sum + (offGenres.has(genre.value) ? 0 : count(genre.value, issuer.value)), 0),
+    }))
+    .filter((issuer) => issuer.documents > 0);
+  return { genres, issuers };
 }
 
 /**

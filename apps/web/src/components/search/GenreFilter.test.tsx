@@ -68,6 +68,22 @@ describe("genre and issuer filter (5.1a)", () => {
     expect(scopes()).toBeNull();
   });
 
+  it("choosing a pope narrows the Kind list to his kinds, and the last one shown stays ticked", () => {
+    render(<Harness collections={["papal-documents"]} />);
+    fireEvent.click(cue("Papal Documents"));
+    const kinds = () => screen.getAllByRole("checkbox")
+      .filter((box) => box.closest('[role="group"]')?.getAttribute("aria-label") === "Kind")
+      .map((box) => box.textContent);
+    expect(kinds()).toEqual(["Apostolic letter11", "Apostolic constitution2", "Motu proprio1"]);
+
+    fireEvent.click(screen.getByRole("button", { name: "Only Benedict XVI" }));
+    expect(kinds()).toEqual(["Motu proprio1"]);
+    const motu = screen.getByRole("checkbox", { name: /^Motu proprio/ });
+    expect(motu.getAttribute("aria-disabled")).toBe("true");
+    fireEvent.click(motu);
+    expect(scopes()).toEqual({ "papal-documents": { issuers: ["pope-benedict-xvi"] } });
+  });
+
   it("has no Kind list for a collection with one genre", () => {
     render(<Harness collections={["apostolic-exhortations"]} />);
     fireEvent.click(cue("Apostolic Exhortations"));
