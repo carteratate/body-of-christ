@@ -186,6 +186,10 @@ def test_the_ccc_1471_sentinel_reads_only_the_ccc(page):
     from checks.source_text import CCC_FILE, file_units
     from model import Document, Passage
 
+    from checks.source_text import SOURCES
+
+    if not os.path.exists(os.path.join(SOURCES, "catechism", CCC_FILE)):
+        pytest.skip("needs the vendored CCC source")
     units = file_units("catechism", CCC_FILE)
     [paragraph] = [u.text for u in units if u.region == "body" and u.unit_id == "1471"]
     compendium = C.build(page, questions=3).document
