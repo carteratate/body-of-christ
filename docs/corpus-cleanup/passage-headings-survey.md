@@ -27,8 +27,8 @@ The build issue this proposes is linked from the PR that adds this file.
   `content`, so search, embeddings and IDs do not change. Only the build knows Trent's
   dotted titles, the Catechism's structural titles, papal epigraphs and the chapter tier,
   and a text heuristic in the web app would misread about 400 lines it cannot tell apart. It
-  needs a metadata-only republish of seven collections after the republish lock lifts on
-  4 Dec 2026.
+  needs a metadata-only publish of seven collections, which joins the normal publish queue
+  once it is built.
 - Mock-ups for both themes and both widths are in `docs/screenshots/2026-11-22-passage-headings/`.
 
 ## 1. Survey
@@ -275,9 +275,9 @@ model), sent with each `chunk` event and reader passage, and drawn by one web co
   downwards within a stack, and no marked span ends a passage (which also catches leftover 1).
 - **Cost: a corpus publish.** The release report would show metadata changes only (no new,
   moved or retired passages and no re-embedding) for seven collections: Catechism, councils,
-  the three papal collections, Fathers and medieval. No publish can run until the
-  `republish-2026-10` lock entry is removed after its rollback window closes on 4 Dec 2026
-  (4.1b step 13). It also touches six adapters, the API and the web.
+  the three papal collections, Fathers and medieval. The `republish-2026-10` lock entry is
+  already removed, so nothing holds it back: it joins the normal publish queue once it is
+  built. It also touches six adapters, the API and the web.
 
 **B. Detect headings in the web app.** A `lib/passage-headings.ts` with rules per collection.
 
@@ -290,8 +290,8 @@ model), sent with each `chunk` event and reader passage, and drawn by one web co
 - Levels would be guessed from case and numbering, which the sources use inconsistently, and
   pairs and chapter repeats would be matched by string comparison.
 
-**Recommendation: A**, in one build PR plus the API and web, published with the next
-metadata publish after 4 Dec. Write the web renderer so that it draws marks when present and
+**Recommendation: A**, in one build PR plus the API and web, published as a metadata
+publish through the normal queue. Write the web renderer so that it draws marks when present and
 nothing otherwise, with no heuristic fallback, so collections switch over cleanly when
 their marks arrive.
 
