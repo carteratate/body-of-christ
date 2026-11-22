@@ -125,7 +125,7 @@ def _sentence_case(text: str) -> str:
     left to `_ALWAYS_CAPITAL`."""
     out = text.lower()
     out = re.sub(r"(^|[.!?]\s+)([a-z])", lambda m: m.group(1) + m.group(2).upper(), out)
-    for word in _ALWAYS_CAPITAL:
+    for word in sorted(_ALWAYS_CAPITAL, key=len, reverse=True):   # "Mother of God" first
         # "St." ends in no word character, so its end is not a word boundary.
         end = "" if word.endswith(".") else r"\b"
         out = re.sub(rf"\b{re.escape(word.lower())}{end}", word, out)
@@ -203,16 +203,21 @@ def _life_headings(arguments) -> dict[str, str]:
 # drops them, and the checks' extractor (`checks.source_text.thml_units`) reads them so.
 NOT_BODY_CLASSES = {"teresa-castle2.xml": {"Centered": "heading", "Outline": "apparatus"}}
 HEADING_DIVS = {"teresa-life.xml": frozenset({"v"})}
+# Single paragraphs by id: in the Life, Báñez's signed note on the manuscript after
+# Teresa's last line (ch. xl) and the transcriber's page marker "{p. 479}" (Relation XI).
+NOT_BODY_PARAGRAPHS = {"teresa-life.xml": {"viii.xli-p58": "apparatus",
+                                           "ix.xi-p12": "apparatus"}}
 
 
-def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str]]:
-    """`NOT_BODY_CLASSES` and `HEADING_DIVS` for a source file named as the checks name
-    it (`../theologians/<file>`); empty for any other file."""
+def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str], dict[str, str]]:
+    """`NOT_BODY_CLASSES`, `HEADING_DIVS` and `NOT_BODY_PARAGRAPHS` for a source file
+    named as the checks name it (`../theologians/<file>`); empty for any other file."""
     prefix = f"../{SOURCE_DIR}/"
     if not source_file.startswith(prefix):
-        return {}, frozenset()
+        return {}, frozenset(), {}
     name = source_file[len(prefix):]
-    return NOT_BODY_CLASSES.get(name, {}), HEADING_DIVS.get(name, frozenset())
+    return (NOT_BODY_CLASSES.get(name, {}), HEADING_DIVS.get(name, frozenset()),
+            NOT_BODY_PARAGRAPHS.get(name, {}))
 
 
 class _TeresaEditor(Editor):
@@ -225,7 +230,7 @@ class _TeresaEditor(Editor):
 
     The Castle also prints the first word of a chapter's first paragraph in capitals
     ("1. WHILE I was begging"), a printer's opening, which is set in normal case ("1.
-    While I was begging"). Two of the Life's notes are called by a bracketed number,
+    While I was begging"; "1. I HAVE known" to "1. I have known"). Two of the Life's notes are called by a bracketed number,
     which leaves with them. No paragraph of either file opens with a word that is
     capitals of its own. A caller printed as a plain digit is read without it
     (`ingest.editorial.PLAIN_CALLERS`)."""
@@ -235,7 +240,8 @@ class _TeresaEditor(Editor):
         for block in elem:
             if block.tag != "p":
                 continue
-            kind = NOT_BODY_CLASSES.get(self.source_file, {}).get(block.get("class"))
+            kind = (NOT_BODY_PARAGRAPHS.get(self.source_file, {}).get(block.get("id"))
+                    or NOT_BODY_CLASSES.get(self.source_file, {}).get(block.get("class")))
             kind = {"apparatus": "summary"}.get(kind, kind)
             if kind and id(block) not in edit.dropped:
                 edit.dropped[id(block)] = kind
@@ -249,8 +255,7 @@ class _TeresaEditor(Editor):
             marked = _NOTE_CALL.sub("", marked)
             for printed, without in PLAIN_CALLERS.get((callers, block.get("id")), ()):
                 marked = marked.replace(printed, without)
-            return _OPENING_CAPS.sub(lambda m: m.group(1) + m.group(2).capitalize(),
-                                     marked, count=1), notes
+            return _OPENING_CAPS.sub(_opening, marked, count=1), notes
 
         edit.edit = opened
         return edit
@@ -259,8 +264,14 @@ class _TeresaEditor(Editor):
 # A note's number printed in brackets just before the note (the Life, ch. xxvi and xxix):
 # "vision.[8]" with note 8 after it. The note leaves; so does its call.
 _NOTE_CALL = re.compile(r"\[\d+\](?=\u2063)")
-# A printer's opening: the paragraph's first word (after its number) in capitals.
-_OPENING_CAPS = re.compile(r"^(\s*(?:\d+\.\s+)?)([A-Z][A-Z’']+)(?![a-z])")
+# A printer's opening: the paragraph's first word (after its number) in capitals, or the
+# word after an opening "I" ("1. I HAVE known", III ch. ii).
+_OPENING_CAPS = re.compile(r"^(\s*(?:\d+\.\s+)?)(I\s+)?([A-Z][A-Z’']+)(?![a-z])")
+
+
+def _opening(m: re.Match) -> str:
+    word = m.group(3).lower() if m.group(2) else m.group(3).capitalize()
+    return m.group(1) + (m.group(2) or "") + word
 
 
 WORKS: tuple[ThmlWork, ...] = (

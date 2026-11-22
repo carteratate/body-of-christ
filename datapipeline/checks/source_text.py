@@ -279,7 +279,7 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     withheld = withheld_chapters()
     excluded = {d for f, d in excluded_divs() if f == source_file}
     # 5.6b's headings and editors' paragraphs inside the author's chapters.
-    class_regions, heading_divs = theologians.not_body(source_file)
+    class_regions, heading_divs, paragraph_regions = theologians.not_body(source_file)
     quotes = {}
     for q in kept_quotes(source_file):
         quotes.setdefault(q.first, []).append(q)
@@ -315,7 +315,9 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                         text = text.replace(printed, without)
                     own = "apparatus" if region == "body" and (
                         _paragraph_sha1(text) in removed or div_id in own_text) else region
-                    if own == "body" and child.get("class") in class_regions:
+                    if own == "body" and child.get("id") in paragraph_regions:
+                        own = paragraph_regions[child.get("id")]
+                    elif own == "body" and child.get("class") in class_regions:
                         own = class_regions[child.get("class")]
                     if own == "body" and (mostly_foreign(text)
                                           or (source_file, div_id) in withheld):

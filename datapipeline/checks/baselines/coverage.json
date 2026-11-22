@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "worktree-bridge-cse_01MzvQViNfxsHobrHPrfit6W bb4816e",
+  "medieval": "feat/5.6b-teresa ff4fc04",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1118,8 +1118,8 @@
    "pct": 100.0
   },
   "medieval/../theologians/teresa-life.xml": {
-   "body_chars": 833568,
-   "covered_chars": 833568,
+   "body_chars": 833249,
+   "covered_chars": 833249,
    "pct": 100.0
   },
   "medieval/consolation-of-philosophy.xml": {
@@ -2670,8 +2670,8 @@
   "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2": {
    "collection": "medieval",
    "source_file": "../theologians/teresa-life.xml",
-   "body_chars": 833568,
-   "covered_chars": 833568,
+   "body_chars": 833249,
+   "covered_chars": 833249,
    "pct": 100.0
   },
   "bb35c577-ee5b-546e-abb6-41a0764cd6a7": {

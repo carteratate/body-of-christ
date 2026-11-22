@@ -49,7 +49,7 @@ def test_two_documents_under_the_collection_key():
     docs = _built()
     assert sorted(docs) == ["The Interior Castle", "The Life of St. Teresa of Jesus"]
     for d in docs.values():
-        assert d.collection == T.COLLECTION == "medieval"
+        assert d.collection == T.COLLECTION
         assert d.author == "Teresa of Avila"
         # The source key is the file's path under sources/, so 5.1b.3's rename keeps it.
         assert "../" + d.metadata["source_key"] == d.metadata["source_file"]
@@ -91,6 +91,10 @@ def test_every_castle_chapter_keeps_teresas_heading():
     assert chapters["x.v"].startswith("Treats of how God suspends the soul in prayer")
 
 
+def test_an_opening_i_keeps_the_next_word_in_normal_case():
+    assert "1. I have known some" in _text(_castle())
+
+
 def test_castle_reads_note_255s_caller_out():
     text = _text(_castle())
     assert "described later on. It takes place far" in text
@@ -124,6 +128,10 @@ def test_life_leaves_out_the_editors_matter():
     assert "great-grandmother on the father's side was Teresa Sanchez" not in text
     assert "Childhood and Early Impressions. The Blessing" not in text   # Lewis's argument
     assert "Relations or Manifestations" not in text                    # their title page
+    assert "This date refers to the first account" not in text          # Báñez's note
+    assert "Fray Do Bañes" not in text
+    assert "{p. 479}" not in text                                       # page marker
+    assert text.count("This book was finished in June, 1562.") == 1
     # A bracketed note call leaves with its note (ch. xxvi).
     assert "I had never had a vision. But, a very few days afterwards" in text
 
@@ -146,15 +154,19 @@ def test_genres_by_source_key():
 def test_sentence_case_of_a_heading_in_capitals():
     assert T._sentence_case("OF THE FOURTH MANSIONS. HOW GOD AND OUR LORD SPEAK. I SAY.") \
         == "Of the fourth mansions. How God and Our Lord speak. I say."
+    assert T._sentence_case("AS ALSO THE GLORIOUS MOTHER OF GOD") \
+        == "As also the glorious Mother of God"
     assert T._sentence_case("HOW ADVANTAGEOUS IT WAS FOR ST. TERESA") \
         == "How advantageous it was for St. Teresa"
 
 
 def test_the_extractor_reads_the_headings_as_the_adapter_does():
-    classes, divs = T.not_body("../theologians/teresa-castle2.xml")
-    assert classes == {"Centered": "heading", "Outline": "apparatus"} and not divs
-    assert T.not_body("../theologians/teresa-life.xml") == ({}, frozenset({"v"}))
-    assert T.not_body("teresa-life.xml") == ({}, frozenset())
+    classes, divs, paragraphs = T.not_body("../theologians/teresa-castle2.xml")
+    assert classes == {"Centered": "heading", "Outline": "apparatus"}
+    assert not divs and not paragraphs
+    assert T.not_body("../theologians/teresa-life.xml") == (
+        {}, frozenset({"v"}), {"viii.xli-p58": "apparatus", "ix.xi-p12": "apparatus"})
+    assert T.not_body("teresa-life.xml") == ({}, frozenset(), {})
 
 
 def test_source_lock_reads_the_theologians_folder():
