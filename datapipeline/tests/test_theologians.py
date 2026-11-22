@@ -82,6 +82,15 @@ def test_castle_leaves_out_the_editors_and_keeps_teresas_headings_out_of_the_tex
     assert first.metadata["book"] == "The First Mansions"
 
 
+def test_every_castle_chapter_keeps_teresas_heading():
+    chapters = {p.chapter_key: p.metadata.get("heading") for p in _castle().passages
+                if p.metadata.get("book")}
+    assert len(chapters) == 27 and all(chapters.values())
+    # An empty paragraph stands before the heading in IV ch. ii and VI ch. iv.
+    assert chapters["viii.ii"].startswith("Continues the same subject")
+    assert chapters["x.v"].startswith("Treats of how God suspends the soul in prayer")
+
+
 def test_castle_reads_note_255s_caller_out():
     text = _text(_castle())
     assert "described later on. It takes place far" in text
@@ -137,6 +146,8 @@ def test_genres_by_source_key():
 def test_sentence_case_of_a_heading_in_capitals():
     assert T._sentence_case("OF THE FOURTH MANSIONS. HOW GOD AND OUR LORD SPEAK. I SAY.") \
         == "Of the fourth mansions. How God and Our Lord speak. I say."
+    assert T._sentence_case("HOW ADVANTAGEOUS IT WAS FOR ST. TERESA") \
+        == "How advantageous it was for St. Teresa"
 
 
 def test_the_extractor_reads_the_headings_as_the_adapter_does():

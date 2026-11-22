@@ -49,9 +49,8 @@ class ThmlWork:
     year: int                  # when the author finished it
     translator: str
     translation_year: int
-    chapters: Callable         # (root, parent_map) -> [(book, div, ChapterPlan)]
+    chapters: Callable         # root -> [(book, div, ChapterPlan)]
     genre: str                 # D5's writer value, or `other` (registry.genres)
-    date_display: str | None = None
 
     @property
     def source_key(self) -> str:
@@ -88,7 +87,7 @@ _CASTLE_EDITOR_DIVS = frozenset({"x.iii"})
 _CHAPTER_TITLE = re.compile(r"^Chapter ([IVXLC]+)\.\s+(.+?)\.?$")
 
 
-def _castle_chapters(root, parent_map):
+def _castle_chapters(root):
     out = [(None, _div(root, "iv"), ChapterPlan(label="Preface"))]
     for mansion_id in _CASTLE_MANSIONS:
         mansion = _div(root, mansion_id)
@@ -114,10 +113,9 @@ def _castle_heading(chapter) -> str | None:
     """Teresa's heading of a Castle chapter ("This chapter treats of…"), printed in
     capitals as the chapter's first `Centered` paragraph, in sentence case."""
     for block in chapter:
-        if block.tag == "p" and block.get("class") == "Centered":
-            return _sentence_case(_text(block))
-        if block.tag == "p":
-            return None
+        if block.tag != "p" or not _text(block):
+            continue          # an empty paragraph stands before it in VI ch. ii and IV
+        return _sentence_case(_text(block)) if block.get("class") == "Centered" else None
     return None
 
 
@@ -128,7 +126,9 @@ def _sentence_case(text: str) -> str:
     out = text.lower()
     out = re.sub(r"(^|[.!?]\s+)([a-z])", lambda m: m.group(1) + m.group(2).upper(), out)
     for word in _ALWAYS_CAPITAL:
-        out = re.sub(rf"\b{re.escape(word.lower())}\b", word, out)
+        # "St." ends in no word character, so its end is not a word boundary.
+        end = "" if word.endswith(".") else r"\b"
+        out = re.sub(rf"\b{re.escape(word.lower())}{end}", word, out)
     return roman_capitals(out)
 
 
@@ -136,7 +136,7 @@ _ALWAYS_CAPITAL = (
     "God", "Our Lord", "Lord", "His Majesty", "Majesty", "Christ", "Jesus", "Holy Ghost",
     "Holy Spirit", "Blessed Trinity", "Trinity", "He", "Him", "His", "Himself", "Bridegroom",
     "Spouse", "King", "Teresa", "Carmel", "Discalced", "Carmelite", "Martha", "Mary",
-    "Magdalen", "St.", "Saint", "Church", "Catholic", "Gospel", "Communion", "I")
+    "Magdalen", "Mother of God", "Saviour", "St.", "Saint", "Church", "Catholic", "Gospel", "Communion", "I")
 
 
 # The Life (Lewis, 1904): Teresa's prologue and forty chapters, then the Relations she
@@ -149,7 +149,7 @@ _FIRST_SENTENCE = re.compile(r"(?<!\bSt)\.\s+")
 _LIFE_ARGUMENT = re.compile(r"^(?:J\.H\.S\.\s*)?Chapter ([IVXLC]+)\.\s*[—-]+\s*(.+)$")
 
 
-def _life_chapters(root, parent_map):
+def _life_chapters(root):
     headings = _life_headings(_div(root, "v"))
     life, relations = _div(root, "viii"), _div(root, "ix")
     out = []
@@ -281,11 +281,10 @@ def build_work(work: ThmlWork) -> Document:
     editor = _TeresaEditor(work.file, work.source_key, parent_map)
     doc = make_doc(collection=COLLECTION, filename=f"../{SOURCE_DIR}/{work.file}",
                    author=work.author, title=work.title,
-                   chapters=work.chapters(root, parent_map), source_key=work.source_key,
+                   chapters=work.chapters(root), source_key=work.source_key,
                    year=work.year, extra_meta={"source_url": work.url}, editor=editor)
     if doc is None:
         raise ValueError(f"{work.file}: no passages")
-    doc.date_display = work.date_display
     doc.translation = f"{work.translator} ({work.translation_year})"
     return doc
 
