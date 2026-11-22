@@ -170,6 +170,7 @@ function SearchPageInner({
     if (!searchExperienceSlot) experience.send({ type: "reset" });
     setSearchValue("");
     setVisibleCollections([]);
+    setDraft((current) => transitionSearchDraft(current, { type: "scopes-cleared" }));
   }, [experience, searchExperienceSlot, searchKey]);
 
   // ── Search ────────────────────────────────────────────────────────────────

@@ -120,7 +120,7 @@ export function saveGuestSearch(continuity: GuestContinuitySnapshot) {
 }
 
 /** The request's filters as the API takes them; `scopes` only when something narrows. */
-function filtersFor(request: SearchRequest): SearchFilters {
+export function filtersFor(request: SearchRequest): SearchFilters {
   return {
     collections: [...request.collections],
     translation: request.translation,

@@ -2,7 +2,10 @@
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { readGuestSearch, saveGuestSearch, savedSearchRequest } from "./useSearchPageExperience";
+import type { SearchFilters } from "@/lib/api";
+import { createSearchExperience } from "./runtime";
+import type { SearchRequest } from "./types";
+import { filtersFor, readGuestSearch, saveGuestSearch, savedSearchRequest } from "./useSearchPageExperience";
 
 const SCOPES = { encyclicals: { genres: ["encyclical", "apostolic-letter"], issuers: ["pope-leo-xiii"] } };
 const FALLBACK = { translation: "CPDV", quota: 4 };
@@ -24,6 +27,47 @@ describe("a restored search keeps its genre and issuer selection (5.1a)", () => 
       query: "grace", filters: { collections: ["encyclicals"], translation: "CPDV", quota: 4 }, results: [],
     }, FALLBACK);
     expect(request).not.toHaveProperty("scopes");
+  });
+});
+
+describe("a signed-in search's selection survives submit, save and restore (5.1a)", () => {
+  it("restores the selection the search was sent with", async () => {
+    const sent: SearchFilters[] = [];
+    const runtime = createSearchExperience({
+      audience: {
+        kind: "authenticated",
+        async search(_credential, request) {
+          sent.push(filtersFor(request));
+        },
+      },
+      credentials: { current: () => "token" },
+      savedSearch: {
+        // The API stores the submitted filters (plus outcomes) and returns them on restore.
+        async restore() {
+          const stored = { ...sent[0], quota: 4, outcome: "success", collection_outcomes: {} };
+          return {
+            searchId: "saved",
+            request: savedSearchRequest({ query: "just wage", filters: stored, results: [] }, FALLBACK),
+            passages: [],
+            warning: null,
+          };
+        },
+        classifyFailure: () => ({ message: "failed", code: "unknown", stage: "restore", retryable: false }),
+      },
+    });
+    const request: SearchRequest = {
+      query: "just wage", collections: ["encyclicals"], translation: "CPDV", quota: 4, scopes: SCOPES,
+    };
+
+    runtime.send({ type: "submit", request });
+    expect(sent[0].scopes).toEqual(SCOPES);
+    runtime.send({ type: "restore", searchId: "saved" });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const snapshot = runtime.read();
+    expect(snapshot.status).toBe("restored-passages");
+    if (snapshot.status !== "restored-passages") return;
+    expect(snapshot.request.scopes).toEqual(SCOPES);
   });
 });
 

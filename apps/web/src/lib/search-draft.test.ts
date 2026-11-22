@@ -205,6 +205,15 @@ describe("genre and issuer scopes (5.1a)", () => {
     expect(draft.scopes).toBeUndefined();
   });
 
+  it("New Search clears every selection and keeps the rest of the draft", () => {
+    let draft = transitionSearchDraft(papal(), { type: "genre-toggled", collection: "encyclicals", genre: "other" });
+    draft = transitionSearchDraft(draft, { type: "quota-selected", quota: 5 });
+    const cleared = transitionSearchDraft(draft, { type: "scopes-cleared" });
+    expect(cleared.scopes).toBeUndefined();
+    expect(cleared).toMatchObject({ collections: ["encyclicals", "bible"], quota: 5, translation: "CPDV" });
+    expect(transitionSearchDraft(cleared, { type: "scopes-cleared" })).toBe(cleared);
+  });
+
   it("a genre selection does not change focused eligibility", () => {
     let draft = createSearchDraft({
       preferred_translation: "CPDV", default_collections: ["encyclicals"], default_quota: 10, last_standard_quota: 4,

@@ -36,7 +36,8 @@ export type SearchDraftEvent =
   | { readonly type: "genre-toggled"; readonly collection: string; readonly genre: string }
   | { readonly type: "issuer-toggled"; readonly collection: string; readonly issuer: string }
   | { readonly type: "scope-only"; readonly collection: string; readonly facet: ScopeFacet; readonly value: string }
-  | { readonly type: "scope-all"; readonly collection: string; readonly facet: ScopeFacet };
+  | { readonly type: "scope-all"; readonly collection: string; readonly facet: ScopeFacet }
+  | { readonly type: "scopes-cleared" };
 
 const VALID_TRANSLATIONS = new Set(["CPDV", "douay-rheims"]);
 const STANDARD_QUOTAS = new Set<unknown>([3, 4, 5]);
@@ -190,6 +191,12 @@ export function transitionSearchDraft(draft: SearchDraft, event: SearchDraftEven
       return transitionScope(draft, event.collection, event.facet, { only: event.value });
     case "scope-all":
       return transitionScope(draft, event.collection, event.facet, { all: true });
+    case "scopes-cleared":
+      // New Search starts over: the filter is hidden behind the caret, so it must not
+      // carry into the next question unseen. Collections, quota and translation stay.
+      return draft.scopes === undefined
+        ? draft
+        : buildSearchDraft(draft.collections, draft.translation, draft.quota, draft.lastStandardQuota);
   }
 
   if (event.type === "collection-toggled") {

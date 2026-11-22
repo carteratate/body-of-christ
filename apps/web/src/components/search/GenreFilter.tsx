@@ -49,7 +49,8 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
         left,
         bottom: window.innerHeight - rect.top + GAP,
         pointer: centre - left,
-        maxHeight: Math.max(160, rect.top - GAP - MARGIN - 48),
+        // The room above the caret, less the header; never taller than the screen allows.
+        maxHeight: Math.max(0, rect.top - GAP - MARGIN - 48),
       });
     }
     measure();
