@@ -5,6 +5,8 @@ import asyncio
 import logging
 from typing import Mapping
 
+from qdrant_client.http.exceptions import UnexpectedResponse
+
 from app.config import settings
 from app.rag.collection_scope import CollectionScope, reads
 from app.rag.qdrant_client import (
@@ -55,13 +57,14 @@ async def _search_vector(
     # An old papal key reads the new value's genres only where `genre` is indexed
     # (5.1b.1). The answer is cached for five minutes, so after a rollback points the
     # alias at a collection without the index, strict mode refuses the genre filter
-    # until the cache expires. Such a refusal forgets the cache and runs today's
-    # filter, which is all a collection without the index can match.
+    # until the cache expires. That refusal (400, naming `genre`) forgets the cache and
+    # runs today's filter, which is all a collection without the index can match. Any
+    # other failure takes the usual path: dropping the branch would hide new values.
     by_genre = reads(collection).part is not None and await genre_indexed()
     try:
         response = await _query(by_genre)
-    except Exception as exc:
-        if not by_genre:
+    except UnexpectedResponse as exc:
+        if not (by_genre and exc.status_code == 400 and b"genre" in (exc.content or b"")):
             raise
         logger.warning("retrieve_vector: %s genre filter refused (%s); retrying without it",
                        collection, exc.__class__.__name__)

@@ -13,10 +13,12 @@ import uuid
 from unittest.mock import AsyncMock, patch
 
 import asyncpg
+import httpx
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from qdrant_client import AsyncQdrantClient
+from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.models import (
     Distance, FieldCondition, Filter, MatchValue, PointStruct, VectorParams,
 )
@@ -454,7 +456,10 @@ async def test_a_refused_genre_filter_falls_back_to_todays(qdrant, monkeypatch):
     async def strict(**kwargs):
         filters.append(kwargs["query_filter"])
         if kwargs["query_filter"].should:
-            raise RuntimeError("Bad request: Index required but not found for \"genre\"")
+            raise UnexpectedResponse(
+                status_code=400, reason_phrase="Bad Request", headers=httpx.Headers(),
+                content=b'{"status":{"error":"Bad request: Index required but not found'
+                        b' for \\"genre\\""}}')
         return await real(**kwargs)
 
     monkeypatch.setattr(client, "query_points", strict)
@@ -464,3 +469,18 @@ async def test_a_refused_genre_filter_falls_back_to_todays(qdrant, monkeypatch):
     assert qdrant_client._genre_indexed is None
     assert {row["document_id"] for row in rows} == (
         {ENC, EG} if qdrant == "before" else set())
+
+
+async def test_another_failure_is_not_retried_without_the_new_value(qdrant, monkeypatch):
+    """A timeout is not a missing index: rerunning without the genre branch would
+    silently drop every rewritten papal passage."""
+    client = retrieve_vector.get_qdrant_client()
+
+    async def timeout(**kwargs):
+        raise TimeoutError
+
+    monkeypatch.setattr(client, "query_points", timeout)
+    with pytest.raises(TimeoutError):
+        await retrieve_vector._search_vector(
+            CollectionScope("encyclicals"), [1.0, 0.0, 0.0, 0.0], 10, "query")
+    assert qdrant_client._genre_indexed is True
