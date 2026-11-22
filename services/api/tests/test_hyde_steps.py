@@ -12,7 +12,9 @@ from app.rag.constants import VALID_COLLECTIONS
 
 
 def test_every_known_non_bible_collection_has_its_own_hyde_prompt():
-    assert set(hyde_s25._COLLECTION_HYDE_PROMPTS) == VALID_COLLECTIONS - {"bible"}
+    # `papal` has no prompt of its own: it uses its kinds' prompts (5.1b.1).
+    assert set(hyde_s25._COLLECTION_HYDE_PROMPTS) == VALID_COLLECTIONS - {"bible", "papal"}
+    assert set(hyde_s25.papal_hyde_kinds()) <= set(hyde_s25._COLLECTION_HYDE_PROMPTS)
 
 
 @pytest.mark.asyncio

@@ -55,7 +55,9 @@ def _row(anchor, pid, **extra):
 
 
 def test_source_adapter_registry_exactly_matches_production_collections():
-    assert set(SOURCE_ADAPTERS) == VALID_COLLECTIONS == {
+    # The values stored today. The API also accepts the new keys 5.1b.3 will write
+    # (5.1b.1), so it accepts every one of these but is no longer equal to them.
+    assert set(SOURCE_ADAPTERS) == {
         "apostolic-exhortations",
         "bible",
         "canon-law",
@@ -67,6 +69,7 @@ def test_source_adapter_registry_exactly_matches_production_collections():
         "papal-documents",
         "summa",
     }
+    assert set(SOURCE_ADAPTERS) <= VALID_COLLECTIONS
     assert all(callable(adapter) for adapter in SOURCE_ADAPTERS.values())
 
 
