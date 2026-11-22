@@ -283,8 +283,8 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
     // The attributed author, so a copied Pseudo-Justin passage is not credited to Justin.
-    // Not when the reference already names them (a papal reference can start "Pope Leo X — ").
-    const citation = includeAuthorInCopy && !primaryReference.includes(attribution ?? "")
+    // Not when the reference already starts with them (a papal one can: "Pope Leo X — ").
+    const citation = includeAuthorInCopy && !primaryReference.startsWith(attribution ?? "")
       ? `${primaryReference} (${attribution})` : primaryReference;
     // The role goes in the citation, not the body: the body is the passage as written,
     // and the clipboard is the one place this text leaves the app entirely.

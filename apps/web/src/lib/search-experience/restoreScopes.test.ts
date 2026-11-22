@@ -183,4 +183,13 @@ describe("old outcomes and passages read in today's keys (5.1b.2)", () => {
     expect(restored?.continuity.passages[0].source.collection).toBe("church-law");
     expect(restored?.continuity.collectionOutcomes).toEqual({ papal: "results", "church-law": "results" });
   });
+
+  it("falls back to its passages' collections when no stored key is known", () => {
+    sessionStorage.setItem("theocorpus-guest-current-results", JSON.stringify({
+      savedAt: Date.now(), query: "grace", passages: [{ chunk_id: "c", source: { collection: "medieval" } }],
+      collections: ["saints"], translation: "CPDV", quota: 4, visibleCollections: [], outcome: "success",
+      collectionOutcomes: {},
+    }));
+    expect(readGuestSearch()?.continuity.request.collections).toEqual(["theologians"]);
+  });
 });

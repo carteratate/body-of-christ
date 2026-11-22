@@ -75,7 +75,12 @@ export function readGuestSearch(): RestoredGuestSearch | null {
     const snapshot = value as unknown as Omit<GuestContinuityStorage, "passages">;
     // A search saved by the page before 5.1b.2 carries old collection keys.
     const filters = canonicalSearchFilters(snapshot.collections, snapshot.scopes);
-    const collections = filters.collections.filter((c) => ALL_COLLECTION_KEYS.includes(c));
+    const known = filters.collections.filter((c) => ALL_COLLECTION_KEYS.includes(c));
+    // As a signed-in restore does: with no known key left, the passages say what was searched.
+    const collections = known.length > 0
+      ? known
+      : canonicalKeys((passages as Passage[]).map((passage) => passage.source.collection))
+        .filter((c) => ALL_COLLECTION_KEYS.includes(c));
     const scopes = parseScopeSelections(filters.scopes, collections);
     const visibleCollections = canonicalKeys(snapshot.visibleCollections);
     return {

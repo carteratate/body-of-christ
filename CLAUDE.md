@@ -612,7 +612,7 @@ What focused changes, all derived from the plan:
 
 | | Standard | Focused |
 |---|---|---|
-| Collections | 1–10 | exactly 1 |
+| Collections | 1–8 (the API also accepts the five old keys until 5.1b.4) | exactly 1 |
 | `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
 | `max_passages_per_source` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |
