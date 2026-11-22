@@ -25,7 +25,7 @@ for all ten collections live in [`SOURCES.md`](SOURCES.md). The adapters registe
 | `church-fathers` | `ingest/church_fathers.py` |
 | `councils` | `ingest/councils.py` |
 | `encyclicals` | `ingest/encyclicals.py` |
-| `medieval` | `ingest/medieval.py` |
+| `medieval` | `ingest/medieval.py`, then `ingest/theologians.py` (5.6b's theologians and spiritual writers, from `sources/theologians/`; the key `ingest.theologians.COLLECTION` becomes `theologians` in 5.1b.3) |
 | `papal-documents` | `ingest/papal_documents.py` |
 | `summa` | `ingest/summa.py` |
 

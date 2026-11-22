@@ -15,6 +15,7 @@ Status of each collection's source material and its publication to both stores
 | **canon-law** | local `sources/canon-law/*.html` (vendored from vatican.va) | ✅ | single doc; one passage per canon (1,747); Book by canon-range; Book/Title/Chapter chapters (233) |
 | **councils** | local `sources/councils/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per council / Vatican II document (36); canon + §-paragraph passages |
 | **medieval** | local `sources/medieval/*.xml` (vendored from ccel.org ThML) | ✅ | one doc per (author, work) (6); reuses the church-fathers ThML builder |
+| **medieval** (5.6b) | local `sources/theologians/*.xml` (CCEL ThML, R6's downloads), one `ingest.theologians.WORKS` entry each | not yet | `ingest/theologians.py`; Teresa's Interior Castle (Stanbrook 1921) and Life with the Relations (Lewis 1904); editors' matter left out per work; the author's long chapter headings in `metadata.heading` |
 
 **Vendoring:** web-sourced collections are vendored to `sources/<collection>/`
 (gitignored, with a `manifest.json` recording provenance) via
