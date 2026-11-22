@@ -103,8 +103,7 @@ def test_a_key_5_1b_leaves_alone_gives_todays_filters(key, indexed):
     assert (scope.to_qdrant_filter(SEARCHABLE, genre_indexed=indexed).model_dump_json()
             == today.model_dump_json())
     assert scope.collection_sql("d", 4, genre_column=indexed) == ("d.collection = $1", key, [])
-    assert retrieve_fts.build_sql(ALL, "min_match") == retrieve_fts.build_sql(
-        ALL, "min_match", "", "d.collection = $1")
+    assert scope.collection_sql("d", 4, genre_column=indexed)[0] == retrieve_fts.TODAYS_COLLECTION_SQL
 
 
 @pytest.mark.parametrize("key", PAPAL_OLD)
@@ -267,6 +266,7 @@ def _preferences_client():
 
 @pytest.mark.parametrize("stored, collections, quota", [
     (["bible", "saints", "papal"], ["bible", "papal"], 4),
+    (["bible", "saints", None], ["bible"], 4),
     (["saints"], DEFAULT_COLLECTIONS, 4),
     (["saints", "summa"], ["summa"], 10),
 ])
@@ -278,6 +278,21 @@ def test_get_preferences_drops_a_stored_key_it_does_not_know(stored, collections
     assert response.status_code == 200
     assert response.json()["default_collections"] == collections
     assert response.json()["default_quota"] == quota
+
+
+@pytest.mark.parametrize("stored, saved, label", [
+    ("encyclicals", ["papal", "bible"], "papal"),
+    ("papal", ["papal"], "papal"),
+    ("canon-law", ["church-law"], "church-law"),
+    ("church-law", ["canon-law"], "canon-law"),
+    ("encyclicals", ["encyclicals"], "encyclicals"),
+    ("papal", ["encyclicals"], "papal"),
+    ("summa", None, "summa"),
+])
+def test_a_restored_passage_takes_the_saved_requests_key(stored, saved, label):
+    from app.rag.collection_scope import requested_label
+
+    assert requested_label(stored, saved) == label
 
 
 def test_a_focused_preference_left_without_one_collection_returns_to_standard():

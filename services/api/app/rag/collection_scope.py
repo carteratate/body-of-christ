@@ -44,6 +44,17 @@ def reads(key: str) -> StoredRead:
     return StoredRead((key,))
 
 
+def requested_label(stored: str, requested) -> str:
+    """The key of `requested` whose search reads `stored` whole, for labelling a saved
+    passage as its search did; the stored value when none does. An old papal key reads
+    the new value only by genre, which a stored value alone cannot settle, so after the
+    rewrite such a passage keeps the new value."""
+    for key in requested if isinstance(requested, list) else ():
+        if isinstance(key, str) and stored in reads(key).whole:
+            return key
+    return stored
+
+
 @dataclass(frozen=True)
 class CollectionScope:
     collection: str

@@ -57,10 +57,11 @@ class PreferencesResponse(PreferenceValues):
         reads are tolerant; a PUT still refuses an unknown key."""
         stored = list(row["default_collections"] or [])
         collections = [c for c in dict.fromkeys(stored) if c in VALID_COLLECTIONS]
-        if len(collections) != len(set(stored)):
+        unknown = [c for c in stored if c not in VALID_COLLECTIONS]
+        if unknown:
             logger.warning(
                 "preferences: dropped unknown stored collection keys",
-                extra={"unknown_collection_keys": sorted(set(stored) - VALID_COLLECTIONS)},
+                extra={"unknown_collection_keys": [str(c) for c in unknown]},
             )
         collections = collections or list(DEFAULT_COLLECTIONS)
         quota = row["default_quota"]
