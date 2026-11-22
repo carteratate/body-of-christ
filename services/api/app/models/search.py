@@ -9,9 +9,22 @@ from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 SearchQuota = Literal[3, 4, 5, 10]
 
 
+class ScopeSelection(BaseModel):
+    """What to search inside one collection (5.1a). An absent list is every value."""
+    genres: Optional[list[str]] = Field(default=None, max_length=50)
+    issuers: Optional[list[str]] = Field(default=None, max_length=100)
+
+
 class SearchFilters(BaseModel):
     collections: list[str]
     translation: str = "CPDV"
+    # Per collection; absent is the whole of every collection.
+    scopes: Optional[dict[str, ScopeSelection]] = None
+
+    def scope_filters(self) -> dict[str, dict] | None:
+        if not self.scopes:
+            return None
+        return {col: sel.model_dump() for col, sel in self.scopes.items()}
 
 
 class SearchRequest(BaseModel):

@@ -29,7 +29,7 @@ from app.models.search import (
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 from app.rag.pipeline import run_search_pipeline
-from app.rag.search_plan import SearchPlan, SearchPlanError, resolve_search_plan
+from app.rag.search_plan import SearchPlan, SearchPlanError, http_detail, resolve_search_plan
 from app.rag.steps import document_facts, fetch_context, stitch
 from app.rag.steps.types import RankedChunk
 
@@ -49,10 +49,12 @@ async def _resolve_search_plan(body: SearchRequest) -> SearchPlan:
     as well as requests with no valid collections, cannot consume an allowance.
     """
     try:
-        return resolve_search_plan(body.filters.collections, body.quota)
+        return resolve_search_plan(
+            body.filters.collections, body.quota, body.filters.scope_filters(),
+        )
     except SearchPlanError as exc:
         status_code = 400 if exc.code == "no_valid_collections" else 422
-        raise HTTPException(status_code=status_code, detail=exc.detail) from exc
+        raise HTTPException(status_code=status_code, detail=http_detail(exc)) from exc
 
 
 async def check_search_rate_limit(

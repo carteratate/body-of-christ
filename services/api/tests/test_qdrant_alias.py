@@ -23,6 +23,7 @@ from qdrant_client.models import (
 from app import main
 from app.config import settings
 from app.rag import dedup, qdrant_client
+from app.rag.collection_scope import CollectionScope
 from app.rag.steps import retrieve_vector
 from app.rag.steps.types import RankedChunk
 
@@ -88,7 +89,7 @@ async def qdrant(request, monkeypatch):
 
 
 async def test_vector_search_through_the_alias_hides_only_unsearchable(qdrant):
-    rows = await retrieve_vector._search_vector("bible", VECTOR, limit=10, label="query")
+    rows = await retrieve_vector._search_vector(CollectionScope("bible"), VECTOR, limit=10, label="query")
     assert {row["id"] for row in rows} == {NO_FIELD, SEARCHABLE}
 
 
@@ -144,12 +145,12 @@ async def test_strict_mode_needs_the_index_and_the_check_finds_it():
         ):
             assert await qdrant_client.searchable_indexed() is False
             assert len(await retrieve_vector._search_vector(
-                "bible", VECTOR, limit=10, label="query")) == 1
+                CollectionScope("bible"), VECTOR, limit=10, label="query")) == 1
             await client.create_payload_index(name, "searchable", PayloadSchemaType.BOOL)
             qdrant_client.forget_searchable_index()
             assert await qdrant_client.searchable_indexed() is True
             assert len(await retrieve_vector._search_vector(
-                "bible", VECTOR, limit=10, label="query")) == 1
+                CollectionScope("bible"), VECTOR, limit=10, label="query")) == 1
     finally:
         await client.delete_collection(name)
         await client.close()

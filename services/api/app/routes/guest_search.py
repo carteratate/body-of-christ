@@ -20,9 +20,9 @@ from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.models.preferences import GuestDraftPreferences, PreferencesResponse
-from app.models.search import SearchQuota
+from app.models.search import SearchFilters, SearchQuota
 from app.rag.pipeline import run_search_pipeline
-from app.rag.search_plan import SearchPlanError, resolve_search_plan
+from app.rag.search_plan import SearchPlanError, http_detail, resolve_search_plan
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -73,9 +73,8 @@ class GuestTransferOwnershipLost(RuntimeError):
     """The account-claim path took ownership of an expired guest transfer."""
 
 
-class GuestSearchFilters(BaseModel):
-    collections: list[str]
-    translation: str = "CPDV"
+class GuestSearchFilters(SearchFilters):
+    pass
 
 
 class GuestSearchRequest(BaseModel):
@@ -210,6 +209,7 @@ async def _persist_guest_results(
     quota: int,
     chunks: list[dict],
     explanations: dict[str, str],
+    scopes: dict | None = None,
 ) -> None:
     pool = get_pool()
     if pool is None:
@@ -224,7 +224,8 @@ async def _persist_guest_results(
                    WHERE id=$1""",
                 claim_id,
                 query,
-                {"collections": collections, "translation": translation, "quota": quota},
+                {"collections": collections, "translation": translation, "quota": quota,
+                 **({"scopes": scopes} if scopes else {})},
                 len(chunks),
             )
             if chunks:
@@ -347,6 +348,7 @@ async def _produce_guest_events(
     ip_hash: str,
     session_token_hash: str,
     claim: TrialClaim,
+    scopes: dict | None = None,
 ) -> None:
     """Own the paid pipeline lifecycle independently of the browser connection."""
     refund = False
@@ -362,7 +364,7 @@ async def _produce_guest_events(
             translation=translation,
             quota=quota,
             user_id=None,
-            search_plan=resolve_search_plan(collections, quota),
+            search_plan=resolve_search_plan(collections, quota, scopes),
         ):
             if event.get("type") == "chunk":
                 chunks.append(event)
@@ -379,7 +381,10 @@ async def _produce_guest_events(
             elif event.get("type") == "error":
                 refund = True
             elif event.get("type") == "done" and claim.claim_id is not None:
-                await _persist_guest_results(claim.claim_id, query, collections, translation, quota, chunks, explanations)
+                await _persist_guest_results(
+                    claim.claim_id, query, collections, translation, quota, chunks, explanations,
+                    scopes=scopes,
+                )
                 persisted = True
                 done_event = event
                 await queue.put(f"data: {json.dumps({'type': 'results_ready', 'result_count': len(chunks)})}\n\n")
@@ -448,9 +453,11 @@ async def drain_guest_search_tasks(timeout_seconds: float = 30.0) -> None:
 @router.post("/search/guest")
 async def guest_search(body: GuestSearchRequest, request: Request) -> StreamingResponse:
     try:
-        plan = resolve_search_plan(body.filters.collections, body.quota)
+        plan = resolve_search_plan(
+            body.filters.collections, body.quota, body.filters.scope_filters(),
+        )
     except SearchPlanError as exc:
-        raise HTTPException(status_code=422, detail=exc.detail) from exc
+        raise HTTPException(status_code=422, detail=http_detail(exc)) from exc
 
     ip_hash = _hash_ip(_get_client_ip(request))
     token_hash = _hash_session_token(body.session_token)
@@ -468,6 +475,7 @@ async def guest_search(body: GuestSearchRequest, request: Request) -> StreamingR
             collections=list(plan.collections),
             translation=translation,
             quota=plan.quota,
+            scopes=plan.saved_scopes() or None,
             ip_hash=ip_hash,
             session_token_hash=token_hash,
             claim=claim,

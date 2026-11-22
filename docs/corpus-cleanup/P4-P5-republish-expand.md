@@ -649,7 +649,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   1. `services/api/app/rag/constants.py`. Add `GENRES_BY_COLLECTION: dict[str, frozenset[str]]` and `ISSUERS_BY_COLLECTION`. The API cannot import the datapipeline, so the genre values are a copy of 2.1's module with a CI test (`test_api_genres_match_registry_module`) that reads both files and fails on any difference.
      - The papal collections use the papal values plus `other`.
      - Roman Curia uses the Roman Curia values plus `compendium` (the social doctrine Compendium, 5.3b), `letter` and `other`.
-     - Issuers are slugs in `documents.issuer`, and filters use only the slug; `issuer_label` is what users see (D11). Roman Curia issuers are the institution: `ddf` for both CDF and DDF (per the source memo; the name printed at publication goes in `issuer_label`), `pbc`, `pcjp`. Papal issuers are the pope, such as `pope-leo-xiii` with label "Pope Leo XIII". The filter chips show `issuer_label`.
+     - Issuers are slugs in `documents.issuer`, and filters use only the slug; `issuer_label` is what users see (D11). Roman Curia issuers are the institution: `ddf` for both CDF and DDF (per the source memo; the name printed at publication goes in `issuer_label`), `pbc`, `pcjp`. Papal issuers are the pope, such as `pope-leo-xiii` with label "Pope Leo XIII". The filter shows `issuer_label` without its "Pope " prefix, under a heading that says Pope (Carter, 21 Nov 2026).
   2. New module `services/api/app/rag/collection_scope.py` with a frozen `CollectionScope(collection, genres, issuers)`. It has `to_qdrant_filter()` and `to_sql()` so retrieval does not hand-build filters. Semantics, per the plan's rule "filters exclude only explicit values":
      - A selection is stored as the set of values the user turned off.
      - Qdrant gets `must_not` on `genre` in the excluded set.
@@ -663,7 +663,7 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   8. Web PR.
      - `apps/web/src/lib/collections.ts` mirrors the genre and issuer vocabularies with display labels.
      - `lib/search-draft.ts` gains per-collection genre and issuer selections and events `genre-toggled` and `issuer-toggled`, unit-tested there (it owns draft transition rules, CLAUDE.md §18).
-     - New `components/search/GenreFilter.tsx` renders chips under `CollectionToggles` for each selected collection that has genres.
+     - New `components/search/GenreFilter.tsx` is the panel (Decision log "Genre and issuer filter look (5.1a)"): a selected collection that has genres or issuers shows a caret in its `CollectionToggles` pill, behind a thin divider, as its name slides left (the pill keeps its width; unselecting slides it back). The caret opens a panel that grows out of it with a pointer, the same on phone and laptop: a Kind list (only where the collection has more than one genre) and an issuer list (headed Pope in the papal collections), all ticked to start, an "Only" button per row and an "All" button per list in the collection's colour. A press outside closes it; no footer, no count badge, and only opening animates. Labels: genres singular as the cards print them, popes without "Pope".
      - `lib/api.ts` sends `filters.scopes`.
      - The restore path in `lib/search-experience/useSearchPageExperience.ts:292-307` reads it back.
      - Guest and authenticated pages share the component through `isGuest` (CLAUDE.md §11).
@@ -673,10 +673,17 @@ How D1 and D2 shape P4, stated once here so the items below can rely on it:
   - Web tests. Draft reducer toggling one, several and all; restore round trip.
   - `npm run lint` zero errors; no new warnings in touched files.
   - A read-only query after the P4 apply shows zero NULL genres in the papal collections, recorded in the PR.
-  - PR includes screenshots of the chips in both themes.
+  - PR includes screenshots of the filter (the caret and its open panel) in both themes.
 - **Production safety:** The API change is additive and optional. Old web clients send no `scopes` and get today's behavior. The web PR deploys after the API PR, so it never sends a field the API rejects. The Qdrant indexes already exist from P4. Rollback is a revert of either PR.
-- **Needs Carter:** Confirm the display labels for the D5 genre values. Approve a Qdrant index creation only if step 7 finds one missing.
+- **Needs Carter:** Answered 21 Nov 2026: the labels and the look (step 8, and the Decision log). No Qdrant index was missing (step 7), so none was created.
 - **Out of scope:** Saving genre selections in `user_preferences` (needs a migration; a follow-up if wanted). Genre-specific HyDE prompts (Retrieval follow-ups). Per-genre result guarantees (5.1c decided against them).
+
+- **As built, API PR (21 Nov 2026).** The facts the code showed differently:
+  - The request names what to search, not what to leave out: `filters.scopes: {[collection]: {genres?: string[], issuers?: string[]}}` lists the values searched, absent meaning all. `resolve_scopes` turns it into the excluded set `CollectionScope` holds (`excluded_genres`, `excluded_issuers`). An empty list, a value outside the vocabulary, or a genre or issuer for a collection that has none (or an unknown key) is refused (`invalid_genre`, `invalid_issuer`), whichever collections are selected; a valid scope for a collection the search does not include is ignored; a selection of every value adds no filter. The two new codes answer 422 with `detail: {code, message}`; the older codes keep their string detail.
+  - Only the three papal collections (`encyclicals`, `apostolic-exhortations`, `papal-documents`) can be narrowed until 5.3a adds Roman Curia. Their issuers are one list, `PAPAL_ISSUERS` (21 popes, in order of pontificate), not one per collection; `test_papal_issuers_cover_the_registry` fails when `works.json` gives a papal collection a pope or genre the API does not know. `test_api_genres_match_registry_module` compares the four genre tuples and `other`.
+  - `retrieve_vector.run` and `retrieve_fts.run` keep `collections` and take `scopes` (by collection); `_search_vector` and `_search_fts` take a `CollectionScope`. The scope's SQL binds from `$4`. Without scopes, the Qdrant filter and the SQL equal master's, checked against master's SQL in `tests/fixtures/fts_sql_before_scopes.json`.
+  - `searches.filters.scopes` and `guest_trials.filters.scopes` hold the request's form, and only when a collection is narrowed. A guest claim copies it with the rest of the filters.
+  - Step 7, read-only (21 Nov 2026): `chunks_live` → `chunks-republish-2026-10` has keyword indexes on `genre` (17,661 points) and `issuer` (13,001); every point of the three papal collections has both (5,237, 2,968 and 487 points). In Supabase, the live documents of those collections have no NULL genre or issuer (79, 30 and 14 documents; the 52 retired encyclicals held for permission have none and are not searched).
 
 ### 5.1c. One guaranteed slot per collection, no per-genre guarantee
 
