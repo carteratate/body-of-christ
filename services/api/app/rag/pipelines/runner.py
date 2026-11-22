@@ -397,7 +397,7 @@ async def run(
         hyde_call = (
             hyde_s25.run(query, collections, tracker, all_bible_genres=True, **overrides)
             if focused_bible_hyde
-            else hyde_module.run(query, collections, tracker, **overrides)
+            else hyde_module.run(query, collections, tracker, scopes=scopes, **overrides)
         )
         hyde_vecs = await _timed_async("hyde", hyde_call)
         vec_raw   = await _timed_async("retrieve_vector", retrieve_vector.run(

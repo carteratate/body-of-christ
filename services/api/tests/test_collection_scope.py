@@ -102,16 +102,17 @@ def test_a_whole_collection_gives_todays_sql(key):
 
 async def test_retrieval_without_scopes_sends_todays_arguments():
     """Keyword search binds only the collection, question and limit; vector search sends
-    the collection filter alone."""
+    the collection filter alone. A collection 5.1b leaves alone, since an old papal key
+    also reads the new stored value (test_collection_keys.py)."""
     conn = AsyncMock()
     conn.fetch.return_value = []
     pool = AsyncMock()
     pool.acquire.return_value = conn
     with patch("app.rag.steps.retrieve_fts.get_pool", return_value=pool), \
          patch("app.corpus_schema.current", AsyncMock(return_value=ALL)):
-        await retrieve_fts.run("grace", ["encyclicals"], 4, k=9, mode="min_match")
+        await retrieve_fts.run("grace", ["councils"], 4, k=9, mode="min_match")
     [call] = conn.fetch.await_args_list
-    assert call.args == (BEFORE["all/min_match"], "encyclicals", "grace", 9)
+    assert call.args == (BEFORE["all/min_match"], "councils", "grace", 9)
 
 
 def test_a_plan_without_scopes_saves_todays_filters():

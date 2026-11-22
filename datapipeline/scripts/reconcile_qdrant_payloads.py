@@ -319,8 +319,8 @@ if __name__ == "__main__":
                     help="release named by the PUBLISH_LOCK.json entry that approves --apply")
     args = ap.parse_args()
 
-    # SOURCE_ADAPTERS is the datapipeline's canonical collection registry, mirroring
-    # services/api's VALID_COLLECTIONS. Import it here so importing this module for
+    # SOURCE_ADAPTERS is the datapipeline's canonical collection registry: the values
+    # stored today, all of which services/api's VALID_COLLECTIONS accepts. Import it here so importing this module for
     # its helpers does not pull in publication dependencies.
     from publication import SOURCE_ADAPTERS  # noqa: E402
 
