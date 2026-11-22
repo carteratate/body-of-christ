@@ -202,15 +202,23 @@ async def refusals(conn, release: str, early_close: str | None = None) -> list[s
     if row is None:
         return [f"no publish named '{release}'"]
     out = []
+    window_open = False
     if row["applied_at"] is None:
         out.append(f"publish '{release}' was never applied")
     elif row["rolled_back_at"] is not None:
         out.append(f"publish '{release}' was rolled back")
     elif row["db_now"] < row["applied_at"] + ROLLBACK_WINDOW and not early_close:
+        window_open = True
         out.append(f"the rollback window of '{release}' is open until "
                    f"{row['applied_at'] + ROLLBACK_WINDOW:%Y-%m-%d %H:%M %Z} "
                    f"(applied {row['applied_at']:%Y-%m-%d %H:%M %Z}, "
                    f"{ROLLBACK_WINDOW.days} days)")
+    # A publish applied before this one cannot be rolled back while this one stands
+    # (`apply._refuse_if_superseded`), and this one is not rolled back once its own window
+    # is closed, by time or by decision. So an earlier publish's open window protects
+    # nothing then (4.4 after the republish, 22 Nov 2026); a later one's still refuses.
+    earlier_is_moot = (row["applied_at"] is not None and row["rolled_back_at"] is None
+                       and not window_open)
     for r in await conn.fetch(
             """SELECT id, applied_at FROM corpus_publishes
                WHERE discarded_at IS NULL AND cleaned_up_at IS NULL ORDER BY id"""):
@@ -222,6 +230,8 @@ async def refusals(conn, release: str, early_close: str | None = None) -> list[s
                WHERE id <> $1 AND applied_at IS NOT NULL AND rolled_back_at IS NULL
                  AND applied_at + $2::interval > now() ORDER BY id""",
             release, ROLLBACK_WINDOW):
+        if earlier_is_moot and r["applied_at"] < row["applied_at"]:
+            continue
         out.append(f"publish '{r['id']}' is inside its own rollback window, until "
                    f"{r['applied_at'] + ROLLBACK_WINDOW:%Y-%m-%d %H:%M %Z}")
     if await staging_exists(conn):
@@ -571,8 +581,15 @@ async def old_collection(conn, qdrant, release: str, alias: str,
         problems.append(f"publish '{release}' records no previous collection")
     points = None
     if name is not None:
+        # The publish this one replaced owns the collection the switch left; nothing reads
+        # it once this one's window is closed (the refusals above). Any other owner, staged,
+        # rolled back or applied later, still needs it.
         owners = await conn.fetch(
-            "SELECT id FROM corpus_publishes WHERE qdrant_collection = $1 ORDER BY id", name)
+            """SELECT o.id FROM corpus_publishes o, corpus_publishes p
+               WHERE o.qdrant_collection = $1 AND p.id = $2
+                 AND NOT (o.id <> p.id AND o.applied_at IS NOT NULL
+                          AND o.rolled_back_at IS NULL AND o.applied_at < p.applied_at)
+               ORDER BY o.id""", name, release)
         problems += [f"'{name}' is the collection of publish '{r['id']}'" for r in owners]
         aliases = (await qdrant.get_aliases()).aliases
         problems += [f"alias '{a.alias_name}' points at '{name}'" for a in aliases
