@@ -1882,7 +1882,7 @@
   "author": null,
   "collection": "catechism",
   "source_path": "catechism/catechismofcounc0000jose/",
-  "document_id": null,
+  "document_id": "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",
   "edition": "Catechism of the Council of Trent for Parish Priests, tr. John A. McHugh and Charles J. Callan (New York: Joseph F. Wagner; London: B. Herder, 1923; copyright 1923 by Joseph F. Wagner). Internet Archive scan catechismofcounc0000jose",
   "translator": "John A. McHugh and Charles J. Callan",
   "first_published": 1923,
@@ -1893,7 +1893,7 @@
   "credit_line": "Translated by John A. McHugh and Charles J. Callan (1923)",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.5"
+  "planned_for": null
  },
  {
   "work": "Catechism of the Catholic Church",

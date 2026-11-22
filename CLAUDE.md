@@ -606,8 +606,8 @@ takes no cap; it is bounded by `min(quota, _FLOOR_N)` and spreads across sources
 
 **The cap is per *source*, and a source is the reader chapter for the chapter-keyed
 collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law`, `bible`) — see
-`dedup.source_key`. Those four are each stored as a single document (the Bible as one per
-book), so an earlier per-*document* cap limited a focused search to 4 results in total
+`dedup.source_key`. Those four were each stored as a single document (the Bible as one per
+book; the Catechism collection gains the Compendium and the Roman Catechism in 5.5), so an earlier per-*document* cap limited a focused search to 4 results in total
 however many distinct articles or psalms ranked, which made issue #28's "return exactly
 ten" unreachable for exactly the collections focused search is most used on. Issue #105 is
 that defect reported from production; keying the cap per chapter fixed it.

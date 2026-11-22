@@ -47,6 +47,8 @@ REGIONS = ("body", "note", "toc", "heading", "apparatus", "withheld", "excluded"
 
 
 PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
+# The file the Catechism of the Catholic Church is measured on (#279).
+CCC_FILE = "us-edition/ccc-us.json"
 
 
 class SourceUnit(NamedTuple):

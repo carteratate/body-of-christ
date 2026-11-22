@@ -96,6 +96,7 @@ class WorkConfig:
     # spilt edge into the page's own lines (Menti Nostrae in The Catholic Mind, 1.3d).
     edge_strip_words: bool = False
     note_opens: tuple[str, ...] = ()   # the line opening each page's notes, where the measure misses
+    note_start: str | None = None   # a work's own note marker, beside the usual ones
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints
     unit_series: tuple[int, ...] | None = None   # units per series, where it prints several

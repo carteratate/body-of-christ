@@ -97,6 +97,16 @@ _UNREGISTERED_NOTES = {
     "apostolic-exhortations/amoris-laetitia.html":
         "not published; scheduled for PR 5.4 (Carter, 4 Oct 2026)",
 }
+# The Roman Catechism (5.5), read through the OCR tool's frozen text; Fordham's
+# transcription only checks that OCR (the gate's baseline; Carter, 22 Nov 2026).
+_UNREGISTERED_NOTES.update({
+    **{f"catechism/catechismofcounc0000jose/catechismofcounc0000jose_{kind}":
+       "the scan the Roman Catechism is read from, through ocr/texts/"
+       "mchugh-callan-roman-catechism.json (5.5)"
+       for kind in ("djvu.txt", "djvu.xml", "page_numbers.json")},
+    "catechism/fordham-romancat.html":
+        "Fordham's transcription, used only to check the Roman Catechism's OCR (5.5)",
+})
 _UNREGISTERED_DIR_NOTES = {
     "roman-curia": "parked for 5.3 (branch feat/roman-curia-collection)",
     # Approved R6 downloads (docs/research/R6-editions.md, "Download list for Carter"),
@@ -150,6 +160,8 @@ def _role_and_url(sources: Path, collection: str, rel: str,
                   manifest_name: str | None, named: dict[str, dict]) -> tuple[str, str | None]:
     """Classify one file of a registered collection."""
     file_in_collection = rel.split("/", 1)[1]
+    if collection == "catechism" and rel in _UNREGISTERED_NOTES:
+        return "vendored-unregistered", None     # the Roman Catechism's scan (5.5)
     if rel in _DERIVED_INPUTS:
         return "adapter-input", _DERIVED_INPUTS[rel]
     printed = _printing_inputs()
