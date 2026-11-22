@@ -15,6 +15,10 @@ def run(
     For any collection that is absent from `deduped`, inject the highest-scoring
     chunk from `all_scored` whose reranker_score >= settings.guarantee_min_score.
 
+    The guarantee is per collection, never per genre, by decision (corpus cleanup
+    5.1c): a genre or issuer selection only narrows retrieval, so it neither adds
+    slots nor needs any logic here.
+
     Injected chunks are merged back in score-descending order: `deduped` is already
     sorted, but appending would leave the list out of order, and the downstream
     `quota_cap` assumes (and the client streams / persists) score-descending order.

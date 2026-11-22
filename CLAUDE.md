@@ -295,7 +295,7 @@ Two layers, and the split is the point:
 - `rag/pipeline.py` owns the **SSE contract and DB side-effects only**.
 - `rag/pipelines/runner.py` owns the **compute**; `rag/pipelines/registry.py` names the configurations.
 
-Production runs the `hyde_cohere_luna_seats10t80_ftsminmatch` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → Qdrant vector retrieval, with Supabase FTS running alongside from the start → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
+Production runs the `hyde_cohere_luna_seats10t80_ftsminmatch` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → Qdrant vector retrieval, with Supabase FTS running alongside from the start → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`. The collection guarantee is per collection, never per genre (5.1c): a genre selection adds no slots.
 
 **How many Cohere candidates reach the listwise call is a per-pipeline seat rule**,
 `RerankConfig.terminal_seats` (`budget.TerminalSeats`, issue #235). Production seats
