@@ -484,3 +484,16 @@ async def test_another_failure_is_not_retried_without_the_new_value(qdrant, monk
         await retrieve_vector._search_vector(
             CollectionScope("encyclicals"), [1.0, 0.0, 0.0, 0.0], 10, "query")
     assert qdrant_client._genre_indexed is True
+
+
+async def test_another_bad_request_naming_genre_is_not_retried(qdrant, monkeypatch):
+    client = retrieve_vector.get_qdrant_client()
+
+    async def bad(**kwargs):
+        raise UnexpectedResponse(status_code=400, reason_phrase="Bad Request",
+                                 headers=httpx.Headers(), content=b'{"genre": "wrong type"}')
+
+    monkeypatch.setattr(client, "query_points", bad)
+    with pytest.raises(UnexpectedResponse):
+        await retrieve_vector._search_vector(
+            CollectionScope("encyclicals"), [1.0, 0.0, 0.0, 0.0], 10, "query")

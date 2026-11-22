@@ -20,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 _MAX_COSINE_DISTANCE = 0.50
 _QDRANT_SCORE_THRESHOLD = 1.0 - _MAX_COSINE_DISTANCE
+# Strict mode's refusal of a filter on an unindexed `genre`, as the JSON body escapes it.
+_MISSING_GENRE_INDEX = b'Index required but not found for \\"genre\\"'
 
 
 async def _search_vector(
@@ -64,7 +66,8 @@ async def _search_vector(
     try:
         response = await _query(by_genre)
     except UnexpectedResponse as exc:
-        if not (by_genre and exc.status_code == 400 and b"genre" in (exc.content or b"")):
+        if not (by_genre and exc.status_code == 400
+                and _MISSING_GENRE_INDEX in (exc.content or b"")):
             raise
         logger.warning("retrieve_vector: %s genre filter refused (%s); retrying without it",
                        collection, exc.__class__.__name__)
