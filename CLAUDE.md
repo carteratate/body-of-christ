@@ -312,6 +312,15 @@ and it hands the runner three derived values: `focused`, `terminal_candidate_bud
 `max_passages_per_source`. `SearchPlanError` carries a stable `code` so routes translate
 failures consistently. See §18.
 
+**A plan can narrow a collection to some genres and issuers** (item 5.1a, `SearchPlan.scopes`,
+`rag/collection_scope.py`). The request lists what to search; a `CollectionScope` holds the
+complement, and retrieval excludes only those values (Qdrant `must_not`, SQL
+`genre IS NULL OR genre <> ALL(...)`), so a document without a genre or issuer is searched
+under every selection. Only the papal collections can be narrowed (`GENRES_BY_COLLECTION`,
+`ISSUERS_BY_COLLECTION` in `constants.py`, the genres a copy of `datapipeline/registry/genres.py`
+kept equal by a test). A search without scopes sends master's exact Qdrant filter and SQL
+(`tests/test_collection_scope.py`); keep it that way.
+
 The registry also holds evaluation arms (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical, Luna 6 and reasoning effort, seat rules). **Every pipeline runs Cohere**, alone or followed by one listwise LLM call; the single-stage pointwise LLM reranker (`llm_only`) was removed in October 2026. Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
 
 **Comparing pipelines is `services/api/scripts/run_eval_suite.py`** (in-process, writes
@@ -444,8 +453,8 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/me` | Current user |
-| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. |
-| POST | `/search/guest` | SSE stream; guest session token, trial-limited |
+| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. Optional `filters.scopes: {collection: {genres?, issuers?}}` narrows a papal collection (§5); `invalid_genre`/`invalid_issuer` are 422 with `detail.code` |
+| POST | `/search/guest` | SSE stream; guest session token, trial-limited; same optional `filters.scopes` |
 | POST | `/guest/claim` | Transfer guest work into a new account |
 | GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
 | DELETE | `/searches/{id}` | Retrievals cascade |
@@ -459,7 +468,8 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | GET/PUT | `/preferences` | User preferences |
 
 Authenticated searches persist `outcome` and `collection_outcomes` in the
-`searches.filters` jsonb alongside the submitted filters. The saved-results endpoint
+`searches.filters` jsonb alongside the submitted filters, and `scopes` only when a
+collection was narrowed. The saved-results endpoint
 returns them as optional fields so restored searches reproduce their original notices.
 Older rows return `null`; the frontend keeps its result-count fallback instead of
 inventing degradation details.
@@ -577,7 +587,10 @@ collection**, and it changes retrieval shape rather than just raising the result
 `rag/search_plan.py`. Do not re-derive "is this focused?" from a raw quota int anywhere
 else; take `SearchPlan.focused`. `SearchPlanError.code` is stable and routes translate it:
 `no_valid_collections` → 400, everything else (`invalid_quota`, `duplicate_collections`,
-`invalid_collections`, `focused_collection_count`) → 422.
+`invalid_collections`, `focused_collection_count`, and 5.1a's `invalid_genre` and
+`invalid_issuer`, whose detail is `{code, message}`) → 422. (The guest route answers 422 for
+all of them.) A genre or issuer selection is not a collection: it never changes focused
+eligibility, and a focused search may narrow its one collection.
 
 What focused changes, all derived from the plan:
 

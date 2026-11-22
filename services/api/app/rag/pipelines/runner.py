@@ -369,6 +369,13 @@ async def run(
     )
 
     k, top_n = _pool_sizes(config, quota)
+    # Genre and issuer scopes (5.1a); None when nothing is narrowed, so retrieval runs
+    # as it did before scopes existed.
+    scopes = (
+        {scope.collection: scope for scope in search_plan.scopes}
+        if search_plan is not None and search_plan.scopes
+        else None
+    )
     # Keyword search needs only the question, so it runs alongside embed, HyDE and
     # vector retrieval rather than after them, and is awaited where RRF needs it. Its
     # StepTiming is its own run time. If an earlier step fails (or the run is
@@ -379,6 +386,7 @@ async def run(
             t0 = time.perf_counter()
             found = await retrieve_fts.run(
                 query, collections, quota, user_id, k=k, mode=config.retrieval.fts_mode,
+                scopes=scopes,
             )
             return found, time.perf_counter() - t0
 
@@ -392,7 +400,10 @@ async def run(
             else hyde_module.run(query, collections, tracker, **overrides)
         )
         hyde_vecs = await _timed_async("hyde", hyde_call)
-        vec_raw   = await _timed_async("retrieve_vector", retrieve_vector.run(query_vec, hyde_vecs, collections, quota, user_id, k=k))
+        vec_raw   = await _timed_async("retrieve_vector", retrieve_vector.run(
+            query_vec, hyde_vecs, collections, quota, user_id, k=k,
+            scopes=scopes,
+        ))
         if fts_task is not None:
             try:
                 fts_raw, fts_s = await fts_task

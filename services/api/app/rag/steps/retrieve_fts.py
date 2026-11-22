@@ -4,13 +4,14 @@ from __future__ import annotations
 import asyncio
 import logging
 import random
-from typing import Literal
+from typing import Literal, Mapping
 
 import asyncpg
 
 from app import corpus_schema
 from app.config import settings
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
+from app.rag.collection_scope import CollectionScope
 from app.rag.steps import degradation
 
 logger = logging.getLogger(__name__)
@@ -21,7 +22,7 @@ _SQL_TEMPLATE = """
            d.title AS document_title, d.author, d.collection
     FROM chunks c
     JOIN documents d ON c.document_id = d.id
-    WHERE d.collection = $1
+    WHERE d.collection = $1{scope}
       AND c.search_vector @@ plainto_tsquery('english', $2){searchable}
     ORDER BY ts_rank(c.search_vector, plainto_tsquery('english', $2)) DESC
     LIMIT $3
@@ -79,7 +80,7 @@ _MIN_MATCH_SQL_TEMPLATE = r"""
         SELECT c.id, c.search_vector
         FROM chunks c
         JOIN documents d ON c.document_id = d.id
-        WHERE d.collection = $1
+        WHERE d.collection = $1{scope}
           AND (SELECT term_count FROM query) BETWEEN 3 AND 40
           AND c.search_vector @@ (SELECT any_pair FROM query){searchable}
     ),
@@ -87,7 +88,7 @@ _MIN_MATCH_SQL_TEMPLATE = r"""
         SELECT c.id, c.search_vector
         FROM chunks c
         JOIN documents d ON c.document_id = d.id
-        WHERE d.collection = $1
+        WHERE d.collection = $1{scope}
           AND NOT EXISTS (SELECT 1 FROM pairs)
           AND c.search_vector @@ (SELECT any_term FROM query){searchable}
     ),
@@ -116,17 +117,22 @@ _MIN_MATCH_SQL_TEMPLATE = r"""
 """
 
 
-def build_sql(schema: corpus_schema.CorpusSchema, mode: FtsMode = "and") -> str:
+def build_sql(
+    schema: corpus_schema.CorpusSchema, mode: FtsMode = "and", scope_sql: str = "",
+) -> str:
     """Today's SQL without 0042, byte for byte; with it, only searchable live rows, and
     each row's `voice` (2.4d), so a candidate found only by keyword search carries it.
 
-    `mode` "and" is that SQL unchanged; "min_match" is the query described above."""
+    `mode` "and" is that SQL unchanged; "min_match" is the query described above.
+    `scope_sql` is `CollectionScope.to_sql`'s clause (5.1a), empty for a whole
+    collection, so a search without a scope runs the SQL it ran before scopes."""
     voice = ", c.voice" if schema.facts else ""
     searchable = schema.searchable_sql("c", "d")
     if mode == "and":
-        return _SQL_TEMPLATE.format(voice=voice, searchable=searchable)
+        return _SQL_TEMPLATE.format(voice=voice, searchable=searchable, scope=scope_sql)
     if mode == "min_match":
-        return _MIN_MATCH_SQL_TEMPLATE.format(voice=voice, searchable=searchable)
+        return _MIN_MATCH_SQL_TEMPLATE.format(
+            voice=voice, searchable=searchable, scope=scope_sql)
     raise ValueError(f"unknown FTS mode {mode!r}")
 
 
@@ -138,7 +144,7 @@ _TRANSIENT_CONNECTION_ERRORS = (
 
 
 async def _search_fts(
-    collection: str, query_text: str, limit: int, mode: FtsMode = "and",
+    scope: CollectionScope, query_text: str, limit: int, mode: FtsMode = "and",
 ) -> list[dict]:
     """Search one collection, reacquiring once after a transient pooler failure.
 
@@ -152,6 +158,9 @@ async def _search_fts(
     exhausted after that is not retried: a second wait would only double the delay.
     The TimeoutError drops this collection's lexical path (see run()).
     """
+    collection = scope.collection
+    # Parameters $1 to $3 are the collection, question and limit; the scope's follow.
+    scope_sql, scope_args = scope.to_sql("d", 4)
     for attempt in range(2):
         pool = get_pool()
         if pool is None:
@@ -172,7 +181,8 @@ async def _search_fts(
         try:
             rows = await corpus_schema.run_with_fallback(
                 lambda schema: conn.fetch(
-                    build_sql(schema, mode), collection, query_text, limit,
+                    build_sql(schema, mode, scope_sql), collection, query_text, limit,
+                    *scope_args,
                 ),
                 conn,
             )
@@ -198,8 +208,9 @@ async def run(
     user_id: str | None = None,
     k: int | None = None,
     mode: FtsMode = "and",
+    scopes: Mapping[str, CollectionScope] | None = None,
 ) -> dict[str, list[dict]]:
-    """Run FTS for all collections.
+    """Run FTS for all collections, each narrowed by its scope in `scopes` (5.1a).
 
     user_id is accepted but unused (retained for caller compatibility).
     A collection with no match is left out of the output, as before, and logged, so
@@ -208,7 +219,8 @@ async def run(
     n = k if k is not None else quota * settings.candidate_multiplier
 
     results = await asyncio.gather(
-        *[_search_fts(col, query, n, mode) for col in collections],
+        *[_search_fts((scopes or {}).get(col) or CollectionScope(col), query, n, mode)
+          for col in collections],
         return_exceptions=True,
     )
     output: dict[str, list[dict]] = {}

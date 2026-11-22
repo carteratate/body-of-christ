@@ -8,6 +8,7 @@ from qdrant_client.models import FieldCondition, MatchValue
 
 from app.config import settings
 from app.rag import qdrant_client
+from app.rag.collection_scope import CollectionScope
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS
 from app.rag.steps import degradation
 from app.rag.steps.types import ChunkCandidate, RetrievalPath
@@ -127,7 +128,7 @@ async def test_search_vector_excludes_only_explicit_unsearchable(monkeypatch):
     ]))
 
     with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
-        rows = await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+        rows = await _search_vector(CollectionScope("bible"), [0.1] * 1536, limit=5, label="query")
 
     assert len(rows) == 1
     assert rows[0]["id"] == "aaaaaaaa-0000-0000-0000-000000000001"
@@ -154,7 +155,7 @@ async def test_search_vector_does_not_filter_on_searchable_until_it_is_indexed()
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
 
     with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
-        await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+        await _search_vector(CollectionScope("bible"), [0.1] * 1536, limit=5, label="query")
 
     filt = mock_client.query_points.call_args.kwargs["query_filter"]
     assert filt.must == [FieldCondition(key="collection", match=MatchValue(value="bible"))]
@@ -220,7 +221,7 @@ async def test_search_vector_uses_configured_read_collection(monkeypatch):
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([]))
 
     with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
-        await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+        await _search_vector(CollectionScope("bible"), [0.1] * 1536, limit=5, label="query")
 
     assert mock_client.query_points.call_args.kwargs["collection_name"] == "chunks_live"
 
@@ -229,7 +230,7 @@ async def test_search_vector_uses_configured_read_collection(monkeypatch):
 async def test_search_vector_raises_when_client_not_initialised():
     with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=None):
         with pytest.raises(RuntimeError, match="Qdrant client not initialised"):
-            await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+            await _search_vector(CollectionScope("bible"), [0.1] * 1536, limit=5, label="query")
 
 
 @pytest.mark.asyncio
@@ -246,7 +247,7 @@ async def test_search_vector_skips_malformed_point_keeps_good_ones():
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([good, malformed]))
 
     with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
-        rows = await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+        rows = await _search_vector(CollectionScope("bible"), [0.1] * 1536, limit=5, label="query")
 
     ids = [r["id"] for r in rows]
     assert "aaaaaaaa-0000-0000-0000-000000000001" in ids
@@ -265,7 +266,7 @@ async def test_search_vector_handles_none_payload():
     mock_client.query_points = AsyncMock(return_value=_mock_query_response([pt]))
 
     with patch("app.rag.steps.retrieve_vector.get_qdrant_client", return_value=mock_client):
-        rows = await _search_vector("bible", [0.1] * 1536, limit=5, label="query")
+        rows = await _search_vector(CollectionScope("bible"), [0.1] * 1536, limit=5, label="query")
 
     assert rows == []
 

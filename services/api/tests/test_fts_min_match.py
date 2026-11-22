@@ -139,8 +139,8 @@ async def test_the_runner_searches_with_the_pipelines_mode():
 # --- Visibility --------------------------------------------------------------------
 
 async def test_a_collection_with_no_rows_is_logged(caplog):
-    async def search(collection, query, limit, mode="and"):
-        return [] if collection == "bible" else [_row(1)]
+    async def search(scope, query, limit, mode="and"):
+        return [] if scope.collection == "bible" else [_row(1)]
 
     with (
         patch("app.rag.steps.retrieve_fts._search_fts", new=AsyncMock(side_effect=search)),
