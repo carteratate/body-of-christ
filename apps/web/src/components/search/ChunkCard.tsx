@@ -361,10 +361,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   }
 
   // ── Collection badge label ────────────────────────────────────────────────
-  const translation = collection === "bible" && facts?.translation?.trim()
-    ? ` · ${facts.translation.trim()}`
-    : "";
-  const badgeLabel = `${collectionMeta?.label ?? collection}${translation}`;
+  const badgeLabel = collectionMeta?.label ?? collection;
   const accessibleSummary = [
     badgeLabel,
     displayAuthor,
