@@ -174,7 +174,7 @@ def test_several_genres_and_issuers():
         "encyclicals": {"genres": ["apostolic-letter", "encyclical"]},
         "papal-documents": {"issuers": ["pope-francis", "pope-john-paul-ii"]},
     }
-    assert plan.scope("bible") == CollectionScope("bible")
+    assert [scope.collection for scope in plan.scopes] == ["encyclicals", "papal-documents"]
 
 
 @pytest.mark.parametrize("scopes, code", [
@@ -190,8 +190,19 @@ def test_invalid_values_are_refused(scopes, code):
     assert raised.value.code == code
 
 
-def test_a_scope_for_a_collection_not_searched_is_ignored():
+def test_a_valid_scope_for_a_collection_not_searched_is_ignored():
     assert resolve_search_plan(["bible"], 4, ONLY_ENCYCLICALS).scopes == ()
+
+
+@pytest.mark.parametrize("scopes, code", [
+    ({"encyclicals": {"genres": ["nope"]}}, "invalid_genre"),
+    ({"encyclicals": {"issuers": ["nope"]}}, "invalid_issuer"),
+    ({"not-a-collection": {"genres": ["encyclical"]}}, "invalid_genre"),
+])
+def test_an_invalid_scope_is_refused_even_for_a_collection_not_searched(scopes, code):
+    with pytest.raises(SearchPlanError) as raised:
+        resolve_search_plan(["papal-documents"], 4, scopes)
+    assert raised.value.code == code
 
 
 def test_a_genre_selection_does_not_count_as_a_collection_for_focused_search():
@@ -302,9 +313,9 @@ SEED = f"""
       ('{LETTER}', 'encyclicals', 'A Letter', 'Pius IX', '{{}}', 'apostolic-letter', 'pope-pius-ix'),
       ('{NO_GENRE}', 'encyclicals', 'Unsorted', 'Someone', '{{}}', NULL, NULL);
     INSERT INTO chunks (id, document_id, position, anchor, chapter_key, content) VALUES
-      ('{ENC[:-3]}c01', '{ENC}', 0, 'p1', 'c1', 'grace and labour'),
-      ('{LETTER[:-3]}c02', '{LETTER}', 0, 'p1', 'c1', 'grace and labour'),
-      ('{NO_GENRE[:-3]}c03', '{NO_GENRE}', 0, 'p1', 'c1', 'grace and labour');
+      ('{ENC[:-3]}c01', '{ENC}', 0, 'p1', 'c1', 'grace and labour of workers'),
+      ('{LETTER[:-3]}c02', '{LETTER}', 0, 'p1', 'c1', 'grace and labour of workers'),
+      ('{NO_GENRE[:-3]}c03', '{NO_GENRE}', 0, 'p1', 'c1', 'grace and labour of workers');
 """
 
 
@@ -317,7 +328,8 @@ def cluster():
         yield running
 
 
-async def _keyword(cluster, scope: CollectionScope | None, mode: str) -> set[str]:
+async def _keyword(cluster, scope: CollectionScope | None, mode: str,
+                   question: str) -> set[str]:
     pool = await asyncpg.create_pool(
         host=str(cluster.socket), user="postgres", database="postgres",
         min_size=1, max_size=2, statement_cache_size=0, init=_init_connection,
@@ -326,7 +338,7 @@ async def _keyword(cluster, scope: CollectionScope | None, mode: str) -> set[str
         with patch("app.rag.steps.retrieve_fts.get_pool", return_value=pool), \
              patch("app.corpus_schema.get_pool", return_value=pool):
             found = await retrieve_fts.run(
-                "grace labour", ["encyclicals"], 4, k=10, mode=mode,
+                question, ["encyclicals"], 4, k=10, mode=mode,
                 scopes={"encyclicals": scope} if scope else None,
             )
     finally:
@@ -335,18 +347,26 @@ async def _keyword(cluster, scope: CollectionScope | None, mode: str) -> set[str
 
 
 @pytest.mark.real_corpus_schema
-@pytest.mark.parametrize("mode", ["and", "min_match"])
+@pytest.mark.parametrize("mode, question", [
+    ("and", "grace labour"),
+    # min_match: two terms take its plain-OR branch (`singles`), three its pairs branch.
+    ("min_match", "grace labour"),
+    ("min_match", "grace labour workers"),
+])
 async def test_keyword_search_keeps_a_document_without_genre_under_every_selection(
-        cluster, mode):
-    assert await _keyword(cluster, None, mode) == {ENC, LETTER, NO_GENRE}
+        cluster, mode, question):
+    async def found(scope):
+        return await _keyword(cluster, scope, mode, question)
+
+    assert await found(None) == {ENC, LETTER, NO_GENRE}
     only_letters = CollectionScope(
         "encyclicals", constants.GENRES_BY_COLLECTION["encyclicals"] - {"apostolic-letter"})
-    assert await _keyword(cluster, only_letters, mode) == {LETTER, NO_GENRE}
+    assert await found(only_letters) == {LETTER, NO_GENRE}
     no_letters = CollectionScope("encyclicals", frozenset({"apostolic-letter"}))
-    assert await _keyword(cluster, no_letters, mode) == {ENC, NO_GENRE}
+    assert await found(no_letters) == {ENC, NO_GENRE}
     only_leo = CollectionScope(
         "encyclicals", excluded_issuers=frozenset(constants.PAPAL_ISSUERS) - {"pope-leo-xiii"})
-    assert await _keyword(cluster, only_leo, mode) == {ENC, NO_GENRE}
+    assert await found(only_leo) == {ENC, NO_GENRE}
 
 
 @pytest.fixture()
@@ -403,6 +423,7 @@ async def test_the_runner_hands_the_plan_scopes_to_both_paths():
     ):
         await runner.run(PIPELINES["hyde_cohere_luna_seats10t80_ftsminmatch"], "grace",
                          ["encyclicals"], 4, search_plan=plan)
-    expected = {"encyclicals": plan.scope("encyclicals")}
+    expected = {scope.collection: scope for scope in plan.scopes}
+    assert list(expected) == ["encyclicals"]
     assert vector.await_args.kwargs["scopes"] == expected
     assert fts.await_args.kwargs["scopes"] == expected

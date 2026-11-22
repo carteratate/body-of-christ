@@ -58,6 +58,3 @@ class CollectionScope:
                 args.append(sorted(values))
         return "".join(clauses), args
 
-
-def whole(collection: str) -> CollectionScope:
-    return CollectionScope(collection)

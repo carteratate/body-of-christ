@@ -70,13 +70,6 @@ class SearchPlan:
                 "invalid_scopes", "Search plan scopes must name its collections once each."
             )
 
-    def scope(self, collection: str) -> CollectionScope:
-        """What to search in `collection`: its scope, or the whole collection."""
-        for scope in self.scopes:
-            if scope.collection == collection:
-                return scope
-        return CollectionScope(collection)
-
     def saved_scopes(self) -> dict[str, dict[str, list[str]]]:
         """The selection as a request sends it, for `searches.filters`: per narrowed
         collection, the genres and issuers searched. Empty when nothing is narrowed."""
@@ -142,15 +135,14 @@ def resolve_scopes(
 ) -> tuple[CollectionScope, ...]:
     """Validate `filters.scopes` against the genre and issuer vocabularies.
 
-    A scope for a collection the search does not include is ignored, as an unknown
-    collection is. A selection of every value is the whole collection, so it adds no
-    filter."""
-    scopes: list[CollectionScope] = []
-    for collection in collections:
-        selection = (scope_filters or {}).get(collection)
+    Every scope sent is validated, so a bad value is refused whichever collections are
+    selected; only the scopes of collections the search includes apply. A selection of
+    every value is the whole collection, so it adds no filter."""
+    resolved: dict[str, CollectionScope] = {}
+    for collection, selection in (scope_filters or {}).items():
         if not selection:
             continue
-        scope = CollectionScope(
+        resolved[collection] = CollectionScope(
             collection,
             excluded_genres=_excluded(
                 collection, selection.get("genres"), GENRES_BY_COLLECTION,
@@ -161,8 +153,7 @@ def resolve_scopes(
                 "invalid_issuer", "issuer",
             ),
         )
-        if scope.narrowed:
-            scopes.append(scope)
+    scopes = [resolved[c] for c in collections if c in resolved and resolved[c].narrowed]
     return tuple(scopes)
 
 
