@@ -105,7 +105,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
     const body = footnotes.length ? contentWithMarkers(content, footnotes) : stripVerseMarkers(content);
     const attributed = copiedAttribution ? `${displayReference} (${copiedAttribution})` : displayReference;
     const cited = rejected ? `${attributed} [${rejected}]` : attributed;
-    const text = `${body} — ${cited} (${collection})${notes}${credited}`;
+    // The collection's name, as on the card; a bookmark can carry an old key (5.1b.2).
+    const text = `${body} — ${cited} (${collectionMeta?.label ?? collection})${notes}${credited}`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text)
         .then(() => showToast("Copied"))

@@ -558,12 +558,16 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
   two vocabularies while corpus cleanup 5.1b runs: the eight `CANONICAL_COLLECTIONS` (with
   `papal`, `church-law` and `theologians`) and the five old keys in `LEGACY_COLLECTIONS`, which
   map to them (`encyclicals`, `apostolic-exhortations` and `papal-documents` to genres of
-  `papal`; `canon-law` to `church-law`; `medieval` to `theologians`). The web still offers the
-  10 old keys until 5.1b.2. `collection_scope.reads` decides which stored values a key reads,
+  `papal`; `canon-law` to `church-law`; `medieval` to `theologians`). Since 5.1b.2 the web
+  offers only the eight new keys (labels: Papal documents, Church law, Theology &
+  Spirituality) and translates any old key it reads (`canonicalCollectionKey` in
+  `lib/collections.ts`; a restored old papal search becomes a Papal documents genre
+  selection, `canonicalSearchFilters`). `collection_scope.reads` decides which stored values a key reads,
   so both vocabularies work whether or not 5.1b.3 has rewritten the stored values, and a
   search's results are labelled with the key it sent. A plan drops an old key named beside
   its new one and logs `legacy_collection_key`; 5.1b.4 removes the old keys.
-- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection).
+- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection, and
+  `LEGACY_COLLECTIONS`, the old keys' meaning, mirroring the API's).
 - **To add one:** update `constants.py`, sync `collections.ts`, add a `--color-collection-*` token in `globals.css`, and add a migration extending the DB collection constraint.
 
 ---
@@ -608,7 +612,7 @@ What focused changes, all derived from the plan:
 
 | | Standard | Focused |
 |---|---|---|
-| Collections | 1–10 | exactly 1 |
+| Collections | 1–8 (the API also accepts the five old keys until 5.1b.4) | exactly 1 |
 | `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
 | `max_passages_per_source` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |

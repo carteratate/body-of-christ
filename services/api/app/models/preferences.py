@@ -7,7 +7,7 @@ from app.rag.constants import VALID_COLLECTIONS
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_COLLECTIONS = ["bible", "catechism", "church-fathers", "encyclicals", "canon-law", "summa"]
+DEFAULT_COLLECTIONS = ["bible", "catechism", "church-fathers", "papal", "church-law", "summa"]
 
 StandardQuota = Literal[3, 4, 5]
 PreferenceQuota = Literal[3, 4, 5, 10]

@@ -19,7 +19,7 @@ import {
 } from "@/lib/analytics";
 import { AttachedPassage } from "./AttachedPassage";
 import { RelevanceExplanation } from "./RelevanceExplanation";
-import { getCollectionMeta } from "@/lib/collections";
+import { canonicalCollectionKey, getCollectionMeta } from "@/lib/collections";
 import { displayRole, opensWithRole, rejectedLabel } from "@/lib/passageRole";
 import { RejectedVoice, RoleCaption } from "@/components/common/RejectedVoice";
 import { stripVerseMarkers } from "@/lib/verse-markers";
@@ -82,7 +82,7 @@ export function mobileCitation(
     if (cited) return `${cited[1]} · Q. ${cited[2]} · Art. ${cited[3]}`;
   }
 
-  if (collection === "canon-law") {
+  if (collection === "church-law") {
     const canon = citation.match(/\bCan\.\s*[\d–-]+(?:\s*§+\s*\d+)?/i);
     if (canon) return canon[0];
   }
@@ -140,9 +140,9 @@ function RemovedChunkCard({ result, tombstone, isGuest = false }: {
   const title = tombstone.title || source.document_title;
   const author = tombstone.author ?? source.author;
   const displayAuthor = author?.trim() === "Catholic Church" ? null : author;
-  const reference = primaryCitation(source.collection, title, tombstone.reference ?? source.reference, author,
+  const reference = primaryCitation(canonicalCollectionKey(source.collection), title, tombstone.reference ?? source.reference, author,
     source.facts?.work_title);
-  const compactReference = mobileCitation(source.collection, title, tombstone.reference ?? source.reference, author);
+  const compactReference = mobileCitation(canonicalCollectionKey(source.collection), title, tombstone.reference ?? source.reference, author);
   const status = removalStatusLabel(tombstone);
   const badge = <span className="inline-flex max-w-[10rem] shrink-0 items-center truncate rounded-full border px-2 py-0.5 text-xs font-medium sm:max-w-none" style={{ borderColor: color, color }}>{collectionMeta?.label ?? source.collection}</span>;
   const statusTag = (
@@ -201,7 +201,9 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   const attached = result.context ?? null;
   // Restored searches skip the stream decoder, so the notes are checked here too.
   const footnotes = parseFootnotes(result.footnotes, content);
-  const { collection, document_title, author, reference, document_id } = source;
+  const { document_title, author, reference, document_id } = source;
+  // A bookmark or a saved search can still carry an old key (5.1b.2).
+  const collection = canonicalCollectionKey(source.collection);
   // The passage's own role. Ingest moved "Objection N" out of `content`, so without this
   // an objection reads as a flat assertion wherever it travels without its attachment —
   // opened, copied, or announced. Not in the collapsed header, which shows no text to
@@ -231,7 +233,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
     : [headerAuthor, date].filter(Boolean).join(" · ") || null;
   const showAuthor = !!displayAuthor;
   const includeAuthorInCopy = !!attribution && (
-    collection === "church-fathers" || collection === "encyclicals" || !!source.passage_author || !!certainty
+    collection === "church-fathers" || collection === "papal" || !!source.passage_author || !!certainty
   );
   const compactReference = mobileCitation(collection, document_title, reference, author);
 
@@ -281,7 +283,9 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   // ── Copy action ───────────────────────────────────────────────────────────
   function handleCopy() {
     // The attributed author, so a copied Pseudo-Justin passage is not credited to Justin.
-    const citation = includeAuthorInCopy ? `${primaryReference} (${attribution})` : primaryReference;
+    // Not when the reference already starts with them (a papal one can: "Pope Leo X — ").
+    const citation = includeAuthorInCopy && !primaryReference.startsWith(attribution ?? "")
+      ? `${primaryReference} (${attribution})` : primaryReference;
     // The role goes in the citation, not the body: the body is the passage as written,
     // and the clipboard is the one place this text leaves the app entirely.
     const cited = rejected ? `${citation} [${rejected}]` : role ? `${citation}, ${role}` : citation;
@@ -292,7 +296,9 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
     // Text, then its notes, then the credit, which stays last.
     const notes = footnotes.length ? `\n\n${footnotesCopyText(footnotes)}` : "";
     const body = footnotes.length ? contentWithMarkers(content, footnotes) : stripVerseMarkers(content);
-    const text = `${body} — ${cited} (${collection})${notes}${credited}`;
+    // The collection as readers know it, not its key (5.1b.2: `theologians` is
+    // "Theology & Spirituality").
+    const text = `${body} — ${cited} (${collectionMeta?.label ?? collection})${notes}${credited}`;
     navigator.clipboard.writeText(text)
       .then(() => showToast("Copied"))
       .catch(() => showToast("Copy failed", "error"));

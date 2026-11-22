@@ -13,8 +13,10 @@ import {
   type SearchResultsResponse,
 } from "@/lib/api";
 import { trackErrorOccurred, trackSearchPerformed } from "@/lib/analytics";
-import { parseScopeSelections, type ScopeSelection } from "@/lib/collection-scopes";
-import { ALL_COLLECTION_KEYS } from "@/lib/collections";
+import {
+  canonicalSearchFilters, parseScopeSelections, type ScopeSelection,
+} from "@/lib/collection-scopes";
+import { ALL_COLLECTION_KEYS, canonicalCollectionKey } from "@/lib/collections";
 import { loadSavedSearchResults } from "@/lib/saved-search-cache";
 import {
   isDeliveryOutcome,
@@ -71,30 +73,84 @@ export function readGuestSearch(): RestoredGuestSearch | null {
     if (typeof value.translation !== "string" || typeof value.quota !== "number"
       || !Array.isArray(value.visibleCollections)) return null;
     const snapshot = value as unknown as Omit<GuestContinuityStorage, "passages">;
-    const scopes = parseScopeSelections(snapshot.scopes, snapshot.collections);
+    // A search saved by the page before 5.1b.2 carries old collection keys.
+    const filters = canonicalSearchFilters(snapshot.collections, snapshot.scopes);
+    const known = filters.collections.filter((c) => ALL_COLLECTION_KEYS.includes(c));
+    // As a signed-in restore does: with no known key left, the passages say what was searched.
+    const collections = known.length > 0
+      ? known
+      : canonicalKeys((passages as Passage[]).map((passage) => passage.source.collection))
+        .filter((c) => ALL_COLLECTION_KEYS.includes(c));
+    const scopes = parseScopeSelections(filters.scopes, collections);
+    const visibleCollections = canonicalKeys(snapshot.visibleCollections);
     return {
       continuity: {
         savedAt: snapshot.savedAt,
         request: {
           query: snapshot.query,
-          collections: snapshot.collections,
+          collections,
           translation: snapshot.translation,
           quota: snapshot.quota,
           ...(scopes ? { scopes } : {}),
         },
         searchId: snapshot.searchId,
-        passages: passages as Passage[],
+        passages: (passages as Passage[]).map(canonicalPassage),
         outcome: snapshot.outcome,
-        collectionOutcomes: snapshot.collectionOutcomes,
+        collectionOutcomes: canonicalOutcomes(snapshot.collectionOutcomes) ?? {},
         deliveryOutcome: isDeliveryOutcome(snapshot.deliveryOutcome)
           ? snapshot.deliveryOutcome : null,
-        visibleCollections: snapshot.visibleCollections,
+        visibleCollections,
       },
-      visibleCollections: snapshot.visibleCollections,
+      visibleCollections,
     };
   } catch {
     return null;
   }
+}
+
+function canonicalKeys(keys: readonly unknown[]): string[] {
+  return [...new Set(keys.filter((k): k is string => typeof k === "string").map(canonicalCollectionKey))];
+}
+
+/** A passage labelled in today's vocabulary: a saved search's passages carry the key it
+ * was searched under, an old one for a search made before 5.1b.2. */
+export function canonicalPassage<T extends { readonly source: { readonly collection: string } }>(passage: T): T {
+  const collection = canonicalCollectionKey(passage.source.collection);
+  return collection === passage.source.collection
+    ? passage : { ...passage, source: { ...passage.source, collection } };
+}
+
+// Most informative first, when several old keys become one collection: any results
+// beat none, and a failure is worth reporting over an empty search.
+const OUTCOME_ORDER: readonly CollectionOutcome[] = [
+  "results", "results_degraded", "retrieval_failed", "corpus_sync_failed",
+  "ranking_failed", "below_threshold", "no_candidates",
+];
+const OUTCOME_FAILURES = new Set<CollectionOutcome>([
+  "results_degraded", "retrieval_failed", "corpus_sync_failed", "ranking_failed",
+]);
+
+/**
+ * Per-collection outcomes in today's vocabulary. Old keys that became one collection
+ * merge: results if any had results (degraded if another failed or was degraded),
+ * otherwise the most informative of their outcomes.
+ */
+export function canonicalOutcomes(
+  outcomes: Readonly<Record<string, CollectionOutcome>> | null | undefined,
+): Record<string, CollectionOutcome> | null {
+  if (!outcomes) return null;
+  const grouped = new Map<string, CollectionOutcome[]>();
+  for (const [key, outcome] of Object.entries(outcomes)) {
+    const canonical = canonicalCollectionKey(key);
+    grouped.set(canonical, [...(grouped.get(canonical) ?? []), outcome]);
+  }
+  return Object.fromEntries([...grouped].map(([key, values]) => {
+    const found = values.some((v) => v === "results" || v === "results_degraded");
+    if (found) {
+      return [key, values.some((v) => OUTCOME_FAILURES.has(v)) ? "results_degraded" : "results"];
+    }
+    return [key, OUTCOME_ORDER.find((o) => values.includes(o)) ?? values[0]];
+  }));
 }
 
 function clearGuestSearch() {
@@ -143,13 +199,13 @@ export function savedSearchRequest(
   const storedCollections = Array.isArray(responseCollections)
     ? responseCollections
     : fallback.storedCollections;
-  const askedCollections = Array.isArray(storedCollections)
-    ? storedCollections.filter((collection): collection is string =>
-        typeof collection === "string" && ALL_COLLECTION_KEYS.includes(collection))
-    : [];
+  // Old keys become new ones; an old papal key becomes a Papal documents genre selection.
+  const filters = canonicalSearchFilters(
+    Array.isArray(storedCollections) ? storedCollections : [], data.filters?.scopes);
+  const askedCollections = filters.collections.filter((c) => ALL_COLLECTION_KEYS.includes(c));
   const collections = askedCollections.length > 0
     ? askedCollections
-    : [...new Set(data.results.map((passage) => passage.source.collection))];
+    : canonicalKeys(data.results.map((passage) => passage.source.collection));
   const translation = typeof data.filters?.translation === "string" && data.filters.translation
     ? data.filters.translation
     : fallback.translation;
@@ -158,7 +214,7 @@ export function savedSearchRequest(
     && ([3, 4, 5].includes(savedQuota) || (savedQuota === 10 && collections.length === 1))
     ? savedQuota
     : fallback.quota;
-  const scopes = parseScopeSelections(data.filters?.scopes, collections);
+  const scopes = parseScopeSelections(filters.scopes, collections);
   return {
     query: data.query,
     collections,
@@ -401,7 +457,8 @@ function createSearchPageExperience(options: SearchPageExperienceOptions): Searc
           const deliveryOutcome = quota === 10 && isDeliveryOutcome(data.delivery_outcome)
             ? data.delivery_outcome : null;
           const outcome = isSearchOutcome(data.outcome) ? data.outcome : null;
-          const parsedCollectionOutcomes = parseCollectionOutcomes(data.collection_outcomes);
+          const parsedCollectionOutcomes = canonicalOutcomes(
+            parseCollectionOutcomes(data.collection_outcomes));
           const collectionOutcomes = parsedCollectionOutcomes
             ? Object.fromEntries(
                 Object.entries(parsedCollectionOutcomes)
@@ -414,8 +471,10 @@ function createSearchPageExperience(options: SearchPageExperienceOptions): Searc
             // A null explanation in a saved search is one the stream never reached
             // (the page left before it was written). The card reads null as "still
             // streaming", so hide it instead of showing a skeleton that never fills.
-            passages: data.results.map((passage) =>
-              passage.explanation === null ? { ...passage, explanation: "" } : passage),
+            passages: data.results.map((saved) => {
+              const passage = canonicalPassage(saved);
+              return passage.explanation === null ? { ...passage, explanation: "" } : passage;
+            }),
             warning: data.restore_status === "results_unavailable"
               ? `This saved search originally had ${data.expected_result_count} Passages, but only ${data.results.length} remain available.`
               : null,

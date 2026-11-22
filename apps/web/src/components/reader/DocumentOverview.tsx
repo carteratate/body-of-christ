@@ -13,7 +13,7 @@ import type { Tombstone } from "@/lib/corpus-lifecycle";
 import { SourceCredit } from "@/components/common/SourceLink";
 import { OverviewNotes } from "@/components/common/PassageFacts";
 import { parseOverviewNotes } from "@/lib/card-notes";
-import { getCollectionMeta } from "@/lib/collections";
+import { canonicalCollectionKey, getCollectionMeta } from "@/lib/collections";
 import { LIFT } from "@/lib/lift";
 import { hasReaderReturnMarker, isReaderReturnKey, movedReaderHref, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
@@ -44,7 +44,7 @@ function sectionLanguage(collection: string): { singular: string; plural: string
   if (collection === "bible") return { singular: "chapter", plural: "chapters", prompt: "Choose a chapter" };
   if (collection === "catechism") return { singular: "paragraph range", plural: "paragraph ranges", prompt: "Choose a paragraph range" };
   if (collection === "summa") return { singular: "article", plural: "articles", prompt: "Choose an article" };
-  if (collection === "canon-law") return { singular: "section", plural: "sections", prompt: "Choose a book or section" };
+  if (canonicalCollectionKey(collection) === "church-law") return { singular: "section", plural: "sections", prompt: "Choose a book or section" };
   return { singular: "section", plural: "sections", prompt: "Choose a section" };
 }
 

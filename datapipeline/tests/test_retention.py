@@ -522,3 +522,78 @@ async def test_the_old_collection_stays_while_the_alias_or_a_publish_uses_it(db)
     finally:
         await conn.close()
         await q.close()
+
+
+def _earlier_publish(cluster, name, applied_days_ago: int, release: str = "rel-earlier",
+                     **cols) -> None:
+    """A publish applied `applied_days_ago`, owning `old-points`, the collection
+    RELEASE's switch left."""
+    extra = "".join(f", {k}" for k in cols)
+    values = "".join(f", {v}" for v in cols.values())
+    cluster.psql(name, f"""INSERT INTO corpus_publishes (id, collections, qdrant_collection,
+                               staged_at, applied_at, alias_switched_at, cleaned_up_at{extra})
+                           VALUES ('{release}', ARRAY['medieval'], 'old-points',
+                                   now() - interval '{applied_days_ago + 1} days',
+                                   now() - interval '{applied_days_ago} days',
+                                   now() - interval '{applied_days_ago} days',
+                                   now() - interval '{applied_days_ago} days'{values})""")
+
+
+async def test_the_collection_a_publish_replaced_goes_when_its_window_closes_early(db):
+    """4.4 after the republish (22 Nov 2026): the old collection is the earlier publish's
+    own, and that publish is inside its own window, but it cannot be rolled back while
+    this one stands; closing this one's window by decision lets the collection go."""
+    cluster, name = db
+    cluster.psql(name, f"UPDATE corpus_publishes SET applied_at = now() - interval '1 day' "
+                       f"WHERE id = '{RELEASE}'")
+    _earlier_publish(cluster, name, applied_days_ago=2)
+    q = await _qdrant()
+    conn = await _conn(db)
+    try:
+        # While this one's window is open, the earlier one's still counts.
+        old = await R.old_collection(conn, q, RELEASE, "live")
+        assert any("'rel-earlier' is inside its own rollback window" in p for p in old.problems)
+        old = await R.old_collection(conn, q, RELEASE, "live", EARLY)
+        assert old.problems == [], old.problems
+        with pytest.raises(R.RetentionRefused, match=f"rollback window of '{RELEASE}'"):
+            await R.drop_old_collection(conn, q, RELEASE, "live", "old-points")
+        assert await R.drop_old_collection(conn, q, RELEASE, "live", "old-points",
+                                           EARLY) == ("old-points", True)
+    finally:
+        await conn.close()
+        await q.close()
+
+
+@pytest.mark.parametrize("cols, reason", [
+    ({}, "is the collection of publish 'rel-later'"),
+    ({"rolled_back_at": "now()"}, "is the collection of publish 'rel-later'"),
+])
+async def test_a_later_or_rolled_back_owner_still_keeps_the_collection(db, cols, reason):
+    cluster, name = db
+    # Applied after RELEASE (RELEASE was applied 15 days ago).
+    _earlier_publish(cluster, name, applied_days_ago=1, release="rel-later", **cols)
+    q = await _qdrant()
+    conn = await _conn(db)
+    try:
+        old = await R.old_collection(conn, q, RELEASE, "live", EARLY)
+        assert any(reason in p for p in old.problems), old.problems
+        with pytest.raises(R.RetentionRefused):
+            await R.drop_old_collection(conn, q, RELEASE, "live", "old-points", EARLY)
+        assert await q.collection_exists("old-points")
+    finally:
+        await conn.close()
+        await q.close()
+
+
+async def test_a_later_publishs_open_window_still_refuses(db):
+    cluster, name = db
+    cluster.psql(name, "INSERT INTO corpus_publishes (id, collections, qdrant_collection, "
+                       "staged_at, applied_at, alias_switched_at, cleaned_up_at) VALUES "
+                       "('rel-next', ARRAY['medieval'], 'chunks-rel-next', now(), now(), "
+                       "now(), now())")
+    conn = await _conn(db)
+    try:
+        assert any("'rel-next' is inside its own rollback window" in p
+                   for p in await R.refusals(conn, RELEASE, EARLY))
+    finally:
+        await conn.close()

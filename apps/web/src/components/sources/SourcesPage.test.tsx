@@ -211,11 +211,34 @@ describe("SourcesPage Collection drop-down (issue #392)", () => {
   });
 
   it("shows a generic collection's section with its bubble and counts, and nothing else", async () => {
-    await choose("encyclicals");
+    // Rerum Novarum is stored under the old key `encyclicals` (5.1b.2).
+    await choose("papal");
 
     expect(screen.getByText("1 document · 10 passages")).toBeTruthy();
     expect(screen.getByRole("link", { name: /Rerum Novarum/ })).toBeTruthy();
     expect(screen.getAllByRole("link")).toHaveLength(1);
+  });
+
+  it("lists the three old papal collections as one section, by date (5.1b.2)", async () => {
+    state.sources = [
+      doc("ag", "apostolic-exhortations", "Amoris Laetitia", { author: "Pope Francis", year: 2016 }),
+      doc("rn", "encyclicals", "Rerum Novarum", { author: "Pope Leo XIII", year: 1891 }),
+      doc("us", "papal-documents", "Unam Sanctam", { author: "Pope Boniface VIII", year: 1302 }),
+      doc("ls", "encyclicals", "Laudato Si'", { author: "Pope Francis", year: 2015 }),
+      doc("code", "canon-law", "Code of Canon Law", { year: 1983 }),
+    ];
+    render(<SourcesPage />);
+    const select = await screen.findByRole("combobox");
+    expect([...select.querySelectorAll("option")].map((o) => o.textContent)).toEqual([
+      "All collections", "Bible", "Catechism", "Summa Theologica", "Papal documents", "Councils",
+      "Church Fathers", "Theology & Spirituality", "Church law",
+    ]);
+    expect(screen.getByText("4 documents · 40 passages")).toBeTruthy();
+    const section = screen.getByText("4 documents · 40 passages").closest("section")!;
+    expect([...section.querySelectorAll("a")].map((a) => a.textContent?.match(/Unam Sanctam|Rerum Novarum|Laudato Si'|Amoris Laetitia/)?.[0]))
+      .toEqual(["Unam Sanctam", "Rerum Novarum", "Laudato Si'", "Amoris Laetitia"]);
+    // The Code, stored under `canon-law`, heads its own Church law section.
+    expect(screen.getAllByText("Church law").some((el) => el.closest("section"))).toBe(true);
   });
 
   it("renders the same section as the full page, and returns to it on All collections", async () => {
