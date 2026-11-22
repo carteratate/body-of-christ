@@ -110,6 +110,8 @@ async def corpus(monkeypatch):
                                   vector=[1.0, 0.0, 0.0, 0.0], payload=payload))
     await client.upsert("chunks", points=points, wait=True)
     monkeypatch.setattr(settings, "qdrant_read_collection", "chunks")
+    monkeypatch.setattr(settings, "guarantee_min_score", 0.25)
+    monkeypatch.setattr(settings, "listwise_include_floor", 0.30)
     monkeypatch.setattr(qdrant_client, "_searchable_indexed", False)
     monkeypatch.setattr(qdrant_client, "_searchable_checked_at", float("inf"))
     with patch.object(retrieve_vector, "get_qdrant_client", return_value=client):
