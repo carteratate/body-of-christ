@@ -7,7 +7,9 @@ from typing import Mapping
 
 from app.config import settings
 from app.rag.collection_scope import CollectionScope
-from app.rag.qdrant_client import get_qdrant_client, read_collection, searchable_indexed
+from app.rag.qdrant_client import (
+    genre_indexed, get_qdrant_client, read_collection, searchable_indexed,
+)
 from app.rag.steps import degradation
 from app.rag.steps.types import RetrievalPath
 
@@ -42,7 +44,7 @@ async def _search_vector(
     response = await client.query_points(
         collection_name=read_collection(),
         query=vec,
-        query_filter=scope.to_qdrant_filter(must_not),
+        query_filter=scope.to_qdrant_filter(must_not, genre_indexed=await genre_indexed()),
         limit=limit,
         with_payload=True,
         score_threshold=_QDRANT_SCORE_THRESHOLD,
@@ -63,7 +65,9 @@ async def _search_vector(
             "id": str(r.id),
             "content": payload["content"],
             "reference": payload.get("reference"),
-            "collection": payload["collection"],
+            # The key searched, not the stored value (5.1b.1), so results come back in
+            # the vocabulary the request used.
+            "collection": collection,
             "document_id": payload["document_id"],
             "document_title": payload["document_title"],
             "author": payload.get("author"),

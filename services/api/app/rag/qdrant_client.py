@@ -14,6 +14,8 @@ _client: AsyncQdrantClient | None = None
 _INDEX_TTL_SECONDS = 300.0
 _searchable_indexed: bool | None = None
 _searchable_checked_at = 0.0
+# Read with `searchable` from the same collection info (5.1b.1).
+_genre_indexed: bool | None = None
 
 
 def read_collection() -> str:
@@ -58,7 +60,7 @@ async def searchable_indexed() -> bool:
     failed check keeps the last answer (False before the first, which is today's
     unfiltered search) for another five minutes.
     """
-    global _searchable_indexed, _searchable_checked_at
+    global _searchable_indexed, _searchable_checked_at, _genre_indexed
     if (_searchable_indexed is not None
             and time.monotonic() - _searchable_checked_at < _INDEX_TTL_SECONDS):
         return _searchable_indexed
@@ -71,8 +73,11 @@ async def searchable_indexed() -> bool:
         logger.warning("Qdrant searchable index check failed (%s)", exc.__class__.__name__)
         indexed = bool(_searchable_indexed)
     else:
-        field = (info.payload_schema or {}).get("searchable")
+        schema = info.payload_schema or {}
+        field = schema.get("searchable")
         indexed = field is not None and field.data_type == PayloadSchemaType.BOOL
+        genre = schema.get("genre")
+        _genre_indexed = genre is not None and genre.data_type == PayloadSchemaType.KEYWORD
         if indexed != _searchable_indexed:
             logger.log(
                 logging.INFO if indexed else logging.WARNING,
@@ -83,9 +88,19 @@ async def searchable_indexed() -> bool:
     return indexed
 
 
+async def genre_indexed() -> bool:
+    """Whether the read collection has the keyword payload index on `genre`, checked
+    with `searchable_indexed` and on the same schedule. An old papal key reads the new
+    collection value's genres only when it does (5.1b.1): strict mode refuses a filter
+    on an unindexed field, and today's pre-republish `chunks` has no such index."""
+    await searchable_indexed()
+    return bool(_genre_indexed)
+
+
 def forget_searchable_index() -> None:
-    global _searchable_indexed
+    global _searchable_indexed, _genre_indexed
     _searchable_indexed = None
+    _genre_indexed = None
 
 
 async def close_qdrant() -> None:

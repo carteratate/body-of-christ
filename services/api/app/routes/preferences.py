@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.db import get_pool
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
-from app.models.preferences import PreferencesResponse, PreferencesUpdate
+from app.models.preferences import DEFAULT_COLLECTIONS, PreferencesResponse, PreferencesUpdate
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ router = APIRouter()
 
 _DEFAULT_PREFERENCES = PreferencesResponse(
     preferred_translation="CPDV",
-    default_collections=["bible", "catechism", "church-fathers", "encyclicals", "canon-law", "summa"],
+    default_collections=DEFAULT_COLLECTIONS,
     default_quota=4,
     last_standard_quota=4,
     theme="dark",
@@ -22,7 +22,8 @@ _DEFAULT_PREFERENCES = PreferencesResponse(
 
 
 def _merge_preferences(body: PreferencesUpdate, current_row: Mapping[str, Any] | None) -> PreferencesResponse:
-    current = current_row if current_row is not None else _DEFAULT_PREFERENCES.model_dump()
+    current = (PreferencesResponse.from_stored(current_row) if current_row is not None
+               else _DEFAULT_PREFERENCES).model_dump()
     try:
         return PreferencesResponse(
             preferred_translation=(body.preferred_translation if body.preferred_translation is not None else current["preferred_translation"]),
@@ -57,13 +58,7 @@ async def get_preferences(
     if row is None:
         return _DEFAULT_PREFERENCES
 
-    return PreferencesResponse(
-        preferred_translation=row["preferred_translation"],
-        default_collections=list(row["default_collections"]),
-        default_quota=row["default_quota"],
-        last_standard_quota=row["last_standard_quota"],
-        theme=row["theme"],
-    )
+    return PreferencesResponse.from_stored(row)
 
 
 @router.put("/preferences", response_model=PreferencesResponse)

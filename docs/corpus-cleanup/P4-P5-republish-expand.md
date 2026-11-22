@@ -731,46 +731,58 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 3. 5.1b.3 Data rewrite. Migration, datapipeline keys, a 2.2w publish that writes the new keys to `documents` and the Qdrant payload, and a script for the keys stored in user rows, run as one approved ops step.
 4. 5.1b.4 Contract. Remove old keys from the API and the database constraint.
 
-**Every hard-coded key location, verified on master `5475c49` (29 Sep).** "PR" says which 5.1b PR changes it.
+**Every hard-coded key location, re-verified on master `024d6ee` (22 Nov 2026; first verified on `5475c49`, 29 Sep).** Line numbers are master's before 5.1b.1. "PR" says which 5.1b PR changes it; "done in .1" marks what 5.1b.1 changed. Rows marked *new* were missing from the 29 Sep table.
 
 | Location | What is there | PR |
 |---|---|---|
-| `services/api/app/rag/constants.py:1-12` | `VALID_COLLECTIONS`, all 10 keys | .1 adds, .4 removes |
-| `services/api/app/rag/search_plan.py:42, 81-83` | validation against `VALID_COLLECTIONS` | .1 |
-| `services/api/app/rag/pipeline.py:236` | drops keys not in `VALID_COLLECTIONS` | .1 |
-| `services/api/app/models/preferences.py:28-36, 68-80` | preference validators reject unknown keys, including on GET (`routes/preferences.py:59-65` builds `PreferencesResponse` from stored rows, so one stored unknown key is a 500) | .1 tolerant read, .4 |
-| `services/api/app/routes/preferences.py:15-21` | `_DEFAULT_PREFERENCES` has `encyclicals`, `canon-law` | .2 (after .1) |
-| `services/api/app/routes/search.py:415-420` | restore filters `collection_outcomes` to `VALID_COLLECTIONS` | .1 |
-| `services/api/app/rag/steps/hyde_s25.py:151-251` | `_COLLECTION_HYDE_PROMPTS` for `encyclicals`, `medieval`, `canon-law`, `apostolic-exhortations`, `papal-documents` | .1 adds new, .4 removes old |
-| `services/api/app/rag/steps/hyde_s25.py:315-325` | `_COLLECTION_MAX_TOKENS` (`encyclicals` 400, `medieval` 350, `canon-law` 350; unknown keys fall back to 300 at line 465) | .1, .4 |
-| `services/api/app/rag/dedup.py:65-67` | `_CHAPTER_KEYED_COLLECTIONS` includes `canon-law` | .1 adds `church-law`, .4 removes |
+| `services/api/app/rag/constants.py:1-12, 41-49` | `VALID_COLLECTIONS`, all 10 keys; `_PAPAL_COLLECTIONS`, the collections 5.1a's genre and issuer filters accept | .1 adds `CANONICAL_COLLECTIONS`, `LEGACY_COLLECTIONS` and `papal` to the filters (done in .1); .4 removes |
+| `services/api/app/rag/collection_scope.py` (*new*, 5.1a) | the Qdrant filter and SQL read one stored value, the requested key | .1 adds `reads()`: which stored values a key reads (done in .1); .4 drops the old-key branch |
+| `services/api/app/rag/steps/retrieve_fts.py:25, 83, 91` (*new*) | `d.collection = $1` in the three FTS queries | .1 makes it the scope's condition (done in .1) |
+| `services/api/app/rag/qdrant_client.py` (*new*) | `searchable_indexed` reads the read collection's payload indexes | .1 adds `genre_indexed`, so an old papal key reads the new value only where `genre` is indexed (done in .1) |
+| `services/api/app/rag/search_plan.py:9, 58, 173, 184` | validation against `VALID_COLLECTIONS` | .1 drops an old key beside its new key and logs `legacy_collection_key` (done in .1) |
+| `services/api/app/rag/pipeline.py:289` | drops keys not in `VALID_COLLECTIONS` | no change; the set now holds both vocabularies |
+| `services/api/app/models/preferences.py:28-36, 68-80` | preference validators reject unknown keys, including on GET (`routes/preferences.py:60-66` builds `PreferencesResponse` from stored rows, so one stored unknown key is a 500) | .1 tolerant read (`PreferencesResponse.from_stored`, also for a PUT's merge; done in .1), .4 |
+| `services/api/app/routes/preferences.py:15-21` | `_DEFAULT_PREFERENCES` has `encyclicals`, `canon-law` (moved to `models/preferences.DEFAULT_COLLECTIONS` in .1) | .2 (after .1) |
+| `services/api/app/routes/search.py:486` | restore filters `collection_outcomes` to `VALID_COLLECTIONS` | no change; restored passages carry the stored value until .3 |
+| `services/api/app/rag/steps/hyde_s25.py:151-251` | `_COLLECTION_HYDE_PROMPTS` for `encyclicals`, `medieval`, `canon-law`, `apostolic-exhortations`, `papal-documents` | .1 adds `church-law` and `theologians`; `papal` writes one passage per papal kind its genre filter leaves on, in the old keys' prompts (done in .1); .4 renames the papal prompts to kinds and removes the rest |
+| `services/api/app/rag/steps/hyde_s25.py:315-325` | `_COLLECTION_MAX_TOKENS` (`encyclicals` 400, `medieval` 350, `canon-law` 350; unknown keys fall back to 300 at line 465) | .1 adds `church-law`, `theologians` 350 (done in .1), .4 |
+| `services/api/app/rag/dedup.py:35-45` (*new*) | `_PREFIXED_THRESHOLDS`, the near-duplicate line per collection | .1 adds the new keys (done in .1); .3 measures `papal` on the merged collection |
+| `services/api/app/rag/dedup.py:93-95` | `_CHAPTER_KEYED_COLLECTIONS` includes `canon-law` | .1 adds `church-law` (done in .1), .4 removes |
+| `services/api/app/footnotes.py:33` (*new*) | `_SCRIPTURE_NOTE_COLLECTIONS` has `medieval` | .1 adds `theologians` (done in .1), .4 |
+| `services/api/app/reader_access.py:34` (*new*) | `_COLLECTION_SOURCE_URLS` has `canon-law` | .1 adds `church-law` (done in .1), .4 |
+| `services/api/app/corpus_lifecycle.py:63` (*new*) | Latin link for an amended canon, `collection == "canon-law"` | .1 accepts `church-law` too (done in .1), .4 |
+| `services/api/app/card_notes.py:121` (*new*) | `_BADGE_KINDS` keyed by the stored collection, so a card does not repeat the kind its badge names | .3 (the `papal` badge names no kind, so the merged collection needs no entry; remove the old ones when the values are rewritten) |
 | `services/api/app/routes/evaluate.py:51-174` | numbered collection descriptions with hard-coded counts ("131 papal encyclicals", "30 post-synodal", "14 historical") and weighting hints naming old keys | .2 (switch prompt to new keys once web shows new keys), counts updated in every addition PR |
-| `services/api/scripts/run_eval_suite.py` (`COLLECTIONS`) | eval defaults include `encyclicals` | .4 |
-| `services/api/app/config.py:132` and `tests/test_config_validation.py:29-45` | `cohere_concurrency` 10 and a test that it covers `len(VALID_COLLECTIONS)` | .1 changes the test to count scopes per search (see 5.1b.1) |
-| `datapipeline/config.py:58-67` | `PER_COLLECTION_OVERLAP` (`medieval` 200, `encyclicals` 250, `canon-law` 300); `overlap_for` at `:137` | .3 |
-| `datapipeline/publication.py:33-43` | `SOURCE_ADAPTERS` keyed by collection | .3 |
-| `datapipeline/stages/parse.py:4-19` | V5 `BUILDERS` keyed by collection | .3 |
+| `services/api/scripts/run_eval_suite.py:41` (`COLLECTIONS`) | eval defaults include `encyclicals` | .4 |
+| `services/api/scripts/republish_checks.py:886-914` and its cases (*new*) | republish check questions and expectations keyed by old collection | .3 (the publish that writes the new values runs them) |
+| `services/api/app/config.py:138` and `tests/test_config_validation.py:29-45` | `cohere_concurrency` 10 and a test that it covers `len(VALID_COLLECTIONS)` | .1 changes the test to count scopes and HyDE calls per search (done in .1: 10 scopes, 13 calls) |
+| `datapipeline/config.py:63-67, 142` | `PER_COLLECTION_OVERLAP` (`medieval` 200, `encyclicals` 250, `canon-law` 300); `overlap_for` | .3 |
+| `datapipeline/publication.py:45-` | `SOURCE_ADAPTERS` keyed by collection | .3 |
+| `datapipeline/stages/parse.py:9-24` | V5 `BUILDERS` keyed by collection | .3 |
 | `datapipeline/enrichment/prompts/classification.py:185-221`, `enrichment/prompts/generation/__init__.py:6-20` | V5 enrichment guidance keyed by collection | .3 |
-| `datapipeline/scripts/vendor_sources.py:629-636`, `scripts/audit_sources.py:148-151` | vendor and audit registries keyed by source directory | leave the source directory names; keys only if they double as collection keys (they do not after .3) |
-| `datapipeline/ingest/*.py` (`papal_common.py`, which the three papal wrappers call with their `COLLECTION`; `canon_law.py:86`, `thml_doc.py:89`) | collection string used both as the emitted collection and as a `document_id()` input | .3 changes only the emitted collection; ids come from the 2.1 registry |
+| `datapipeline/scripts/vendor_sources.py`, `scripts/audit_sources.py:133-` | vendor and audit registries keyed by source directory | leave the source directory names; keys only if they double as collection keys (they do not after .3) |
+| `datapipeline/ingest/*.py` (`papal_common.py`, which the three papal wrappers call with their `COLLECTION`, e.g. `encyclicals.py:9`; `canon_law.py:541, 605`; `medieval.py:129, 142`) | collection string used both as the emitted collection and as a `document_id()` input | .3 changes only the emitted collection; ids come from the 2.1 registry |
+| `datapipeline/registry/works.json` (`collection` on every work), `papal_genres.py`, `document_facts.py`, `rights_inventory.py`, `ingest/canon_overrides.py`, `checks/*.py` and their JSON baselines, `scripts/language_removals.py`, `scripts/medieval_registry.py`, `scripts/source_lock.py` (*new*) | old keys as registry values, check scopes and baselines | .3 (the build and checks must agree with the values it writes) |
 | `datapipeline/README.md` adapter table, `datapipeline/SOURCES.md` | docs | .3 |
 | `apps/web/src/lib/collections.ts:10-19` | `COLLECTIONS` with keys, labels, colors | .2 |
-| `apps/web/src/app/globals.css:33-42` | `--color-collection-*` tokens | .2 adds, .4 removes |
-| `apps/web/src/lib/search-draft.ts:33-37` | guest default collections include `encyclicals` | .2 |
+| `apps/web/src/lib/collection-scopes.ts:40`, `collection-scopes.json` (*new*, 5.1a) | `SCOPED_COLLECTIONS` (the three papal keys) and the genres and issuers each offers, generated from `works.json` by its test | .2 offers `papal`; the JSON follows `works.json` in .3 |
+| `apps/web/src/lib/source-sites.json` (*new*) | `collection` per source site | .3 (generated) |
+| `apps/web/src/app/globals.css:49-58` | `--color-collection-*` tokens | .2 adds, .4 removes |
+| `apps/web/src/lib/search-draft.ts:48` | guest default collections include `encyclicals` | .2 |
 | `apps/web/src/components/search/LoadingAnimation.tsx:24-34` | `PALETTE` keyed by collection with short codes | .2 |
 | `apps/web/src/components/search/QuotaControl.tsx:9-10, 126` and `QuotaControl.module.css:59` | contrast sets for `apostolic-exhortations`, `canon-law`, `papal-documents`, and `.papalNumeral` | .2 |
-| `apps/web/src/components/search/ChunkCard.tsx:53, 118` | `canon-law` citation shortening; author shown for `church-fathers` or `encyclicals` | .2 |
-| `apps/web/src/components/reader/DocumentOverview.tsx:24`, `ReaderChrome.tsx:67` | `canon-law` reader wording | .2 |
+| `apps/web/src/components/search/ChunkCard.tsx:85, 234` | `canon-law` citation shortening; author shown for `church-fathers` or `encyclicals` | .2 |
+| `apps/web/src/components/reader/DocumentOverview.tsx:47`, `ReaderChrome.tsx:74` | `canon-law` reader wording | .2 |
 | `apps/web/src/components/about/AboutPage.tsx:3-24` | descriptions keyed by collection | .2 (new keys, interim text), full rewrite in 5.7 |
-| `apps/web/src/components/landing/LandingPage.tsx:14` | copy naming "encyclicals, and papal documents" | .2 |
-| `apps/web/src/components/sources/SourcesPage.tsx:361, 432-444` | groups and filters by `COLLECTIONS` keys | .2 (group by translated key) |
+| `apps/web/src/components/landing/LandingPage.tsx:14`, `app/page.tsx:6` (*new*) | copy naming "encyclicals, and papal documents"; the page description names encyclicals | .2 (wording only if the label changes the sense) |
+| `apps/web/src/components/sources/SourcesPage.tsx:450, 482` | groups and filters by `COLLECTIONS` keys | .2 (group by translated key) |
 | `user_preferences.default_collections` rows and column default (live default verified above; set by `supabase/migrations/0010_chunks_metadata.sql:23`) | stored keys | .3 |
-| `searches.filters` (`collections` array and `collection_outcomes` object keys) | stored keys | .3 |
+| `searches.filters` (`collections` array, `collection_outcomes` object keys and, since 5.1a, `scopes` keys) | stored keys | .3 |
 | `guest_trials.filters` | stored keys | .3 |
 | `documents.collection` and `documents_collection_check` | stored keys and constraint | .3 widens, .4 narrows |
 | Qdrant payload field `collection` on every point | stored keys | .3 |
-| Test fixtures (API 10 files, datapipeline 15, web 6 files by `git grep -c`) | literal keys | each PR updates what it breaks |
-| CLAUDE.md §15 ("10 collections"), §18 (chapter-keyed list), `apps/web/AGENTS.md` | docs | each PR |
+| Test fixtures (files naming an old key on `024d6ee`: API 22, datapipeline 51, web 22) | literal keys | each PR updates what it breaks |
+| CLAUDE.md §15 ("10 collections"), §18 (chapter-keyed list), `apps/web/AGENTS.md` | docs | each PR (.1 updated §5, §15, §18) |
 
 ### 5.1b.1. API accepts new collection keys (expand)
 
@@ -790,7 +802,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   3. Label results with the requested key. After retrieval, set each row's `collection` to the scope key it was retrieved under. Then collection guarantee, `collection_outcomes`, dedup and the SSE `chunk` events all use the vocabulary the client sent. Old web clients keep seeing old keys, and new clients see new keys.
   4. `resolve_search_plan`. If a request names both a legacy key and the new key it maps to, drop the legacy key (no double retrieval). Log a structured field `legacy_collection_key` for every legacy key received, so Railway shows when old clients stop.
   5. HyDE.
-     - Add prompts for `papal` (merge the three current prompts, `hyde_s25.py:163-249`, into one covering encyclicals, exhortations, letters, constitutions and bulls), `church-law` (the `canon-law` prompt, unchanged until 5.4 adds universal laws) and `theologians` (the `medieval` prompt broadened past the medieval period, because the collection will hold writers to the 1930s).
+     - Add prompts for `papal` (merge the three current prompts, `hyde_s25.py:163-249`, into one covering encyclicals, exhortations, letters, constitutions and bulls; **superseded 22 Nov 2026**: Carter chose one passage per kind of papal document instead, each in today's prompt for that kind, and only for the kinds the genre filter leaves on, so there is no merged prompt), `church-law` (the `canon-law` prompt, unchanged until 5.4 adds universal laws) and `theologians` (the `medieval` prompt broadened past the medieval period, because the collection will hold writers to the 1930s).
      - Add `_COLLECTION_MAX_TOKENS` entries `papal` 400, `church-law` 350, `theologians` 350.
   6. `dedup.py:65-67`. Add `church-law` next to `canon-law`.
   7. Preferences. Make `PreferencesResponse` on GET tolerant: drop unknown stored keys and fall back to defaults if none remain, instead of raising. PUT validation stays strict.
@@ -809,6 +821,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - PR description lists the table rows this PR changed.
 - **Production safety:** Old keys keep identical behavior against today's data. New keys are only sent once 5.1b.2 ships. The tolerant GET removes an existing 500 risk. Rollback is a revert.
 - **Needs Carter:** Confirm the three key names and their labels. Approve the merged papal HyDE prompt text.
+  - Answered 22 Nov 2026: the keys and labels stand (`papal` Papal documents, `church-law` Church law, `theologians` Theologians and spiritual writers). No merged prompt: "when papal documents is selected, do one HyDE for each kind of papal document. When things are filtered, only do a HyDE for the ones that have been requested."
 - **Out of scope:** Web changes, data changes, removing old keys.
 
 ### 5.1b.2. Web switches to the new keys

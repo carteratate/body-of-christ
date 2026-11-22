@@ -4,11 +4,14 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from typing import Mapping
 
 import anthropic
 
 from app.config import HyDEProvider, settings
 from app.rag.api_keys import get_client, get_key_for, get_semaphore
+from app.rag.collection_scope import CollectionScope
+from app.rag.constants import GENRES_BY_COLLECTION, LEGACY_COLLECTIONS
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.embed import run as embed_run
 from app.rag.steps import degradation, hyde_luna
@@ -251,6 +254,44 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
     ),
 }
 
+# The new keys of 5.1b.1. Church law is canon law under a new name, with the same
+# prompt until 5.4 adds the universal laws. Theologians and spiritual writers will hold
+# writers to the 1930s, so its prompt is the medieval one past the medieval period.
+_COLLECTION_HYDE_PROMPTS["church-law"] = _COLLECTION_HYDE_PROMPTS["canon-law"]
+_COLLECTION_HYDE_PROMPTS["theologians"] = (
+    "Write one passage of about 100-150 words in the manner of a Christian theologian or "
+    "spiritual writer, from the medieval schoolmen and mystics to later masters of the "
+    "spiritual life. Choose careful reasoning or direct meditation on prayer and the "
+    "spiritual life according to the question. Develop an objection or qualification when "
+    "the user asks for one. For a broad question, connect its main concepts while keeping "
+    "one coherent line of thought. Keep relevant names and theological terms when they fit. "
+    "Use the concepts of the writer's own period when they illuminate the question, not as "
+    "decoration. Return only the passage, without an attribution label or heading. An "
+    "essential author or work may appear within the prose."
+)
+
+# The papal collection writes one passage per kind of papal document the search
+# includes, in the prompt that kind's old collection uses (Carter, 22 Nov 2026), so a
+# search of all papal documents draws the three passages a search of the three old
+# collections draws today. A kind is skipped when the genre filter turns off every
+# genre it covers. Each kind is an old key that `LEGACY_COLLECTIONS` maps to `papal`.
+_PAPAL = "papal"
+
+
+def papal_hyde_kinds(excluded_genres: frozenset[str] = frozenset()) -> list[str]:
+    """The old papal keys whose prompts a `papal` search uses, in a fixed order."""
+    vocabulary = GENRES_BY_COLLECTION[_PAPAL]
+    kinds = []
+    for key, legacy in LEGACY_COLLECTIONS.items():
+        if legacy.canonical != _PAPAL:
+            continue
+        covered = (legacy.genres if legacy.genres is not None
+                   else vocabulary - legacy.without_genres)
+        if covered - excluded_genres:
+            kinds.append(key)
+    return kinds
+
+
 _BIBLE_SELECTED_GENRE_COUNT = 4
 _BIBLE_VALID_GENRES = {
     "free", "psalms", "ot-wisdom", "ot-prophets", "ot-stories",
@@ -321,6 +362,9 @@ _COLLECTION_MAX_TOKENS: dict[str, int] = {
     "councils": 450,
     "medieval": 350,
     "canon-law": 350,
+    # 5.1b.1. A papal search sizes each passage by its kind's old key instead.
+    "church-law": 350,
+    "theologians": 350,
 }
 _DEFAULT_MAX_TOKENS = 300
 
@@ -460,15 +504,17 @@ async def generate_hyde_passages(
     cost_tracker: CostTracker | None = None,
     passage_provider: HyDEProvider | None = None,
     passage_model: str | None = None,
+    excluded_genres: frozenset[str] = frozenset(),
 ) -> list[str]:
-    """Return hypothetical passages for the given collection, tracking LLM cost."""
+    """Return hypothetical passages for the given collection, tracking LLM cost.
+    `excluded_genres` is the papal genre filter, which decides the papal kinds."""
     max_tokens = _COLLECTION_MAX_TOKENS.get(collection or "", _DEFAULT_MAX_TOKENS)
     provider = passage_provider or settings.hyde_passage_provider
 
-    async def _guarded(system: str) -> str | None:
+    async def _guarded(system: str, tokens: int = max_tokens) -> str | None:
         async def _generate() -> str | None:
             return await _generate_single(
-                client, system, query, max_tokens,
+                client, system, query, tokens,
                 cost_tracker=cost_tracker, cost_step="hyde", scope=collection,
                 passage_provider=provider, passage_model=passage_model,
             )
@@ -489,6 +535,14 @@ async def generate_hyde_passages(
         results = await asyncio.gather(*[_guarded(p) for p in prompts.values()])
         return [r for r in results if r is not None]
 
+    if collection == _PAPAL:
+        results = await asyncio.gather(*[
+            _guarded(_COLLECTION_HYDE_PROMPTS[kind],
+                     _COLLECTION_MAX_TOKENS.get(kind, _DEFAULT_MAX_TOKENS))
+            for kind in papal_hyde_kinds(excluded_genres)
+        ])
+        return [r for r in results if r is not None]
+
     system = _COLLECTION_HYDE_PROMPTS.get(collection or "", _HYDE_SYSTEM_DEFAULT)
     result = await _guarded(system)
     return [result] if result is not None else []
@@ -503,12 +557,14 @@ async def run(
     passage_provider: HyDEProvider | None = None,
     passage_model: str | None = None,
     genre_model: str | None = None,
+    scopes: Mapping[str, CollectionScope] | None = None,
 ) -> dict[str, list[list[float]]]:
     """Generate HyDE passages and embed them per collection.
 
     Returns dict[collection, list[embedding_vectors]].
     Bible normally gets 4 vectors (1 selector call + 4 genre generators).
     Focused Bible searches can request all 8 without a selector call.
+    `papal` gets one per kind its scope in `scopes` leaves on, up to 3.
     Each other collection gets 1 vector.
     """
     async def _hyde_and_embed(col: str) -> tuple[str, list[list[float]]]:
@@ -530,10 +586,12 @@ async def run(
                 passage_model=passage_model,
             )
         else:
+            scope = (scopes or {}).get(col)
             passages = await generate_hyde_passages(
                 query, col, client, semaphore, cost_tracker=cost_tracker,
                 passage_provider=passage_provider,
                 passage_model=passage_model,
+                excluded_genres=scope.excluded_genres if scope else frozenset(),
             )
 
         if not passages:
