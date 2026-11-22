@@ -54,7 +54,10 @@ describe("genre and issuer filter (5.1a)", () => {
     expect(dialog.textContent).toContain("Pope");
 
     fireEvent.click(screen.getByRole("button", { name: "Only Encyclical" }));
+    // The last ticked value says it cannot be unticked.
+    expect(screen.getByRole("checkbox", { name: /^Encyclical/ }).getAttribute("aria-disabled")).toBe("true");
     fireEvent.click(screen.getByRole("checkbox", { name: /Apostolic letter/ }));
+    expect(screen.getByRole("checkbox", { name: /^Encyclical/ }).hasAttribute("aria-disabled")).toBe(false);
     expect(scopes()).toEqual({ encyclicals: { genres: ["encyclical", "apostolic-letter"] } });
 
     fireEvent.click(screen.getByRole("button", { name: "Only Leo XIII" }));

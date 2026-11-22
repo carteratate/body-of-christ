@@ -163,14 +163,19 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
               </div>
               {options[facet].map((option) => {
                 const ticked = !off.includes(option.value);
+                const onlyTicked = ticked && off.length === options[facet].length - 1;
                 return (
                   <div key={option.value} className={styles.row}>
                     <button
                       type="button"
                       role="checkbox"
                       aria-checked={ticked}
+                      aria-disabled={onlyTicked || undefined}
+                      title={onlyTicked ? "At least one stays ticked" : undefined}
                       className={styles.option}
-                      onClick={() => onEvent(toggle(facet, option.value))}
+                      onClick={() => {
+                        if (!onlyTicked) onEvent(toggle(facet, option.value));
+                      }}
                     >
                       <span className={styles.box} aria-hidden>
                         {ticked && <Check size={11} strokeWidth={3.5} />}

@@ -165,14 +165,24 @@
   color: var(--color-brand-muted);
 }
 
-/* Only shows on hover or focus where there is a pointer; always on touch screens. */
+/* Only shows on hover or focus where there is a pointer; always on touch screens.
+   Hidden by opacity, not visibility, so keyboards and screen readers still reach it. */
 .only {
   padding: 0.125rem 0.5625rem;
   font-size: 10.5px;
 }
 
 @media (hover: hover) {
-  .row:not(:hover):not(:focus-within) .only { visibility: hidden; }
+  .row:not(:hover):not(:focus-within) .only { opacity: 0; }
+}
+
+/* The last ticked value of a list cannot be unticked: a filter never searches nothing. */
+.option[aria-disabled="true"] {
+  cursor: default;
+}
+
+.option[aria-disabled="true"] .box {
+  opacity: 0.55;
 }
 
 @media (hover: none) {
