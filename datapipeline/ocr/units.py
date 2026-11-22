@@ -569,8 +569,18 @@ def roman_catechism_heading(text: str) -> bool:
     if text.endswith(";") or len(words) > 12 or not words[0][:1].isupper():
         return False
     # Title case, short words left small ("Names of this Sacrament", "The Rites and
-    # ceremonies of the Mass").
-    return words[-1][:1].isupper() and sum(w[:1].isupper() for w in words) / len(words) >= 0.4
+    # ceremonies of the Mass", "Dispositions with which this Petition should be Offered").
+    if not words[-1][:1].isupper():
+        return False
+    return (sum(w[:1].isupper() for w in words) / len(words) >= 0.4
+            or all(w[:1].isupper() or w.lower() in _SMALL_WORDS for w in words))
+
+
+# Words a title-case heading leaves small.
+_SMALL_WORDS = frozenset(
+    "of the and to in by for or a an on with from at as is are be not than its his this that "
+    "which these those should into our we us it were who whom what how why their them may "
+    "can must has have was".split())
 
 
 # A heading in capitals the OCR ran into the paragraph under it ("IT WAS NOT A SACRAMENT

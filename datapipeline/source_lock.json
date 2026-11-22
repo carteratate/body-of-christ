@@ -3208,7 +3208,7 @@
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
-  "note": "the scan the Roman Catechism is read from, through ocr/texts/mchugh-callan-roman-catechism.json (5.5)"
+  "note": "the scan's plain OCR text, vendored by R6; the OCR tool reads the _djvu.xml (5.5)"
  },
  {
   "collection": "catechism",

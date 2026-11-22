@@ -94,6 +94,12 @@
   "why": "Page-foot notes read into the text (p. 41)."
  },
  {
+  "passage": "0052",
+  "find": "REDEMPTION,\n\nAN EXAMPLE",
+  "replace": "REDEMPTION, AN EXAMPLE",
+  "why": "One heading on p. 60, read as two lines."
+ },
+ {
   "passage": "0056",
   "find": "\n\n: xf i: oa. Coli a8, - eager aOn Christ’s descent into hell see Summa Theol. 3a. lii.",
   "replace": "",
@@ -116,6 +122,12 @@
   "find": "\"He ASCENDED INTO HEAVEN, SITTETH AT THE RIGHT HAND OF GOD THE FATHER ALMIGHTY\"",
   "replace": "“HE ASCENDED INTO HEAVEN, SITTETH AT THE RIGHT HAND OF GOD THE FATHER ALMIGHTY”",
   "why": "Article VI's title, in capitals and small capitals, with curly quotation marks (p. 73)."
+ },
+ {
+  "passage": "0068",
+  "find": "If,\n\n4s wept; a \n\nmie ie 24, De lade Sah Pita xine aHe was elevated into heaven in order to make us partakers of His Divinity (Preface of the Mass of the Ascension). therefore",
+  "replace": "If, therefore",
+  "why": "Page-foot notes and specks read into the text; pp. 77–78 print \"If, therefore\"."
  },
  {
   "passage": "0072",
@@ -181,6 +193,12 @@
   "find": "sea,15 to",
   "replace": "sea, to",
   "why": "Note call read into the text (p. 100)."
+ },
+ {
+  "passage": "0092",
+  "find": "\n\nONE”\n\n",
+  "replace": "\n\n“ONE”\n\n",
+  "why": "The heading's opening quotation mark was lost; p. 102 prints “ONE”."
  },
  {
   "passage": "0093",
@@ -442,6 +460,12 @@
   "why": "Note call read into the text"
  },
  {
+  "passage": "0244",
+  "find": "\n\n————————— on eng dane eon\n\n",
+  "replace": "\n\n",
+  "why": "A rule and specks read as a line (p. 269)."
+ },
+ {
   "passage": "0251",
   "find": "apathy «, Deut. vi. 5. “Joel ii. 12. Matt.x. 37:\n\nMatt. xvi. 25. “Lib. De Diligendo Deo, cap. 1. 47. ",
   "replace": "apathy ",
@@ -573,6 +597,18 @@
   "why": "One paragraph on p. 351; the clean-up broke it."
  },
  {
+  "passage": "0321",
+  "find": "wife.tt Justly",
+  "replace": "wife. Justly",
+  "why": "Note call read into the text (p. 350)."
+ },
+ {
+  "passage": "0321",
+  "find": "love one another\n\nwith a special, holy and pure love; not as adulterers love one 4\n\nanother but as Christ loves His Church. This is the rule laid ay. down",
+  "replace": "love one another with a special, holy and pure love; not as adulterers love one another but as Christ loves His Church. This is the rule laid down",
+  "why": "One paragraph on p. 351, read with specks and breaks."
+ },
+ {
   "passage": "0324",
   "find": "Sess. xxiv. Decret. de Reformat. Matrimon.\n\n",
   "replace": "",
@@ -591,10 +627,22 @@
   "why": "OCR misreading; the page prints \"preëminently\" (p. 362)."
  },
  {
+  "passage": "0333",
+  "find": "out of the\n\nHouse of Bondage”",
+  "replace": "out of the House of Bondage”",
+  "why": "One heading on p. 366, read as two lines."
+ },
+ {
   "passage": "0338",
   "find": "intercessor.2\" This",
   "replace": "intercessor. This",
   "why": "Note call read into the text"
+ },
+ {
+  "passage": "0339",
+  "find": "graven thing, nor the\n\nlikeness",
+  "replace": "graven thing, nor the likeness",
+  "why": "One quotation on p. 373; the clean-up broke it."
  },
  {
   "passage": "0340",
@@ -613,6 +661,24 @@
   "find": "shall recewe the",
   "replace": "shall receive the",
   "why": "OCR misreading; the page prints \"receive\" (p. 375)."
+ },
+ {
+  "passage": "0341",
+  "find": "under the BTS Be St forms",
+  "replace": "under the forms",
+  "why": "Specks read into the text (p. 375)."
+ },
+ {
+  "passage": "0341",
+  "find": "require\n\nlengthy explanation. nF\n\n",
+  "replace": "require lengthy explanation.\n\n",
+  "why": "One paragraph on p. 375, with a speck read as letters."
+ },
+ {
+  "passage": "0341",
+  "find": "CHRIST AND THE SAINTS E\n\n",
+  "replace": "CHRIST AND THE SAINTS\n\n",
+  "why": "A speck read after the heading (p. 376)."
  },
  {
   "passage": "0343",
@@ -645,6 +711,12 @@
   "why": "A heading in small capitals, misread (p. 381)."
  },
  {
+  "passage": "0347",
+  "find": "\n\nee GE bell Ae OR a ree At\n\n",
+  "replace": "\n\n",
+  "why": "A rule read as letters (p. 382)."
+ },
+ {
   "passage": "0352",
   "find": "Such \"Ad. Pop. Antioch. hom. xxvi. *2Corchiat was",
   "replace": "Such was",
@@ -655,6 +727,18 @@
   "find": "for ever. i Nay",
   "replace": "for ever. Nay",
   "why": "Note call read into the text"
+ },
+ {
+  "passage": "0355",
+  "find": "who,\n\nin fine, superintends all human affairs with an admirable —\n\nprovidence",
+  "replace": "who, in fine, superintends all human affairs with an admirable providence",
+  "why": "One paragraph on p. 389, broken with a speck."
+ },
+ {
+  "passage": "0365",
+  "find": "‘THE SEVENTH DAY IS THE SABBATH OF THE LORD THY GOD”",
+  "replace": "“THE SEVENTH DAY IS THE SABBATH OF THE LORD THY GOD”",
+  "why": "The page prints an opening double quotation mark (p. 401)."
  },
  {
   "passage": "0370",
@@ -690,6 +774,12 @@
   "find": "Paul,3? desired",
   "replace": "Paul, desired",
   "why": "Note call read into the text"
+ },
+ {
+  "passage": "0385",
+  "find": "SUICIDE\n\nThe above are the cases",
+  "replace": "NEGATIVE PART OF THIS COMMANDMENT FORBIDS MURDER AND SUICIDE\n\nThe above are the cases",
+  "why": "The heading's first line was read into the page-foot notes of p. 422 and dropped with them; p. 423 prints the whole heading."
  },
  {
   "passage": "0386",
@@ -737,6 +827,12 @@
   "find": "but preéminently so",
   "replace": "but preëminently so",
   "why": "OCR misreading; the page prints \"preëminently\" (p. 449)."
+ },
+ {
+  "passage": "0431",
+  "find": "Commandments are\n\nViolated",
+  "replace": "Commandments are Violated",
+  "why": "One heading on p. 475, read as two lines."
  },
  {
   "passage": "0433",
@@ -894,6 +990,18 @@
   "why": "OCR misreading; the page prints \"of others\" (p. 547)."
  },
  {
+  "passage": "0498",
+  "find": "\n\n“This Day",
+  "replace": "\n\n“This Day”",
+  "why": "The heading's closing quotation mark was lost (p. 548)."
+ },
+ {
+  "passage": "0498",
+  "find": "body subject to the soul.\n\nBut why say give us",
+  "replace": "body subject to the soul.\n\n“Us”\n\nBut why say give us",
+  "why": "The heading “Us” was dropped as a speck; p. 547 prints it."
+ },
+ {
   "passage": "0502",
   "find": "away.t David",
   "replace": "away. David",
@@ -999,5 +1107,197 @@
   "find": "promises of\n\n“ AMEN ” 589;\n\nGod are in him",
   "replace": "promises of God are in him",
   "why": "The running head of p. 589 read into the text."
+ },
+ {
+  "passage": "0013",
+  "find": "etc.,7 and",
+  "replace": "etc., and",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0023",
+  "find": "and are. 4\n\n",
+  "replace": "and are.\n\n",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0040",
+  "find": "closed; 18 the",
+  "replace": "closed; the",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0040",
+  "find": "consumed.\"4",
+  "replace": "consumed.\"",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0112",
+  "find": "City of God.?\" 4",
+  "replace": "City of God.\"",
+  "why": "A note call and a misread mark after the closing quotation. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0159",
+  "find": "holiness, the\n\nwit: Pet. 2 child",
+  "replace": "holiness, the child",
+  "why": "A fragment of a page-foot note (\"wit: Pet. 2\") read into the sentence across pp. 174–175; Fordham's transcription has \"the child should lead\"."
+ },
+ {
+  "passage": "0173",
+  "find": "womb; 198 so",
+  "replace": "womb; so",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0202",
+  "find": "my body.” 8\n\n",
+  "replace": "my body.”\n\n",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0209",
+  "find": "Gregory VII.2 The",
+  "replace": "Gregory VII. The",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0211",
+  "find": "children of men. 4\n\n",
+  "replace": "children of men.\n\n",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0250",
+  "find": "your hearts. 4\n\n",
+  "replace": "your hearts.\n\n",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0257",
+  "find": "from sin. 4\n\n",
+  "replace": "from sin.\n\n",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0259",
+  "find": "judgment.”8",
+  "replace": "judgment.”",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0261",
+  "find": "heaven”; 7 no",
+  "replace": "heaven”; no",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0309",
+  "find": "my hands. 4\n\n",
+  "replace": "my hands.\n\n",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0316",
+  "find": "to Lia. 2\n\n",
+  "replace": "to Lia.\n\n",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0338",
+  "find": "of Job.\"8",
+  "replace": "of Job.\"",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0353",
+  "find": "deceiveth not? 4\n\n",
+  "replace": "deceiveth not?\n\n",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0414",
+  "find": "not eat; 12 and",
+  "replace": "not eat; and",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0415",
+  "find": "against him. 4\n\n",
+  "replace": "against him.\n\n",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0434",
+  "find": "“Here I am’; 8 and",
+  "replace": "“Here I am”; and",
+  "why": "A note call left in the text, and the closing quotation mark misread. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0462",
+  "find": "brethren.’ 4 And",
+  "replace": "brethren.” And",
+  "why": "A note call left in the text, and the closing quotation mark misread. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0485",
+  "find": "mother; 8 that",
+  "replace": "mother; that",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0485",
+  "find": "commandments; 1\" Teach",
+  "replace": "commandments; Teach",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0485",
+  "find": "judgments; 18 Give",
+  "replace": "judgments; Give",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0498",
+  "find": "enjoy.?\"",
+  "replace": "enjoy.\"",
+  "why": "A misread mark (a note call) before the closing quotation. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0512",
+  "find": "in heaven. 4\n\nThis",
+  "replace": "in heaven.\n\nThis",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0004",
+  "find": "upon earth? 8",
+  "replace": "upon earth?",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0011",
+  "find": "unto salvation.\" 4",
+  "replace": "unto salvation.\"",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0032",
+  "find": "many brethren. 4",
+  "replace": "many brethren.",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0215",
+  "find": "already has existence? 4",
+  "replace": "already has existence?",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0312",
+  "find": "On Virgins.\" 4",
+  "replace": "On Virgins.\"",
+  "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
  }
 ]

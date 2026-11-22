@@ -152,6 +152,8 @@ _STRUCTURAL = re.compile(
 class _Section:
     unit: str
     headings: list[str]
+    # The printed pages of the OCR passages the section's text is read from: a passage
+    # holds several sections, so this can name a page or two around the section's own.
     paragraphs: list[str] = field(default_factory=list)
     pages: list[str] = field(default_factory=list)
 

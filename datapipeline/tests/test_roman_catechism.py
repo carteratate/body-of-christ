@@ -147,3 +147,16 @@ def test_no_note_or_heading_text_reaches_a_passage(document):
     for p in document.passages:
         assert not re.search(r"Summa Theol|[®™©]", p.content), p.anchor
         assert not any(roman_catechism_heading(q) for q in p.content.split("\n\n")), p.anchor
+
+
+@needs_text
+def test_no_passage_holds_a_short_unclosed_line(document):
+    """A heading, a heading's broken line or OCR debris reads as a short paragraph that no
+    sentence closes. Checked on the built text, not with the heading detector."""
+    found = [(p.anchor, q) for p in document.passages for q in p.content.split("\n\n")
+             if len(q.split()) <= 14 and not re.search(r"[.?!:;”’)]$", q.strip())]
+    assert found == []
+    unbalanced = [p.unit_label for p in document.passages if p.unit_label
+                  and (p.unit_label.count("“") != p.unit_label.count("”")
+                       or re.match(r"^\W*[a-z]", p.unit_label))]
+    assert unbalanced == []

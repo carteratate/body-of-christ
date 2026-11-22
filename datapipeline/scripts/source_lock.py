@@ -103,7 +103,9 @@ _UNREGISTERED_NOTES.update({
     **{f"catechism/catechismofcounc0000jose/catechismofcounc0000jose_{kind}":
        "the scan the Roman Catechism is read from, through ocr/texts/"
        "mchugh-callan-roman-catechism.json (5.5)"
-       for kind in ("djvu.txt", "djvu.xml", "page_numbers.json")},
+       for kind in ("djvu.xml", "page_numbers.json")},
+    "catechism/catechismofcounc0000jose/catechismofcounc0000jose_djvu.txt":
+        "the scan's plain OCR text, vendored by R6; the OCR tool reads the _djvu.xml (5.5)",
     "catechism/fordham-romancat.html":
         "Fordham's transcription, used only to check the Roman Catechism's OCR (5.5)",
 })

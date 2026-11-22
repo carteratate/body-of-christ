@@ -136,7 +136,7 @@ def documents_by_file(collection: str, documents: list[Document], files: list[st
             out[file_by_title[doc.title]].append(doc)
         elif collection == "catechism" and meta.get("source_key") == "catechism" \
                 and CCC_FILE in out:
-            # The Catechism of the Catholic Church; the Compendium names its own file (5.5).
+            # The Catechism of the Catholic Church; the 5.5 additions name their own files.
             out[CCC_FILE].append(doc)
         elif collection in ("canon-law", "catechism", "summa") and len(documents) == 1:
             for f in files:

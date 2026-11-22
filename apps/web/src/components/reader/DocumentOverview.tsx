@@ -15,7 +15,7 @@ import { OverviewNotes } from "@/components/common/PassageFacts";
 import { parseOverviewNotes } from "@/lib/card-notes";
 import { getCollectionMeta } from "@/lib/collections";
 import { LIFT } from "@/lib/lift";
-import { hasReaderReturnMarker, isReaderReturnKey, movedReaderHref, type ReaderOrigin } from "@/lib/readerNavigation";
+import { hasReaderReturnMarker, isReaderReturnKey, movedReaderHref, readerSectionCollection, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
@@ -175,8 +175,8 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const matchingChapters = useMemo(() => {
     if (contents) return [];   // the tree does its own filtering
     return placeHeldTexts(chapters, held)
-      .filter((item) => matchesEntry(item, query, documentInfo?.collection ?? ""));
-  }, [chapters, contents, documentInfo?.collection, held, query]);
+      .filter((item) => matchesEntry(item, query, documentInfo ? readerSectionCollection(documentInfo) : ""));
+  }, [chapters, contents, documentInfo, held, query]);
   const visibleChapters = matchingChapters.slice(0, visibleLimit);
 
   function openChapter(chapterKey: string, anchor?: string | null) {
@@ -254,7 +254,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   }
 
   const collectionMeta = getCollectionMeta(documentInfo.collection);
-  const language = sectionLanguage(documentInfo.collection);
+  const language = sectionLanguage(readerSectionCollection(documentInfo));
   // With held texts among them the cells are not all sections.
   const entryPlural = held.length > 0 ? "entries" : language.plural;
   const facts = documentInfo.facts ?? null;

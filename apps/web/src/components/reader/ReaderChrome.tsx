@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Flag, Settings2 } from "lucide-react";
 import type { DocumentInfo, ReaderChapter, TocEntry } from "@/lib/api";
 import { IntentLink, NavPendingBar } from "@/components/common/NavPending";
 import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
+import { readerSectionCollection } from "@/lib/readerNavigation";
 
 export type ReaderFontSize = "small" | "medium" | "large";
 export type ReaderSpacing = "compact" | "comfortable" | "relaxed";
@@ -67,7 +68,7 @@ export function ReaderChrome({
     : currentChapter?.next_chapter_key ?? null;
   const browseLabel = document.collection === "bible"
     ? "Browse Chapters"
-    : document.collection === "catechism"
+    : readerSectionCollection(document) === "catechism"
       ? "Browse Paragraphs"
       : document.collection === "summa"
         ? "Browse Articles"
