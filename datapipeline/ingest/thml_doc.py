@@ -42,7 +42,7 @@ class ChapterPlan:
     # Paragraphs that are the work's own headings, by `<p>` id: (id, level, whether it
     # repeats the chapter label), level None for an epigraph. Each stays in the text, is
     # marked (`headings.py`, #445) and is kept in one piece with what follows it.
-    headings: tuple[tuple[str, int, bool], ...] = ()
+    headings: tuple[tuple[str, int | None, bool], ...] = ()
     # Headings the work prints before the chapter, outside its div (a book's or part's
     # own title over its first chapter): (text, level). Each opens the chapter's text,
     # marked, in the order given.
