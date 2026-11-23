@@ -183,5 +183,9 @@
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.x": {
   "fixed_by": "5.6b",
   "description": "\"Chapter X\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
+ },
+ "release.english_only:medieval/36e3d6ae-5a60-52fd-a21d-c910be08b627": {
+  "fixed_by": "5.6b",
+  "description": "The Treatise on the Love of God, V ch. ii: Mackey's bracketed gloss of de Sales's French wordplay, \"(ne leve pas mais releve)\", a five-word French run inside an English sentence, like the 90 approved quotations in language_approved.json; awaiting Carter's approval or its removal (NEEDS-CARTER.md, 5.6b)"
  }
 }
