@@ -67,6 +67,12 @@ SOURCE_BUILDS: dict[str, SourceAdapter] = {
 BOETHIUS_DOCUMENT_ID = "9a6599ee-ac40-5017-a2c6-7aad2cf14296"
 
 
+# The collections each source publishes into, where a source feeds more than its own.
+SPLIT_SOURCES: dict[str, frozenset[str]] = {
+    "medieval": frozenset({"theologians", "church-fathers"}),
+}
+
+
 def _published_as(collection: str, documents: list[Document]) -> list[Document]:
     """Documents filed under the collection they are published in (5.1b.3)."""
     for document in documents:

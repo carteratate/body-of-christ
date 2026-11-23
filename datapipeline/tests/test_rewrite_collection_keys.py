@@ -194,3 +194,26 @@ def test_the_live_snapshot_reads_a_publish_under_either_key(tmp_path):
         assert {c: [d.id for d in ds] for c, ds in load_snapshot(
             str(tmp_path), None, published=published).items()} == {"medieval": ["unregistered-1"]}
     assert load_snapshot(str(tmp_path), None, published=("papal",)) == {}
+
+
+def test_malformed_saved_filters_do_not_stop_the_rewrite():
+    out = R.rewrite_filters({"collections": ["encyclicals", {"x": 1}], "scopes": 7}, VOCAB)
+    assert out["collections"] == ["papal", {"x": 1}]
+    assert out["scopes"] == {"papal": {"genres": ["encyclical"]}}
+
+
+def test_a_source_published_in_part_is_checked_whole(monkeypatch):
+    """After 5.1b.3 the medieval source feeds `theologians` and Boethius in
+    `church-fathers`; a release staging only one of them has its coverage checks judge
+    the whole source, which reads every file of it, so the other part is not missing."""
+    import publication
+    from release import staged
+
+    monkeypatch.setitem(publication.SOURCE_BUILDS, "medieval", lambda: ["whole medieval"])
+    assert staged._whole_sources(("church-fathers", "medieval"), ["church-fathers"], None) == {
+        "medieval": ["whole medieval"]}
+    assert staged._whole_sources(("medieval",), ["theologians"], None) == {
+        "medieval": ["whole medieval"]}
+    assert staged._whole_sources(("church-fathers", "medieval"),
+                                 ["church-fathers", "theologians"], None) == {}
+    assert staged._whole_sources(("encyclicals",), ["papal"], None) == {}

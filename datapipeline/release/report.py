@@ -512,10 +512,13 @@ def report_md(data: dict, public: bool) -> str:
 def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool = True,
         registry: R.Registry | None = None, build: dict[str, list[Document]] | None = None,
         run_checks: bool | None = None, index_path: str = SNAPSHOT_INDEX,
-        published: tuple[str, ...] | None = None) -> int:
+        published: tuple[str, ...] | None = None,
+        checks_build: dict[str, list[Document]] | None = None) -> int:
     """`collections` are sources (`publication.SOURCE_BUILDS`). A staged report passes
     `published`, the collections the publish writes, so live rows are read only where
-    that publish covers them, under whichever key they are filed (5.1b.3)."""
+    that publish covers them, under whichever key they are filed (5.1b.3), and, for a
+    source it publishes only part of, `checks_build`: the whole source, which the
+    coverage checks judge (they read every file of the source)."""
     meta, problems = verify_snapshot(snapshot_dir, index_path)
     if problems:
         for p in problems:
@@ -585,8 +588,8 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
         from checks.source_text import SOURCES
         run_checks = all(os.path.isdir(os.path.join(SOURCES, c)) for c in collections)
     if run_checks:
-        summary = checks_summary(checks_report.run(collections, documents_by_collection=build),
-                                 known)
+        summary = checks_summary(checks_report.run(
+            collections, documents_by_collection={**build, **(checks_build or {})}), known)
         for c in collections:
             sections[c]["checks"] = summary[c]
 

@@ -642,6 +642,7 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
                               registry=_remap_registry(registry),
                               build={s: by_source.get(s, []) for s in sources},
                               run_checks=run_checks, published=tuple(collections),
+                              checks_build=_whole_sources(sources, collections, registry),
                               index_path=os.path.join(out, "live", "snapshots.json"))
 
     registry_rows = {r["passage_id"]: r for r in (registry or _current()).passages}
@@ -690,6 +691,16 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
           f"{data['ids']['retired']:,}, redirected {data['ids']['redirected']:,}, new "
           f"{len(data['ids']['new']):,}")
     return 0 if data["pass"] else 1
+
+
+def _whole_sources(sources: tuple[str, ...], collections: list[str], registry) -> dict:
+    """The full build of each source this publish covers only in part (the medieval
+    source, when only one of `theologians` and `church-fathers` is staged), for the
+    coverage checks, which judge a source's every file. Other sources are judged on the
+    staged documents."""
+    return {s: publication.SOURCE_BUILDS[s]() for s in sources
+            if s in publication.SPLIT_SOURCES
+            and not publication.SPLIT_SOURCES[s] <= set(collections)}
 
 
 def _live_sources(snapshot_dir: str, collections: list[str]) -> list[str]:

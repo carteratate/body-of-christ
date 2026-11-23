@@ -120,7 +120,8 @@ def rewrite_filters(filters: dict, vocabulary: list[str]) -> dict:
         out["collections"] = canonical_keys(raw)
     if isinstance(filters.get("collection_outcomes"), dict):
         out["collection_outcomes"] = canonical_outcomes(filters["collection_outcomes"])
-    old_papal = [k for k in dict.fromkeys(keys) if k in PAPAL_SUBSETS]
+    old_papal = [k for k in dict.fromkeys(k for k in keys if isinstance(k, str))
+                 if k in PAPAL_SUBSETS]
     new_scopes = {k: v for k, v in scopes.items() if k not in RENAMES}
     if old_papal and "papal" not in keys:
         entry = papal_scope(old_papal, scopes, vocabulary)
@@ -190,7 +191,8 @@ async def plan(conn, vocabulary: list[str]) -> dict:
                 merged += len(outcomes) - len(canonical_outcomes(outcomes))
             new = rewrite_filters(filters, vocabulary)
             if new != filters:
-                scoped += "papal" in (new.get("scopes") or {}) and "papal" not in (filters.get("scopes") or {})
+                before = filters.get("scopes") if isinstance(filters.get("scopes"), dict) else {}
+                scoped += "papal" in (new.get("scopes") or {}) and "papal" not in before
                 report["changes"][table].append((row["key"], filters, new))
         report["tables"][table] = {
             "rows": len(rows), "to_change": len(report["changes"][table]),
