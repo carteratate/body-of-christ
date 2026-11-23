@@ -2,6 +2,10 @@
 -- 'tint' lays a card on its collection's colour, today's look and the default; 'plain'
 -- draws it like a saved passage. Additive, as 0012's theme column was: every existing
 -- row reads 'tint'. The API tolerates the column being absent until this is applied.
+-- ADD COLUMN with a constant default is catalog-only (no rewrite) but takes an ACCESS
+-- EXCLUSIVE lock: fail after 2 s rather than queue preference reads behind it, as 0041.
+SET LOCAL lock_timeout = '2s';
+
 ALTER TABLE user_preferences
   ADD COLUMN IF NOT EXISTS result_card_style text NOT NULL DEFAULT 'tint'
   CONSTRAINT user_preferences_result_card_style_check

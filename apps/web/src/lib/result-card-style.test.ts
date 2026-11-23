@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { act, renderHook } from "@testing-library/react";
+import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   DEFAULT_RESULT_CARD_STYLE,
@@ -17,7 +17,10 @@ beforeEach(() => {
   resetResultCardStyleForTests();
 });
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 describe("result card style", () => {
   it("defaults to the collection tint", () => {
@@ -55,5 +58,32 @@ describe("result card style", () => {
     expect(readResultCardStyle()).toBe("tint");
     expect(() => setResultCardStyle("plain")).not.toThrow();
     expect(readResultCardStyle()).toBe("plain");
+  });
+});
+
+describe("result card style across tabs", () => {
+  it("follows a change another tab stores", () => {
+    const { result } = renderHook(() => useResultCardStyle());
+    expect(result.current).toBe("tint");
+    act(() => {
+      localStorage.setItem(RESULT_CARD_STYLE_KEY, "plain");
+      window.dispatchEvent(new StorageEvent("storage", { key: RESULT_CARD_STYLE_KEY, newValue: "plain" }));
+    });
+    expect(result.current).toBe("plain");
+  });
+
+  it("ignores other keys", () => {
+    const { result } = renderHook(() => useResultCardStyle());
+    act(() => {
+      localStorage.setItem(RESULT_CARD_STYLE_KEY, "plain");
+      window.dispatchEvent(new StorageEvent("storage", { key: "theocorpus-theme", newValue: "light" }));
+    });
+    expect(result.current).toBe("tint");
+  });
+
+  it("reads storage afresh when cards mount after a change went unwatched", () => {
+    expect(readResultCardStyle()).toBe("tint");
+    localStorage.setItem(RESULT_CARD_STYLE_KEY, "plain");
+    expect(renderHook(() => useResultCardStyle()).result.current).toBe("plain");
   });
 });

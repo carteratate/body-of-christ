@@ -177,7 +177,8 @@ async def update_preferences(
         if not with_card_style:
             # Without 0046 a PUT of the card style alone has nothing to store: answer as
             # a read rather than rewrite the other preferences (or create a row).
-            if not body.model_dump(exclude_none=True, exclude={"result_card_style"}):
+            if body.result_card_style is not None and not body.model_dump(
+                    exclude_none=True, exclude={"result_card_style"}):
                 return await _read_preferences(pool, user.user_id)
             row = await _upsert_preferences(pool, user.user_id, body, False)
     except HTTPException:

@@ -311,3 +311,14 @@ def test_card_style_alone_is_not_written_without_the_column():
     assert conn.fetchrow.await_count == 1
     assert not any("INSERT" in call.args[0] for call in conn.fetchrow.await_args_list)
     assert pool.acquire.call_count == 1
+
+
+def test_an_empty_put_without_the_column_still_saves_as_before():
+    pool, conn = _transactional_pool(_row(), _row())
+    preferences_route._card_style_missing()
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().put("/v1/preferences", json={})
+
+    assert response.status_code == 200
+    assert "INSERT INTO user_preferences" in conn.fetchrow.await_args_list[1].args[0]

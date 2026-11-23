@@ -39,9 +39,32 @@ export function setResultCardStyle(next: ResultCardStyle): void {
   listeners.forEach((listener) => listener());
 }
 
+// Another tab's change (a guest's, or one the account could not store) reaches this
+// tab's cards too.
+function onStorage(event: StorageEvent): void {
+  if (event.key !== RESULT_CARD_STYLE_KEY && event.key !== null) return;
+  const next = parseResultCardStyle(event.newValue);
+  if (event.key === null || next !== current) {
+    current = null;
+    listeners.forEach((listener) => listener());
+  }
+}
+
 function subscribe(listener: () => void): () => void {
+  let stale = false;
+  if (listeners.size === 0) {
+    // Unwatched, the cache may be stale: the first card reads storage afresh.
+    const cached = current;
+    current = null;
+    stale = cached !== null && readResultCardStyle() !== cached;
+    window.addEventListener("storage", onStorage);
+  }
   listeners.add(listener);
-  return () => { listeners.delete(listener); };
+  if (stale) listener();
+  return () => {
+    listeners.delete(listener);
+    if (listeners.size === 0) window.removeEventListener("storage", onStorage);
+  };
 }
 
 export function useResultCardStyle(): ResultCardStyle {
