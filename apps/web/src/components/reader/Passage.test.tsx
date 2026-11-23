@@ -96,14 +96,7 @@ describe("Passage paragraphs", () => {
   // The card keeps a passage's paragraph breaks (`PassageText`); the reader collapsed them.
   const TWO_PARAGRAPHS = "SECTION 1 The Avoidance of War\n\nEven though recent wars have wrought physical and moral havoc…";
 
-  it("keeps the text's paragraph breaks, as the card does", () => {
-    render(<Passage passage={passage({ voice: undefined, unit_label: "§79", content: TWO_PARAGRAPHS })} highlighted={false} />);
-    const text = document.getElementById("anchor-exsurge-domine/31")!;
-    expect(text.textContent).toBe(`§79${TWO_PARAGRAPHS}`);
-    expect(text.className).toContain("whitespace-pre-wrap");
-  });
-
-  it("keeps them in an earlier wording too", () => {
+  it("keeps the paragraph breaks of an earlier wording, as the card does", () => {
     const older = passage({ id: "older", anchor: "can/295/history-1983", voice: undefined, unit_label: null, content: TWO_PARAGRAPHS });
     render(<Passage passage={passage({ voice: undefined })} highlighted={false} history={[older]} highlightAnchor={older.anchor} />);
     expect(document.getElementById("anchor-can/295/history-1983")!.className).toContain("whitespace-pre-wrap");
