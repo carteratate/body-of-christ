@@ -604,7 +604,7 @@ describe("DocumentReader overview", () => {
     expect(pushState).toHaveBeenCalledWith(null, "", "/reader/doc-a?from=library&chapter=chapter-b");
   });
 
-  it("lets long Bible books reveal chapters beyond the first batch", async () => {
+  it("shows every chapter of a long Bible book at once", async () => {
     navigation.params = new Map([["from", "library"]]);
     api.getToc.mockResolvedValue({
       document: { ...documentInfo("doc-a"), title: "Psalms" },
@@ -612,12 +612,8 @@ describe("DocumentReader overview", () => {
     });
     render(<DocumentReader docId="doc-a" />);
 
-    expect(await screen.findByRole("button", { name: "Psalms chapter 30" })).toBeTruthy();
-    expect(screen.queryByRole("button", { name: "Psalms chapter 31" })).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Show more chapters" }));
-    expect(screen.getByRole("button", { name: "Psalms chapter 60" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Show more chapters" }));
-    expect(screen.getByRole("button", { name: "Psalms chapter 61" })).toBeTruthy();
+    expect(await screen.findByRole("button", { name: "Psalms chapter 61" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Show more chapters" })).toBeNull();
   });
 
   it("offers valid saved progress", async () => {
