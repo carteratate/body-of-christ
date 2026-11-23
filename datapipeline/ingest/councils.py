@@ -63,19 +63,19 @@ class _Builder:
         body = self.clean(body)
         if len(body) < 1:
             return
-        marks, cursor = [], 0
+        # Each segment is one paragraph of the body, in order: a heading's mark is its own
+        # paragraph, never an earlier one with the same words.
         paras = headings.paragraphs(body)
-        for seg in segments:
-            if seg.locator not in (heads or {}):
-                continue
-            # The heading is a whole paragraph after the last one marked, never the same
-            # words inside a sentence.
-            words = self.clean(seg.text)
-            span = next(((a, b) for a, b in paras if a >= cursor and body[a:b] == words), None)
-            if not words or span is None:
-                raise ValueError(f"{ref}: heading {seg.locator} {seg.text[:60]!r} not in its text")
-            marks.append(headings.mark(*span, **heads[seg.locator]))
-            cursor = span[1]
+        held = [seg for seg in segments if self.clean(seg.text)]
+        if len(paras) != len(held):
+            raise ValueError(f"{ref}: {len(paras)} paragraphs for {len(held)} segments")
+        marks = []
+        for seg, (a, b) in zip(held, paras):
+            if seg.locator in (heads or {}):
+                if body[a:b] != self.clean(seg.text):
+                    raise ValueError(f"{ref}: heading {seg.locator} {seg.text[:60]!r} is not "
+                                     "its paragraph")
+                marks.append(headings.mark(a, b, **heads[seg.locator]))
         pieces = pack_text(body, segments, settings.MAX_PASSAGE_CHARS)
         self.units.append((body, pieces, ref, base_anchor, ckey, clabel, unit, meta, segments,
                            headings.split_marks(body, pieces, marks)))

@@ -99,3 +99,20 @@ def test_every_title_of_an_opening_stack_that_repeats_the_label_is_flagged():
     label = "Part Two, Section One, Chapter One, Article 1, The Liturgy - Work of the Holy Trinity"
     out = catechism._chapter_title(marks, clean, label)
     assert [bool(m.get("chapter_title")) for m in out] == [False, False, True, False]
+
+
+def test_vatican2_marks_the_heading_paragraph_not_an_identical_earlier_one():
+    from ingest.pieces import Segment
+    builder = councils._Builder(clean=lambda text: text.strip())
+    segments = [Segment("e1", "General norms"), Segment("e2", "Text one."),
+                Segment("e3", "General norms"), Segment("e4", "Text two.")]
+    builder.add(body="\n\n".join(s.text for s in segments), ref="SC 22",
+                base_anchor="sc/22", ckey="c", clabel="C", unit="§22", meta={},
+                segments=segments, heads={"e3": {"level": 3}})
+    (passage,) = builder.passages
+    assert [m["at"] for m in passage.metadata["headings"]] == [passage.content.index(
+        "General norms\n\nText two.")]
+
+
+def test_a_bare_number_counts_only_at_the_start():
+    assert not headings.repeats_label("The Church", "History 2: The Church")
