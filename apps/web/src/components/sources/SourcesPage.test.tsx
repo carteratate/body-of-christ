@@ -80,7 +80,8 @@ describe("SourcesPage Continue Reading, show more", () => {
       chapter_key: `chapter-${index}`,
       chapter_label: `Chapter ${index}`,
       anchor: null,
-      updated_at: `2026-08-0${index + 1}T12:00:00Z`,
+      // Most recent first, as the API orders them.
+      updated_at: `2026-08-0${9 - index}T12:00:00Z`,
       collection: "bible",
       document_title: `Place ${index}`,
       author: null,

@@ -441,7 +441,7 @@ export function SourcesPage() {
     void fetchProgress();
   }, [fetchProgress]);
 
-  const loadedProgress = progressToken === token ? progress.slice(0, PROGRESS_LIMIT) : [];
+  const loadedProgress = progressToken === token ? progress : [];
   const progressCollapsible = loadedProgress.length > PROGRESS_COLLAPSED;
   const visibleProgress = progressExpanded ? loadedProgress : loadedProgress.slice(0, PROGRESS_COLLAPSED);
   const visibleProgressLoading = progressToken !== token || progressLoading;
@@ -528,7 +528,7 @@ export function SourcesPage() {
                     aria-expanded={progressExpanded}
                     aria-controls={progressListId}
                     onClick={() => setProgressExpanded((expanded) => !expanded)}
-                    className="mt-2 rounded text-sm font-medium text-brand-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+                    className="mt-2 rounded text-sm font-medium text-brand-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-focus"
                   >
                     {progressExpanded ? "Show less" : "Show more"}
                   </button>
