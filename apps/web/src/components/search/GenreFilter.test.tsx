@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 
+import { COLLECTION_SCOPES } from "@/lib/collection-scopes";
 import { createSearchDraft, transitionSearchDraft, type SearchDraftEvent } from "@/lib/search-draft";
 import { CollectionToggles } from "./CollectionToggles";
 
@@ -76,14 +77,22 @@ describe("genre and issuer filter (5.1a)", () => {
     const kinds = () => screen.getAllByRole("checkbox")
       .filter((box) => box.closest('[role="group"]')?.getAttribute("aria-label") === "Kind")
       .map((box) => box.textContent);
-    // The three old papal collections' kinds together (5.1b.2).
+    // The three old papal collections' kinds together (5.1b.2), each with its number of
+    // documents. The numbers are read from the generated scope list, which grows with the
+    // corpus (collection-scopes.test.ts holds it equal to works.json).
+    const documents = COLLECTION_SCOPES.papal.documents;
+    const count = (genre: string, issuer?: string) => Object.entries(documents[genre] ?? {})
+      .filter(([pope]) => issuer === undefined || pope === issuer)
+      .reduce((n, [, k]) => n + k, 0);
     expect(kinds()).toEqual([
-      "Encyclical71", "Apostolic exhortation32", "Apostolic letter14",
-      "Apostolic constitution4", "Motu proprio1", "Other1",
-    ]);
+      ["Encyclical", "encyclical"], ["Apostolic exhortation", "apostolic-exhortation"],
+      ["Apostolic letter", "apostolic-letter"], ["Apostolic constitution", "apostolic-constitution"],
+      ["Motu proprio", "motu-proprio"], ["Other", "other"],
+    ].map(([label, genre]) => `${label}${count(genre)}`));
 
     fireEvent.click(screen.getByRole("button", { name: "Only Boniface VIII" }));
-    expect(kinds()).toEqual(["Apostolic constitution1"]);
+    expect(kinds()).toEqual(
+      [`Apostolic constitution${count("apostolic-constitution", "pope-boniface-viii")}`]);
     const constitution = screen.getByRole("checkbox", { name: /^Apostolic constitution/ });
     expect(constitution.getAttribute("aria-disabled")).toBe("true");
     fireEvent.click(constitution);
