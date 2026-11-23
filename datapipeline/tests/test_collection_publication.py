@@ -16,7 +16,7 @@ from publication import (SOURCE_ADAPTERS, WORK_ORDINAL_LIMIT, StageRequest, Stag
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY_ROOT))
-from services.api.app.rag.constants import VALID_COLLECTIONS
+from services.api.app.rag.constants import CANONICAL_COLLECTIONS, VALID_COLLECTIONS
 
 DOC = "11111111-1111-1111-1111-111111111111"
 
@@ -55,21 +55,18 @@ def _row(anchor, pid, **extra):
 
 
 def test_source_adapter_registry_exactly_matches_production_collections():
-    # The values stored today. The API also accepts the new keys 5.1b.3 will write
-    # (5.1b.1), so it accepts every one of these but is no longer equal to them.
+    # The collections a publish writes since 5.1b.3: the API's canonical keys.
     assert set(SOURCE_ADAPTERS) == {
-        "apostolic-exhortations",
         "bible",
-        "canon-law",
         "catechism",
         "church-fathers",
+        "church-law",
         "councils",
-        "encyclicals",
-        "medieval",
-        "papal-documents",
+        "papal",
         "summa",
+        "theologians",
     }
-    assert set(SOURCE_ADAPTERS) <= VALID_COLLECTIONS
+    assert set(SOURCE_ADAPTERS) == CANONICAL_COLLECTIONS <= VALID_COLLECTIONS
     assert all(callable(adapter) for adapter in SOURCE_ADAPTERS.values())
 
 

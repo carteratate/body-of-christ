@@ -77,7 +77,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     sub = parser.add_subparsers(dest="command", required=True)
     stage = sub.add_parser("stage", help="build collections into staging and a new collection")
-    stage.add_argument("--collection", required=True, choices=["all", *sorted(SOURCE_ADAPTERS)])
+    # Repeatable: collections a document moves between are staged in one call (5.1b.3's
+    # Boethius: `--collection church-fathers --collection theologians`).
+    stage.add_argument("--collection", required=True, action="append",
+                       choices=["all", *sorted(SOURCE_ADAPTERS)])
     stage.add_argument("--release", required=True, type=_release)
     report = sub.add_parser("report", help="the release report of a staged publish")
     report.add_argument("--release", required=True, type=_release)
@@ -133,7 +136,12 @@ def guard_publish(step: str, collections: Sequence[str], release: str, lock_path
     from publication import publish_lock_guard
 
     guard = publish_lock_guard(step, lock_path)
-    for c in ["all"] if set(collections) == set(SOURCE_ADAPTERS) else collections:
+    # Every collection, in either vocabulary: a release staged with `all` before 5.1b.3
+    # merged lists the ten old keys.
+    from publication import SOURCE_BUILDS
+
+    every = set(collections) in (set(SOURCE_ADAPTERS), set(SOURCE_BUILDS))
+    for c in ["all"] if every else collections:
         guard(c, release)
 
 
@@ -161,7 +169,8 @@ async def _publish_row(conn, release: str):
 async def stage(args, lock_path=None) -> int:
     from publication import StageRequest, production_stage_runner
 
-    collections = sorted(SOURCE_ADAPTERS) if args.collection == "all" else [args.collection]
+    collections = (sorted(SOURCE_ADAPTERS) if "all" in args.collection
+                   else sorted(set(args.collection)))
     result = await production_stage_runner(lock_path).stage(
         StageRequest(release=args.release, collections=tuple(collections)))
     print(f"staged {result.release}: {result.documents} documents, {result.passages} "

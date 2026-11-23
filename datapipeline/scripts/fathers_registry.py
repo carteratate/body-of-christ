@@ -43,7 +43,7 @@ from checks import source_text  # noqa: E402
 from identity import PIECE_MARK, unit_anchor  # noqa: E402
 from ingest import church_fathers as cf  # noqa: E402
 from ingest.common import _block_text, iter_chapters  # noqa: E402
-from publication import build  # noqa: E402
+from publication import SOURCE_BUILDS, build  # noqa: E402
 from scripts.editorial_removals import live_text  # noqa: E402
 from scripts.reconcile_registry import kept_entries, low_scores, lost_text, settle_by_text  # noqa: E402
 
@@ -332,7 +332,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
     reg = registry.current()
-    documents = build(COLLECTION)
+    documents = build(COLLECTION, source_adapters=SOURCE_BUILDS)
     updated, entries, redirects, problems = plan(reg, documents, live_text(args.snapshot),
                                                  args.today)
     print(Counter((e["scope"], e["reason"]) for e in entries),

@@ -58,9 +58,9 @@ async def _sql(world, sql, *args):
         await conn.close()
 
 
-async def _stage(world, request=STAGE):
+async def _stage(world, request=STAGE, **runner):
     """Stage, then record a report hash as a passing report would."""
-    await world.runner().stage(request)
+    await world.runner(**runner).stage(request)
     conn = await world.connect()
     try:
         content = await staged_content_sha256(conn)
@@ -555,6 +555,30 @@ async def test_rollback_apply_restores_rows_alias_and_outline(world):
     assert p == {"r": True, "cleaned_up_at": None}
 
 
+async def test_a_renamed_collection_is_renamed_in_place_and_rolled_back(world):
+    """5.1b.3: publishing `theologians` over live rows filed under `medieval` changes
+    `documents.collection` in place by ID, retires nothing and keeps every passage; the
+    rollback files them under `medieval` again."""
+    renamed = {"theologians": lambda: [replace(d, collection="theologians") for d in world.build],
+               "summa": lambda: []}
+    live_ids = {r["id"] for r in await world.fetch(
+        "SELECT id::text FROM chunks WHERE retired_at IS NULL")}
+    await _stage(world, StageRequest(release=RELEASE, collections=("theologians",)),
+                 source_adapters=renamed)
+    await _apply(world)
+    await _switch(world)
+    assert {r["id"]: r["collection"] for r in await world.fetch(
+        "SELECT id::text, collection FROM documents WHERE id = ANY($1::uuid[])",
+        [DOC_A, DOC_B])} == {DOC_A: "theologians", DOC_B: "theologians"}
+    assert {r["id"] for r in await world.fetch(
+        "SELECT id::text FROM chunks WHERE retired_at IS NULL")} == live_ids
+    assert not await world.fetch("SELECT 1 FROM corpus_tombstones")
+    await _cleanup(world)
+    await _rollback(world)
+    assert {r["collection"] for r in await world.fetch(
+        "SELECT collection FROM documents WHERE id = ANY($1::uuid[])", [DOC_A, DOC_B])} == {"medieval"}
+
+
 async def test_concurrent_applies_keep_the_before_snapshot(world):
     """Two applies of one release at once: the publish lock lets one apply and the other
     refuse before it writes anything, so the before-snapshot still holds the rows as they
@@ -981,6 +1005,43 @@ async def test_retire_only_and_its_rollback(world):
     [a_] = await world.fetch("SELECT count(*) AS n FROM chunks WHERE document_id = $1::uuid "
                              "AND retired_at IS NULL", DOC_A)
     assert a_["n"] == 4
+
+
+async def test_retire_only_finds_a_removal_through_the_rename(world):
+    """5.1b.3: the removal entry names the source (`medieval`) and live files the document
+    under it until the apply; asked for `theologians`, the new key, it still retires it."""
+    world.registry.removals.append(_removal(
+        id="rm-0921", scope="document", document_id=DOC_B,
+        reason="translation-in-preparation", tombstone="Being replaced."))
+    conn = await world.connect()
+    try:
+        done = await A.retire_only(conn, world.qdrant, "incarnation-withdraw", "theologians",
+                                   alias="chunks_live", registry=world.registry,
+                                   root=world.snapshots)
+    finally:
+        await conn.close()
+    assert done["documents"] == 1
+    [d] = await world.fetch("SELECT retired_at IS NOT NULL AS retired FROM documents "
+                            "WHERE id = $1::uuid", DOC_B)
+    assert d["retired"] is True
+
+
+async def test_retire_only_finds_a_moved_documents_removal_by_its_id(world):
+    """Boethius's removal entry would name his source (`medieval`) while live files him
+    under `church-fathers`: asked for `church-fathers`, it finds him by document."""
+    await world.fetch("UPDATE documents SET collection = 'church-fathers' WHERE id = $1::uuid",
+                      DOC_B)
+    world.registry.removals.append(_removal(
+        id="rm-0922", scope="document", document_id=DOC_B,
+        reason="translation-in-preparation", tombstone="Being replaced."))
+    conn = await world.connect()
+    try:
+        done = await A.retire_only(conn, world.qdrant, "incarnation-withdraw", "church-fathers",
+                                   alias="chunks_live", registry=world.registry,
+                                   root=world.snapshots)
+    finally:
+        await conn.close()
+    assert done["documents"] == 1
 
 
 async def test_retire_only_leaves_an_unsearchable_point_unsearchable(world):
