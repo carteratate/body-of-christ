@@ -111,8 +111,6 @@ interface ChunkCardProps {
   onExpand?: () => void;
   showOpenContextHint?: boolean;
   onDismissOpenContextHint?: () => void;
-  /** Draw in this style instead of the stored one (lib/result-card-style.ts). */
-  cardStyle?: ResultCardStyle;
 }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -122,7 +120,7 @@ export function ChunkCard(props: ChunkCardProps) {
   // A restored search reaches here without the stream decoder, so the tombstone is
   // checked here: a removal with no sentence to show renders as today.
   const tombstone = props.result.status === "removed" ? parseTombstone(props.result.tombstone) : null;
-  if (tombstone) return <RemovedChunkCard result={props.result} tombstone={tombstone} isGuest={props.isGuest} cardStyle={props.cardStyle} />;
+  if (tombstone) return <RemovedChunkCard result={props.result} tombstone={tombstone} isGuest={props.isGuest} />;
   return <CurrentChunkCard {...props} />;
 }
 
@@ -149,15 +147,13 @@ function headerRule(color: string, rgb: string, cardStyle: ResultCardStyle, isEx
  * neighbours, collapsed to its citation with "Removed" where the score would be.
  * Opening it shows why, and no text (Carter, 9 Nov 2026).
  */
-function RemovedChunkCard({ result, tombstone, isGuest = false, cardStyle: styleOverride }: {
+function RemovedChunkCard({ result, tombstone, isGuest = false }: {
   result: ChunkResult;
   tombstone: Tombstone;
   isGuest?: boolean;
-  cardStyle?: ResultCardStyle;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const storedStyle = useResultCardStyle();
-  const cardStyle = styleOverride ?? storedStyle;
+  const cardStyle = useResultCardStyle();
   const { source, chunk_id } = result;
   const collectionMeta = getCollectionMeta(source.collection);
   const color = collectionMeta?.color ?? "var(--color-brand-accent)";
@@ -219,10 +215,9 @@ function RemovedChunkCard({ result, tombstone, isGuest = false, cardStyle: style
   );
 }
 
-function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint, cardStyle: styleOverride }: ChunkCardProps) {
+function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint }: ChunkCardProps) {
   const searchParams = useSearchParams();
-  const storedStyle = useResultCardStyle();
-  const cardStyle = styleOverride ?? storedStyle;
+  const cardStyle = useResultCardStyle();
   const { chunk_id, content, source } = result;
   // Presentation only. Copying and saving still address the passage the user matched.
   const attached = result.context ?? null;

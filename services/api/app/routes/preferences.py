@@ -82,13 +82,16 @@ async def get_preferences(
     pool = get_pool()
     if not pool:
         raise HTTPException(status_code=503, detail="Service temporarily unavailable")
+    return await _read_preferences(pool, user.user_id)
 
+
+async def _read_preferences(pool, user_id: str) -> PreferencesResponse:
     with_card_style = _card_style_column()
     try:
         try:
             row = await pool.fetchrow(
                 f"SELECT {_columns(with_card_style)} FROM user_preferences WHERE user_id = $1",
-                user.user_id,
+                user_id,
             )
         except asyncpg.UndefinedColumnError:
             if not with_card_style:
@@ -97,7 +100,7 @@ async def get_preferences(
             with_card_style = False
             row = await pool.fetchrow(
                 f"SELECT {_columns(False)} FROM user_preferences WHERE user_id = $1",
-                user.user_id,
+                user_id,
             )
     except Exception as exc:
         logger.error("get_preferences query failed (%s)", exc.__class__.__name__)
@@ -131,17 +134,19 @@ async def _upsert_preferences(pool, user_id: str, body: PreferencesUpdate, with_
             ]
             if with_card_style:
                 values.append(merged.result_card_style)
+            placeholders = ", ".join(f"${n}" for n in range(2, len(values) + 1))
+            set_card_style = "result_card_style = EXCLUDED.result_card_style," if with_card_style else ""
             return await conn.fetchrow(
                 f"""
                 INSERT INTO user_preferences (user_id, {_columns(with_card_style)})
-                VALUES ($1, $2, $3, $4, $5, $6{", $7" if with_card_style else ""})
+                VALUES ($1, {placeholders})
                 ON CONFLICT (user_id) DO UPDATE SET
                     preferred_translation = EXCLUDED.preferred_translation,
                     default_collections = EXCLUDED.default_collections,
                     default_quota = EXCLUDED.default_quota,
                     last_standard_quota = EXCLUDED.last_standard_quota,
-                    theme = EXCLUDED.theme,{"""
-                    result_card_style = EXCLUDED.result_card_style,""" if with_card_style else ""}
+                    theme = EXCLUDED.theme,
+                    {set_card_style}
                     updated_at = now()
                 RETURNING {_columns(with_card_style)}
                 """,
@@ -161,14 +166,19 @@ async def update_preferences(
 
     with_card_style = _card_style_column()
     try:
-        try:
-            row = await _upsert_preferences(pool, user.user_id, body, with_card_style)
-        except asyncpg.UndefinedColumnError:
-            # The failed statement aborted its transaction, so the retry is a new one.
-            if not with_card_style:
-                raise
-            _card_style_missing()
-            with_card_style = False
+        row = None
+        if with_card_style:
+            try:
+                row = await _upsert_preferences(pool, user.user_id, body, True)
+            except asyncpg.UndefinedColumnError:
+                # The failed statement aborted its transaction; any retry is a new one.
+                _card_style_missing()
+                with_card_style = False
+        if not with_card_style:
+            # Without 0046 a PUT of the card style alone has nothing to store: answer as
+            # a read rather than rewrite the other preferences (or create a row).
+            if not body.model_dump(exclude_none=True, exclude={"result_card_style"}):
+                return await _read_preferences(pool, user.user_id)
             row = await _upsert_preferences(pool, user.user_id, body, False)
     except HTTPException:
         raise

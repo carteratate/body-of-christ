@@ -25,8 +25,6 @@ class PreferenceValues(BaseModel):
     default_quota: PreferenceQuota
     last_standard_quota: StandardQuota
     theme: Theme = "dark"
-    # None when the database has no 0046 column yet: the client keeps its own choice.
-    result_card_style: Optional[ResultCardStyle] = None
 
     @field_validator("preferred_translation")
     @classmethod
@@ -54,6 +52,10 @@ class PreferenceValues(BaseModel):
 
 
 class PreferencesResponse(PreferenceValues):
+    # An account setting, not a guest draft's. None when the database has no 0046 column
+    # yet: the client keeps its own choice.
+    result_card_style: Optional[ResultCardStyle] = None
+
     @classmethod
     def from_stored(cls, row: Mapping[str, Any]) -> "PreferencesResponse":
         """Preferences as stored, tolerating collection keys this API does not know

@@ -294,3 +294,20 @@ def test_result_card_style_migration_is_additive_with_tint_as_default():
     assert "add column if not exists result_card_style text not null default 'tint'" in sql
     assert "result_card_style in ('tint', 'plain')" in sql
     assert "drop " not in sql and "update " not in sql
+
+
+def test_card_style_alone_is_not_written_without_the_column():
+    pool, conn = _transactional_pool(asyncpg.UndefinedColumnError("result_card_style"))
+    pool.fetchrow = AsyncMock(return_value=_row(default_collections=["bible", "medieval-unknown"], default_quota=4))
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().put("/v1/preferences", json={"result_card_style": "plain"})
+        # Once the column is known missing, the same request never opens a transaction.
+        second = _client().put("/v1/preferences", json={"result_card_style": "plain"})
+
+    assert response.status_code == 200 and second.status_code == 200
+    assert response.json()["result_card_style"] is None
+    assert response.json()["default_collections"] == ["bible"]
+    assert conn.fetchrow.await_count == 1
+    assert not any("INSERT" in call.args[0] for call in conn.fetchrow.await_args_list)
+    assert pool.acquire.call_count == 1

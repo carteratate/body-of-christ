@@ -96,7 +96,8 @@ export function SettingsPage() {
       const saved = await updatePreferences(token, { result_card_style: next });
       setPreferences(saved);
     } catch {
-      setSaveError("Couldn't save preference. It will reset on next load.");
+      // This browser already shows the choice; only the account copy failed.
+      setSaveError("Couldn't save it to your account.");
     } finally {
       setSaving(false);
     }

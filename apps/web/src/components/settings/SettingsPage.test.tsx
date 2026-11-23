@@ -96,7 +96,7 @@ describe("Settings: result card style", () => {
 
     await userEvent.click(cardStyleSwitch());
 
-    await screen.findByText("Couldn't save preference. It will reset on next load.");
+    await screen.findByText("Couldn't save it to your account.");
   });
 
   it("shows this browser's style while the API cannot store one", () => {
