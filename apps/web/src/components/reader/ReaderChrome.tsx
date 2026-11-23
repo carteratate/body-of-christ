@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight, Flag, Settings2 } from "lucide-react";
 import type { DocumentInfo, ReaderChapter, TocEntry } from "@/lib/api";
 import { IntentLink, NavPendingBar } from "@/components/common/NavPending";
 import { ReaderMobileStatusHeader } from "./ReaderMobileStatusHeader";
-import { canonicalCollectionKey } from "@/lib/collections";
 
 export type ReaderFontSize = "small" | "medium" | "large";
 export type ReaderSpacing = "compact" | "comfortable" | "relaxed";
@@ -66,15 +65,9 @@ export function ReaderChrome({
   const nextKey = positioned
     ? (currentIndex + 1 < toc.length ? toc[currentIndex + 1].chapter_key : null)
     : currentChapter?.next_chapter_key ?? null;
-  const browseLabel = document.collection === "bible"
-    ? "Browse Chapters"
-    : document.collection === "catechism"
-      ? "Browse Paragraphs"
-      : document.collection === "summa"
-        ? "Browse Articles"
-        : canonicalCollectionKey(document.collection) === "church-law"
-          ? "Browse Books & Sections"
-          : "Browse Sections";
+  // The overview button returns to the document's overview page, so it names the
+  // document in every collection (a Bible book is its own document: "Back to Genesis").
+  const overviewLabel = `Back to ${document.title}`;
 
   return (
     <header className="relative z-10 border-b border-brand-surface bg-brand-bg px-2 py-2 sm:px-4">
@@ -114,43 +107,52 @@ export function ReaderChrome({
           </button>
         </div>
 
-        <button
-          type="button"
-          onClick={onBrowseSections}
-          className="min-h-9 shrink-0 rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-        >
-          {browseLabel}
-        </button>
-
-        <details className="relative ml-auto">
-          <summary
-            className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-md border-[0.5px] border-brand-accent text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-            aria-label="Reading settings"
-          >
-            <Settings2 size={18} />
-          </summary>
-          <div className="absolute right-0 top-11 z-20 w-64 rounded-md border border-brand-muted/30 bg-brand-surface p-4 shadow-xl">
-            <fieldset>
-              <legend className="mb-2 text-xs font-semibold uppercase tracking-wide text-brand-muted">Text size</legend>
-              <div className="grid grid-cols-3 gap-1">
-                {(["small", "medium", "large"] as const).map((value) => (
-                  <button key={value} type="button" onClick={() => onFontSizeChange(value)} aria-pressed={fontSize === value} className={`rounded px-2 py-2 text-xs capitalize ${fontSize === value ? "bg-brand-accent text-brand-bg" : "bg-brand-bg text-brand-primary"}`}>{value}</button>
-                ))}
-              </div>
-            </fieldset>
-            <fieldset className="mt-4">
-              <legend className="mb-2 text-xs font-semibold uppercase tracking-wide text-brand-muted">Line spacing</legend>
-              <div className="grid grid-cols-3 gap-1">
-                {(["compact", "comfortable", "relaxed"] as const).map((value) => (
-                  <button key={value} type="button" onClick={() => onSpacingChange(value)} aria-pressed={spacing === value} className={`rounded px-1 py-2 text-[11px] capitalize ${spacing === value ? "bg-brand-accent text-brand-bg" : "bg-brand-bg text-brand-primary"}`}>{value}</button>
-                ))}
-              </div>
-            </fieldset>
-            <IntentLink href={reportHref} onClick={onReportContent} className="mt-4 flex w-full items-center gap-2 border-t border-brand-muted/20 pt-3 text-left text-xs text-brand-muted hover:text-brand-accent">
-              <Flag size={14} aria-hidden="true" /> Report a content issue
-            </IntentLink>
+        {/* The overview and settings buttons wrap as one, so settings is never left on
+            a line alone. The overview button takes the room left and cuts a long title
+            with an ellipsis to fit it; under 9rem the pair moves to a line of its own.
+            The full title shows above it. */}
+        <div className="flex min-w-0 grow basis-52 items-center gap-2">
+          <div className="flex min-w-0 flex-1">
+            <button
+              type="button"
+              onClick={onBrowseSections}
+              title={overviewLabel}
+              className="flex min-h-9 max-w-full items-center rounded-md border border-brand-accent px-3 text-xs font-semibold text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            >
+              <span className="truncate">{overviewLabel}</span>
+            </button>
           </div>
-        </details>
+
+          <details className="relative ml-auto">
+            <summary
+              className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-md border-[0.5px] border-brand-accent text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              aria-label="Reading settings"
+            >
+              <Settings2 size={18} />
+            </summary>
+            <div className="absolute right-0 top-11 z-20 w-64 rounded-md border border-brand-muted/30 bg-brand-surface p-4 shadow-xl">
+              <fieldset>
+                <legend className="mb-2 text-xs font-semibold uppercase tracking-wide text-brand-muted">Text size</legend>
+                <div className="grid grid-cols-3 gap-1">
+                  {(["small", "medium", "large"] as const).map((value) => (
+                    <button key={value} type="button" onClick={() => onFontSizeChange(value)} aria-pressed={fontSize === value} className={`rounded px-2 py-2 text-xs capitalize ${fontSize === value ? "bg-brand-accent text-brand-bg" : "bg-brand-bg text-brand-primary"}`}>{value}</button>
+                  ))}
+                </div>
+              </fieldset>
+              <fieldset className="mt-4">
+                <legend className="mb-2 text-xs font-semibold uppercase tracking-wide text-brand-muted">Line spacing</legend>
+                <div className="grid grid-cols-3 gap-1">
+                  {(["compact", "comfortable", "relaxed"] as const).map((value) => (
+                    <button key={value} type="button" onClick={() => onSpacingChange(value)} aria-pressed={spacing === value} className={`rounded px-1 py-2 text-[11px] capitalize ${spacing === value ? "bg-brand-accent text-brand-bg" : "bg-brand-bg text-brand-primary"}`}>{value}</button>
+                  ))}
+                </div>
+              </fieldset>
+              <IntentLink href={reportHref} onClick={onReportContent} className="mt-4 flex w-full items-center gap-2 border-t border-brand-muted/20 pt-3 text-left text-xs text-brand-muted hover:text-brand-accent">
+                <Flag size={14} aria-hidden="true" /> Report a content issue
+              </IntentLink>
+            </div>
+          </details>
+        </div>
       </div>
 
       <div className="mt-1 flex items-center justify-between gap-2 border-t border-brand-surface pt-2">
