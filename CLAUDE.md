@@ -282,7 +282,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038, 0040–0045 and 0047 are committed (0044 and 0045 were applied on 16 Nov 2026, 0047 on 23 Nov 2026; 0046 is reserved for #461's collection-key migration, not yet merged or applied); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0047 are committed (0044 and 0045 were applied on 16 Nov 2026, 0047 on 23 Nov 2026; 0046, which widens `documents_collection_check` to the new keys for 5.1b.3, is not yet applied and awaits Carter's approval); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -586,6 +586,14 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
   its new one and logs `legacy_collection_key`; 5.1b.4 removes the old keys.
 - **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection, and
   `LEGACY_COLLECTIONS`, the old keys' meaning, mirroring the API's).
+- **Datapipeline (5.1b.3):** `publication.SOURCE_ADAPTERS` builds the eight published
+  collections; `SOURCE_BUILDS` builds the ten sources (`sources/<key>/`, the old names),
+  which the work registry, the 0.1a to 0.1c checks, their known defects and the embedding
+  overlap stay keyed by (`collection_keys.source_of`). Until 5.1b.3's publish is applied,
+  live rows carry the old keys, and 2.2w reads them as part of the new key
+  (`collection_keys.live_keys`). Boethius moves from `theologians` to `church-fathers` only
+  in a stage of both (`publish.py stage --collection` repeats); a Fathers-only stage
+  before then leaves him where he is (`publication.place_boethius`).
 - **To add one:** update `constants.py`, sync `collections.ts`, add a `--color-collection-*` token in `globals.css`, and add a migration extending the DB collection constraint.
 
 ---
