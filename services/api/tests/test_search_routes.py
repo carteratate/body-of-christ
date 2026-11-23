@@ -530,7 +530,9 @@ def test_restore_without_0042_is_unchanged():
 
     sql = pool.fetch.await_args_list[0].args[0]
     assert "retired_at" not in sql and "corpus_" not in sql
-    assert pool.fetch.await_count == 1  # no resolution or facts queries
+    # No resolution or facts queries; the headings lookup (issue #445) is best-effort.
+    assert [c for c in pool.fetch.await_args_list
+            if "metadata->'headings'" not in c.args[0]] == pool.fetch.await_args_list[:1]
     assert response.status_code == 200
     body = response.json()
     result = body["results"][0]
@@ -552,6 +554,7 @@ def test_restore_without_0042_is_unchanged():
             },
             "reranker_score": 0.5, "explanation": "Relevant", "context": None,
             "footnotes": [],
+            "headings": [],
         }],
         "restore_status": "complete", "expected_result_count": 1,
         "delivery_outcome": None, "outcome": None, "collection_outcomes": None,

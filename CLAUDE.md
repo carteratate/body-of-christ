@@ -200,6 +200,18 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   with each link resolved (the entry's, else `held_text_url`, else `url`) and drops a stale
   list whole; `/documents/{id}` and `/sources` return only `held_count`; no returned
   `metadata` carries it. Held texts never reach search. Live has no list until 4.3's publish.
+- `chunks.metadata.headings` — **headings inside a passage** (issue #445; no migration).
+  Headings stay in `content`; the build marks each as `{at, end, role, level?, pairs_next?,
+  chapter_title?}`, offsets of one whole paragraph, `role` `heading` (level 1–3) or
+  `epigraph`. Contract and adapter helper: `datapipeline/headings.py` (`MarkedText`,
+  `prepend`; `hold_headings` and `split_marks` carry marks through a cut). Block rule H6
+  refuses a malformed mark anywhere; H7 (heading-like paragraph unmarked) and H8 (chapter
+  repeat without `chapter_title`) run only in collections listed under
+  `H7_unmarked_heading` in `health_patterns.json`, which a collection joins when its adapter
+  marks. The API sends `headings` with chunk events (only when non-empty), restored
+  results, bookmarks and reader passages (`app/headings.py`); the web draws them with
+  `components/common/PassageBlocks.tsx` and draws an unmarked passage as before. No live
+  passage carries marks yet.
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
   Places for what the cleanup decides. 2.2w's writer fills them, and every existing row
