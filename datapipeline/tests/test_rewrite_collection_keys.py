@@ -219,6 +219,7 @@ def test_a_source_published_in_part_is_checked_whole(monkeypatch):
     assert staged._whole_sources(("church-fathers", "medieval"),
                                  ["church-fathers", "theologians"]) == {}
     assert staged._whole_sources(("encyclicals",), ["papal"]) == {}
+    assert staged._whole_sources(("medieval",), ["medieval"]) == {}
 
 
 def test_coverage_checks_judge_the_staged_documents_and_build_only_the_rest():

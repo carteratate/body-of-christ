@@ -702,7 +702,9 @@ def _whole_sources(sources: tuple[str, ...], collections: list[str]) -> dict:
     wanted = set(collections)
     out = {}
     for source in sources:
-        if source not in publication.SPLIT_SOURCES or publication.SPLIT_SOURCES[source] <= wanted:
+        # A release staged under the old key itself (before 5.1b.3 merged) covers it all.
+        if (source not in publication.SPLIT_SOURCES or source in wanted
+                or publication.SPLIT_SOURCES[source] <= wanted):
             continue
         out[source] = [d for d in publication.SOURCE_BUILDS[source]()
                        if publication.published_in(d.id, source) not in wanted]
