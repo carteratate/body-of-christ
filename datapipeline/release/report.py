@@ -513,12 +513,13 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
         registry: R.Registry | None = None, build: dict[str, list[Document]] | None = None,
         run_checks: bool | None = None, index_path: str = SNAPSHOT_INDEX,
         published: tuple[str, ...] | None = None,
-        checks_build: dict[str, list[Document]] | None = None) -> int:
+        checks_supplement=None) -> int:
     """`collections` are sources (`publication.SOURCE_BUILDS`). A staged report passes
     `published`, the collections the publish writes, so live rows are read only where
     that publish covers them, under whichever key they are filed (5.1b.3), and, for a
-    source it publishes only part of, `checks_build`: the whole source, which the
-    coverage checks judge (they read every file of the source)."""
+    source it publishes only part of, `checks_supplement`: called only when the coverage
+    checks run, it returns that source's full build, whose documents outside the build
+    join it for those checks, which read every file of the source."""
     meta, problems = verify_snapshot(snapshot_dir, index_path)
     if problems:
         for p in problems:
@@ -588,8 +589,9 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
         from checks.source_text import SOURCES
         run_checks = all(os.path.isdir(os.path.join(SOURCES, c)) for c in collections)
     if run_checks:
-        summary = checks_summary(checks_report.run(
-            collections, documents_by_collection={**build, **(checks_build or {})}), known)
+        checked = with_supplement(build, checks_supplement() if checks_supplement else {})
+        summary = checks_summary(checks_report.run(collections, documents_by_collection=checked),
+                                 known)
         for c in collections:
             sections[c]["checks"] = summary[c]
 
@@ -638,6 +640,17 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
     for i in status["fixed_remove_entry"][:20]:
         print(f"fixed, remove entry: {i}", file=sys.stderr)
     return 1 if status["unexpected"] or status["fixed_remove_entry"] else 0
+
+
+def with_supplement(build: dict[str, list[Document]],
+                    supplement: dict[str, list[Document]]) -> dict[str, list[Document]]:
+    """The build, each source joined by the supplement's documents it lacks: the staged
+    documents are judged as staged, the rest of a partly published source as built."""
+    out = dict(build)
+    for source, whole in supplement.items():
+        have = {d.id for d in out.get(source, [])}
+        out[source] = [*out.get(source, []), *(d for d in whole if d.id not in have)]
+    return out
 
 
 def _write_jsonl(path: str, rows: list[dict], collections: tuple[str, ...]) -> None:

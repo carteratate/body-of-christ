@@ -210,10 +210,22 @@ def test_a_source_published_in_part_is_checked_whole(monkeypatch):
     from release import staged
 
     monkeypatch.setitem(publication.SOURCE_BUILDS, "medieval", lambda: ["whole medieval"])
-    assert staged._whole_sources(("church-fathers", "medieval"), ["church-fathers"], None) == {
+    assert staged._whole_sources(("church-fathers", "medieval"), ["church-fathers"]) == {
         "medieval": ["whole medieval"]}
-    assert staged._whole_sources(("medieval",), ["theologians"], None) == {
+    assert staged._whole_sources(("medieval",), ["theologians"]) == {
         "medieval": ["whole medieval"]}
     assert staged._whole_sources(("church-fathers", "medieval"),
-                                 ["church-fathers", "theologians"], None) == {}
-    assert staged._whole_sources(("encyclicals",), ["papal"], None) == {}
+                                 ["church-fathers", "theologians"]) == {}
+    assert staged._whole_sources(("encyclicals",), ["papal"]) == {}
+
+
+def test_coverage_checks_judge_the_staged_documents_and_build_only_the_rest():
+    from model import Document
+    from release.report import with_supplement
+
+    staged = Document(id="boethius", collection="medieval", title="Staged copy")
+    rebuilt = Document(id="boethius", collection="medieval", title="Rebuilt copy")
+    anselm = Document(id="anselm", collection="medieval", title="Proslogium")
+    out = with_supplement({"medieval": [staged]}, {"medieval": [rebuilt, anselm]})
+    assert [d.title for d in out["medieval"]] == ["Staged copy", "Proslogium"]
+    assert with_supplement({"summa": []}, {}) == {"summa": []}
