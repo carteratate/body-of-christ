@@ -16,6 +16,9 @@ const cspDirectives = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  // apps/web/AGENTS.md is a committed file (see the root CLAUDE.md); without this,
+  // `next dev` rewrites its managed block whenever an agent runs the dev server.
+  agentRules: false,
   ...(process.env.NODE_ENV === "development"
     ? { allowedDevOrigins: ["127.0.0.1"] }
     : {}),

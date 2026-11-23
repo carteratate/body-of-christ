@@ -26,6 +26,7 @@ def _row(**overrides):
         "default_quota": 10,
         "last_standard_quota": 5,
         "theme": "dark",
+        "result_card_style": "tint",
         **overrides,
     }
 
@@ -105,6 +106,7 @@ def test_standard_and_focused_defaults_can_be_saved_and_reloaded_through_the_api
                 "default_quota": args[3],
                 "last_standard_quota": args[4],
                 "theme": args[5],
+                "result_card_style": args[6],
             }
         return saved
 
@@ -153,3 +155,185 @@ def test_focused_quota_migration_adds_database_constraints():
     assert "default_quota in (3, 4, 5, 10)" in sql.lower()
     assert "last_standard_quota in (3, 4, 5)" in sql.lower()
     assert "coalesce(cardinality(default_collections), 0) = 1" in sql.lower()
+
+
+# ── Result card style (0047) ─────────────────────────────────────────────────
+
+import asyncpg
+import pytest
+
+from app.routes import preferences as preferences_route
+
+
+@pytest.fixture(autouse=True)
+def _card_style_column_present():
+    preferences_route._card_style_missing_until = 0.0
+    yield
+    preferences_route._card_style_missing_until = 0.0
+
+
+def test_result_card_style_defaults_to_collection_tint_without_a_row():
+    pool = AsyncMock()
+    pool.fetchrow.return_value = None
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().get("/v1/preferences")
+
+    assert response.status_code == 200
+    assert response.json()["result_card_style"] == "tint"
+
+
+def test_get_preferences_returns_the_stored_result_card_style():
+    pool = AsyncMock()
+    pool.fetchrow.return_value = _row(result_card_style="plain")
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().get("/v1/preferences")
+
+    assert response.json()["result_card_style"] == "plain"
+    assert "result_card_style" in pool.fetchrow.await_args.args[0]
+
+
+def test_result_card_style_is_saved_with_the_account():
+    pool, conn = _transactional_pool(
+        _row(result_card_style="tint"),
+        _row(result_card_style="plain"),
+    )
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().put("/v1/preferences", json={"result_card_style": "plain"})
+
+    assert response.status_code == 200
+    assert response.json()["result_card_style"] == "plain"
+    upsert = conn.fetchrow.await_args_list[1]
+    assert "result_card_style = EXCLUDED.result_card_style" in upsert.args[0]
+    assert upsert.args[7] == "plain"
+
+
+def test_other_updates_keep_the_stored_result_card_style():
+    pool, conn = _transactional_pool(
+        _row(result_card_style="plain"),
+        _row(result_card_style="plain", theme="light"),
+    )
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().put("/v1/preferences", json={"theme": "light"})
+
+    assert response.status_code == 200
+    assert conn.fetchrow.await_args_list[1].args[7] == "plain"
+
+
+def test_unknown_result_card_style_is_rejected():
+    pool, conn = _transactional_pool(_row())
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().put("/v1/preferences", json={"result_card_style": "striped"})
+
+    assert response.status_code == 422
+    assert conn.fetchrow.await_count == 0
+
+
+def test_get_preferences_tolerates_a_database_without_the_column():
+    pool = AsyncMock()
+    pool.fetchrow.side_effect = [asyncpg.UndefinedColumnError("result_card_style"), _row()]
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().get("/v1/preferences")
+        # The answer is remembered: the next read goes straight to the old SQL.
+        pool.fetchrow.side_effect = [_row()]
+        again = _client().get("/v1/preferences")
+
+    assert response.status_code == 200
+    assert response.json()["result_card_style"] is None
+    assert response.json()["theme"] == "dark"
+    assert "result_card_style" not in pool.fetchrow.await_args.args[0]
+    assert again.json()["result_card_style"] is None
+
+
+def test_get_preferences_without_the_column_and_without_a_row():
+    pool = AsyncMock()
+    pool.fetchrow.side_effect = [asyncpg.UndefinedColumnError("result_card_style"), None]
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().get("/v1/preferences")
+
+    assert response.status_code == 200
+    assert response.json()["result_card_style"] is None
+    assert response.json()["default_quota"] == 4
+
+
+def test_update_preferences_tolerates_a_database_without_the_column():
+    pool, conn = _transactional_pool(
+        asyncpg.UndefinedColumnError("result_card_style"),
+        _row(),
+        _row(theme="light"),
+    )
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().put("/v1/preferences", json={"theme": "light", "result_card_style": "plain"})
+
+    assert response.status_code == 200
+    assert response.json()["theme"] == "light"
+    assert response.json()["result_card_style"] is None
+    upsert = conn.fetchrow.await_args_list[2]
+    assert "result_card_style" not in upsert.args[0]
+    assert len(upsert.args) == 7
+
+
+def test_the_column_is_tried_again_after_the_recheck_interval():
+    preferences_route._card_style_missing()
+    assert not preferences_route._card_style_column()
+    preferences_route._card_style_missing_until -= preferences_route._RECHECK_SECONDS + 1
+    assert preferences_route._card_style_column()
+
+
+def test_result_card_style_migration_is_additive_with_tint_as_default():
+    migration = Path(__file__).parents[3] / "supabase" / "migrations" / "0047_result_card_style_preference.sql"
+    sql = migration.read_text().lower()
+
+    assert "add column if not exists result_card_style text not null default 'tint'" in sql
+    assert "result_card_style in ('tint', 'plain')" in sql
+    assert "drop " not in sql and "update " not in sql
+
+
+def test_card_style_alone_is_not_written_without_the_column():
+    pool, conn = _transactional_pool(asyncpg.UndefinedColumnError("result_card_style"))
+    pool.fetchrow = AsyncMock(return_value=_row(default_collections=["bible", "medieval-unknown"], default_quota=4))
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().put("/v1/preferences", json={"result_card_style": "plain"})
+        # Once the column is known missing, the same request never opens a transaction.
+        second = _client().put("/v1/preferences", json={"result_card_style": "plain"})
+
+    assert response.status_code == 200 and second.status_code == 200
+    assert response.json()["result_card_style"] is None
+    assert response.json()["default_collections"] == ["bible"]
+    assert conn.fetchrow.await_count == 1
+    assert not any("INSERT" in call.args[0] for call in conn.fetchrow.await_args_list)
+    assert pool.acquire.call_count == 1
+
+
+def test_an_empty_put_without_the_column_still_saves_as_before():
+    pool, conn = _transactional_pool(_row(), _row())
+    preferences_route._card_style_missing()
+
+    with patch("app.routes.preferences.get_pool", return_value=pool):
+        response = _client().put("/v1/preferences", json={})
+
+    assert response.status_code == 200
+    assert "INSERT INTO user_preferences" in conn.fetchrow.await_args_list[1].args[0]
+
+
+def test_a_style_only_put_reports_null_even_if_the_recheck_falls_due_mid_request():
+    pool, conn = _transactional_pool()
+    pool.fetchrow = AsyncMock(return_value=_row(result_card_style="tint"))
+    # The PUT finds the column missing; the next check would find 0047 applied.
+    checks = iter([False, True, True])
+
+    with patch("app.routes.preferences.get_pool", return_value=pool), \
+         patch("app.routes.preferences._card_style_column", side_effect=lambda: next(checks)):
+        response = _client().put("/v1/preferences", json={"result_card_style": "plain"})
+
+    assert response.status_code == 200
+    assert response.json()["result_card_style"] is None
+    assert "result_card_style" not in pool.fetchrow.await_args.args[0]

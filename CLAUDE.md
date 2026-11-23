@@ -113,6 +113,12 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
 - `reading_progress` — per-document reader position (0027)
 - `product_feedback` — in-app feedback, including anonymous (0028–0030)
 - `user_preferences.last_standard_quota` — remembers the pre-focused quota (0034); see §18
+- `user_preferences.result_card_style` — Settings' "Result card style" (0047): `tint`
+  (today's look, the default) or `plain`, a result card drawn like a saved passage.
+  **Applied to production on 23 Nov 2026** (ledger `20261123175943`). The cards read
+  `lib/result-card-style.ts`, which AppShell fills with the account's value and guests
+  read from this browser. `routes/preferences.py` still works without the column
+  (rechecked every 5 min), reporting `null` so the web keeps the browser's own choice
 - `search_costs` — per-search provider cost, written best-effort from the SSE generator's
   `finally` in `rag/pipeline.py`, so it covers every exit including a client leaving
   mid-explanations (`completed = false`), for authenticated and guest searches (0036).
@@ -276,7 +282,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040–0045 are committed (0044 and 0045 were applied on 16 Nov 2026); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038, 0040–0045 and 0047 are committed (0044 and 0045 were applied on 16 Nov 2026, 0047 on 23 Nov 2026; 0046 is reserved for #461's collection-key migration, not yet merged or applied); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
