@@ -1,7 +1,7 @@
 """Headings marked inside a passage (issue #445), carried to every surface that shows
 it: live search events, history restore, bookmarks and the reader."""
 import asyncio
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -111,8 +111,9 @@ def test_saved_passages_carry_their_headings(load):
     assert results[1]["headings"] == []
 
 
-def _reader(passage_row):
+def _reader(passage_row, stored):
     pool = FakePool()
+    pool.fetch = AsyncMock(return_value=[{"id": passage_row["id"], "headings": stored}])
     pool.conn.fetchrow.side_effect = [
         {"id": "11111111-1111-1111-1111-111111111111", "collection": "councils",
          "title": "Gaudium et Spes", "author": None, "year": None, "metadata": None,
@@ -123,8 +124,7 @@ def _reader(passage_row):
         resp = asyncio.run(get_document_reader(
             "11111111-1111-1111-1111-111111111111", anchor=None, chapter="c5",
             user=AuthUser(user_id="u", email=None)))
-    sql = pool.conn.fetch.await_args_list[0].args[0]
-    assert "metadata->'headings' AS headings" in sql
+    assert "metadata->'headings'" in pool.fetch.await_args.args[0]
     return resp.passages[0]
 
 
@@ -136,5 +136,5 @@ def _reader(passage_row):
 def test_reader_passages_carry_their_headings(stored, expected):
     passage = _reader({"id": "p1", "anchor": "gs/79", "chapter_key": "c5",
                        "chapter_label": "Chapter V", "unit_label": "§79",
-                       "reference": "GS 79", "content": MARKED, "headings": stored})
+                       "reference": "GS 79", "content": MARKED}, stored)
     assert [h.model_dump(exclude_defaults=True) for h in passage.headings] == expected

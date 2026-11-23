@@ -470,8 +470,7 @@ _PASSAGE_FIELDS = f""",
 def _passages_sql(schema: CorpusSchema) -> str:
     """One chapter's passages. History passages (rule F) are not retired, so they come
     with their chapter and the reader shows them as earlier text."""
-    return f"""SELECT id, anchor, chapter_key, chapter_label, unit_label, reference, content,
-                   metadata->'headings' AS headings{_PASSAGE_FIELDS if schema.facts else ""}
+    return f"""SELECT id, anchor, chapter_key, chapter_label, unit_label, reference, content{_PASSAGE_FIELDS if schema.facts else ""}
                    FROM chunks c WHERE document_id=$1 AND chapter_key=$2{schema.visible("c")} ORDER BY position"""
 
 
@@ -575,13 +574,16 @@ async def get_document_reader(
         logger.error("get_document_reader query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
+    # Headings marked inside the passages (issue #445): best-effort, bounded on its own.
+    marks = await headings.fetch_headings(
+        pool, [(str(r["id"]), r["content"]) for r in passage_rows])
     passages = [
         ReaderPassage(
             id=str(r["id"]), anchor=r["anchor"], chapter_key=r["chapter_key"],
             chapter_label=r["chapter_label"], unit_label=r["unit_label"],
             reference=r["reference"], content=r["content"],
             # Headings marked inside the passage (issue #445).
-            headings=headings.checked(r.get("headings"), r["content"], str(r["id"])),
+            headings=marks.get(str(r["id"]), []),
             **({key: r[key] for key in ("language", "note", "work_key", "passage_author",
                                         "voice", "superseded_by")}
                if "language" in r.keys() else {}),

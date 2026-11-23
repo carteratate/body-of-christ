@@ -8,8 +8,8 @@ before its title, and `chapter_title` on a level-1 heading that repeats its chap
 label (`datapipeline/headings.py` is the contract). `content` never changes, so search
 and embeddings do not see the marks.
 
-`fetch_headings` reads them for search results, restored searches and bookmarks; the
-reader selects the column with its passages and calls `validated`. Headings never fail
+`fetch_headings` reads them for search results, restored searches, bookmarks and the
+reader, in a query of its own after the passages are read. Headings never fail
 a response: a missing key gives none, and a malformed value, or a failed query, gives
 the passage none and is logged.
 """
@@ -89,6 +89,7 @@ async def fetch_headings(pool, items: list[tuple[str, str]]) -> dict[str, list[d
             rows = await pool.fetch(
                 _HEADINGS_SQL, sorted({chunk_id for chunk_id, _ in items}),
             )
+        stored = {str(row["id"]): row["headings"] for row in rows}
     except Exception as exc:
         logger.warning(
             "headings: query failed (%s); passages shown without headings",
@@ -96,6 +97,5 @@ async def fetch_headings(pool, items: list[tuple[str, str]]) -> dict[str, list[d
         )
         return {chunk_id: [] for chunk_id, _ in items}
 
-    stored = {str(row["id"]): row["headings"] for row in rows}
     return {chunk_id: checked(stored.get(chunk_id), content, chunk_id)
             for chunk_id, content in items}
