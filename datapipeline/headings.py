@@ -423,7 +423,7 @@ def repeats_label(heading: str, label: str) -> bool:
         return False
 
     def bare(text: str) -> str:
-        return _LEADING_NUMBER.sub("", _DIVISION_PREFIX.sub("", text))
+        return _LEADING_NUMBER.sub("", text)
 
     # A breadcrumb label ("Part Three Section Two Chapter Two Article 5 The Fifth
     # Commandment") is compared from each division it names.

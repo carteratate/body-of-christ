@@ -116,3 +116,4 @@ def test_vatican2_marks_the_heading_paragraph_not_an_identical_earlier_one():
 
 def test_a_bare_number_counts_only_at_the_start():
     assert not headings.repeats_label("The Church", "History 2: The Church")
+    assert not headings.repeats_label("Ways to Pray", "Chapter 2: 3 Ways to Pray")
