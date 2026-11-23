@@ -278,8 +278,7 @@ def test_a_printed_only_document_takes_its_entry_from_the_printing_and_the_genre
     assert papal_printings.entry_of(p) == {
         "title": "Inter Cunctas", "author": "Pope Martin V", "year": 1418, "url": p.url,
         "slug": "inter-cunctas", "genre": "apostolic-constitution", "form": "bull"}
-    assert not papal_printings.printed_only("encyclicals") or all(
-        x.document for x in papal_printings.printed_only("encyclicals"))
+    assert p not in papal_printings.printed_only("encyclicals")
 
 
 @vendored
