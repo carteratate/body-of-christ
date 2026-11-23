@@ -6,7 +6,7 @@ import asyncpg
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app import card_notes, corpus_lifecycle, corpus_schema, held_texts
+from app import card_notes, corpus_lifecycle, corpus_schema, headings, held_texts
 from app.auth.verify import verify_supabase_jwt
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
 from app.deps.auth import get_current_user
@@ -470,7 +470,8 @@ _PASSAGE_FIELDS = f""",
 def _passages_sql(schema: CorpusSchema) -> str:
     """One chapter's passages. History passages (rule F) are not retired, so they come
     with their chapter and the reader shows them as earlier text."""
-    return f"""SELECT id, anchor, chapter_key, chapter_label, unit_label, reference, content{_PASSAGE_FIELDS if schema.facts else ""}
+    return f"""SELECT id, anchor, chapter_key, chapter_label, unit_label, reference, content,
+                   metadata->'headings' AS headings{_PASSAGE_FIELDS if schema.facts else ""}
                    FROM chunks c WHERE document_id=$1 AND chapter_key=$2{schema.visible("c")} ORDER BY position"""
 
 
@@ -579,6 +580,8 @@ async def get_document_reader(
             id=str(r["id"]), anchor=r["anchor"], chapter_key=r["chapter_key"],
             chapter_label=r["chapter_label"], unit_label=r["unit_label"],
             reference=r["reference"], content=r["content"],
+            # Headings marked inside the passage (issue #445).
+            headings=headings.checked(r.get("headings"), r["content"], str(r["id"])),
             **({key: r[key] for key in ("language", "note", "work_key", "passage_author",
                                         "voice", "superseded_by")}
                if "language" in r.keys() else {}),

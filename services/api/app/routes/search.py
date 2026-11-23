@@ -13,6 +13,7 @@ from app import corpus_lifecycle, corpus_schema
 from app.config import settings
 from app.db import get_pool
 from app.footnotes import fetch_footnotes, has_footnotes
+from app.headings import fetch_headings
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.reader_access import access_fields, document_access
@@ -399,6 +400,10 @@ async def get_search_results(
         (str(row["chunk_id"]), row["content"]) for row in shown.values()
         if has_footnotes(row["collection"], row["document_title"])
     ])
+    # Bounded on its own like the notes (issue #445).
+    marks = await fetch_headings(pool, [
+        (str(row["chunk_id"]), row["content"]) for row in shown.values()
+    ])
     # Outside the deadline for the same reason; bounded on its own (2.4a).
     facts, _ = await document_facts.fetch_best_effort(pool, [
         str(row["chunk_id"]) for row in shown.values()
@@ -453,6 +458,7 @@ async def get_search_results(
             explanation=row["explanation"],
             context=context.get(str(display["chunk_id"])) if display is not None else None,
             footnotes=notes.get(str(display["chunk_id"]), []) if display is not None else [],
+            headings=marks.get(str(display["chunk_id"]), []) if display is not None else [],
             status=resolution.status,
             tombstone=resolution.tombstone,
             redirect=resolution.redirect,

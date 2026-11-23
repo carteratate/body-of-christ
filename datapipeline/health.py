@@ -2,7 +2,12 @@
 
 Block rules (H1 to H5, R10, and R9 in the papal collections) describe passages that are
 never useful: blank text, page-number or punctuation debris, broken positions and anchors,
-a website's own text, a heading stranded at the end of a passage. `refuse_block_violations` runs them in
+a website's own text, a heading stranded at the end of a passage. H6 to H8 hold the
+headings marked in `metadata.headings` (issue #445, `headings.py`): H6 refuses a malformed
+mark wherever one is written, and H7 (a heading-like paragraph left unmarked) and H8 (a
+level-1 heading that repeats its chapter label without `chapter_title`) apply only to the
+collections listed under `H7_unmarked_heading` in `health_patterns.json`, which a
+collection joins when its adapter marks its headings. `refuse_block_violations` runs them in
 `CollectionPublicationRunner._validate_documents`, before any store is acquired, and
 refuses the publication. Report rules (R1 to R8, R11 to R14 and the named rules after them)
 count softer problems per collection, so P1 PRs can show them falling; they never block.
@@ -34,6 +39,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from typing import Literal
 
+import headings
 from model import Document, Passage
 
 DATAPIPELINE = os.path.dirname(os.path.abspath(__file__))
@@ -41,7 +47,8 @@ PATTERNS_PATH = os.path.join(DATAPIPELINE, "health_patterns.json")
 KNOWN_DEFECTS_PATH = os.path.join(DATAPIPELINE, "checks", "known_defects.json")
 
 BLOCK_RULES = ("H1_blank", "H2_debris", "H3_positions", "H4_anchor_unique",
-               "H5_anchor_nonempty", "R10_site_boilerplate", "R9_trailing_heading")
+               "H5_anchor_nonempty", "R10_site_boilerplate", "R9_trailing_heading",
+               "H6_heading_marks", "H7_unmarked_heading", "H8_chapter_title")
 REPORT_RULES = ("R1_short", "R2_footer", "R3_note_start", "R4_dup_text",
                 "R5_repeated_reference", "R6_joined_paragraphs", "R7_non_english",
                 "R8_anchor_suffix", "R11_papal_editorial",
@@ -161,7 +168,72 @@ def _block(collection: str, document: Document) -> list[Violation]:
             if len(lines) > 1 and len(last) < heading["max_chars"] \
                     and last[:1].isupper() and not heading_end.search(last):
                 add("R9_trailing_heading", p, f"ends with a {len(last)}-character line")
+    out += _heading_rules(collection, document, add)
     return out
+
+
+def _heading_rules(collection: str, document: Document, add) -> list[Violation]:
+    """H6 on every passage that carries marks; H7 and H8 in the collections that opt in.
+    Calls `add` and returns [] so it reads like the rules above."""
+    rule = load_patterns()["H7_unmarked_heading"]
+    opted_in = collection in rule["collections"]
+    not_headings = {headings.normalized(entry["text"])
+                    for entry in rule["not_headings"].get(document.id, [])}
+    seen_chapters: set[str] = set()
+    for p in document.passages:
+        marks = (p.metadata or {}).get(headings.KEY)
+        found = headings.problems(p.content, marks)
+        if found:
+            add("H6_heading_marks", p, "; ".join(found[:3]))
+        opens_chapter = p.chapter_key not in seen_chapters
+        seen_chapters.add(p.chapter_key)
+        if not opted_in or found:
+            continue
+        marks = marks or []
+        covered = {(m["at"], m["end"]) for m in marks}
+        paras = headings.paragraphs(p.content)
+        if len(paras) > 1:
+            unmarked = [p.content[a:b] for a, b in paras if (a, b) not in covered
+                        and headings.looks_like_heading(p.content[a:b])
+                        and headings.normalized(p.content[a:b]) not in not_headings]
+            if unmarked:
+                add("H7_unmarked_heading", p, f"{len(unmarked)} unmarked heading-like "
+                    f"paragraph{'s' * (len(unmarked) != 1)}, first {unmarked[0][:60]!r}")
+        if opens_chapter:
+            title = _opening_level1(p.content, marks)
+            label = headings.normalized(p.chapter_label or "")
+            if title is not None and label and not title[1] \
+                    and _repeats(headings.normalized(title[0]), label):
+                add("H8_chapter_title", p, "opening level-1 heading repeats the chapter "
+                    "label without chapter_title")
+    return []
+
+
+def _opening_level1(content: str, marks: list[dict]) -> tuple[str, bool] | None:
+    """The level-1 heading a passage opens with, a pair joined into one, and whether it
+    carries `chapter_title`; None when it opens otherwise."""
+    ordered = sorted(marks, key=lambda m: m["at"])
+    if not ordered or ordered[0]["at"] != headings.paragraphs(content)[0][0] \
+            or ordered[0].get("level") != 1:
+        return None
+    first = ordered[0]
+    text = content[first["at"]:first["end"]]
+    flagged = bool(first.get("chapter_title"))
+    if first.get("pairs_next") and len(ordered) > 1:
+        text += " " + content[ordered[1]["at"]:ordered[1]["end"]]
+        flagged = flagged or bool(ordered[1].get("chapter_title"))
+    return text, flagged
+
+
+def _repeats(heading: str, label: str) -> bool:
+    """Whether a normalized heading and chapter label say the same, either allowed a
+    prefix the other leaves out: a label "chapter one what is happening ..." and a
+    heading "what is happening ...", or a heading "article 1 the revelation of god" and a
+    label "the revelation of god"."""
+    def tails(text: str) -> set[str]:
+        words = text.split()
+        return {" ".join(words[k:]) for k in range(len(words))}
+    return bool(heading) and (heading in tails(label) or label in tails(heading))
 
 
 # --------------------------------------------------------------------------- report rules

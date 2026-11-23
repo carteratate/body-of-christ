@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from app import corpus_lifecycle, corpus_schema
 from app.db import get_pool
 from app.footnotes import fetch_footnotes, has_footnotes
+from app.headings import fetch_headings
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.rag.steps import document_facts
@@ -188,6 +189,9 @@ async def list_bookmarks(
         (str(row["chunk_id"]), row["content"]) for row in shown.values()
         if has_footnotes(row["collection"], row["document_title"])
     ])
+    marks = await fetch_headings(pool, [
+        (str(row["chunk_id"]), row["content"]) for row in shown.values()
+    ])
     facts, _ = await document_facts.fetch_best_effort(pool, [
         str(row["chunk_id"]) for row in shown.values()
     ])
@@ -203,6 +207,7 @@ async def list_bookmarks(
             # A removed passage shows no text (Carter, 9 Nov 2026).
             content=display["content"] if display is not None else "",
             footnotes=notes.get(str(display["chunk_id"]), []) if display is not None else [],
+            headings=marks.get(str(display["chunk_id"]), []) if display is not None else [],
             source=BookmarkSource(**{
                 "collection": source_row["collection"],
                 "document_title": source_row["document_title"],

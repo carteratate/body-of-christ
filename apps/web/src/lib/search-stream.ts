@@ -1,4 +1,5 @@
 import { parseFootnotes, type Footnote } from "./footnotes";
+import { parseHeadings } from "./passage-headings";
 import { readerAccessValue, type ReaderAccess } from "./reader-access";
 import { parseFacts, type DocumentFacts } from "./attribution";
 import { parsePassageCard, type PassageCard } from "./card-notes";
@@ -104,6 +105,8 @@ export interface ContextPart {
   reference: string | null;
   unit_label: string | null;
   anchor: string | null;
+  /** Headings marked inside the part (issue #445); checked by `parseHeadings`. */
+  headings?: unknown;
 }
 
 /**
@@ -128,6 +131,9 @@ export interface ChunkResult {
   context?: AttachedContext | null;
   /** The passage's footnotes, shown with it (issue #279). Absent means none. */
   footnotes?: Footnote[];
+  /** Headings marked inside the passage (issue #445). Absent means none. Typed loosely
+   *  because restored searches skip this decoder; `parseHeadings` checks it where shown. */
+  headings?: unknown;
   /** A saved result whose passage left the corpus or moved (2.4a). "removed": the
    *  tombstone says why and `content` is empty. "moved": `content` and `source` are
    *  the passage it moved to. Absent means current. */
@@ -285,6 +291,7 @@ function normalizeContext(value: unknown): AttachedContext | null {
         reference: nullableString(part.reference),
         unit_label: nullableString(part.unit_label),
         anchor: nullableString(part.anchor),
+        ...(part.headings !== undefined ? { headings: part.headings } : {}),
       };
     }),
   };
@@ -325,6 +332,8 @@ function normalizePassage(event: Record<string, unknown>): ChunkResult {
     context: normalizeContext(event.context),
     // Never fail a passage over its notes: a bad entry is dropped, not the passage.
     footnotes: parseFootnotes(event.footnotes, content),
+    // Likewise headings (issue #445): sent only for a passage that has some.
+    ...(event.headings !== undefined ? { headings: parseHeadings(event.headings, content) } : {}),
     ...parsePassageLifecycle(event),
   };
 }

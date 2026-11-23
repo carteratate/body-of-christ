@@ -15,6 +15,7 @@ import uuid
 from app.config import settings
 from app.db import get_pool
 from app.footnotes import fetch_footnotes, has_footnotes
+from app.headings import fetch_headings
 from app.reader_access import access_fields, document_access
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
@@ -420,12 +421,13 @@ async def run_search_pipeline(
         # ------------------------------------------------------------------
         # Step 6 — Yield chunk events
         # ------------------------------------------------------------------
-        # Three independent lookups, each best-effort, run together: every round trip
+        # Four independent lookups, each best-effort, run together: every round trip
         # here is time before the first card.
-        access, notes, facts = await asyncio.gather(
+        access, notes, facts, marks = await asyncio.gather(
             _document_access_for(final_results),
             _footnotes_for(final_results),
             _facts_for(final_results, pipeline_result),
+            fetch_headings(get_pool(), [(r.chunk_id, r.content) for r in final_results]),
         )
         for chunk in final_results:
             card_access = access_fields(access, chunk.document_id, chunk.unit_label,
@@ -477,6 +479,9 @@ async def run_search_pipeline(
                 ),
                 # Shown with the passage, never part of `content` (issue #279).
                 "footnotes": notes.get(chunk.chunk_id, []),
+                # Headings marked inside the passage (issue #445), sent only when it has
+                # some, so every event today is unchanged.
+                **({"headings": marks[chunk.chunk_id]} if marks.get(chunk.chunk_id) else {}),
             }
 
         # ------------------------------------------------------------------

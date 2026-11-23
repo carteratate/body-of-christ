@@ -3,14 +3,19 @@
 import { useId, useState } from "react";
 import type { ReaderPassage } from "@/lib/api";
 import { renderVerseMarkers } from "@/lib/verse-markers";
+import { parseHeadings } from "@/lib/passage-headings";
 import { opensWithRole, rejectedLabel } from "@/lib/passageRole";
+import { PassageBlocks } from "@/components/common/PassageBlocks";
 import { RejectedVoice } from "@/components/common/RejectedVoice";
 import { TextLabels, hasTextLabels } from "@/components/common/PassageFacts";
 import { passageTextLabels } from "@/lib/search-stream";
 
-export function Passage({ passage, highlighted, history = [], highlightAnchor = null }: {
+export function Passage({ passage, highlighted, history = [], highlightAnchor = null, opensChapter = false }: {
   passage: ReaderPassage;
   highlighted: boolean;
+  /** The passage opens its chapter, under the chapter heading: a level-1 heading that
+   *  repeats that heading is not shown again (issue #445). */
+  opensChapter?: boolean;
   /** Older wording this passage replaced (rule F, D11), shown collapsed under it. */
   history?: ReaderPassage[];
   /** Opens the older wording a link points at. */
@@ -21,25 +26,44 @@ export function Passage({ passage, highlighted, history = [], highlightAnchor = 
   const rejected = rejectedLabel(passage);
   // Where the text came from (2.4f): a scanned edition, or unofficial canon English.
   const textLabels = passageTextLabels(passage);
+  // Headings marked inside the passage (issue #445). Without them it is drawn as before.
+  const headings = parseHeadings(passage.headings, passage.content);
+  const textClass = "text-[length:var(--reader-font-size)] leading-[var(--reader-line-height)] text-brand-primary mb-3";
+  const textStyle = {
+    fontFamily: "Georgia, serif",
+    ...(highlighted ? { background: "rgba(196,151,42,0.16)", borderRadius: 4, padding: "2px 4px" } : {}),
+  };
+  // The unit marker (`§79`) marks the passage's first paragraph, not a heading above it.
+  const unitMarker = (text: string) => (
+    passage.unit_label && !rejected && !opensWithRole(text, passage.unit_label)
+      ? <sup className="text-brand-muted mr-1" style={{ fontSize: 10 }}>{passage.unit_label}</sup>
+      : null
+  );
   return (
     <>
       {passage.passage_author && (
         <p className="mb-1 text-xs font-medium text-brand-muted">{passage.passage_author}</p>
       )}
       <RejectedVoice label={rejected}>
-        <p
-          id={`anchor-${passage.anchor}`}
-          className="text-[length:var(--reader-font-size)] leading-[var(--reader-line-height)] text-brand-primary mb-3"
-          style={{
-            fontFamily: "Georgia, serif",
-            ...(highlighted ? { background: "rgba(196,151,42,0.16)", borderRadius: 4, padding: "2px 4px" } : {}),
-          }}
-        >
-          {passage.unit_label && !rejected && !opensWithRole(passage.content, passage.unit_label) && (
-            <sup className="text-brand-muted mr-1" style={{ fontSize: 10 }}>{passage.unit_label}</sup>
+        {headings.length > 0
+          ? (
+            <PassageBlocks
+              surface="reader"
+              id={`anchor-${passage.anchor}`}
+              content={passage.content}
+              headings={headings}
+              className={textClass}
+              style={textStyle}
+              hideChapterTitle={opensChapter}
+              unitMarker={unitMarker}
+            />
+          )
+          : (
+            <p id={`anchor-${passage.anchor}`} className={textClass} style={textStyle}>
+              {unitMarker(passage.content)}
+              {renderVerseMarkers(passage.content)}
+            </p>
           )}
-          {renderVerseMarkers(passage.content)}
-        </p>
       </RejectedVoice>
       {hasTextLabels(textLabels) && (
         <div className="-mt-1 mb-3 space-y-1 text-xs leading-snug text-brand-muted">

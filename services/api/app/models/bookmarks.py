@@ -3,7 +3,7 @@ from typing import Literal, Optional
 
 from app.models.corpus import (DocumentFacts, PassageCard, PassageStatus, Redirect,
                                Tombstone)
-from app.models.search import Footnote
+from app.models.search import Footnote, PassageHeading
 
 
 class BookmarkCreate(BaseModel):
@@ -49,6 +49,8 @@ class BookmarkChunk(BaseModel):
     source: BookmarkSource
     # Same as ChunkResult.footnotes (issue #279).
     footnotes: list[Footnote] = Field(default_factory=list)
+    # Same as ChunkResult.headings (issue #445).
+    headings: list[PassageHeading] = Field(default_factory=list)
 
 
 class BookmarkResponse(BaseModel):
