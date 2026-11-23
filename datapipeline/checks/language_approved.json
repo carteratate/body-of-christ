@@ -610,6 +610,16 @@
   "sha1": "a1562a61a2cc7e8f9bb401712b4b16fd363f97ae"
  },
  {
+  "document_id": "96d72c6a-b005-5e96-9f7f-ceca57042078",
+  "anchor": "vi.ii/from-p6",
+  "collection": "medieval",
+  "title": "Treatise on the Love of God",
+  "language": "fr",
+  "words": 5,
+  "starts": "ne leve pas mais releve",
+  "sha1": "ab689b2d7b24f8564a7b7f4c8f4c7d1aef48eb9e"
+ },
+ {
   "document_id": "9a3661e6-dc89-509f-b191-ec2adbf5c695",
   "anchor": "iv.vi.i/retractations",
   "collection": "church-fathers",

@@ -72,29 +72,40 @@ def test_castle_chapters_are_the_mansions_with_teresas_preface_and_epilogue():
     assert not any("Introductory" in label for label in labels)
 
 
-def test_castle_leaves_out_the_editors_and_keeps_teresas_headings_out_of_the_text():
+def _opening_marks(doc, key):
+    p = next(p for p in doc.passages if p.chapter_key == key)
+    return [(p.content[m["at"]:m["end"]], m["level"])
+            for m in (p.metadata or {}).get("headings", [])]
+
+
+def test_castle_leaves_out_the_editors_and_keeps_teresas_headings_in_the_text_marked():
+    """Teresa's headings stay in the text, marked (Carter, 23 Nov 2026)."""
     text = _text(_castle())
     assert "No trace of these trials is to be found" not in text     # introduction
     assert "new edition the wording has been revised" not in text    # Zimmerman's note
     assert "Plan of this book" not in text                           # chapter outline
-    assert "THIS CHAPTER TREATS" not in text.upper()                 # Teresa's heading
-    assert "WAS WRITTEN BY TERESA OF JESUS" not in text.upper()      # preface title line
-    assert _castle().passages[0].metadata["heading"].startswith(
-        "This treatise, styled the Interior Castle, was written by Teresa of Jesus")
+    assert _opening_marks(_castle(), "iv")[0][0].startswith(
+        "THIS TREATISE, STYLED THE INTERIOR CASTLE, WAS WRITTEN BY TERESA OF JESUS")
+    marks = _opening_marks(_castle(), "v.i")
+    assert marks[0] == ("THE FIRST MANSIONS", 1)                   # the mansion's own heading
+    assert marks[1][0].startswith("THIS CHAPTER TREATS OF THE BEAUTY AND DIGNITY OF OUR SOULS")
+    assert marks[1][1] == 2
     first = next(p for p in _castle().passages if p.chapter_key == "v.i")
-    assert first.metadata["heading"].startswith(
-        "This chapter treats of the beauty and dignity of our souls")
-    assert first.content.startswith("1. While I was begging our Lord to-day")
+    assert "\n\n1. While I was begging our Lord to-day" in first.content
     assert first.metadata["book"] == "The First Mansions"
+    assert not any("heading" in (p.metadata or {}) for p in _castle().passages)
 
 
 def test_every_castle_chapter_keeps_teresas_heading():
-    chapters = {p.chapter_key: p.metadata.get("heading") for p in _castle().passages
-                if p.metadata.get("book")}
-    assert len(chapters) == 27 and all(chapters.values())
+    chapters = {p.chapter_key for p in _castle().passages if p.metadata.get("book")}
+    heads = {k: [t for t, level in _opening_marks(_castle(), k) if level == 2]
+             for k in chapters}
+    assert len(heads) == 27 and all(len(h) == 1 for h in heads.values())
     # An empty paragraph stands before the heading in IV ch. ii and VI ch. iv.
-    assert chapters["viii.ii"].startswith("Continues the same subject")
-    assert chapters["x.v"].startswith("Treats of how God suspends the soul in prayer")
+    assert heads["viii.ii"][0].startswith("CONTINUES THE SAME SUBJECT")
+    assert heads["x.v"][0].startswith("TREATS OF HOW GOD SUSPENDS THE SOUL IN PRAYER")
+    mansions = [t for k in chapters for t, level in _opening_marks(_castle(), k) if level == 1]
+    assert len(mansions) == 7
 
 
 def test_an_opening_i_keeps_the_next_word_in_normal_case():
@@ -120,12 +131,16 @@ def test_life_has_its_prologue_forty_chapters_and_the_relations():
         "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI")]
 
 
-def test_life_keeps_teresas_own_heading_on_each_chapter():
-    first = next(p for p in _life().passages if p.chapter_key == "viii.ii")
-    assert first.metadata["heading"].startswith(
+def test_life_opens_each_chapter_with_teresas_own_heading():
+    (heading,) = _opening_marks(_life(), "viii.ii")
+    assert heading[1] == 2 and heading[0].startswith(
         "In which she tells how God began to dispose this soul from childhood for virtue")
-    with_heading = {p.chapter_key for p in _life().passages if p.metadata.get("heading")}
+    first = next(p for p in _life().passages if p.chapter_key == "viii.ii")
+    assert first.content.startswith(heading[0] + "\n\n1. I had a father and mother")
+    with_heading = {p.chapter_key for p in _life().passages
+                    if any(m["level"] == 2 for m in (p.metadata or {}).get("headings", []))}
     assert len(with_heading) == 40
+    assert _opening_marks(_life(), "ix.i") == [("The Relations.", 1)]
 
 
 def test_life_leaves_out_the_editors_matter():
@@ -173,18 +188,9 @@ def test_genres_by_source_key():
     assert T.genre("medieval/on-loving-god.xml") is None
 
 
-def test_sentence_case_of_a_heading_in_capitals():
-    assert T._sentence_case("OF THE FOURTH MANSIONS. HOW GOD AND OUR LORD SPEAK. I SAY.") \
-        == "Of the fourth mansions. How God and Our Lord speak. I say."
-    assert T._sentence_case("AS ALSO THE GLORIOUS MOTHER OF GOD") \
-        == "As also the glorious Mother of God"
-    assert T._sentence_case("HOW ADVANTAGEOUS IT WAS FOR ST. TERESA") \
-        == "How advantageous it was for St. Teresa"
-
-
 def test_the_extractor_reads_the_headings_as_the_adapter_does():
     classes, divs, paragraphs = T.not_body("../theologians/teresa-castle2.xml")
-    assert classes == {"Centered": "heading", "Outline": "apparatus"}
+    assert classes == {"Outline": "apparatus"}
     assert not divs and not paragraphs
     assert T.not_body("../theologians/teresa-life.xml") == (
         {}, frozenset({"v"}), {"viii.xli-p58": "apparatus", "ix.xi-p12": "apparatus"})
@@ -322,8 +328,8 @@ def test_de_sales_stray_note_callers_are_read_out():
     assert not re.search(r"[a-z][.!?”]\d{1,2}\. [A-Z]", _text(_devout()))
 
 
-def test_de_sales_works_are_opted_into_the_heading_checks():
+def test_the_works_are_opted_into_the_heading_checks():
     import health
 
     documents = health.load_patterns()["H7_unmarked_heading"]["documents"]
-    assert {_devout().id, _love().id} <= set(documents)
+    assert {d.id for d in _built().values()} <= set(documents)
