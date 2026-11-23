@@ -392,7 +392,12 @@ class StageRunner:
                     "copies vectors and untouched collections from its target")
             if name in (live, alias, qd.PRE_ALIAS_COLLECTION):
                 raise StageRefused(f"REFUSING: '{name}' is what users search")
-            documents = await place_boethius(conn, documents, collections)
+            # A release's earlier stages count: restaging one of its collections keeps
+            # what the others staged (5.1b.3's Boethius).
+            earlier = list(await conn.fetchval(
+                """SELECT collections FROM corpus_publishes
+                   WHERE id = $1 AND discarded_at IS NULL""", request.release) or [])
+            documents = await place_boethius(conn, documents, [*collections, *earlier])
 
             # Decide whether the Qdrant collection is ours before anything is written: a
             # refused stage must leave no publish row that a retry would read as proof.
@@ -410,7 +415,8 @@ class StageRunner:
                 # Live rows still filed under an old key of a staged collection are
                 # part of it (5.1b.3): compared by ID, never retired for the rename.
                 live_scope = collection_keys.live_keys(collections)
-                await refuse_moves_out_of_scope(conn, documents, live_scope)
+                await refuse_moves_out_of_scope(
+                    conn, documents, collection_keys.live_keys([*collections, *earlier]))
                 await begin_publish(conn, request.release, collections, name)
                 await reader_writer.ensure_staging(conn)
                 await reader_writer.clear_staged_collections(conn, live_scope)
@@ -485,15 +491,17 @@ async def place_boethius(conn: asyncpg.Connection, documents: list[Document],
     `church-fathers` alone leaves him where live has him (dropped from its build; his
     points are copied as stored), so an ordinary Fathers publish needs neither the new
     keys nor migration 0046. A stage of `theologians` alone while he is live there would
-    retire him, so it refuses. Once he is live in `church-fathers`, nothing changes."""
+    retire him, so it refuses. Once he is live in `church-fathers`, nothing changes.
+    `collections` are the release's, earlier stages included."""
+    staged = set(collections)
     live = await conn.fetchval(
         "SELECT collection FROM public.documents WHERE id = $1::uuid AND retired_at IS NULL",
         BOETHIUS_DOCUMENT_ID)
     if live is None or collection_keys.canonical(live) == "church-fathers":
         return documents
-    if "church-fathers" in collections and "theologians" not in collections:
+    if "church-fathers" in staged and "theologians" not in staged:
         return [d for d in documents if d.id != BOETHIUS_DOCUMENT_ID]
-    if "theologians" in collections and "church-fathers" not in collections:
+    if "theologians" in staged and "church-fathers" not in staged:
         raise StageRefused(
             f"REFUSING: Boethius is live in {live!r} and moves to the Fathers (5.1b.3): "
             "stage theologians with church-fathers")

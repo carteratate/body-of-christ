@@ -280,10 +280,13 @@ async def _run(conn, write: bool, vocabulary: list[str]) -> int:
         if write:
             # No search or guest trial is written while the rows are read and rewritten:
             # a guest claim copies a trial's filters into a new search, which a scan
-            # already past it would miss. Searches wait about a second; an open claim is
-            # waited for, so its row is read.
+            # already past it would miss. The trials are locked first, as a claim locks
+            # them (SELECT ... FOR UPDATE, then INSERT INTO searches), so an open claim
+            # finishes before the run reads and a new one waits for it; no deadlock.
+            # Searches wait about a second.
             await conn.execute("SET LOCAL lock_timeout = '10s'")
-            await conn.execute("LOCK TABLE public.searches, public.guest_trials IN SHARE MODE")
+            await conn.execute("LOCK TABLE public.guest_trials IN EXCLUSIVE MODE")
+            await conn.execute("LOCK TABLE public.searches IN SHARE MODE")
         report = await plan(conn, vocabulary)
         print(summary(report))
         if not write:

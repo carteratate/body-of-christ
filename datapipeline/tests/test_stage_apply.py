@@ -546,6 +546,24 @@ async def test_boethius_moves_only_when_both_collections_stage(world, monkeypatc
         DOC_B: "church-fathers", DOC_A: "theologians"}
 
 
+async def test_restaging_the_fathers_keeps_a_release_s_boethius_move(world, monkeypatch):
+    """A release that staged both keys keeps moving him when only `church-fathers` is
+    restaged: its earlier collections count."""
+    import publication
+
+    monkeypatch.setattr(publication, "BOETHIUS_DOCUMENT_ID", DOC_B)
+    adapters = {"church-fathers": lambda: [replace(_doc(world, DOC_B), collection="church-fathers")],
+                "theologians": lambda: [replace(_doc(world, DOC_A), collection="theologians")],
+                "summa": lambda: []}
+    runner = world.runner(source_adapters=adapters)
+    await runner.stage(StageRequest(release="both", collections=("church-fathers", "theologians")))
+    again = await runner.stage(StageRequest(release="both", collections=("church-fathers",)))
+    assert again.documents == 1
+    assert {r["id"]: r["collection"] for r in await world.fetch(
+        "SELECT id::text, collection FROM staging.documents")} == {
+        DOC_B: "church-fathers", DOC_A: "theologians"}
+
+
 async def test_stage_refuses_a_document_moving_from_a_collection_it_does_not_cover(world):
     """A build may not take a live document from a collection the stage leaves alone
     (5.1b.3's Boethius: stage `church-fathers` with `theologians` until it is applied)."""

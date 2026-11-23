@@ -263,3 +263,35 @@ def test_a_release_of_all_old_keys_asks_for_the_all_entry(monkeypatch):
     publish.guard_publish("rollback", sorted(publication.SOURCE_ADAPTERS), "new-all")
     publish.guard_publish("rollback", ["papal"], "one")
     assert asked == ["all", "all", "papal"]
+
+
+async def test_a_guest_claim_during_the_run_is_waited_for_not_deadlocked(cluster):
+    """A claim locks its trial, then inserts the search; the run locks the trials first,
+    so it waits for the claim and then rewrites the search the claim wrote."""
+    import asyncio
+
+    database = cluster.new_database()
+    cluster.psql(database, SCHEMA.replace(
+        "to_jsonb('{\"collections\": [\"encyclicals\"]}'::text)", "'{}'"))
+    claim = await cluster.connect(database)
+    run = await cluster.connect(database)
+    try:
+        tx = claim.transaction()
+        await tx.start()
+        await claim.execute("SELECT 1 FROM guest_trials WHERE id = $1::uuid FOR UPDATE",
+                            "00000000-0000-0000-0000-0000000000b1")
+        repair = asyncio.create_task(R._run(run, True, VOCAB))
+        await asyncio.sleep(0.5)
+        assert not repair.done()
+        await claim.execute("""INSERT INTO searches VALUES ('00000000-0000-0000-0000-0000000000a9',
+                               '{"collections": ["canon-law"], "quota": 3}')""")
+        await claim.execute("UPDATE guest_trials SET filters = filters WHERE id = $1::uuid",
+                            "00000000-0000-0000-0000-0000000000b1")
+        await tx.commit()
+        assert await asyncio.wait_for(repair, 10) == 0
+        claimed = await run.fetchval(
+            "SELECT filters::text FROM searches WHERE id = '00000000-0000-0000-0000-0000000000a9'")
+        assert json.loads(claimed)["collections"] == ["church-law"]
+    finally:
+        await claim.close()
+        await run.close()
