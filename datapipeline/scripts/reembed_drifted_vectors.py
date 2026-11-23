@@ -254,6 +254,8 @@ if __name__ == "__main__":
                     help="release named by the PUBLISH_LOCK.json entry that approves --apply")
     args = ap.parse_args()
 
+    # Live payloads keep the old keys until 5.1b.3's publish (`collection_keys`).
+    from collection_keys import RENAMES  # noqa: E402
     from publication import SOURCE_ADAPTERS  # noqa: E402
 
     try:
@@ -261,7 +263,7 @@ if __name__ == "__main__":
             args.collection,
             args.categories,
             args.batch_size,
-            set(SOURCE_ADAPTERS),
+            set(SOURCE_ADAPTERS) | set(RENAMES),
         )
     except ArgError as exc:
         ap.error(str(exc))

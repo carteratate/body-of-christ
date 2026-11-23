@@ -208,7 +208,7 @@ def test_a_retired_document_carries_no_facts(reason, monkeypatch):
 
     built = [Document(id=w["document_id"], collection="medieval", title=w["title"])
              for w in (kept, retired)]
-    monkeypatch.setattr(document_facts_registry, "SOURCE_ADAPTERS",
+    monkeypatch.setattr(document_facts_registry, "SOURCE_BUILDS",
                         {"medieval": lambda: built})
     documents = document_facts_registry.build_all(reg)
     assert [d.id for d in documents] == [kept["document_id"]]

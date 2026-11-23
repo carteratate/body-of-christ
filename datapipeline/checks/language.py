@@ -174,14 +174,14 @@ def approved_entries(documents, registry=None) -> list[dict]:
 def main(argv: list[str] | None = None) -> int:
     import argparse
     sys.path.insert(0, os.path.dirname(_DIR))
-    from publication import SOURCE_ADAPTERS
+    from publication import SOURCE_BUILDS
     ap = argparse.ArgumentParser(description="Rule E's foreign-run check over a build (3.3)")
-    ap.add_argument("--collection", action="append", choices=sorted(SOURCE_ADAPTERS))
+    ap.add_argument("--collection", action="append", choices=sorted(SOURCE_BUILDS))
     ap.add_argument("--write-approved", action="store_true",
                     help="approve every run found (rewrites language_approved.json)")
     args = ap.parse_args(argv)
-    collections = args.collection or sorted(SOURCE_ADAPTERS)
-    documents = [d for c in collections for d in SOURCE_ADAPTERS[c]()]
+    collections = args.collection or sorted(SOURCE_BUILDS)
+    documents = [d for c in collections for d in SOURCE_BUILDS[c]()]
     if args.write_approved:
         if args.collection:
             ap.error("--write-approved needs every collection")

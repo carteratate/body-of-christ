@@ -34,6 +34,7 @@ from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Protocol
 
+import collection_keys
 import reader_access
 import registry as reg
 import retirements
@@ -424,7 +425,9 @@ async def apply(conn, release: str, *, remap: UserDataRemap | None = None,
         await lock_publishes(conn)
         row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
         _check_applicable(row, release)
-        collections = list(row["collections"])
+        # Live rows still filed under an old key of a staged collection are part of it
+        # (5.1b.3): snapshotted for the rollback, and renamed in place by ID below.
+        collections = collection_keys.live_keys(row["collections"])
         # The before-snapshot is read here, under the publish lock and before any write, so
         # a concurrent apply of the same release cannot overwrite it with applied rows. The
         # publish is unapplied, so an earlier refused attempt's snapshot is safe to replace.
@@ -710,7 +713,7 @@ async def _rollback(conn, qdrant, release: str, *, alias: str,
                                "discard it first")
         await _load_snapshot_into_staging(conn, rows)
         scope = ([d["id"] for d in rows["documents"]] if retire_only
-                 else await _live_documents(conn, list(row["collections"])))
+                 else await _live_documents(conn, collection_keys.live_keys(row["collections"])))
         core = await _core(conn, scope, release=release, rollback=True,
                            reserved=rows.get("retired_chunks", []))
         ledger = RemapLedger()
@@ -810,12 +813,17 @@ async def retire_only(conn, qdrant, release: str, collection: str, *, alias: str
     from writers.qdrant import alias_target
 
     registry = registry or reg.current()
+    # Removal entries name the document's source, which need not be the collection it
+    # is filed under (5.1b.3: Boethius's source is `medieval`, his collection
+    # `church-fathers`), so entries are found by document and the live document's
+    # stored key scopes the retirement.
+    published = collection_keys.canonical(collection)
     entries = {e["document_id"]: e for e in reg.open_removals(registry)
-               if e.get("scope") == "document" and e.get("collection") == collection}
+               if e.get("scope") == "document"}
     live = await conn.fetch(
         """SELECT id::text AS id, title, author FROM public.documents
-           WHERE collection = $1 AND retired_at IS NULL AND id = ANY($2::uuid[])""",
-        collection, list(entries))
+           WHERE collection = ANY($1::text[]) AND retired_at IS NULL AND id = ANY($2::uuid[])""",
+        collection_keys.live_keys([published]), list(entries))
     if not live:
         raise ApplyRefused(f"REFUSING: no live document of '{collection}' has an open "
                            "document removal entry")
