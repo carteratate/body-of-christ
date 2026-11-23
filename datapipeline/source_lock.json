@@ -122,17 +122,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/church-fathers/npnf208.xml",
-  "sha256": "95cf3dafefccec80e0949a03c7f1f605da293302d0dc7a8bd62a4e711a0c5532",
-  "bytes": 3303323,
-  "url": "https://ccel.org/ccel/s/schaff/npnf208.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/church-fathers/npnf210.xml",
   "sha256": "c6f1a9d66653852d8b743c84a613c72c521dfb1b05602f0a2eff400c17665ee8",
   "bytes": 3837030,
@@ -3298,6 +3287,16 @@
   "sha256": "bd625a0fa4f5ddd4b2fa13fcee753de8832ea4b316625e0e06454beb81cfa652",
   "bytes": 5809854,
   "url": "https://ccel.org/ccel/s/schaff/npnf204.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "church-fathers",
+  "path": "church-fathers/npnf208.xml",
+  "sha256": "95cf3dafefccec80e0949a03c7f1f605da293302d0dc7a8bd62a4e711a0c5532",
+  "bytes": 3303323,
+  "url": "https://ccel.org/ccel/s/schaff/npnf208.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "adapter-input"

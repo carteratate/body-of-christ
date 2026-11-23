@@ -144,6 +144,10 @@ FATHERS_DATES = {
     _CF + "on-the-holy-trinity/v.vii": (401, "c. 401", "III (Spanish), Augustine"),
     _CF + "on-the-holy-trinity/v.viii": (415, "415", "III (Spanish), Augustine"),
     _CF + "on-the-holy-trinity/v.ix": (424, "424 to 425", "III (Spanish), Augustine"),
+    # 5.6a: Basil (Spanish vol. II, English vol. III). The letters, written from his
+    # retreat to his death, have no one date there.
+    _CF + "npnf208/vii": (375, "c. 375", "II (Spanish), Basil, p. 231"),
+    _CF + "npnf208/viii": (None, "before 370", "II (Spanish), Basil, pp. 238-239"),
 }
 # Works inside a container, by (work_id, work_key), as FATHERS_DATES.
 FATHERS_WORK_DATES = {
@@ -162,7 +166,7 @@ _LETTER = ("apostolic-fathers/ii.ii", "apostolic-fathers/iii.ii", "apostolic-fat
                                                   "viii", "x", "xi", "xii")),
            "apostolic-fathers/vi.ii", "third-century-2/iv.iv", "third-century-3/v.iii",
            "third-century-3/ix.iv", "third-century-3/x.iii", "third-century-3/vi.vii",
-           "third-century-3/vi.viii", "third-century-3/vi.x")
+           "third-century-3/vi.viii", "third-century-3/vi.x", "npnf208/ix")
 _TREATISE = ("apostolic-fathers/viii.ii", "apostolic-fathers/viii.iii",
              "apostolic-fathers/viii.iv", "apostolic-fathers/viii.v",
              "apostolic-fathers/viii.vi", "apostolic-fathers/viii.vii",
@@ -176,6 +180,7 @@ _TREATISE = ("apostolic-fathers/viii.ii", "apostolic-fathers/viii.iii",
              "third-century/iii.v", "third-century/iv.iii", "third-fourth-century/iii.ii",
              "third-fourth-century/iii.iii", "third-fourth-century/iii.iv",
              "third-fourth-century/iii.v", "third-fourth-century/v.ii", "incarnation",
+             "npnf208/vii",
              "city-of-god/iv", "city-of-god/v", "on-the-holy-trinity/iv",
              *(f"on-the-holy-trinity/{k}" for k in ("iv.iii", "iv.iv", "iv.v", "iv.vi", "v",
                                                      "v.ii", "v.iii", "v.iv", "v.v", "v.vi",
@@ -185,7 +190,7 @@ FATHERS_GENRES = {
     **{_CF + k: "treatise" for k in _TREATISE},
     **{_CF + k: "commentary" for k in ("third-fourth-century/vi.ii", "third-century-3/iv.iv")},
     **{_CF + k: "sermon" for k in ("on-the-holy-trinity/iv.vii", "third-century-3/xi.ix",
-                                   "third-century-3/xi.x")},
+                                   "third-century-3/xi.x", "npnf208/viii")},
     _CF + "third-century/v.ii": "poem",
     _CF + "third-fourth-century/iii.vi": "poem",
     _CF + "on-the-holy-trinity/iv.ii": "manual",
@@ -243,6 +248,7 @@ TRANSLATION = {
     "church-fathers/city-of-god.xml": NPNF1,
     "church-fathers/on-the-holy-trinity.xml": NPNF1,
     "church-fathers/npnf204.xml": NPNF2,
+    "church-fathers/npnf208.xml": "Blomfield Jackson (1895)",
     "church-fathers/confessions.xml": "E. B. Pusey (1838)",
     "medieval/consolation-of-philosophy.xml": "W. V. Cooper (1902)",
     "medieval/imitation-of-christ.xml": "Aloysius Croft and Harold Bolton (1940)",

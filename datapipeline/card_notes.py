@@ -130,6 +130,11 @@ PASSAGE_NOTES: dict[str, Note | None] = {
     "which the English translation does not print.": caution(
         "incomplete", "The Latin text ends this article with a short reply to all the "
                       "objections together, which the English translation does not print."),
+    # 5.6a: Basil's Letter 125, whose Greek creed is cut under rule E.
+    "The Creed of Nicaea, which this letter quotes in full, is omitted: the translator left "
+    "it in Greek.": caution(
+        "incomplete", "The Creed of Nicaea, which this letter quotes in full, is omitted: the "
+                      "translator left it in Greek."),
 }
 # `summa._missing_note`'s wordings, each exactly as built: a new one stops the build
 # until it is added here.
@@ -189,6 +194,24 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
                      "(canon 1).")),
     "Some passages are omitted: the translators left them in Latin and no public-domain "
     "English translation exists.": (LATIN_OMITTED,),
+    # 5.6a's labels on Basil's letters. The header names the writer and the certainty.
+    "Transmitted among Basil's letters, but not his.": (),
+    "Transmitted among Basil's letters; scholars now assign it to Gregory of Nyssa.": (
+        caution("authorship", "Transmitted among Basil's letters."),),
+    "Transmitted among Basil's letters; Fedwick (1981) assigns it to Gregory of Nazianzus.": (
+        caution("authorship", "Transmitted among Basil's letters."),),
+    "An extract from Gregory of Nyssa's Against Eunomius, transmitted among Basil's "
+    "letters.": (caution("authorship", "An extract from Against Eunomius, transmitted among "
+                                       "Basil's letters."),),
+    "Transmitted among Basil's letters, but written about him; the Benedictine editors give "
+    "it to Gregory of Nazianzus's father, written in his son's hand.": (caution(
+        "authorship", "Transmitted among Basil's letters, but written about him; the "
+                      "Benedictine editors give it to Gregory's father, written in his son's "
+                      "hand."),),
+    "A later addition to Basil's letter to Ambrose.": (
+        caution("authorship", "A later addition to Basil's letter to Ambrose."),),
+    "Not by Basil. The Second Council of Nicaea (787) quoted it as his.": (
+        caution("authority", "The Second Council of Nicaea (787) quoted it as Basil's."),),
     # 3.2's fragment collections: how the text survives, on the record line.
     **{text: (record(text.rstrip(".")),) for text in (
         "Preserved in quotations by later writers, chiefly Irenaeus (Against Heresies) and "
