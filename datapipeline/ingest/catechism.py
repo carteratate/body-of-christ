@@ -437,6 +437,10 @@ _SOURCE_LINE_HEADINGS = {
     "src:toc-283:10": ("Promises and vows", 3),
     "src:toc-375:2": ('I. "OUR FATHER!"', 2),
 }
+# A heading the US text holds inside a numbered paragraph, by item key: its words and level.
+_INLINE_HEADINGS = {"p1471": ("What is an indulgence?", 3)}
+# US heads that are scripture set under a title, not headings (the survey's epigraphs).
+_EPIGRAPH_HEADS = {"g2051.1": '"Teacher, what must I do …?"'}
 
 
 def _heading_marks(items: dict, us_by_key: dict, held: list[tuple[str | None, str, int]],
@@ -454,10 +458,18 @@ def _heading_marks(items: dict, us_by_key: dict, held: list[tuple[str | None, st
             marks.append(headings.mark(start, end, level=level))
             continue
         item = items.get(key) if key else None
-        if item is None or item["kind"] == "paragraph":
+        if item is None:
             continue
         span = clean[start:start + len(clean_text(text))]
         paras = [(start + a, start + b) for a, b in headings.paragraphs(span)]
+        if item["kind"] == "paragraph":
+            if key in _INLINE_HEADINGS:
+                words, level = _INLINE_HEADINGS[key]
+                found = [(a, b) for a, b in paras if clean[a:b] == words]
+                if len(found) != 1:
+                    raise ValueError(f"catechism: {key} prints {words!r} {len(found)} times")
+                marks.append(headings.mark(*found[0], level=level))
+            continue
         if item["kind"] == "structure":
             if len(paras) > 2:
                 raise ValueError(f"catechism: structural title {key} prints {len(paras)} lines")
@@ -465,6 +477,10 @@ def _heading_marks(items: dict, us_by_key: dict, held: list[tuple[str | None, st
                       for k, (a, b) in enumerate(paras)]
             continue
         style = us_by_key.get(key, {}).get("style")
+        if key in _EPIGRAPH_HEADS:
+            if [clean[a:b] for a, b in paras] != [_EPIGRAPH_HEADS[key]]:
+                raise ValueError(f"catechism: {key} reads {span!r}, not {_EPIGRAPH_HEADS[key]!r}")
+            style = "pre"
         if style in _EPIGRAPH_STYLES:
             marks += [headings.mark(a, b, role=headings.EPIGRAPH) for a, b in paras]
         elif style in _HEADING_LEVELS and len(paras) == 1:
@@ -489,16 +505,14 @@ def _no_skipped_levels(marks: list[dict], clean: str) -> list[dict]:
 
 
 def _chapter_title(marks: list[dict], clean: str, label: str) -> list[dict]:
-    """`marks` with `chapter_title` on an opening level-1 heading (a pair read as one)
-    that repeats the chapter label, for a passage that opens its chapter."""
-    if not marks or marks[0]["at"] != 0 or marks[0].get("level") != 1:
-        return marks
-    words = clean[marks[0]["at"]:marks[0]["end"]]
-    if marks[0].get("pairs_next") and len(marks) > 1:
-        words += " " + clean[marks[1]["at"]:marks[1]["end"]]
-    if not headings.repeats_label(words, label):
-        return marks
-    return [{**marks[0], "chapter_title": True}, *marks[1:]]
+    """`marks` with `chapter_title` on each level-1 title (a pair read as one) of the
+    opening stack that repeats the chapter label, for a passage that opens its chapter:
+    the breadcrumb label ends with the deepest title, which need not open the stack."""
+    out = [dict(m) for m in marks]
+    for group, words in headings.opening_titles(clean, out):
+        if headings.repeats_label(words, label):
+            out[group[0]]["chapter_title"] = True
+    return out
 
 
 def _paragraph_starts(held: list[tuple[str | None, str, int]]) -> list[tuple[int, str]]:

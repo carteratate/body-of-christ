@@ -74,7 +74,8 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
                 unit_label=row.get("unit_label"),
                 # A snapshot from before format 3 has no marks: its passages read unmarked.
                 metadata={"passage_id": row["id"],
-                          **({"headings": row["headings"]} if row.get("headings") else {})}))
+                          **({"headings": row["headings"]}
+                             if row.get("headings") is not None else {})}))
     out: dict[str, list[Document]] = {c: [] for c in collections or ()}
     for doc in documents.values():
         # A NULL position sorts last and fails H3.

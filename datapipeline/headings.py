@@ -377,6 +377,27 @@ def looks_like_heading(paragraph: str) -> bool:
             and not _ENDS_AS_SENTENCE.search(text))
 
 
+def opening_titles(content: str, marks: Sequence[dict]) -> list[tuple[list[int], str]]:
+    """The level-1 titles a passage opens with, each a pair read as one: (indices into
+    `marks` sorted by offset, the words). A stack can print several (Part Two's title,
+    then its Chapter's, then its Article's); it ends at the first paragraph that is not
+    a level-1 heading."""
+    ordered = sorted(range(len(marks)), key=lambda i: marks[i]["at"])
+    paras = paragraphs(content)
+    out: list[tuple[list[int], str]] = []
+    k = 0
+    while k < len(ordered) and k < len(paras):
+        m = marks[ordered[k]]
+        if (m["at"], m["end"]) != paras[k] or m.get("level") != 1:
+            break
+        group = [ordered[k]]
+        if m.get("pairs_next") and k + 1 < len(ordered):
+            group.append(ordered[k + 1])
+        out.append((group, " ".join(content[marks[i]["at"]:marks[i]["end"]] for i in group)))
+        k += len(group)
+    return out
+
+
 def normalized(text: str) -> str:
     """Text compared without case, punctuation or spacing: a chapter label against the
     heading that repeats it."""

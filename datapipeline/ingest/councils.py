@@ -64,15 +64,18 @@ class _Builder:
         if len(body) < 1:
             return
         marks, cursor = [], 0
+        paras = headings.paragraphs(body)
         for seg in segments:
             if seg.locator not in (heads or {}):
                 continue
+            # The heading is a whole paragraph after the last one marked, never the same
+            # words inside a sentence.
             words = self.clean(seg.text)
-            at = body.find(words, cursor)
-            if not words or at < 0:
+            span = next(((a, b) for a, b in paras if a >= cursor and body[a:b] == words), None)
+            if not words or span is None:
                 raise ValueError(f"{ref}: heading {seg.locator} {seg.text[:60]!r} not in its text")
-            marks.append(headings.mark(at, at + len(words), **heads[seg.locator]))
-            cursor = at + len(words)
+            marks.append(headings.mark(*span, **heads[seg.locator]))
+            cursor = span[1]
         pieces = pack_text(body, segments, settings.MAX_PASSAGE_CHARS)
         self.units.append((body, pieces, ref, base_anchor, ckey, clabel, unit, meta, segments,
                            headings.split_marks(body, pieces, marks)))

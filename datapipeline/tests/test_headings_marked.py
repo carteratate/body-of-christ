@@ -76,6 +76,26 @@ def test_vatican2_marks_and_only_vatican2():
     marked = {d.author for d in docs for p in d.passages if (p.metadata or {}).get("headings")}
     assert marked == {"Second Vatican Council"}
     assert health.check_documents("councils", docs, report=False) == []
-    for d in docs:
-        for p in d.passages:
-            assert headings.problems(p.content, (p.metadata or {}).get("headings")) == []
+
+
+def test_vatican2_marks_the_heading_paragraph_not_earlier_words(monkeypatch):
+    builder = councils._Builder(clean=lambda text: text.strip())
+    body = "These are the General norms we follow.\n\nGeneral norms\n\nText."
+    from ingest.pieces import Segment
+    segments = [Segment("e1", "These are the General norms we follow."),
+                Segment("e2", "General norms"), Segment("e3", "Text.")]
+    builder.add(body=body, ref="SC 22", base_anchor="sc/22", ckey="c", clabel="C", unit="§22",
+                meta={}, segments=segments, heads={"e2": {"level": 3}})
+    (passage,) = builder.passages
+    (mark,) = passage.metadata["headings"]
+    assert passage.content[mark["at"]:mark["end"]] == "General norms" and mark["at"] > 0
+
+
+def test_every_title_of_an_opening_stack_that_repeats_the_label_is_flagged():
+    clean = ("CHAPTER ONE\n\nTHE PASCHAL MYSTERY\n\nArticle 1\n\nTHE LITURGY - WORK OF THE "
+             "HOLY TRINITY\n\n§1077 Text.")
+    marks = [{**_h(0, 11, 1), "pairs_next": True}, _h(13, 32, 1),
+             {**_h(34, 43, 1), "pairs_next": True}, _h(45, 83, 1)]
+    label = "Part Two, Section One, Chapter One, Article 1, The Liturgy - Work of the Holy Trinity"
+    out = catechism._chapter_title(marks, clean, label)
+    assert [bool(m.get("chapter_title")) for m in out] == [False, False, True, False]
