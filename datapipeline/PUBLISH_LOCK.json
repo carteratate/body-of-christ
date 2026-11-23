@@ -1,5 +1,42 @@
 {
   "since": "2026-09-29",
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
-  "approved_applies": []
+  "approved_applies": [
+    {
+      "collection": "councils",
+      "release": "held-texts-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "4.3's publish (#394, PR #417, tests #424): held texts in their place in the reader and the Library, as documents.metadata.held_texts. Staged from this PR's merge commit, which holds 4.3's data after 4.4's publish. The three collections whose documents hold texts are staged; the others are copied. Its report must show held_texts changes only: no passage, ID, payload or embedding change. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
+      "approved_by": "Carter",
+      "pr": 449
+    },
+    {
+      "collection": "encyclicals",
+      "release": "held-texts-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "4.3's publish (#394, PR #417, tests #424): held texts in their place in the reader and the Library, as documents.metadata.held_texts. Staged from this PR's merge commit, which holds 4.3's data after 4.4's publish. The three collections whose documents hold texts are staged; the others are copied. Its report must show held_texts changes only: no passage, ID, payload or embedding change. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
+      "approved_by": "Carter",
+      "pr": 449
+    },
+    {
+      "collection": "papal-documents",
+      "release": "held-texts-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "4.3's publish (#394, PR #417, tests #424): held texts in their place in the reader and the Library, as documents.metadata.held_texts. Staged from this PR's merge commit, which holds 4.3's data after 4.4's publish. The three collections whose documents hold texts are staged; the others are copied. Its report must show held_texts changes only: no passage, ID, payload or embedding change. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
+      "approved_by": "Carter",
+      "pr": 449
+    }
+  ]
 }
