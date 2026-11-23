@@ -97,7 +97,7 @@ describe("ChapterSection", () => {
   it("renders a chapter without the new fields as before", () => {
     const view = render(<ChapterSection highlightAnchor={null} chapter={chapter([passage("a", "a", "One.")])} />);
     expect(view.container.innerHTML).toBe(
-      '<section data-chapter-key="c" class="max-w-[640px] mx-auto px-6 py-6"><h2 class="text-xl font-semibold text-brand-primary mb-4" style="font-family: Georgia, serif;">Canons 290–300</h2><p id="anchor-a" class="text-[length:var(--reader-font-size)] leading-[var(--reader-line-height)] text-brand-primary mb-3" style="font-family: Georgia, serif;">One.</p></section>',
+      '<section data-chapter-key="c" class="max-w-[640px] mx-auto px-6 py-6"><h2 class="text-xl font-semibold text-brand-primary mb-4" style="font-family: Georgia, serif;">Canons 290–300</h2><p id="anchor-a" class="text-[length:var(--reader-font-size)] leading-[var(--reader-line-height)] whitespace-pre-wrap text-brand-primary mb-3" style="font-family: Georgia, serif;">One.</p></section>',
     );
   });
 

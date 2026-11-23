@@ -28,7 +28,7 @@ export function Passage({ passage, highlighted, history = [], highlightAnchor = 
   const textLabels = passageTextLabels(passage);
   // Headings marked inside the passage (issue #445). Without them it is drawn as before.
   const headings = parseHeadings(passage.headings, passage.content);
-  const textClass = "text-[length:var(--reader-font-size)] leading-[var(--reader-line-height)] text-brand-primary mb-3";
+  const textClass = "text-[length:var(--reader-font-size)] leading-[var(--reader-line-height)] whitespace-pre-wrap text-brand-primary mb-3";
   const textStyle = {
     fontFamily: "Georgia, serif",
     ...(highlighted ? { background: "rgba(196,151,42,0.16)", borderRadius: 4, padding: "2px 4px" } : {}),
@@ -101,7 +101,7 @@ function EarlierText({ passage, initiallyOpen }: { passage: ReaderPassage; initi
       {open && (
         <div id={bodyId} className="mt-1 border-l-2 border-brand-muted/30 pl-3">
           <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-brand-muted">No longer in force</p>
-          <p id={`anchor-${passage.anchor}`} className="text-sm leading-relaxed text-brand-muted" style={{ fontFamily: "Georgia, serif" }}>
+          <p id={`anchor-${passage.anchor}`} className="text-sm leading-relaxed whitespace-pre-wrap text-brand-muted" style={{ fontFamily: "Georgia, serif" }}>
             {renderVerseMarkers(passage.content)}
           </p>
         </div>
