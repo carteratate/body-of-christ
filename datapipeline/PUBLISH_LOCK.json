@@ -12,7 +12,7 @@
       ],
       "reason": "5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026): papal, church-law, theologians and church-fathers staged together under the new keys from master after #461, with Boethius moving to church-fathers. Its report must show every passage same, no retirement, no new ID and no embedding call. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entries when its rollback window closes.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 475
     },
     {
       "collection": "church-law",
@@ -24,7 +24,7 @@
       ],
       "reason": "5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026): papal, church-law, theologians and church-fathers staged together under the new keys from master after #461, with Boethius moving to church-fathers. Its report must show every passage same, no retirement, no new ID and no embedding call. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entries when its rollback window closes.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 475
     },
     {
       "collection": "theologians",
@@ -36,7 +36,7 @@
       ],
       "reason": "5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026): papal, church-law, theologians and church-fathers staged together under the new keys from master after #461, with Boethius moving to church-fathers. Its report must show every passage same, no retirement, no new ID and no embedding call. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entries when its rollback window closes.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 475
     },
     {
       "collection": "church-fathers",
@@ -48,7 +48,7 @@
       ],
       "reason": "5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026): papal, church-law, theologians and church-fathers staged together under the new keys from master after #461, with Boethius moving to church-fathers. Its report must show every passage same, no retirement, no new ID and no embedding call. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entries when its rollback window closes.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 475
     },
     {
       "collection": "all",
@@ -58,7 +58,7 @@
       ],
       "reason": "Only for scripts/rewrite_collection_keys.py --apply after the publish is applied (runbook step 5): the keys stored in user rows and in the 52 retired encyclicals. 5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026).",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 475
     }
   ]
 }
