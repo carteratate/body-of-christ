@@ -157,7 +157,7 @@ def test_focused_quota_migration_adds_database_constraints():
     assert "coalesce(cardinality(default_collections), 0) = 1" in sql.lower()
 
 
-# ── Result card style (0046) ─────────────────────────────────────────────────
+# ── Result card style (0047) ─────────────────────────────────────────────────
 
 import asyncpg
 import pytest
@@ -288,7 +288,7 @@ def test_the_column_is_tried_again_after_the_recheck_interval():
 
 
 def test_result_card_style_migration_is_additive_with_tint_as_default():
-    migration = Path(__file__).parents[3] / "supabase" / "migrations" / "0046_result_card_style_preference.sql"
+    migration = Path(__file__).parents[3] / "supabase" / "migrations" / "0047_result_card_style_preference.sql"
     sql = migration.read_text().lower()
 
     assert "add column if not exists result_card_style text not null default 'tint'" in sql
@@ -327,7 +327,7 @@ def test_an_empty_put_without_the_column_still_saves_as_before():
 def test_a_style_only_put_reports_null_even_if_the_recheck_falls_due_mid_request():
     pool, conn = _transactional_pool()
     pool.fetchrow = AsyncMock(return_value=_row(result_card_style="tint"))
-    # The PUT finds the column missing; the next check would find 0046 applied.
+    # The PUT finds the column missing; the next check would find 0047 applied.
     checks = iter([False, True, True])
 
     with patch("app.routes.preferences.get_pool", return_value=pool), \

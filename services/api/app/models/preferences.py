@@ -12,7 +12,7 @@ DEFAULT_COLLECTIONS = ["bible", "catechism", "church-fathers", "papal", "church-
 StandardQuota = Literal[3, 4, 5]
 PreferenceQuota = Literal[3, 4, 5, 10]
 Theme = Literal["dark", "light"]
-# How search result cards are drawn (0046): "tint" on the collection colour, "plain"
+# How search result cards are drawn (0047): "tint" on the collection colour, "plain"
 # like a saved passage.
 ResultCardStyle = Literal["tint", "plain"]
 DEFAULT_RESULT_CARD_STYLE: ResultCardStyle = "tint"
@@ -52,7 +52,7 @@ class PreferenceValues(BaseModel):
 
 
 class PreferencesResponse(PreferenceValues):
-    # An account setting, not a guest draft's. None when the database has no 0046 column
+    # An account setting, not a guest draft's. None when the database has no 0047 column
     # yet: the client keeps its own choice.
     result_card_style: Optional[ResultCardStyle] = None
 

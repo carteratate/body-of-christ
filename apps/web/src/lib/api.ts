@@ -260,7 +260,7 @@ export interface Preferences {
   default_quota: number;
   last_standard_quota: 3 | 4 | 5;
   theme: "dark" | "light";
-  /** Null or absent when the API cannot store it yet (0046 unapplied, or an older API):
+  /** Null or absent when the API cannot store it yet (0047 unapplied, or an older API):
    *  this browser's own choice stands (lib/result-card-style.ts). */
   result_card_style?: ResultCardStyle | null;
 }

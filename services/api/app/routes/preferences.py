@@ -28,9 +28,9 @@ _DEFAULT_PREFERENCES = PreferencesResponse(
     result_card_style=DEFAULT_RESULT_CARD_STYLE,
 )
 
-# `user_preferences.result_card_style` comes from 0046, which the API deploys before.
+# `user_preferences.result_card_style` comes from 0047, which the API deploys before.
 # A query that finds the column missing switches to the SQL without it, and the column
-# is tried again after this long, so applying 0046 needs no restart.
+# is tried again after this long, so applying 0047 needs no restart.
 _RECHECK_SECONDS = 300.0
 _card_style_missing_until = 0.0
 
@@ -42,7 +42,7 @@ def _card_style_column() -> bool:
 def _card_style_missing() -> None:
     global _card_style_missing_until
     _card_style_missing_until = time.monotonic() + _RECHECK_SECONDS
-    logger.warning("preferences: user_preferences.result_card_style is missing (0046 not applied)")
+    logger.warning("preferences: user_preferences.result_card_style is missing (0047 not applied)")
 
 
 def _columns(with_card_style: bool) -> str:
@@ -178,7 +178,7 @@ async def update_preferences(
                 _card_style_missing()
                 with_card_style = False
         if not with_card_style:
-            # Without 0046 a PUT of the card style alone has nothing to store: answer as
+            # Without 0047 a PUT of the card style alone has nothing to store: answer as
             # a read rather than rewrite the other preferences (or create a row).
             if body.result_card_style is not None and not body.model_dump(
                     exclude_none=True, exclude={"result_card_style"}):
