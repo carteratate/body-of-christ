@@ -559,6 +559,8 @@ async def test_restaging_the_fathers_keeps_a_release_s_boethius_move(world, monk
     await runner.stage(StageRequest(release="both", collections=("church-fathers", "theologians")))
     again = await runner.stage(StageRequest(release="both", collections=("church-fathers",)))
     assert again.documents == 1
+    with pytest.raises(StageRefused, match="stage theologians with church-fathers"):
+        await runner.stage(StageRequest(release="both", collections=("theologians",)))
     assert {r["id"]: r["collection"] for r in await world.fetch(
         "SELECT id::text, collection FROM staging.documents")} == {
         DOC_B: "church-fathers", DOC_A: "theologians"}

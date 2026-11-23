@@ -392,13 +392,6 @@ class StageRunner:
                     "copies vectors and untouched collections from its target")
             if name in (live, alias, qd.PRE_ALIAS_COLLECTION):
                 raise StageRefused(f"REFUSING: '{name}' is what users search")
-            # A release's earlier stages count: restaging one of its collections keeps
-            # what the others staged (5.1b.3's Boethius).
-            earlier = list(await conn.fetchval(
-                """SELECT collections FROM corpus_publishes
-                   WHERE id = $1 AND discarded_at IS NULL""", request.release) or [])
-            documents = await place_boethius(conn, documents, [*collections, *earlier])
-
             # Decide whether the Qdrant collection is ours before anything is written: a
             # refused stage must leave no publish row that a retry would read as proof.
             exists = await client.collection_exists(name)
@@ -412,6 +405,15 @@ class StageRunner:
 
             at = datetime.now(timezone.utc)
             async with conn.transaction():
+                # Under the publish lock, so an overlapping stage of this release cannot
+                # change what it already staged between this read and the write. A
+                # release's earlier stages count: restaging one of its collections keeps
+                # what the others staged (5.1b.3's Boethius).
+                await lock_publishes(conn)
+                earlier = list(await conn.fetchval(
+                    """SELECT collections FROM corpus_publishes
+                       WHERE id = $1 AND discarded_at IS NULL""", request.release) or [])
+                documents = await place_boethius(conn, documents, collections, earlier)
                 # Live rows still filed under an old key of a staged collection are
                 # part of it (5.1b.3): compared by ID, never retired for the rename.
                 live_scope = collection_keys.live_keys(collections)
@@ -485,15 +487,17 @@ class StageRunner:
 
 
 async def place_boethius(conn: asyncpg.Connection, documents: list[Document],
-                         collections: list[str]) -> list[Document]:
+                         collections: list[str], earlier: list[str] = ()) -> list[Document]:
     """Where Boethius is staged while 5.1b.3's move is pending. He moves from the
     medieval collection to the Fathers only in a stage of both. A stage of
     `church-fathers` alone leaves him where live has him (dropped from its build; his
     points are copied as stored), so an ordinary Fathers publish needs neither the new
     keys nor migration 0046. A stage of `theologians` alone while he is live there would
     retire him, so it refuses. Once he is live in `church-fathers`, nothing changes.
-    `collections` are the release's, earlier stages included."""
-    staged = set(collections)
+    `earlier` are the release's earlier stages, which count, so restaging the Fathers
+    keeps the move; restaging `theologians` alone would compare his live row with a
+    build that lacks him, so it refuses with the same instruction."""
+    staged = set(collections) | set(earlier)
     live = await conn.fetchval(
         "SELECT collection FROM public.documents WHERE id = $1::uuid AND retired_at IS NULL",
         BOETHIUS_DOCUMENT_ID)
@@ -501,7 +505,7 @@ async def place_boethius(conn: asyncpg.Connection, documents: list[Document],
         return documents
     if "church-fathers" in staged and "theologians" not in staged:
         return [d for d in documents if d.id != BOETHIUS_DOCUMENT_ID]
-    if "theologians" in staged and "church-fathers" not in staged:
+    if "theologians" in collections and "church-fathers" not in collections:
         raise StageRefused(
             f"REFUSING: Boethius is live in {live!r} and moves to the Fathers (5.1b.3): "
             "stage theologians with church-fathers")
