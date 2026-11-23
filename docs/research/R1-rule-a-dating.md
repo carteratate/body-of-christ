@@ -317,6 +317,41 @@ Each item has a recommendation. **Carter accepted every recommendation on 5 Oct 
 
 Carter approved every result on 15 Nov 2026 (Decision log "Cyprian's correspondents under rule A (3.1, C-02)"). No new Church act was found.
 
+## Addendum (5.6a, 23 Nov 2026): Basil (NPNF2-08)
+
+5.6a's research step for Basil's three works in NPNF2-08 (*On the Holy Spirit*, the *Hexaemeron*, the letters), by this file's method, with two sources this file did not use before:
+
+- **Quasten, vol. III in English, in its Spanish edition:** *Patrología* II, *La edad de oro de la literatura patrística griega* (BAC, 1978), Internet Archive item [`QUASTENPatrologaII`](https://archive.org/details/QUASTENPatrologaII), read through the search-inside service. Every English copy of vol. III on the Internet Archive is lending-only, and its search-inside returned 403 (23 Nov 2026). The scan is two pages a leaf; printed page = 2 × leaf − 8 (left) or − 7 (right), checked at leaf 119, which prints p. 231, the page Quasten's own cross-reference to *De Spiritu Sancto* names.
+- **Fedwick (1981):** P. J. Fedwick, "A Chronology of the Life and Works of Basil of Caesarea" and "The Works of Basil of Caesarea" (its list of Dubia and Spuria, which follows CPG 2900), in Fedwick, ed., *Basil of Caesarea: Christian, Humanist, Ascetic* (Toronto, 1981), read in the transcription at [uecf.net](https://www.uecf.net/books/basil-of-caesarea-symposium/), chapters 6 and 7. The CPG itself was not reachable.
+
+**Rule A.** Basil was baptized as an adult, from a Christian family. Quasten (pp. 224-225): his conversion's "first step was to receive the sacrament of baptism; the next, a journey through Egypt, Palestine, Syria and Mesopotamia". Fedwick's chronology places the baptism by Dianius in "357 (or 358)", listed after the journey and after Letter 1, written "upon his return". So:
+
+| Work or letters | Result | Basis |
+|---|---|---|
+| *On the Holy Spirit* | include | Written about 375 (Quasten p. 231) |
+| *Hexaemeron*, homilies 1 to 9 | include | Preached as a presbyter, before 370 (Quasten pp. 238-239) |
+| Letter 1, to Eustathius the philosopher | exclude | Quasten puts the baptism before the journey after which it was written; Fedwick puts it after. Standard sources disagree, so limit 3 excludes it. **For Carter** |
+| Letters 335, 337, 339, 342, 344 (Basil to Libanius) | exclude | Quasten counts 335-346 and 358 authentic and gives the correspondence's dates as 356 to 372 (after Seeck, p. 245); no source dates these letters one by one, so none is shown to follow the baptism. **For Carter** |
+| Letters 336, 338, 340, 341, 343, 345 to 347, 349, 352, 354, 355, 357, 358 (Libanius to Basil) | exclude | Libanius was "un pagano declarado" (Quasten p. 245): not a Christian |
+| Letters 39 and 40 (Julian to Basil) | exclude | In the name of the emperor Julian, who had abandoned the faith (the testimony of the Fathers). Quasten (p. 248) calls the Julian correspondence (39 to 41, 360) spurious; errors fall toward exclusion. **For Carter** |
+| Letter 8, to the Caesareans | exclude (limit 1) | By Evagrius Ponticus (Bousset, Melcher; Quasten p. 247; Fedwick, Spuria), whom the Second Council of Nicaea's definition condemns by name ("the mythical speculations of Origen, Evagrius and Didymus", vendored `councils/ecum-07-second-council-of-nicaea.html`). **For Carter** |
+| Every other letter | include | Written after the baptism, or not Basil's and presumed in communion |
+
+**Rule H (labels).** Quasten pp. 244-249 and Fedwick's Spuria agree on each:
+
+| Letters | Credited to | Certainty |
+|---|---|---|
+| 10, 38 (CPG 3196), 189 | Gregory of Nyssa | disputed |
+| 16 (an extract of his *Against Eunomius*) | Gregory of Nyssa | genuine |
+| 47 (about Basil; the Benedictines give it to Gregory's father, in his son's hand), 167, 169, 170, 171 | Gregory of Nazianzus (Fedwick) | disputed |
+| 187 ("Antipater to Basil") | Antipater, governor of Cappadocia | genuine |
+| 41 to 45, 50, 81, 197 §2 (Cavallin), 348, 350, 351, 353, 356, 359, 366 (extracts of Clement's *Stromata*) | Pseudo-Basil | pseudonymous (rule B keeps them: no source names their writers heretics) |
+| 360, on images | Pseudo-Basil | pseudonymous; spurious (Quasten), but the Second Council of Nicaea quoted it, so rule D keeps it |
+
+Letters 166 and 321 are Gregory of Nazianzus's too (Fedwick), and Letters 361 to 365 (the Apollinarius correspondence and the letter to Theodosius) are disputed or spurious, but NPNF2-08 prints none of their text, so nothing is built. Quasten (p. 247) reports Schäfer's doubts on Letters 53 and 54 as one scholar's; they stay Basil's.
+
+5.6a records these decisions in its removal entries (rm-11501 to rm-11556), in `attributions.BASIL_LETTER_LABELS` and in each work's `rule_a` in works.json, not in `rule_a_R1.json`, which 3.1's `rule_removals.py` reads as its own complete list.
+
 ## Files
 
 - `datapipeline/registry/rule_a_R1.json`: 216 entries, as described above, and 16 more for Cyprian's correspondents since 3.1 (232).
