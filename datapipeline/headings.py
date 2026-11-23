@@ -214,12 +214,16 @@ def hold_headings(text: str, pieces: Sequence[str], marks: Sequence[dict]) -> li
         cut = end
         if k + 1 < len(spans):
             # Walk back over the heading the cut falls in and those the piece then
-            # ends with, last first.
+            # ends with, last first; a piece may keep the whitespace after its text.
+            while cut > start and text[cut - 1].isspace():
+                cut -= 1
             for m in ordered:
                 if m["at"] >= start and (m["end"] == cut or m["at"] < cut < m["end"]):
                     cut = carried = m["at"]
                     while cut > start and text[cut - 1].isspace():
                         cut -= 1
+        if carried is None:
+            cut = end                     # nothing moved: the piece stays as cut
         if cut > start:                   # a piece of only headings joins the next
             out.append((start, cut))
     return [text[a:b] for a, b in out]
@@ -339,11 +343,20 @@ _DIVISION = re.compile(
     re.IGNORECASE | re.VERBOSE)
 
 
+_TITLE_DASH = re.compile(r"^Chapter\s+[0-9IVXLC]+\.\s*[—–-]", re.IGNORECASE)
+
+
 def looks_like_division(paragraph: str) -> bool:
-    """A paragraph that names a division with its number ("CHAPTER ONE: ...",
-    "Chapter 2.—On Twins."): a heading even where it stands alone in a passage."""
+    """A paragraph that is a division's title ("CHAPTER ONE: WHAT IS HAPPENING",
+    "Chapter 2.—On Twins."): a heading even where it stands alone in a passage. A
+    sentence that opens with a division ("Article 1 of the Constitution sets out ...")
+    is not one."""
     text = paragraph.strip()
-    return "\n" not in text and bool(_DIVISION.match(text))
+    if "\n" in text or not _DIVISION.match(text):
+        return False
+    return bool(_TITLE_DASH.match(text)) or (
+        len(text) <= MAX_HEADING_CHARS and not _ENDS_AS_SENTENCE.search(text)
+        and not text.endswith(("…", "...")))
 
 
 def looks_like_heading(paragraph: str) -> bool:
@@ -368,11 +381,12 @@ _DIVISION_PREFIX = re.compile(
 
 
 def repeats_label(heading: str, label: str) -> bool:
-    """Whether a heading says what its chapter label says, either allowed to drop a
-    leading division and number the other prints ("Chapter One What is ..." and "What
-    is ...", "Article 1 The Revelation of God" and "The Revelation of God")."""
+    """Whether a heading says what its chapter label says, one of them allowed to drop
+    a leading division and number the other prints ("Chapter One What is ..." and "What
+    is ...", "Article 1 The Revelation of God" and "The Revelation of God"). Two
+    different numbers never match ("Article 1 The Church", "Article 2 The Church")."""
     heading, label = normalized(heading), normalized(label)
     if not heading or not label:
         return False
-    forms = {heading, _DIVISION_PREFIX.sub("", heading)}
-    return bool(forms & {label, _DIVISION_PREFIX.sub("", label)})
+    return heading == label or _DIVISION_PREFIX.sub("", heading) == label \
+        or heading == _DIVISION_PREFIX.sub("", label)

@@ -282,3 +282,23 @@ def test_h8_strips_only_a_division_prefix():
     assert headings.repeats_label("CHAPTER ONE: WHAT IS HAPPENING", "What is happening")
     assert headings.repeats_label("Article 1 THE REVELATION OF GOD", "The Revelation of God")
     assert not headings.repeats_label("Introduction", "A Historical Introduction")
+
+
+def test_hold_headings_reads_a_cut_that_keeps_its_whitespace():
+    content = MarkedText().heading("Title", 3).paragraph(BODY)
+    assert headings.hold_headings(content.text, ["Title\n\n", BODY], content.marks) == [
+        "Title\n\n" + BODY]
+    plain = MarkedText().paragraph(BODY).paragraph(BODY)
+    assert headings.hold_headings(plain.text, [BODY + "\n\n", BODY], [{"at": 0, "end": 1}]) \
+        == [BODY + "\n\n", BODY]
+
+
+def test_two_numbers_never_repeat_each_other():
+    assert not headings.repeats_label("Article 1 The Church", "Article 2 The Church")
+
+
+def test_a_sentence_opening_with_a_division_is_not_a_title():
+    assert not headings.looks_like_division(
+        "Article 1 of the Constitution sets out the rights of the faithful in detail.")
+    assert not headings.looks_like_division("Article 1 of the Constitution sets out…")
+    assert headings.looks_like_division("CHAPTER ONE: WHAT IS HAPPENING TO OUR COMMON HOME")
