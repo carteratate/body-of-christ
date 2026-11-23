@@ -295,7 +295,7 @@ def rights_rows(documents) -> list[dict]:
     volumes = {}
     for d in documents:
         path = f"church-fathers/{d.metadata['source_file']}"
-        built = {"work": d.title, "document_id": d.id,
+        built = {"work": d.title, "author": d.author, "document_id": d.id,
                  "planned_for": None, "collection": d.collection}
         mine = next((r for r in rows if r["source_path"] == path and r["document_id"] == d.id),
                     None)
