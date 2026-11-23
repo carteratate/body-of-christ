@@ -231,8 +231,8 @@ NOT_BODY_PARAGRAPHS = {"teresa-life.xml": {"viii.xli-p58": "apparatus",
                        # circumstances, and "END OF THE AUTOBIOGRAPHY".
                        "therese-autobio.xml": {pid: "apparatus" for pid in (
                            "xxi-p1", "xxiii.i-p1", "xxiii.ii-p1", "xxiii.iv-p1",
-                           "xxiii.viii-p1", "xxix.i-p1", "xxix.iii-p1", "xxix.vii-p1",
-                           "xxix.viii-p1", "xix-p56")}}
+                           "xxiii.viii-p1", "xxix.i-p1", "xxix.iii-p1", "xxix.viii-p1",
+                           "xix-p56")}}
 
 
 def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str], dict[str, str]]:
@@ -500,12 +500,17 @@ def _julian_chapters(root):
 # poems (xxxii: Susan L. Emery's translation, not Taylor's, which the rights row does not
 # cover) and CCEL's indexes. Chapter and letter titles are the edition's (`<h1>`-`<h3>`),
 # so they are labels; each prayer's own title ("PRAYER TO OBTAIN HUMILITY") also opens
-# its text, as printed, marked level 1.
+# its text, as printed, marked level 1 (not "VARIOUS PRAYERS", a group's).
 _STORY = ("ix", "x", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii", "xviii", "xix")
 _LETTERS = ("xxii", "xxiii", "xxiv", "xxv", "xxvi", "xxvii", "xxviii")
 # The quotations she set over two of her Various Prayers (John 16:23, and words of Sister
 # Mary of St Peter): epigraphs, marked, each kept with the prayer it opens.
-_THERESE_EPIGRAPHS = {"xxix.iv": (("xxix.iv-p1", None, False), ("xxix.iv-p3", None, False))}
+_THERESE_EPIGRAPHS = {"xxix.iv": (("xxix.iv-p1", None, False), ("xxix.iv-p3", None, False)),
+                      # The Joan of Arc prayer's title runs on under "PRAYER" in italics,
+                      # as in the French ("Inspired by the sight of a statue …").
+                      "xxix.vii": (("xxix.vii-p1", 2, False),)}
+# "VARIOUS PRAYERS" names a group of two prayers, not a prayer: a label only.
+_PRAYER_GROUPS = frozenset({"xxix.iv"})
 # "CHAPTER I - EARLIEST MEMORIES"
 _STORY_CHAPTER = re.compile(r"^CHAPTER ([IVXL]+) - (.+)$")
 # A letter div's title: its number, then perhaps a caption and a date ("II (Written
@@ -545,7 +550,8 @@ def _therese_chapters(root):
         title = " ".join((prayer.get("title") or "").split())
         out.append(("Prayers", prayer, ChapterPlan(
             label=_title(title), headings=_THERESE_EPIGRAPHS.get(prayer.get("id"), ()),
-            lead=((_text(prayer.find("h2")), 1, True),))))
+            lead=() if prayer.get("id") in _PRAYER_GROUPS
+            else ((_text(prayer.find("h2")), 1, True),))))
     return out
 
 

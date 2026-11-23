@@ -412,8 +412,10 @@ def test_therese_letters_keep_their_dates_and_prayers_their_epigraphs():
     various = next(p for p in _therese().passages if p.chapter_key == "xxix.iv")
     roles = [(various.content[m["at"]:m["end"]][:20], m["role"])
              for m in various.metadata["headings"]]
-    assert roles == [("VARIOUS PRAYERS", "heading"), ('"If you ask the Fath', "epigraph"),
-                     ('"Just as the King\'s ', "epigraph")]
+    assert roles == [('"If you ask the Fath', "epigraph"), ('"Just as the King\'s ', "epigraph")]
+    joan = next(p for p in _therese().passages if p.chapter_key == "xxix.vii")
+    assert joan.content.startswith("PRAYER\n\nInspired by the sight of a statue")
+    assert [m["level"] for m in joan.metadata["headings"]] == [1, 2]
     # Each prayer opens with its own printed title, marked as repeating its label.
     humility = next(p for p in _therese().passages if p.chapter_key == "xxix.viii")
     assert humility.content.startswith("PRAYER TO OBTAIN HUMILITY\n\nO JESUS!")
