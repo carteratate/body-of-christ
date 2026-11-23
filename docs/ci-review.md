@@ -285,3 +285,4 @@ code and dependency versions that CI has passed.
   environments.
 - **Lint and types:** ruff and pyright from a scratch virtualenv. Nothing was installed
   into the repo.
+<!-- probe -->
