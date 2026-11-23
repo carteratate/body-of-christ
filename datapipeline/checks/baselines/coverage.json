@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "feat/5.6b-de-sales da90e38",
+  "medieval": "feat/5.6b-de-sales 602c4b1",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1113,9 +1113,9 @@
    "pct": 99.97
   },
   "medieval/../theologians/desales-devout_life.xml": {
-   "body_chars": 435450,
-   "covered_chars": 435450,
-   "pct": 100.0
+   "body_chars": 435448,
+   "covered_chars": 435398,
+   "pct": 99.99
   },
   "medieval/../theologians/desales-love.xml": {
    "body_chars": 1141879,
@@ -1280,9 +1280,9 @@
   "0715be7b-c108-55c0-bad8-d989fb8cdd16": {
    "collection": "medieval",
    "source_file": "../theologians/desales-devout_life.xml",
-   "body_chars": 435450,
-   "covered_chars": 435450,
-   "pct": 100.0
+   "body_chars": 435448,
+   "covered_chars": 435398,
+   "pct": 99.99
   },
   "083ada7e-352a-50c3-925f-6c51b2258230": {
    "collection": "papal-documents",

@@ -237,6 +237,8 @@ def test_devout_life_marks_its_meditations_headings():
     first = next(p for p in _devout().passages if p.chapter_key == "iii.ix")
     assert _marks(first)[:3] == [("Of Creation.", 2, False), ("Preparation.", 3, False),
                                  ("Considerations.", 3, False)]
+    ninth = next(p for p in _devout().passages if p.chapter_key == "iii.xvii")
+    assert _marks(ninth)[0][0] == "On the Choice open to you between Heaven and Hell."
     marked = [m for p in _devout().passages for m in _marks(p)]
     assert sum(1 for m in marked if m[1] == 2) == 10          # one subject per meditation
     assert sum(1 for m in marked if m[1] == 3) == 36

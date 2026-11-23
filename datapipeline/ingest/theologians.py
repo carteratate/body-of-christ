@@ -290,6 +290,8 @@ class _WorkEditor(Editor):
             marked = _GLUED_STEP.sub(r"\1 \2", marked)
             for printed, without in PLAIN_CALLERS.get((callers, block.get("id")), ()):
                 marked = marked.replace(printed, without)
+            for printed, read in TEXT_FIXES.get((self.source_file, block.get("id")), ()):
+                marked = marked.replace(printed, read)
             if block.get("class") in self.title_classes:
                 return marked, notes          # a title in capitals throughout stays so
             return _OPENING_CAPS.sub(_opening, marked, count=1), notes
@@ -301,6 +303,10 @@ class _WorkEditor(Editor):
 # A note's number printed in brackets just before the note (the Life, ch. xxvi and xxix):
 # "vision.[8]" with note 8 after it. The note leaves; so does its call.
 _NOTE_CALL = re.compile(r"\[\d+\](?=\u2063)")
+# Words a file mistranscribes, by (file, paragraph id), each with the evidence: (as the
+# file reads, as the edition prints). The Ninth Meditation's subject reads "upon to you";
+# the same file's contents, from the same edition, prints "open to you".
+TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open to you"),)}
 # A numbered step run on to the sentence before it with no space ("in the Presence of
 # God.2. Humble yourself", the Devout Life's meditations VII to X): the space restored.
 _GLUED_STEP = re.compile(r"([a-z][.!?”])(\d{1,2}\. [A-Z])")
