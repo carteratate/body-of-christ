@@ -315,6 +315,9 @@ def test_de_sales_stray_note_callers_are_read_out():
     assert "and I am His. A bundle of myrrh" in _text(_devout())
     assert "as his own soul. The great Apostle" in _text(_love())
     assert "excessive watching, fasting, or overwork" in _text(_devout())
+    # A numbered step glued to the sentence before it (meditations VII to X).
+    assert "in God’s Presence. 2. Humble yourself" in _text(_devout())
+    assert not re.search(r"[a-z][.!?”]\d{1,2}\. [A-Z]", _text(_devout()))
 
 
 def test_de_sales_works_are_opted_into_the_heading_checks():

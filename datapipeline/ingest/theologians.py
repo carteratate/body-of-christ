@@ -287,6 +287,7 @@ class _WorkEditor(Editor):
         def opened(block, marked, notes):
             marked, notes = inner(block, marked, notes)
             marked = _NOTE_CALL.sub("", marked)
+            marked = _GLUED_STEP.sub(r"\1 \2", marked)
             for printed, without in PLAIN_CALLERS.get((callers, block.get("id")), ()):
                 marked = marked.replace(printed, without)
             if block.get("class") in self.title_classes:
@@ -300,6 +301,9 @@ class _WorkEditor(Editor):
 # A note's number printed in brackets just before the note (the Life, ch. xxvi and xxix):
 # "vision.[8]" with note 8 after it. The note leaves; so does its call.
 _NOTE_CALL = re.compile(r"\[\d+\](?=\u2063)")
+# A numbered step run on to the sentence before it with no space ("in the Presence of
+# God.2. Humble yourself", the Devout Life's meditations VII to X): the space restored.
+_GLUED_STEP = re.compile(r"([a-z][.!?”])(\d{1,2}\. [A-Z])")
 # A printer's opening: the paragraph's first word (after its number) in capitals, or the
 # word after an opening "I" ("1. I HAVE known", III ch. ii).
 _OPENING_CAPS = re.compile(r"^(\s*(?:\d+\.\s+)?)(I\s+)?([A-Z][A-Z’']+)(?![a-z])")
@@ -467,21 +471,23 @@ _VERSE_LINE_CLASSES = ("List7",)
 # Verse lines a file sets as plain paragraphs, by `<p>` id: the Devout Life's closing
 # couplet from St Francis's song (V ch. xviii).
 _VERSE_LINES = {"desales-devout_life.xml": frozenset({"vii.xviii-p11", "vii.xviii-p12"})}
+_VERSE_FILES = frozenset({"desales-love.xml", "desales-devout_life.xml"})
 
 
-def _verse_blocks(chapters, work: ThmlWork) -> int:
+def _verse_blocks(chapters, work: ThmlWork) -> None:
     """Turn each verse quotation inside a chapter into a `<verse>` of `<l>` lines, which
     the builder reads as one paragraph, line by line, as it reads the Fathers' poems: a
     plain `<div>` of `<p>` lines (the Treatise's five, set as an indented block), and a
-    run of `<p>` lines of a verse-line class or listed in `_VERSE_LINES`. Returns how
-    many."""
+    run of `<p>` lines of a verse-line class or listed in `_VERSE_LINES`. Only the files
+    in `_VERSE_FILES` print verse so."""
+    if work.file not in _VERSE_FILES:
+        return
     listed = _VERSE_LINES.get(work.file, frozenset())
 
     def is_line(block) -> bool:
         return block.tag == "p" and (block.get("class") in _VERSE_LINE_CLASSES
                                      or block.get("id") in listed)
 
-    turned = 0
     for chapter in chapters:
         kids = list(chapter)
         k = 0
@@ -509,8 +515,6 @@ def _verse_blocks(chapters, work: ThmlWork) -> int:
             chapter.insert(position, verse)
             kids = list(chapter)
             k = position + 1
-            turned += 1
-    return turned
 
 
 def _append(first, nxt) -> None:
