@@ -23,40 +23,45 @@ export function parseResultCardStyle(value: unknown): ResultCardStyle {
   return value === "plain" ? "plain" : DEFAULT_RESULT_CARD_STYLE;
 }
 
+// This browser's stored style, or null when storage cannot be read.
+function loadStored(): ResultCardStyle | null {
+  try { return parseResultCardStyle(localStorage.getItem(RESULT_CARD_STYLE_KEY)); } catch { return null; }
+}
+
 export function readResultCardStyle(): ResultCardStyle {
-  if (current === null) {
-    let stored: string | null = null;
-    try { stored = localStorage.getItem(RESULT_CARD_STYLE_KEY); } catch {}
-    current = parseResultCardStyle(stored);
-  }
+  if (current === null) current = loadStored() ?? DEFAULT_RESULT_CARD_STYLE;
   return current;
+}
+
+function notify(): void {
+  listeners.forEach((listener) => listener());
 }
 
 export function setResultCardStyle(next: ResultCardStyle): void {
   try { localStorage.setItem(RESULT_CARD_STYLE_KEY, next); } catch {}
   if (current === next) return;
   current = next;
-  listeners.forEach((listener) => listener());
+  notify();
 }
 
 // Another tab's change (a guest's, or one the account could not store) reaches this
 // tab's cards too.
 function onStorage(event: StorageEvent): void {
   if (event.key !== RESULT_CARD_STYLE_KEY && event.key !== null) return;
-  const next = parseResultCardStyle(event.newValue);
-  if (event.key === null || next !== current) {
-    current = null;
-    listeners.forEach((listener) => listener());
-  }
+  const next = event.key === null ? DEFAULT_RESULT_CARD_STYLE : parseResultCardStyle(event.newValue);
+  if (next === current) return;
+  current = next;
+  notify();
 }
 
 function subscribe(listener: () => void): () => void {
   let stale = false;
   if (listeners.size === 0) {
-    // Unwatched, the cache may be stale: the first card reads storage afresh.
-    const cached = current;
-    current = null;
-    stale = cached !== null && readResultCardStyle() !== cached;
+    // Unwatched, the cache may be stale: the first card reads storage afresh, and keeps
+    // the cached choice when storage cannot be read.
+    const stored = loadStored();
+    stale = stored !== null && current !== null && stored !== current;
+    if (stored !== null) current = stored;
     window.addEventListener("storage", onStorage);
   }
   listeners.add(listener);

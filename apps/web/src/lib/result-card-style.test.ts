@@ -87,3 +87,12 @@ describe("result card style across tabs", () => {
     expect(renderHook(() => useResultCardStyle()).result.current).toBe("plain");
   });
 });
+
+it("keeps the choice made in this tab when storage is blocked and cards remount", () => {
+  vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => { throw new Error("blocked"); });
+  vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new Error("blocked"); });
+  const first = renderHook(() => useResultCardStyle());
+  act(() => setResultCardStyle("plain"));
+  first.unmount();
+  expect(renderHook(() => useResultCardStyle()).result.current).toBe("plain");
+});
