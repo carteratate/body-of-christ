@@ -498,8 +498,9 @@ def _julian_chapters(root):
 # (vi), the editors' prologue and epilogue on her family and death (vii, xx), the motto
 # (xxx, a line of St John of the Cross), the table of her "days of grace" (xxxi), the
 # poems (xxxii: Susan L. Emery's translation, not Taylor's, which the rights row does not
-# cover) and CCEL's indexes. Chapter, letter and prayer titles are the edition's
-# (`<h1>`-`<h3>`), so they are labels; no heading she wrote stands in the text.
+# cover) and CCEL's indexes. Chapter and letter titles are the edition's (`<h1>`-`<h3>`),
+# so they are labels; each prayer's own title ("PRAYER TO OBTAIN HUMILITY") also opens
+# its text, as printed, marked level 1.
 _STORY = ("ix", "x", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii", "xviii", "xix")
 _LETTERS = ("xxii", "xxiii", "xxiv", "xxv", "xxvi", "xxvii", "xxviii")
 # The quotations she set over two of her Various Prayers (John 16:23, and words of Sister
@@ -543,7 +544,8 @@ def _therese_chapters(root):
     for prayer in _div2s(_div(root, "xxix")):
         title = " ".join((prayer.get("title") or "").split())
         out.append(("Prayers", prayer, ChapterPlan(
-            label=_title(title), headings=_THERESE_EPIGRAPHS.get(prayer.get("id"), ()))))
+            label=_title(title), headings=_THERESE_EPIGRAPHS.get(prayer.get("id"), ()),
+            lead=((_text(prayer.find("h2")), 1, True),))))
     return out
 
 

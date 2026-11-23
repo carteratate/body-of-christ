@@ -412,7 +412,13 @@ def test_therese_letters_keep_their_dates_and_prayers_their_epigraphs():
     various = next(p for p in _therese().passages if p.chapter_key == "xxix.iv")
     roles = [(various.content[m["at"]:m["end"]][:20], m["role"])
              for m in various.metadata["headings"]]
-    assert roles == [('"If you ask the Fath', "epigraph"), ('"Just as the King\'s ', "epigraph")]
+    assert roles == [("VARIOUS PRAYERS", "heading"), ('"If you ask the Fath', "epigraph"),
+                     ('"Just as the King\'s ', "epigraph")]
+    # Each prayer opens with its own printed title, marked as repeating its label.
+    humility = next(p for p in _therese().passages if p.chapter_key == "xxix.viii")
+    assert humility.content.startswith("PRAYER TO OBTAIN HUMILITY\n\nO JESUS!")
+    assert humility.metadata["headings"][0] == {"at": 0, "end": 25, "level": 1,
+                                                "role": "heading", "chapter_title": True}
 
 
 def test_lines_split_without_a_page_break_stay_apart_unless_the_second_runs_on():

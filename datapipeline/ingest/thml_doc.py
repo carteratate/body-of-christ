@@ -43,10 +43,10 @@ class ChapterPlan:
     # repeats the chapter label), level None for an epigraph. Each stays in the text, is
     # marked (`headings.py`, #445) and is kept in one piece with what follows it.
     headings: tuple[tuple[str, int | None, bool], ...] = ()
-    # Headings the work prints before the chapter, outside its div (a book's or part's
-    # own title over its first chapter): (text, level). Each opens the chapter's text,
-    # marked, in the order given.
-    lead: tuple[tuple[str, int], ...] = ()
+    # Headings the work prints outside the chapter's paragraphs (a book's or part's own
+    # title over its first chapter, a prayer's title): (text, level), and whether it
+    # repeats the chapter label. Each opens the chapter's text, marked, in order.
+    lead: tuple[tuple[str, int] | tuple[str, int, bool], ...] = ()
 
 
 # The Panegyric's chapters carry the editor's "Argument I" as their short title (1.8c).
@@ -241,13 +241,13 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
         wanted = [(_locator(pid, ch_key), level, repeats)
                   for pid, level, repeats in plan.headings]
         if plan.lead:
-            prefix = "\n\n".join(text for text, _ in plan.lead)
+            prefix = "\n\n".join(lead[0] for lead in plan.lead)
             raw = f"{prefix}\n\n{raw}"
             removed = [(at + len(prefix) + 2, text) for at, text in removed]
-            leads = [Segment(f"lead-{k}", text) for k, (text, _) in enumerate(plan.lead, 1)]
+            leads = [Segment(f"lead-{k}", lead[0]) for k, lead in enumerate(plan.lead, 1)]
             segments = leads + segments
-            wanted = [(s.locator, level, False)
-                      for s, (_, level) in zip(leads, plan.lead)] + wanted
+            wanted = [(s.locator, lead[1], lead[2] if len(lead) > 2 else False)
+                      for s, lead in zip(leads, plan.lead)] + wanted
         # Pieces hold whole paragraphs and verse blocks (1.10c); `raw` joins them so.
         parts = [p.text for p in pack_units([(None, b) for b in raw.split("\n\n")], maxc)]
         marks = _heading_marks(raw, segments, wanted, filename) if wanted else []
