@@ -42,8 +42,8 @@ _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", SOURC
 CCEL_CREDIT = "Sourced via CCEL.org"
 # Teresa's headings of the Life's chapters are not Lewis's: he left them out, following
 # Bouix, and Zimmerman's introduction to the 1904 edition prints them before the book.
-LIFE_NOTE = ("Each chapter opens with Teresa's own heading, which Lewis's translation "
-             "left out; it is given as Benedict Zimmerman's 1904 edition prints it.")
+LIFE_NOTE = ("Teresa's chapter headings, left out of the original translation, follow "
+             "Benedict Zimmerman's 1904 edition.")
 
 
 @dataclass(frozen=True)

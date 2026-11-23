@@ -141,7 +141,7 @@ def test_life_opens_each_chapter_with_teresas_own_heading():
     assert len(with_heading) == 40
     assert _opening_marks(_life(), "ix.i") == [("The Relations.", 1)]
     # The headings are not Lewis's (Zimmerman's introduction); the document says so.
-    assert "Lewis's translation left out" in _life().notes
+    assert "left out of the original translation" in _life().notes
 
 
 def test_castle_epilogue_ends_with_teresas_amen():

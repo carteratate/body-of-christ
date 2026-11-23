@@ -146,6 +146,11 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "English translation. The official Latin is on vatican.va.": (overview(
         "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no "
         "English translation. The official Latin is on vatican.va.", "incomplete"),),
+    # 5.6b's Life of St. Teresa (`ingest.theologians.LIFE_NOTE`): a document-wide fact.
+    "Teresa's chapter headings, left out of the original translation, follow Benedict "
+    "Zimmerman's 1904 edition.": (overview(
+        "Teresa's chapter headings, left out of the original translation, follow Benedict "
+        "Zimmerman's 1904 edition."),),
     # 3.2's labels.
     # The header names the Church of Smyrna.
     "A letter of the Church of Smyrna on Polycarp's death; its writer, Evarestus, is named "
