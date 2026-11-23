@@ -1,12 +1,12 @@
 // @vitest-environment jsdom
 
 import { useState } from "react";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppContext } from "@/components/layout/AppShell";
 import type { Preferences } from "@/lib/api";
-import { RESULT_CARD_STYLE_KEY, readResultCardStyle, resetResultCardStyleForTests } from "@/lib/result-card-style";
+import { RESULT_CARD_STYLE_KEY, readResultCardStyle, resetResultCardStyleForTests, setResultCardStyle } from "@/lib/result-card-style";
 import { SettingsPage } from "./SettingsPage";
 
 const mocks = vi.hoisted(() => ({ updatePreferences: vi.fn() }));
@@ -81,6 +81,7 @@ describe("Settings: result card style", () => {
 
   it("switches back to the collection tint", async () => {
     mocks.updatePreferences.mockResolvedValue(PREFERENCES);
+    setResultCardStyle("plain"); // AppShell writes the account's style here on load
     renderSettings({ ...PREFERENCES, result_card_style: "plain" });
 
     await userEvent.click(cardStyleSwitch());
@@ -97,6 +98,20 @@ describe("Settings: result card style", () => {
     await userEvent.click(cardStyleSwitch());
 
     await screen.findByText("Couldn't save it to your account.");
+  });
+
+  it("follows a change another tab made, so its next toggle flips what is shown", async () => {
+    mocks.updatePreferences.mockResolvedValue(PREFERENCES);
+    renderSettings();
+    act(() => {
+      localStorage.setItem(RESULT_CARD_STYLE_KEY, "plain");
+      window.dispatchEvent(new StorageEvent("storage", { key: RESULT_CARD_STYLE_KEY, newValue: "plain" }));
+    });
+    expect(screen.getByText("Plain")).toBeTruthy();
+
+    await userEvent.click(cardStyleSwitch());
+
+    expect(mocks.updatePreferences).toHaveBeenCalledWith("token", { result_card_style: "tint" });
   });
 
   it("shows this browser's style while the API cannot store one", () => {

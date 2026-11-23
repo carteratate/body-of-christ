@@ -2,8 +2,10 @@
 -- 'tint' lays a card on its collection's colour, today's look and the default; 'plain'
 -- draws it like a saved passage. Additive, as 0012's theme column was: every existing
 -- row reads 'tint'. The API tolerates the column being absent until this is applied.
--- ADD COLUMN with a constant default is catalog-only (no rewrite) but takes an ACCESS
--- EXCLUSIVE lock: fail after 2 s rather than queue preference reads behind it, as 0041.
+-- ADD COLUMN with a constant default does not rewrite the table, but it takes an ACCESS
+-- EXCLUSIVE lock, and the CHECK is validated by a scan of the existing rows under it (one
+-- per account; small). lock_timeout bounds only the wait for the lock: fail after 2 s
+-- rather than queue preference reads behind it, as 0041 does.
 SET LOCAL lock_timeout = '2s';
 
 ALTER TABLE user_preferences

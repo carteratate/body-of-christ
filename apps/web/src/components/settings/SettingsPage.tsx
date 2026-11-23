@@ -35,7 +35,9 @@ export function SettingsPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
-  const browserCardStyle = useResultCardStyle();
+  // What this tab's cards show: the account's style once AppShell has written it to the
+  // store, this browser's while the API cannot store one, and another tab's latest choice.
+  const cardStyle = useResultCardStyle();
 
   async function handleSignOut() {
     if (signingOut) return;
@@ -79,9 +81,6 @@ export function SettingsPage() {
       setSaving(false);
     }
   }
-
-  // The account's style; this browser's while the API cannot store one.
-  const cardStyle = preferences.result_card_style ?? browserCardStyle;
 
   async function handleCardStyleToggle(next: ResultCardStyle) {
     if (!token || !preferences) return;
