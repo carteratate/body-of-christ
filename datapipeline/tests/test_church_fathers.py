@@ -634,10 +634,12 @@ def test_basil_newman_letters_name_both_translators(fathers):
     import card_notes
     letters = _doc(fathers, "npnf208.xml#ix")
     done = card_notes.apply(letters, {"card_translator": "Translated by Blomfield Jackson (1895)"})
-    by_key = {p.chapter_key: (p.metadata or {}).get("translator") for p in done.passages}
-    assert by_key["ix.xv"] == card_notes.NEWMAN_AND_JACKSON          # Letter 14
-    assert by_key["ix.iv"] is None                                   # Letter 3: Jackson's
-    assert {k for _, k in card_notes.PASSAGE_TRANSLATORS} <= set(by_key)
+    by_anchor = {p.anchor: (p.metadata or {}).get("translator") for p in done.passages}
+    assert by_anchor["ix.xv"] == card_notes.NEWMAN_AND_JACKSON       # Letter 14
+    assert by_anchor["ix.iii/from-p17"] == card_notes.NEWMAN_AND_JACKSON
+    assert by_anchor["ix.iii/from-p25"] is None      # Letter 2 after Newman's version ends
+    assert by_anchor["ix.iv"] is None                                # Letter 3: Jackson's
+    assert {k for _, k in card_notes.PASSAGE_TRANSLATORS} <= set(by_anchor)
 
 
 def test_npnf_registry_lifting_an_exclusion_restores_the_letter(monkeypatch):
@@ -646,6 +648,9 @@ def test_npnf_registry_lifting_an_exclusion_restores_the_letter(monkeypatch):
     del excluded["npnf208.xml"]["ix.xl"]
     monkeypatch.setattr(npnf_registry, "EXCLUDED", excluded)
     staged, _, _, problems = npnf_registry.plan(registry.current(), "2026-11-24")
+    assert problems == []
+    # A second run keeps the closed record.
+    staged, _, _, problems = npnf_registry.plan(staged, "2026-11-25")
     assert problems == []
     closed = [e for e in staged.removals if e.get("closed_by") == "5.6a"]
     assert {e["anchor"].split("/")[0] for e in closed} == {"ix.xl"}

@@ -312,14 +312,19 @@ SCAN_TRANSLATORS = {
     "alexandrianchris012826mbp": "Translated by Henry Chadwick (1954)",
 }
 TRANSLATOR_COLLECTIONS = ("councils", "church-fathers")
-# Letters NPNF2-08 gives wholly or partly in Newman's translation (The Church of the Fathers,
-# 1840), as its notes say, by (document ID, letter's chapter key): each of their passages
-# names both translators (rule 3). 5.6a, Basil's Letters 2, 14, 90, 136, 138, 203 and 204.
+# Passages NPNF2-08 gives wholly or partly in Newman's translation (The Church of the
+# Fathers, 1840), as its notes say, by (document ID, passage anchor): each names both
+# translators (rule 3). 5.6a, Basil's Letters 2 (to paragraph 18, where "his translation
+# ends"), 14, 90 and 136 (their first paragraphs), 138 (section 1), 203 and 204 (the
+# bracketed passages).
 NEWMAN_AND_JACKSON = ("Translated by John Henry Newman (1840) and Blomfield Jackson "
                       "(1895)")
 PASSAGE_TRANSLATORS = {
-    ("75cc7965-7501-595d-af44-9997bb7498be", key): NEWMAN_AND_JACKSON
-    for key in ("ix.iii", "ix.xv", "ix.xci", "ix.cxxxvii", "ix.cxxxix", "ix.cciv", "ix.ccv")}
+    ("75cc7965-7501-595d-af44-9997bb7498be", anchor): NEWMAN_AND_JACKSON
+    for anchor in ("ix.iii", "ix.iii/from-p10", "ix.iii/from-p17", "ix.xv", "ix.xci",
+                   "ix.cxxxvii", "ix.cxxxix", "ix.cciv", "ix.cciv/from-p7", "ix.ccv",
+                   "ix.ccv/from-p14", "ix.ccv/from-p23", "ix.ccv/from-p26",
+                   "ix.ccv/from-p27")}
 
 
 # --------------------------------------------------------------------------- translator
@@ -414,7 +419,7 @@ def _passage_translator(document: Document, p: Passage, card: str) -> str | None
     if document.collection not in TRANSLATOR_COLLECTIONS:
         return None
     named = SCAN_TRANSLATORS.get((p.metadata or {}).get("scan_id") or "") \
-        or PASSAGE_TRANSLATORS.get((document.id, p.chapter_key))
+        or PASSAGE_TRANSLATORS.get((document.id, p.anchor))
     return named if named and named != card else None
 
 

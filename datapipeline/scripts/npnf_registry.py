@@ -297,14 +297,16 @@ def lifted(before: registry.WorkRegistry, staged: registry.WorkRegistry,
     (an exclusion lifted, a letter back) kept, closed, as the record of the removal, and
     the passage rows nothing retires any more active again, under their frozen IDs."""
     written = {e["id"] for e in staged.removals}
-    closed = [{**e, "closed_by": ITEM, "closed_on": today} for e in before.removals
-              if e.get("added_by") == ITEM and e["scope"] == "passage"
-              and not e.get("closed_by") and e["id"] not in written]
+    mine = [e for e in before.removals if e.get("added_by") == ITEM
+            and e["scope"] == "passage" and e["id"] not in written]
+    # Entries closed on an earlier run stay as they were; those this run drops close now.
+    closed = [e if e.get("closed_by") else {**e, "closed_by": ITEM, "closed_on": today}
+              for e in mine]
     removals = sorted(staged.removals + closed, key=lambda e: (
         e["collection"], e["document_id"], e.get("anchor") or ""))
     explained = {e["passage_id"] for e in removals
                  if e["scope"] == "passage" and not e.get("closed_by")}
-    back = {e["passage_id"] for e in closed} - explained
+    back = {e["passage_id"] for e in closed if e["closed_on"] == today} - explained
     rows = [{**r, "status": "active"} if r["passage_id"] in back else r
             for r in staged.passages]
     return registry.WorkRegistry(staged.works, rows, staged.redirects, removals,
