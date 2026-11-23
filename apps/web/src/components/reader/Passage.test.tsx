@@ -91,3 +91,14 @@ describe("Passage inline label", () => {
     expect(container.querySelector("sup")?.textContent).toBe("Objection 1");
   });
 });
+
+describe("Passage paragraphs", () => {
+  // The card keeps a passage's paragraph breaks (`PassageText`); the reader collapsed them.
+  const TWO_PARAGRAPHS = "SECTION 1 The Avoidance of War\n\nEven though recent wars have wrought physical and moral havoc…";
+
+  it("keeps the paragraph breaks of an earlier wording, as the card does", () => {
+    const older = passage({ id: "older", anchor: "can/295/history-1983", voice: undefined, unit_label: null, content: TWO_PARAGRAPHS });
+    render(<Passage passage={passage({ voice: undefined })} highlighted={false} history={[older]} highlightAnchor={older.anchor} />);
+    expect(document.getElementById("anchor-can/295/history-1983")!.className).toContain("whitespace-pre-wrap");
+  });
+});
