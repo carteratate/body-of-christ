@@ -1,5 +1,16 @@
 {
   "since": "2026-09-29",
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
-  "approved_applies": []
+  "approved_applies": [
+    {
+      "collection": "all",
+      "release": "held-texts-2026-11",
+      "steps": [
+        "apply"
+      ],
+      "reason": "Only to delete the Qdrant collection 4.3's publish replaced, chunks-card-notes-2026-11, with publish.py drop-old-collection --close-window-early, by Carter's decision closing 4.3's rollback window early (23 Nov 2026, #394). drop-old-collection asks for an all entry; 4.3's per-collection stage, apply and rollback entries are removed here, so 4.3 can no longer be rolled back. A later reviewed PR removes this entry.",
+      "approved_by": "Carter",
+      "pr": 453
+    }
+  ]
 }
