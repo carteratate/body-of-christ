@@ -32,7 +32,7 @@ from xml.etree.ElementTree import Element      # builds an element, parses nothi
 import defusedxml.ElementTree as ET
 
 from model import Document
-from normalize.caps import roman_capitals
+from normalize.caps import roman_capitals, smart_title_case
 from ingest.common import _block_text, _build_parent_map
 from ingest.keys import THEOLOGIANS
 from ingest.editorial import PLAIN_CALLERS, ChapterEdit, Editor, Removed
@@ -327,13 +327,17 @@ def _devout_chapters(root):
     for part_id in _DEVOUT_PARTS:
         part = _div(root, part_id)
         book = f"Part {_PART.match(part.get('title') or '').group(1)}"
-        for ch in _div2s(part):
+        # The part's own heading ("PART I. COUNSELS AND PRACTICES SUITABLE…", `<h1>`)
+        # opens its first chapter, level 1.
+        lead = ((_text(part.find("h1")).rstrip(), 1),)
+        for k, ch in enumerate(_div2s(part)):
             m = _CHAPTER.match(" ".join((ch.get("title") or "").split()))
             if not m:
                 raise ValueError(f"desales-devout_life.xml: unexpected chapter title "
                                  f"{ch.get('title')!r}")
             out.append((book, ch, ChapterPlan(label=f"Chapter {m.group(1)}. {m.group(2)}",
-                                              headings=_meditation_headings(ch))))
+                                              headings=_meditation_headings(ch),
+                                              lead=lead if k == 0 else ())))
     return out
 
 
@@ -371,8 +375,6 @@ _LOVE_BOOKS = ("ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xi
 _LOVE_EDITOR_DIVS = frozenset({"xiii.xiv"})
 _LOVE_TITLES = frozenset({"subhead", "subhead1", "smallhead"})
 _ROMAN = ("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII")
-# The div's title less its number: "Chapter IV. That Love Rules…", "VII. That the Love…".
-_TITLE_NUMBER = re.compile(r"^(?:Chapter\s+)?[IVXLC]+\.\s+", re.IGNORECASE)
 _LABEL_MAX = 140
 
 
@@ -380,22 +382,36 @@ def _love_chapters(root):
     out = [(None, _div(root, "i.vii"), ChapterPlan(label="Dedicatory Prayer")),
            (None, _div(root, "i.viii"), ChapterPlan(label="Preface"))]
     for k, book_id in enumerate(_LOVE_BOOKS):
+        book_div = _div(root, book_id)
         book = f"Book {_ROMAN[k]}"
-        for ch in _div2s(_div(root, book_id)):
+        lead = ((_book_heading(book_div), 1),)
+        for j, ch in enumerate(_div2s(book_div)):
             if ch.get("id") in _LOVE_EDITOR_DIVS:
                 continue
             number = ch.find("h3")
             m = _CHAPTER.match(_text(number)) if number is not None else None
-            if not m:
-                raise ValueError(f"desales-love.xml: chapter {ch.get('id')!r} prints no "
-                                 f"number")
-            title = _TITLE_NUMBER.sub("", " ".join((ch.get("title") or "").split()))
             first = next((b for b in ch if b.tag == "p" and _text(b)), None)
-            opens = first is not None and first.get("class") in _LOVE_TITLES
-            out.append((book, ch, ChapterPlan(
-                label=_clip(f"Chapter {m.group(1)}. {title.rstrip('. ')}"),
-                headings=((first.get("id"), 1, True),) if opens else ())))
+            if not m or first is None or first.get("class") not in _LOVE_TITLES:
+                raise ValueError(f"desales-love.xml: chapter {ch.get('id')!r} prints no "
+                                 f"number or title")
+            # The label is the printed title (CCEL's typed div titles have slips: "Died by
+            # and", "Signfied"); it repeats the title only when it holds it whole.
+            title = smart_title_case(_text(first).upper()).rstrip(". ")
+            full = f"Chapter {m.group(1)}. {title}"
+            label = _clip(full)
+            out.append((book, ch, ChapterPlan(label=label,
+                                              headings=((first.get("id"), 1, label == full),),
+                                              lead=lead if j == 0 else ())))
     return out
+
+
+def _book_heading(book) -> str:
+    """A Treatise book's own heading as printed over its first chapter, one line: "BOOK I.
+    CONTAINING A PREPARATION FOR THE WHOLE TREATISE." The running title "THE LOVE OF
+    GOD." over Book I is not part of it."""
+    lines = [_text(c) for c in book if c.tag in ("h1", "h2", "h3", "p") and _text(c)]
+    lines = [t for t in lines if t != "THE LOVE OF GOD."]
+    return " ".join(lines)
 
 
 def _div2s(parent):
@@ -457,13 +473,23 @@ def _rejoin_split_paragraphs(chapters, work: ThmlWork) -> int:
 # A class a file gives each line of a short verse quotation set as paragraphs (the
 # Treatise's couplet from Pythagoras, II ch. xviii).
 _VERSE_LINE_CLASSES = ("List7",)
+# Verse lines a file sets as plain paragraphs, by `<p>` id: the Devout Life's closing
+# couplet from St Francis's song (V ch. xviii).
+_VERSE_LINES = {"desales-devout_life.xml": frozenset({"vii.xviii-p11", "vii.xviii-p12"})}
 
 
-def _verse_blocks(chapters) -> int:
+def _verse_blocks(chapters, work: ThmlWork) -> int:
     """Turn each verse quotation inside a chapter into a `<verse>` of `<l>` lines, which
     the builder reads as one paragraph, line by line, as it reads the Fathers' poems: a
     plain `<div>` of `<p>` lines (the Treatise's five, set as an indented block), and a
-    run of `<p>` lines of a verse-line class. Returns how many."""
+    run of `<p>` lines of a verse-line class or listed in `_VERSE_LINES`. Returns how
+    many."""
+    listed = _VERSE_LINES.get(work.file, frozenset())
+
+    def is_line(block) -> bool:
+        return block.tag == "p" and (block.get("class") in _VERSE_LINE_CLASSES
+                                     or block.get("id") in listed)
+
     turned = 0
     for chapter in chapters:
         kids = list(chapter)
@@ -472,10 +498,9 @@ def _verse_blocks(chapters) -> int:
             child = kids[k]
             if child.tag == "div" and all(line.tag == "p" for line in child):
                 lines, run = list(child), [child]
-            elif child.tag == "p" and child.get("class") in _VERSE_LINE_CLASSES:
+            elif is_line(child):
                 j = k
-                while j < len(kids) and kids[j].tag == "p" \
-                        and kids[j].get("class") in _VERSE_LINE_CLASSES:
+                while j < len(kids) and is_line(kids[j]):
                     j += 1
                 lines = run = kids[k:j]
             else:
@@ -531,7 +556,7 @@ WORKS: tuple[ThmlWork, ...] = (
 def build_work(work: ThmlWork) -> Document:
     root = _read_root(os.path.join(_SRC, work.file))
     chapters = work.chapters(root)
-    _verse_blocks([div for _, div, _ in chapters])
+    _verse_blocks([div for _, div, _ in chapters], work)
     _rejoin_split_paragraphs([div for _, div, _ in chapters], work)
     parent_map = _build_parent_map(root)
     editor = _WorkEditor(work.file, work.source_key, parent_map,

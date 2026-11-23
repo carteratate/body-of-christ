@@ -52,6 +52,26 @@ def test_headings_inside_a_chapter_are_marked_at_their_levels():
     assert marked == [("Of Creation.", 2), ("Preparation.", 3), ("Considerations.", 3)]
 
 
+def test_a_heading_printed_before_the_chapter_opens_its_text():
+    div = _chapter("OF LOVE.", "Text of the chapter, long enough to keep: " * 4)
+    doc = _build(div, ChapterPlan(label="Book I · Chapter I. Of Love",
+                                  headings=(("c1-p1", 1, True),),
+                                  lead=(("BOOK I. OF THE WILL.", 1),)))
+    (p,) = doc.passages
+    assert p.content.startswith("BOOK I. OF THE WILL.\n\nOF LOVE.\n\nText")
+    assert [(p.content[m["at"]:m["end"]], m.get("chapter_title", False))
+            for m in p.metadata["headings"]] == [("BOOK I. OF THE WILL.", False),
+                                                 ("OF LOVE.", True)]
+    assert p.anchor == "c1"
+
+
+def test_a_heading_id_is_read_without_its_own_div_prefix_only():
+    div = ET.fromstring('<div2 id="c1"><p id="c1-p1-a">HEAD</p><p id="c1-p2">'
+                        + "Body text of the chapter, long enough. " * 4 + '</p></div2>')
+    doc = _build(div, ChapterPlan(label="C", headings=(("c1-p1-a", 2, False),)))
+    assert doc.passages[0].metadata["headings"][0]["end"] == 4
+
+
 def test_a_heading_that_is_no_paragraph_read_is_refused():
     with pytest.raises(ValueError, match="not paragraphs read"):
         _build(_chapter("Of Love.", "Text of the chapter, long enough to keep: " * 4),

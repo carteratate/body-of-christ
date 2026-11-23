@@ -43,6 +43,10 @@ class ChapterPlan:
     # repeats the chapter label). Each stays in the text, is marked (`headings.py`,
     # #445) and is kept in one piece with what follows it.
     headings: tuple[tuple[str, int, bool], ...] = ()
+    # Headings the work prints before the chapter, outside its div (a book's or part's
+    # own title over its first chapter): (text, level). Each opens the chapter's text,
+    # marked, in the order given.
+    lead: tuple[tuple[str, int], ...] = ()
 
 
 # The Panegyric's chapters carry the editor's "Argument I" as their short title (1.8c).
@@ -132,16 +136,19 @@ def _label(text: str) -> str:
     return fold_ligatures(text.strip().rstrip(" ."))
 
 
-def _heading_marks(raw: str, segments: list[Segment], plan: ChapterPlan,
+def _locator(pid: str, div: str) -> str:
+    """A paragraph's id as `paragraph_segments` names it: without its div's id in front."""
+    return pid[len(div) + 1:] if div and pid.startswith(div + "-") else pid
+
+
+def _heading_marks(raw: str, segments: list[Segment], headings_wanted: list,
                    filename: str) -> list[dict]:
-    """`plan.headings` as marks on `raw`, whose paragraphs are `segments` in order."""
+    """(locator, level, repeats the label) as marks on `raw`, whose paragraphs are
+    `segments` in order."""
     blocks = raw.split("\n\n")
     if len(blocks) != len(segments):
         raise ValueError(f"{filename}: {len(blocks)} paragraphs read, {len(segments)} named")
-    wanted = {}
-    for pid, level, repeats in plan.headings:
-        head, _, tail = pid.rpartition("-")
-        wanted[tail if head else pid] = (level, repeats)
+    wanted = {locator: (level, repeats) for locator, level, repeats in headings_wanted}
     out, at = [], 0
     for block, segment in zip(blocks, segments):
         if segment.locator in wanted:
@@ -230,10 +237,20 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             meta.update(extra_meta)
         if plan.meta:
             meta.update(plan.meta)
+        segments = paragraph_segments(elem, edit)
+        wanted = [(_locator(pid, ch_key), level, repeats)
+                  for pid, level, repeats in plan.headings]
+        if plan.lead:
+            prefix = "\n\n".join(text for text, _ in plan.lead)
+            raw = f"{prefix}\n\n{raw}"
+            removed = [(at + len(prefix) + 2, text) for at, text in removed]
+            leads = [Segment(f"lead-{k}", text) for k, (text, _) in enumerate(plan.lead, 1)]
+            segments = leads + segments
+            wanted = [(s.locator, level, False)
+                      for s, (_, level) in zip(leads, plan.lead)] + wanted
         # Pieces hold whole paragraphs and verse blocks (1.10c); `raw` joins them so.
         parts = [p.text for p in pack_units([(None, b) for b in raw.split("\n\n")], maxc)]
-        segments = paragraph_segments(elem, edit)
-        marks = _heading_marks(raw, segments, plan, filename) if plan.headings else []
+        marks = _heading_marks(raw, segments, wanted, filename) if wanted else []
         if marks:
             parts = headings.hold_headings(raw, parts, marks)
         piece_marks = headings.split_marks(raw, parts, marks) if marks else [[]] * len(parts)

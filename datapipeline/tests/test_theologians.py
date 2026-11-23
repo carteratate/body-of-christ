@@ -11,6 +11,7 @@ import re
 
 import pytest
 
+import headings
 from ingest import theologians as T
 
 pytestmark = pytest.mark.skipif(
@@ -239,7 +240,8 @@ def test_devout_life_marks_its_meditations_headings():
     marked = [m for p in _devout().passages for m in _marks(p)]
     assert sum(1 for m in marked if m[1] == 2) == 10          # one subject per meditation
     assert sum(1 for m in marked if m[1] == 3) == 36
-    assert {p.chapter_key for p in _devout().passages if _marks(p)} == {
+    assert {p.chapter_key for p in _devout().passages
+            if any(m[1] > 1 for m in _marks(p))} == {
         f"iii.{n}" for n in ("ix", "x", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii",
                              "xviii")}
 
@@ -247,9 +249,13 @@ def test_devout_life_marks_its_meditations_headings():
 def test_love_of_god_is_the_prayer_preface_and_twelve_books():
     labels = _labels(_love())
     assert labels[:3] == ["Dedicatory Prayer", "Preface", "Book I · Chapter I. That for "
-                          "the Beauty of Human Nature God has Given the Government of All "
+                          "the Beauty of Human Nature God Has Given the Government of All "
                           "the Faculties of the Soul to the Will"]
-    assert len(labels) == 2 + 188 and all(len(label) <= 150 for label in labels)
+    assert len(labels) == 2 + 188
+    assert all(len(label.split(" · ")[-1]) <= 140 for label in labels)    # cut as thml_doc
+    # The label is the printed title, not CCEL's typed div title ("Died by and").
+    assert "Book VII · Chapter XIV. That the Glorious Virgin Died by an Extremely Sweet " \
+           "and Tranquil Death" in labels
     # Chapters whose div titles carry no number take it from their "CHAPTER N." line.
     assert "Book VII · Chapter VI. Of the Signs of Good Rapture, and of the Third Species " \
            "of the Same" in labels
@@ -265,13 +271,35 @@ def test_love_of_god_keeps_each_chapter_title_in_the_text_marked():
         openers.setdefault(p.chapter_key, p)
     titled = [p for p in openers.values() if _marks(p)]
     assert len(titled) == 188
+    cut = 0
     for p in titled:
-        ((title, level, repeats),) = _marks(p)
-        assert p.content.startswith(title) and level == 1 and repeats
+        title, level, repeats = _marks(p)[-1]      # a book's first also opens with the book's
+        assert level == 1 and title in p.content
+        # It repeats the label only where the label holds it whole; a cut label leaves it
+        # for the reader to show.
+        whole = p.chapter_label.split(" · ", 1)[1].split(". ", 1)[1]
+        assert repeats == (headings.normalized(title) == headings.normalized(whole))
+        cut += not repeats
+    assert cut == 9
     # A long first paragraph does not leave the title alone in a piece (V ch. vii).
     vii = openers["vi.vii"]
     assert vii.content.startswith("HOW THE DESIRE TO EXALT AND MAGNIFY GOD") \
         and "The love of benevolence, then," in vii.content
+
+
+def test_each_book_and_part_opens_with_its_own_heading():
+    def opening(doc, key):
+        return _marks(next(p for p in doc.passages if p.chapter_key == key))[0]
+
+    assert opening(_love(), "ii.i") == (
+        "BOOK I. CONTAINING A PREPARATION FOR THE WHOLE TREATISE.", 1, False)
+    assert opening(_love(), "iii.i")[0] == \
+        "THE SECOND BOOK. THE HISTORY OF THE GENERATION AND HEAVENLY BIRTH OF DIVINE LOVE."
+    assert opening(_devout(), "v.i") == (
+        "PART III. CONTAINING COUNSELS CONCERNING THE PRACTICE OF VIRTUE.", 1, False)
+    books = [m for p in _love().passages for m in _marks(p) if "BOOK" in m[0]]
+    parts = [m for p in _devout().passages for m in _marks(p) if m[0].startswith("PART ")]
+    assert (len(books), len(parts)) == (12, 5)
 
 
 def test_love_of_god_reads_its_verse_line_by_line():
@@ -279,6 +307,8 @@ def test_love_of_god_reads_its_verse_line_by_line():
     assert "Mercy, O Lord, hath not thy soul forsaken,\nE’en while thy justice" in p.content
     assert "If thou hast ill done, chide thyself bitterly,\nIf thou hast well done" \
         in _text(_love())
+    assert "Saint Francis’ song, —\n\n“So vast the joys that I await,\nNo earthly travail" \
+        in _text(_devout())
 
 
 def test_de_sales_stray_note_callers_are_read_out():
