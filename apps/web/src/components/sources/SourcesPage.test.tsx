@@ -66,10 +66,58 @@ describe("SourcesPage Continue Reading", () => {
     view.rerender(<SourcesPage />);
 
     await screen.findByText("User B document 0");
-    expect(screen.getAllByRole("link", { name: /User B document/ })).toHaveLength(3);
-    expect(screen.queryByText("User B document 3")).toBeNull();
+    expect(screen.getAllByRole("link", { name: /User B document/ })).toHaveLength(2);
+    expect(screen.queryByText("User B document 2")).toBeNull();
     expect(screen.queryByText("Your recent reading places couldn't be loaded.")).toBeNull();
-    await waitFor(() => expect(state.listReadingProgress).toHaveBeenCalledWith("user-b", 3, expect.any(AbortSignal)));
+    await waitFor(() => expect(state.listReadingProgress).toHaveBeenCalledWith("user-b", 6, expect.any(AbortSignal)));
+  });
+});
+
+describe("SourcesPage Continue Reading, show more", () => {
+  function places(count: number) {
+    return Array.from({ length: count }, (_, index) => ({
+      document_id: `doc-${index}`,
+      chapter_key: `chapter-${index}`,
+      chapter_label: `Chapter ${index}`,
+      anchor: null,
+      updated_at: `2026-08-0${index + 1}T12:00:00Z`,
+      collection: "bible",
+      document_title: `Place ${index}`,
+      author: null,
+    }));
+  }
+  const shownPlaces = () => screen.queryAllByRole("link", { name: /Place \d/ }).map((a) => a.textContent?.match(/Place \d/)?.[0]);
+
+  it("shows the 2 most recent places at first, expands to the rest, and collapses again", async () => {
+    state.listReadingProgress.mockResolvedValue(places(6));
+    render(<SourcesPage />);
+
+    await screen.findByText("Place 0");
+    expect(state.listReadingProgress).toHaveBeenCalledWith("user-a", 6, expect.any(AbortSignal));
+    expect(shownPlaces()).toEqual(["Place 0", "Place 1"]);
+    const toggle = screen.getByRole("button", { name: "Show more" });
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    const list = document.getElementById(toggle.getAttribute("aria-controls")!);
+    expect(list?.contains(screen.getByRole("link", { name: /Place 0/ }))).toBe(true);
+
+    fireEvent.click(toggle);
+    expect(shownPlaces()).toEqual(["Place 0", "Place 1", "Place 2", "Place 3", "Place 4", "Place 5"]);
+    expect(toggle.textContent).toBe("Show less");
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(toggle);
+    expect(shownPlaces()).toEqual(["Place 0", "Place 1"]);
+    expect(toggle.textContent).toBe("Show more");
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it.each([1, 2])("shows no button with %i place(s)", async (count) => {
+    state.listReadingProgress.mockResolvedValue(places(count));
+    render(<SourcesPage />);
+
+    await screen.findByText("Place 0");
+    expect(shownPlaces()).toHaveLength(count);
+    expect(screen.queryByRole("button", { name: /Show (more|less)/ })).toBeNull();
   });
 });
 
