@@ -1815,5 +1815,40 @@
   "title": "The Relations",
   "item": "5.6b",
   "own_text": true
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "i.ii",
+  "title": "Frontispiece",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "i.iii",
+  "title": "Title Page",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "i.iv",
+  "title": "Dedication",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "i.v",
+  "title": "Translator's Introduction",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "xiii.xiv",
+  "title": "Other Books",
+  "item": "5.6b"
  }
 ]

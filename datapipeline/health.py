@@ -7,7 +7,8 @@ headings marked in `metadata.headings` (issue #445, `headings.py`): H6 refuses a
 mark wherever one is written, and H7 (a heading-like paragraph left unmarked) and H8 (a
 level-1 heading that repeats its chapter label without `chapter_title`) apply only to the
 collections listed under `H7_unmarked_heading` in `health_patterns.json`, which a
-collection joins when its adapter marks its headings. `refuse_block_violations` runs them in
+collection joins when its adapter marks its headings, and to the documents listed there
+(a new work whose collection's other documents are not marked yet). `refuse_block_violations` runs them in
 `CollectionPublicationRunner._validate_documents`, before any store is acquired, and
 refuses the publication. Report rules (R1 to R8, R11 to R14 and the named rules after them)
 count softer problems per collection, so P1 PRs can show them falling; they never block.
@@ -176,7 +177,9 @@ def _heading_rules(collection: str, document: Document, add) -> list[Violation]:
     """H6 on every passage that carries marks; H7 and H8 in the collections that opt in.
     Calls `add` and returns [] so it reads like the rules above."""
     rule = load_patterns()["H7_unmarked_heading"]
-    opted_in = collection in rule["collections"]
+    # A collection opts in whole, or one document at a time (a new work in a collection
+    # whose other documents are not marked yet; 5.6b).
+    opted_in = collection in rule["collections"] or document.id in rule.get("documents", [])
     not_headings = {headings.normalized(entry["text"])
                     for entry in rule["not_headings"].get(document.id, [])}
     seen_chapters: set[str] = set()

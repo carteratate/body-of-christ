@@ -296,8 +296,6 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                 child_region = _thml_div_region(child.get("title") or "", region)
                 if child.get("id") in editorial:
                     child_region = "apparatus"
-                elif child.get("id") in heading_divs:
-                    child_region = "heading"
                 elif child.get("id") in excluded and child_region == "body":
                     child_region = "excluded"
                 walk(child, child.get("id") or div_id, child_region, True)
@@ -315,7 +313,9 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                         text = text.replace(printed, without)
                     own = "apparatus" if region == "body" and (
                         _paragraph_sha1(text) in removed or div_id in own_text) else region
-                    if own == "body" and child.get("id") in paragraph_regions:
+                    if own == "body" and div_id in heading_divs:
+                        own = "heading"           # a div's own heading lines (5.6b)
+                    elif own == "body" and child.get("id") in paragraph_regions:
                         own = paragraph_regions[child.get("id")]
                     elif own == "body" and child.get("class") in class_regions:
                         own = class_regions[child.get("class")]

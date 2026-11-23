@@ -295,6 +295,8 @@ _TRANSLATIONS = {
     # The Bible's badge names it (rule 1), and so does the Catechism's required notice.
     "WEB-C": "",
     "United States edition (1997)": "",
+    # The Devout Life's 1876 translation names no translator (5.6b; R6).
+    "Anonymous translation (Rivingtons, 1876)": "Anonymous translation (Rivingtons, 1876)",
 }
 _TAILS = re.compile(r"(?:\.\s+(?:Sourced via|Text:).*|;.*|,\s*(?:abridged|extract)\s*)$")
 _SENTENCE = re.compile(r"^(Translated by|Translation|Official English|From Hefele)")

@@ -141,9 +141,24 @@
   ]
  },
  "H7_unmarked_heading": {
-  "_comment": "Block rules H7 and H8 (issue #445) run in these collections only: a heading-like paragraph (headings.looks_like_heading) with no mark in metadata.headings, and a level-1 heading that opens its chapter and repeats the chapter label without chapter_title. A collection joins when its adapter marks its headings. not_headings lists, by document ID, paragraphs the classifier takes for headings that are text (a signature, a dating line, a quotation lead-in), each with its reason; they are matched without case or punctuation.",
+  "_comment": "Block rules H7 and H8 (issue #445) run in these collections only: a heading-like paragraph (headings.looks_like_heading) with no mark in metadata.headings, and a level-1 heading that opens its chapter and repeats the chapter label without chapter_title. A collection joins when its adapter marks its headings; documents lists single documents that join before their collection (5.6b's works, by document ID). not_headings lists, by document ID, paragraphs the classifier takes for headings that are text (a signature, a dating line, a quotation lead-in), each with its reason; they are matched without case or punctuation.",
   "collections": [],
-  "not_headings": {}
+  "documents": [
+   "0715be7b-c108-55c0-bad8-d989fb8cdd16",
+   "96d72c6a-b005-5e96-9f7f-ceca57042078"
+  ],
+  "not_headings": {
+   "0715be7b-c108-55c0-bad8-d989fb8cdd16": [
+    {
+     "text": "5. The Crucified King Himself calls you by your own name: “Come, O my beloved, come, and let Me crown thee!”",
+     "reason": "numbered consideration of Part I's tenth meditation, a sentence ending in a quotation"
+    },
+    {
+     "text": "5. In speech—do you never boast in any way? Do you never indulge in self-flattery when speaking of yourself?",
+     "reason": "numbered question of Part V's examination, ending in a question mark"
+    }
+   ]
+  }
  },
  "R11_papal_editorial": {
   "_comment": "An editor's or translator's words in a papal passage (C-18, Opus A-010); the last pattern is an \"[N-M]\" paragraph-range marker, which only a table of contents prints.",

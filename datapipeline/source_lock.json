@@ -672,28 +672,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/desales-devout_life.xml",
-  "sha256": "af8c467a87fbbcf2aaac1764e7962fdcd64b8eab5db740ca565752533d73861f",
-  "bytes": 651626,
-  "url": "https://ccel.org/ccel/d/desales/devout_life.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/desales-love.xml",
-  "sha256": "b76a42327e2a53ef47912374dd1746c70d263158cef7a62b6bb1a56f45e3c8f5",
-  "bytes": 1890439,
-  "url": "https://ccel.org/ccel/d/desales/love.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/divinetrinitydog00pohluoft/divinetrinitydog00pohluoft_djvu.txt",
   "sha256": "30951138e3320baab604e85f8f17ee636fe72789d3115decded0b8b664686ad6",
   "bytes": 533230,
@@ -6965,6 +6943,26 @@
   "hashed_on": "2026-11-16",
   "role": "vendored-unregistered",
   "note": "the printed edition summa_recovered.json's text is read from (#360)"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/desales-devout_life.xml",
+  "sha256": "af8c467a87fbbcf2aaac1764e7962fdcd64b8eab5db740ca565752533d73861f",
+  "bytes": 651626,
+  "url": "https://ccel.org/ccel/d/desales/devout_life.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/desales-love.xml",
+  "sha256": "b76a42327e2a53ef47912374dd1746c70d263158cef7a62b6bb1a56f45e3c8f5",
+  "bytes": 1890439,
+  "url": "https://ccel.org/ccel/d/desales/love.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
  },
  {
   "collection": "theologians",

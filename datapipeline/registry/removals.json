@@ -44587,6 +44587,25 @@
   "added_on": "2026-11-12"
  },
  {
+  "id": "rm-10603",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "0715be7b-c108-55c0-bad8-d989fb8cdd16",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 213
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-23"
+ },
+ {
   "id": "rm-10601",
   "scope": "class",
   "collection": "medieval",
@@ -44639,6 +44658,25 @@
   "judgment": "Theories most popular at the moment ascribe the Imitation to two or three men, members of the Brethren of the Common Life, an association of priests organized in the Netherlands in the latter half of the fourteenth century.",
   "added_by": "1.9",
   "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-10604",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "96d72c6a-b005-5e96-9f7f-ceca57042078",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 591
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-23"
  },
  {
   "id": "rm-0128",

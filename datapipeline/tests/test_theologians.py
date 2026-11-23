@@ -47,12 +47,13 @@ def _labels(doc) -> list[str]:
     return out
 
 
-def test_two_documents_under_the_collection_key():
+def test_the_documents_under_the_collection_key():
     docs = _built()
-    assert sorted(docs) == ["The Interior Castle", "The Life of St. Teresa of Jesus"]
+    assert sorted(docs) == ["Introduction to the Devout Life", "The Interior Castle",
+                            "The Life of St. Teresa of Jesus", "Treatise on the Love of God"]
     for d in docs.values():
         assert d.collection == T.COLLECTION
-        assert d.author == "Teresa of Avila"
+        assert d.author in ("Teresa of Avila", "Francis de Sales")
         # The source key is the file's path under sources/, so 5.1b.3's rename keeps it.
         assert "../" + d.metadata["source_key"] == d.metadata["source_file"]
     assert (_castle().year, _life().year) == (1577, 1565)
@@ -154,14 +155,18 @@ def test_a_paragraph_split_at_a_page_break_is_one_paragraph():
     assert "most grievously tormented; and then it was that these two assaults" in text
     # Across the page marker the build drops (Relation XI).
     assert "for so many years when I thought I was under a delusion" in text
-    for doc in _built().values():
+    for doc in (_castle(), _life()):
         for p in doc.passages:
             assert not re.search(r"(?:[a-z,]|\bI)\n\n(?!\d+\. )|\n\n[a-z]", p.content), p.anchor
+    # The Devout Life's (Body paragraphs join too).
+    assert "as much devotion as I ought; I have not loved my neighbour" in _text(_devout())
     # A numbered paragraph after "Amen" stays its own (VI ch. i).
     assert "for ever blessed! Amen\n\n25. The devils" in _text(_castle())
 
 
 def test_genres_by_source_key():
+    assert T.genre("theologians/desales-devout_life.xml") == "manual"
+    assert T.genre("theologians/desales-love.xml") == "treatise"
     assert T.genre("theologians/teresa-castle2.xml") == "treatise"
     assert T.genre("theologians/teresa-life.xml") == "other"
     assert T.genre("medieval/on-loving-god.xml") is None
@@ -182,6 +187,8 @@ def test_the_extractor_reads_the_headings_as_the_adapter_does():
     assert not divs and not paragraphs
     assert T.not_body("../theologians/teresa-life.xml") == (
         {}, frozenset({"v"}), {"viii.xli-p58": "apparatus", "ix.xi-p12": "apparatus"})
+    assert T.not_body("../theologians/desales-love.xml")[1] == frozenset(
+        {"ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii", "xiii"})
     assert T.not_body("teresa-life.xml") == ({}, frozenset(), {})
 
 
@@ -194,3 +201,93 @@ def test_source_lock_reads_the_theologians_folder():
                             None, {}) == ("adapter-input", "https://ccel.org/ccel/t/teresa/life.xml")
     assert SL._role_and_url(SL.SOURCES, "theologians", "theologians/other.xml", None, {}) \
         == ("vendored-unregistered", None)
+
+
+# --------------------------------------------------------------------------- de Sales
+
+def _devout():
+    return _built()["Introduction to the Devout Life"]
+
+
+def _love():
+    return _built()["Treatise on the Love of God"]
+
+
+def _marks(p):
+    return [(p.content[m["at"]:m["end"]], m["level"], m.get("chapter_title", False))
+            for m in (p.metadata or {}).get("headings", [])]
+
+
+def test_devout_life_is_the_preface_and_five_parts():
+    labels = _labels(_devout())
+    assert labels[0] == "Preface"
+    assert labels[1] == "Part I · Chapter I. What true Devotion is"
+    assert labels[-1] == "Part V · Chapter XVIII. Three Important and Final Counsels"
+    assert len(labels) == 1 + 24 + 21 + 41 + 15 + 18
+    assert (_devout().year, _devout().translation) == (
+        1609, "Anonymous translation (Rivingtons, 1876)")
+    text = _text(_devout())
+    assert "Library of Spiritual Works" not in text and ". . ." not in text   # title, contents
+    assert "Pausias of Sicyon" not in text                                    # a note
+    assert text.startswith("Dear reader, I request you")                      # opening caps
+
+
+def test_devout_life_marks_its_meditations_headings():
+    first = next(p for p in _devout().passages if p.chapter_key == "iii.ix")
+    assert _marks(first)[:3] == [("Of Creation.", 2, False), ("Preparation.", 3, False),
+                                 ("Considerations.", 3, False)]
+    marked = [m for p in _devout().passages for m in _marks(p)]
+    assert sum(1 for m in marked if m[1] == 2) == 10          # one subject per meditation
+    assert sum(1 for m in marked if m[1] == 3) == 36
+    assert {p.chapter_key for p in _devout().passages if _marks(p)} == {
+        f"iii.{n}" for n in ("ix", "x", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii",
+                             "xviii")}
+
+
+def test_love_of_god_is_the_prayer_preface_and_twelve_books():
+    labels = _labels(_love())
+    assert labels[:3] == ["Dedicatory Prayer", "Preface", "Book I · Chapter I. That for "
+                          "the Beauty of Human Nature God has Given the Government of All "
+                          "the Faculties of the Soul to the Will"]
+    assert len(labels) == 2 + 188 and all(len(label) <= 150 for label in labels)
+    # Chapters whose div titles carry no number take it from their "CHAPTER N." line.
+    assert "Book VII · Chapter VI. Of the Signs of Good Rapture, and of the Third Species " \
+           "of the Same" in labels
+    text = _text(_love())
+    assert "following treatise presents, at first sight" not in text   # Mackey's introduction
+    assert "TAN BOOKS" not in text and "Bookdealer" not in text        # TAN's pages
+    assert "THE END." not in text
+
+
+def test_love_of_god_keeps_each_chapter_title_in_the_text_marked():
+    openers = {}
+    for p in _love().passages:
+        openers.setdefault(p.chapter_key, p)
+    titled = [p for p in openers.values() if _marks(p)]
+    assert len(titled) == 188
+    for p in titled:
+        ((title, level, repeats),) = _marks(p)
+        assert p.content.startswith(title) and level == 1 and repeats
+    # A long first paragraph does not leave the title alone in a piece (V ch. vii).
+    vii = openers["vi.vii"]
+    assert vii.content.startswith("HOW THE DESIRE TO EXALT AND MAGNIFY GOD") \
+        and "The love of benevolence, then," in vii.content
+
+
+def test_love_of_god_reads_its_verse_line_by_line():
+    p = next(p for p in _love().passages if "Mercy, O Lord, hath not thy soul" in p.content)
+    assert "Mercy, O Lord, hath not thy soul forsaken,\nE’en while thy justice" in p.content
+    assert "If thou hast ill done, chide thyself bitterly,\nIf thou hast well done" \
+        in _text(_love())
+
+
+def test_de_sales_stray_note_callers_are_read_out():
+    assert "and I am His. A bundle of myrrh" in _text(_devout())
+    assert "as his own soul. The great Apostle" in _text(_love())
+
+
+def test_de_sales_works_are_opted_into_the_heading_checks():
+    import health
+
+    documents = health.load_patterns()["H7_unmarked_heading"]["documents"]
+    assert {_devout().id, _love().id} <= set(documents)
