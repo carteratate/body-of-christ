@@ -112,6 +112,10 @@ _UNREGISTERED_NOTES = {
     "papal-documents/ubicumque-et-semper.html": "scheduled for PR 5.4",
     "apostolic-exhortations/amoris-laetitia.html":
         "not published; scheduled for PR 5.4 (Carter, 4 Oct 2026)",
+    # Chadwick's Stromata III (#399), read through the OCR tool's frozen text.
+    **{f"church-fathers/alexandrianchris012826mbp/alexandrianchris012826mbp_{kind}":
+       "the scan Stromata III's English is read from, through ocr/texts/"
+       "chadwick-stromata-3.json (#399)" for kind in ("djvu.xml", "djvu.txt")},
 }
 _UNREGISTERED_DIR_NOTES = {
     "roman-curia": "parked for 5.3 (branch feat/roman-curia-collection)",

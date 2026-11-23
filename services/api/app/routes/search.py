@@ -13,6 +13,7 @@ from app import corpus_lifecycle, corpus_schema
 from app.config import settings
 from app.db import get_pool
 from app.footnotes import fetch_footnotes, has_footnotes
+from app.headings import fetch_headings
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.reader_access import access_fields, document_access
@@ -394,15 +395,21 @@ async def get_search_results(
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
     # Outside the restore deadline: optional notes must never turn a restore into a
-    # 504. `fetch_footnotes` bounds itself and falls back to none.
-    notes = await fetch_footnotes(pool, [
-        (str(row["chunk_id"]), row["content"]) for row in shown.values()
-        if has_footnotes(row["collection"], row["document_title"])
-    ])
-    # Outside the deadline for the same reason; bounded on its own (2.4a).
-    facts, _ = await document_facts.fetch_best_effort(pool, [
-        str(row["chunk_id"]) for row in shown.values()
-    ])
+    # 504. `fetch_footnotes` bounds itself and falls back to none, as do the headings
+    # (issue #445) and the facts (2.4a); the three run together, so the wait after the
+    # deadline is the slowest one's, never their sum.
+    notes, marks, (facts, _) = await asyncio.gather(
+        fetch_footnotes(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+            if has_footnotes(row["collection"], row["document_title"])
+        ]),
+        fetch_headings(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+        ]),
+        document_facts.fetch_best_effort(pool, [
+            str(row["chunk_id"]) for row in shown.values()
+        ]),
+    )
 
     saved_filters = (
         search_row.get("filters")
@@ -453,6 +460,7 @@ async def get_search_results(
             explanation=row["explanation"],
             context=context.get(str(display["chunk_id"])) if display is not None else None,
             footnotes=notes.get(str(display["chunk_id"]), []) if display is not None else [],
+            headings=marks.get(str(display["chunk_id"]), []) if display is not None else [],
             status=resolution.status,
             tombstone=resolution.tombstone,
             redirect=resolution.redirect,

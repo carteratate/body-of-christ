@@ -31,6 +31,7 @@ from ingest.common import (_block_text, _build_parent_map, _cf_skippable, _strip
 from ingest.editorial import (PLAIN_CALLERS, Editor, Removed, _norm, span_sha1,
                                strip_editorial_lines)
 from ingest.editorial_keep import QuoteEdit, kept_quotes
+from ingest import stromata_chadwick
 from ingest.thml_doc import ChapterPlan, _chapter_label, distinct_titles, make_doc
 
 _SRC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "church-fathers")
@@ -612,11 +613,12 @@ NON_ENGLISH_PARAGRAPHS = {
     ("f913305f-b259-578b-a5ca-532fac927aab", "iii.iv.xiii"):
         frozenset({"0e4c520e29733fbcd27902da4661a375fd97d8c3"}),
 }
-# The works that lose passages to rule E and keep the rest: the Stromata, the Instructor,
-# the Divine Institutes and On the Workmanship of God (3.3's note, approved 14 Nov 2026).
+# The works that lose passages to rule E and keep the rest: the Instructor, the Divine
+# Institutes and On the Workmanship of God (3.3's note, approved 14 Nov 2026). The
+# Stromata left the list when Book III came back in Chadwick's English (#399).
 NON_ENGLISH_OMITTED = frozenset({
-    "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38", "96584290-90c2-50bc-9d3d-c353b8969e1f",
-    "9e03c96d-8295-5e5e-a4d3-3570ddcf0415", "f913305f-b259-578b-a5ca-532fac927aab"})
+    "96584290-90c2-50bc-9d3d-c353b8969e1f", "9e03c96d-8295-5e5e-a4d3-3570ddcf0415",
+    "f913305f-b259-578b-a5ca-532fac927aab"})
 NON_ENGLISH_NOTE = ("Some passages are omitted: the translators left them in Latin and no "
                     "public-domain English translation exists.")
 
@@ -689,7 +691,9 @@ def build_all() -> list[Document]:
     # unit a `passage` removal retires is skipped, as the papal adapters do: the adapter
     # asks the registry, never an author or title.
     held = removed_document_ids()
-    docs = [drop_removed(_rule_e(d)) for d in distinct_titles(docs) if d.id not in held]
+    # Stromata III, which ANF left in Latin, is read from Chadwick's English (#399).
+    docs = [drop_removed(_rule_e(stromata_chadwick.restore(d)))
+            for d in distinct_titles(docs) if d.id not in held]
     built = {(d.id, p.anchor) for d in docs for p in d.passages}
     missing = sorted(set(NON_ENGLISH_PARAGRAPHS) - built)
     if missing:

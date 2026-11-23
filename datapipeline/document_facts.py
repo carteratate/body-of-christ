@@ -62,6 +62,10 @@ DATE_DISPLAY = {"summa": "1265 to 1274"}
 # One credit naming every edition a document holds (Carter's answer 5A). Each starts
 # with the main row's credit line, which `test_document_facts` checks.
 COMBINED_CREDITS = {
+    # Stromata III, which ANF left in Latin, in Chadwick's English (#399; Carter, 21 Nov
+    # 2026).
+    "church-fathers/second-century/vi.iv":
+        "Sourced via CCEL.org; Book III translated by Henry Chadwick (1954)",
     "councils/ecum-03-council-of-ephesus":
         "Sourced via CCEL.org; Nestorius's second letter to Cyril translated by James "
         "Chrystal (1895)",
