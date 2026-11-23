@@ -25,6 +25,12 @@ alignment with the site's paragraphs decided:
 
 A dating line or signature after the last unit joins it, as on the site (1.3a). Every
 passage declares `text_replaced`, since the printing is another translation or edition.
+
+A document still built from the site's page can take a passage from a printing too
+(`papal_additions.json`, `additions`): a text the site's page holds only in a translation
+held for permission, which the printing gives (Exsurge Domine's censure, from Deferrari's
+p. 243, 5.9). It is its own unit and chapter, after the paragraph it follows, and carries
+the printing's URL and scan label; the site's passages are unchanged.
 """
 from __future__ import annotations
 
@@ -36,6 +42,7 @@ from dataclasses import dataclass, field, replace
 
 from bs4 import BeautifulSoup
 
+from config import settings
 from ingest import papal_common
 from ingest.papal_common import Token
 from ingest.pieces import Segment
@@ -43,6 +50,7 @@ from model import Document
 from ocr.fixes import read_text
 
 _CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "papal_printings.json")
+_ADDITIONS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "papal_additions.json")
 _SPACE = re.compile(r"\s+")
 _INVISIBLE = re.compile("[​­﻿]")
 _BROKEN_WORD = re.compile(r"[a-z]-$")    # a word broken at a line end
@@ -120,6 +128,51 @@ def printings() -> dict[str, Printing]:
 
 def printing(collection: str, slug: str) -> Printing | None:
     return printings().get(f"{collection}/{slug}")
+
+
+@dataclass(frozen=True)
+class Addition:
+    key: str                 # "<collection>/<slug>" of a document built from the site's page
+    work: str                # the scan's OCR work (`ocr/texts/<work>.json`), all of it
+    url: str                 # the printing's URL, the passage's `url`
+    part: str                # its unit anchor's part ("censure" → `exsurge-domine/censure`)
+    label: str               # its unit label, chapter label and citation ("Censure")
+    after: int               # the site's paragraph it follows
+    why: str
+
+
+@functools.cache
+def additions() -> dict[str, tuple[Addition, ...]]:
+    with open(_ADDITIONS, encoding="utf-8") as f:
+        data = json.load(f)
+    return {key: tuple(Addition(key=key, **a) for a in items)
+            for key, items in data.items() if not key.startswith("_")}
+
+
+def with_additions(doc: Document, collection: str, slug: str) -> Document:
+    """`doc` with the passages a printing adds to it (`papal_additions.json`), each its own
+    unit and chapter after the paragraph it follows, and positions renumbered."""
+    adds = additions().get(f"{collection}/{slug}", ())
+    if not adds:
+        return doc
+    passages = list(doc.passages)
+    for a in adds:
+        after = papal_common._anchor(slug, str(a.after))
+        at = [k for k, x in enumerate(passages) if papal_common.unit_anchor(x.anchor) == after]
+        if not at:
+            raise ValueError(f"{a.key}: no paragraph {a.after} for {a.part!r} to follow")
+        frozen = read_text(a.work)
+        blocks = ocr_blocks(frozen)
+        text = papal_common._clean("\n\n".join(t for _, t in blocks), slug, callers=False)
+        segments = [Segment(loc, t) for loc, t in blocks]
+        anchor = papal_common._anchor(slug, a.part)
+        unit = papal_common._Unit(text, papal_common.pack_text(text, segments,
+                                                               settings.MAX_PASSAGE_CHARS),
+                                  f"{doc.title}, {a.label}", anchor, anchor, a.label,
+                                  a.label, segments)
+        meta = {"pope": doc.author, "url": a.url, "source_url": a.url, **frozen["metadata"]}
+        passages[at[-1] + 1:at[-1] + 1] = papal_common._passages([unit], doc.title, meta)
+    return replace(doc, passages=[replace(x, position=k) for k, x in enumerate(passages)])
 
 
 def _norm(text: str) -> str:

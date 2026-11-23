@@ -262,3 +262,71 @@ def test_a_signature_in_capitals_after_the_dating_line_joins_the_last_unit():
     assert [t.number for t in toks] == [8] and toks[0].text.endswith("1875.\n\nPIUS, P.P. IX.")
     with pytest.raises(ValueError, match="in no unit"):
         printed_tokens(p, [("p0", "Join your prayers to ours."), ("p1", "PIUS, P.P. IX.")])
+
+
+# ---------------------------------------------------------------- additions (5.9)
+
+def test_an_addition_follows_its_paragraph_in_its_own_chapter(monkeypatch):
+    from model import Document, Passage
+
+    def para(n, k):
+        return Passage(content=f"Proposition {n}.", reference=f"Test, §{n}",
+                       anchor=f"test/{n}", chapter_key="test/bucket-0",
+                       chapter_label="Paragraphs 1–2", position=k, unit_label=f"§{n}")
+
+    doc = Document(id="d", collection="papal-documents", title="Test", author="Pope Leo X",
+                   year=1520, passages=[para(1, 0), para(2, 1)])
+    add = papal_printings.Addition(key="papal-documents/test", work="w",
+                                   url="https://example.org/book", part="censure",
+                                   label="Censure", after=1, why="a test")
+    monkeypatch.setattr(papal_printings, "additions", lambda: {add.key: (add,)})
+    monkeypatch.setattr(papal_printings, "read_text", lambda work: {
+        "metadata": {"text_source": "ocr", "scan_id": "scan"},
+        "passages": [{"id": "x", "text": "All and each we condemn."}]})
+    out = papal_printings.with_additions(doc, "papal-documents", "test")
+    assert [(p.anchor, p.position) for p in out.passages] == [
+        ("test/1", 0), ("test/censure", 1), ("test/2", 2)]
+    censure = out.passages[1]
+    assert (censure.content, censure.chapter_key, censure.chapter_label, censure.unit_label,
+            censure.reference) == ("All and each we condemn.", "test/censure", "Censure",
+                                   "Censure", "Test, Censure")
+    assert censure.metadata == {"pope": "Pope Leo X", "url": "https://example.org/book",
+                                "source_url": "https://example.org/book",
+                                "text_source": "ocr", "scan_id": "scan"}
+    assert papal_printings.with_additions(doc, "papal-documents", "other") is doc
+    monkeypatch.setattr(papal_printings, "additions", lambda: {add.key: (
+        dataclasses.replace(add, after=9),)})
+    with pytest.raises(ValueError, match="no paragraph 9"):
+        papal_printings.with_additions(doc, "papal-documents", "test")
+
+
+def test_every_addition_says_why_and_passed_its_gate():
+    from ocr.fixes import read_text
+
+    adds = [a for items in papal_printings.additions().values() for a in items]
+    assert adds
+    for a in adds:
+        assert a.why and a.label and a.part and not a.part.isdigit(), a.key
+        assert papal_printings.printing(*a.key.split("/", 1)) is None, a.key
+        assert read_text(a.work)["gate"] == "pass", a.work
+
+
+@vendored
+def test_addition_coverage():
+    """Every word of an addition's frozen text reaches its passages, and nothing else
+    (0.1a's coverage, against the printing's pages)."""
+    from ocr.fixes import read_text
+
+    docs = {}
+    for key, items in papal_printings.additions().items():
+        collection, slug = key.split("/", 1)
+        if collection not in docs:
+            docs[collection] = {d.metadata["source_key"]: d for d in papal_common.build_documents(
+                collection, os.path.join(_SOURCES, collection))}
+        doc = docs[collection][key]
+        for a in items:
+            anchor = papal_common._anchor(slug, a.part)
+            built = [p for p in doc.passages if p.anchor.split("/")[:2] == anchor.split("/")]
+            assert built and all(p.voice is None for p in built), a.key
+            assert _words(" ".join(p.content for p in built)) == _words(
+                " ".join(p["text"] for p in read_text(a.work)["passages"])), a.key
