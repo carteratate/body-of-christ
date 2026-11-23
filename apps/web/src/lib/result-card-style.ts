@@ -48,8 +48,9 @@ export function setResultCardStyle(next: ResultCardStyle): void {
 // tab's cards too.
 function onStorage(event: StorageEvent): void {
   if (event.key !== RESULT_CARD_STYLE_KEY && event.key !== null) return;
-  const next = event.key === null ? DEFAULT_RESULT_CARD_STYLE : parseResultCardStyle(event.newValue);
-  if (next === current) return;
+  // What storage holds now, not the event's value, which a newer change may have passed.
+  const next = loadStored();
+  if (next === null || next === current) return;
   current = next;
   notify();
 }
