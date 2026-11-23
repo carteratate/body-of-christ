@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { claimGuestSession, getBookmarks, getPreferences, getSearchHistoryPage, getSources, GuestClaimHttpError, type Preferences, type SearchSummaryV2, type SourceDocument } from "@/lib/api";
 import { clearGuestSession, getGuestPreferenceDraft, getGuestSavedChunkIds, peekGuestSessionToken } from "@/lib/trial";
 import { clearFeedbackContext } from "@/lib/feedbackContext";
+import { parseResultCardStyle, setResultCardStyle } from "@/lib/result-card-style";
 import { MobileTopBar } from "./MobileTopBar";
 import { useMobileNavigationDrawer } from "./useMobileNavigationDrawer";
 import { PageErrorState, PageLoadingState } from "@/components/common/PageStates";
@@ -521,6 +522,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute("data-theme", theme);
     try { localStorage.setItem("theocorpus-theme", theme); } catch {}
   }, [preferences?.theme]);
+
+  // The account's result card style is what the cards read (lib/result-card-style.ts).
+  // An API without the field leaves this browser's last choice alone.
+  useEffect(() => {
+    const cardStyle = preferences?.result_card_style;
+    if (!cardStyle) return;
+    setResultCardStyle(parseResultCardStyle(cardStyle));
+  }, [preferences?.result_card_style]);
 
   useEffect(() => {
     const mql = window.matchMedia("(min-width: 768px)");
