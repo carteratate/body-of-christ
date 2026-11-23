@@ -150,3 +150,42 @@ describe("DocumentOverview held texts", () => {
     expect(within(list).getByTestId("held-text").getAttribute("href")).toBe(URL);
   });
 });
+
+describe("DocumentOverview chapter batches", () => {
+  function book(collection: string, title: string, count: number, label: (n: number) => string): TocResponse {
+    return {
+      document: { id: title.toLowerCase(), collection, title, author: null, year: null, metadata: {}, chunk_count: count },
+      chapters: Array.from({ length: count }, (_, i) => ({ chapter_key: `c${i + 1}`, chapter_label: label(i + 1) })),
+    };
+  }
+
+  it("shows every chapter of a Bible book with more than 30, and no Show more", async () => {
+    api.getToc.mockResolvedValue(book("bible", "Psalms", 150, (n) => `Psalm ${n}`));
+    render(<DocumentOverview docId="psalms" mobileHeader={null} />);
+    await screen.findByRole("heading", { name: "Psalms" });
+
+    const chapterCells = screen.getAllByRole("button", { name: /^Psalms chapter \d+$/ });
+    expect(chapterCells).toHaveLength(150);
+    expect(chapterCells.at(-1)?.textContent).toBe("150");
+    expect(screen.queryByRole("button", { name: /Show more/ })).toBeNull();
+    expect(screen.queryByText(/^Showing /)).toBeNull();
+
+    // The chapter search still narrows the boxes.
+    fireEvent.change(screen.getByRole("searchbox", { name: "Search chapters" }), { target: { value: "Psalm 11" } });
+    expect(screen.getAllByRole("button", { name: /^Psalms chapter \d+$/ }).map((el) => el.textContent))
+      .toEqual(["11", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119"]);
+  });
+
+  it("still loads a non-Bible document's sections 30 at a time", async () => {
+    api.getToc.mockResolvedValue(book("councils", "Council of Trent", 45, (n) => `Session ${n}`));
+    render(<DocumentOverview docId="council of trent" mobileHeader={null} />);
+    await screen.findByRole("heading", { name: "Council of Trent" });
+
+    const sessions = () => cells().filter((text) => text.includes("Session"));
+    expect(sessions()).toHaveLength(30);
+    expect(screen.getByText("Showing 30 of 45 sections")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Show more sections" }));
+    expect(sessions()).toHaveLength(45);
+    expect(screen.queryByRole("button", { name: /Show more/ })).toBeNull();
+  });
+});

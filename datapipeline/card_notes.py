@@ -21,8 +21,9 @@ What this writes, in metadata keys as 2.4f did (no migration):
   written once by `scripts/document_facts_registry.py` from `card_translator()`; an empty
   string where the card names none because the header's badge or the notice does);
 - a passage with a note: its note rewritten to the fixed wording and `metadata.note_kind`;
-- a council passage from a second edition: `metadata.translator`, that edition's
-  translator, so a council translated by two people names each passage's own.
+- a passage from a second edition (a council's; Stromata III in Chadwick's English):
+  `metadata.translator`, that edition's translator, so a document translated by two
+  people names each passage's own.
 
 The stored facts (`notes`, `attribution_note`, `translation`, `source_credit`) are left as
 2.3 and 3.2 set them; the reader's overview and chapter view still read the credit and the
@@ -293,8 +294,10 @@ SCAN_TRANSLATORS = {
     "matthewparisseng02pari": "Translated by J. A. Giles (1853)",
     "ahistoryofthecou05hefeuoft": "Translated by William R. Clark (1896)",
     "authoritative01chry": "Translated by James Chrystal (1895)",
+    # Stromata III, which ANF left in Latin (#399).
+    "alexandrianchris012826mbp": "Translated by Henry Chadwick (1954)",
 }
-TRANSLATOR_COLLECTIONS = ("councils",)
+TRANSLATOR_COLLECTIONS = ("councils", "church-fathers")
 
 
 # --------------------------------------------------------------------------- translator
