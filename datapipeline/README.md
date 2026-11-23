@@ -43,10 +43,15 @@ The three papal adapters build an older document from its public-domain printing
 ## Setup
 
 ```bash
-pip install -r requirements.txt
+pip install --require-hashes -r requirements.lock
 cp .env.example .env
 # Fill in the Supabase, Qdrant, and OpenAI values.
 ```
+
+`requirements.txt` lists what the pipeline needs; `requirements.lock` pins the exact
+versions (with hashes) that CI tests. After editing `requirements.txt`, run
+`scripts/lock_python_deps.sh datapipeline` from the repo root (needs `pip install uv`)
+and commit both files. CI fails when the lock is out of date.
 
 ## Publish one collection
 
