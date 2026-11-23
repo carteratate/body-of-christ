@@ -89,8 +89,8 @@ def test_split_passages_have_complete_reader_boundaries():
     # 127 after 1.8a, whose rule G took Asterius Urbanus's only passage, his Elucidation;
     # 128 since 1.8c parses his text and brings the document back; 142 since 1.8b splits
     # the two Augustine treatise volumes into their 16 works; 109 since 3.1 removes 33
-    # works under rules A to C.
-    assert len(docs) == 109
+    # works under rules A to C; 112 since 5.6a adds Basil's three works (NPNF2-08).
+    assert len(docs) == 112
     for doc in docs:
         groups = defaultdict(list)
         for passage in doc.passages:
@@ -618,7 +618,39 @@ def test_basil_rule_a_letters_are_not_built(fathers):
     letters = _doc(fathers, "npnf208.xml#ix")
     built = {p.chapter_key.split("/")[0] for p in letters.passages}
     assert not built & set(EXCLUDED["npnf208.xml"])
-    assert {"ix.iii", "ix.ccclv"} <= built               # Letter 2; Letter 360, rule D
+    assert {"ix.ii", "ix.iii", "ix.ccclv"} <= built     # Letters 1, 2; 360 under rule D
+    # Basil is a Doctor: limit 2 keeps his own letters to Libanius; Libanius's leave.
+    assert "ix.cccxxx" in built and "ix.cccxxxi" not in built
+    # The reader lists only the letters the document holds.
+    assert {w.work_key for w in letters.works} == {p.work_key for p in letters.passages}
+
+
+def test_basil_letter_from_antipater_is_credited_to_him(basil):
+    work = next(w for w in basil["npnf208.xml#ix"].works if w.work_key == "ix.clxxxviii")
+    assert work.author == "Antipater"
+
+
+def test_basil_newman_letters_name_both_translators(fathers):
+    import card_notes
+    letters = _doc(fathers, "npnf208.xml#ix")
+    done = card_notes.apply(letters, {"card_translator": "Translated by Blomfield Jackson (1895)"})
+    by_key = {p.chapter_key: (p.metadata or {}).get("translator") for p in done.passages}
+    assert by_key["ix.xv"] == card_notes.NEWMAN_AND_JACKSON          # Letter 14
+    assert by_key["ix.iv"] is None                                   # Letter 3: Jackson's
+    assert {k for _, k in card_notes.PASSAGE_TRANSLATORS} <= set(by_key)
+
+
+def test_npnf_registry_lifting_an_exclusion_restores_the_letter(monkeypatch):
+    from scripts import npnf_registry
+    excluded = {f: dict(divs) for f, divs in npnf_registry.EXCLUDED.items()}
+    del excluded["npnf208.xml"]["ix.xl"]
+    monkeypatch.setattr(npnf_registry, "EXCLUDED", excluded)
+    staged, _, _, problems = npnf_registry.plan(registry.current(), "2026-11-24")
+    assert problems == []
+    closed = [e for e in staged.removals if e.get("closed_by") == "5.6a"]
+    assert {e["anchor"].split("/")[0] for e in closed} == {"ix.xl"}
+    ids = {e["passage_id"] for e in closed}
+    assert {r["status"] for r in staged.passages if r["passage_id"] in ids} == {"active"}
 
 
 def test_basil_rule_a_removals_cover_every_excluded_passage(basil):

@@ -96,6 +96,10 @@ NPNF_WORKS = {
 # Letter 197's second section, on the relics of Dionysius of Milan, is not Basil's
 # (Cavallin 1945, in Quasten; Fedwick 1981, "De reliquis Dionysii").
 _LETTER_PARTS = {("npnf208.xml", "ix.cxcviii"): ("ix.cxcviii-p9", "Section 2")}
+# Letters in a collection that another writer sent, by (file, letter div): the sender,
+# from the letter's title line, as 1.8c credits Cyprian's correspondents ("Antipater to
+# Basil."). 3.2's labels (`attributions`) add the rest.
+_NPNF_SENDERS = {("npnf208.xml", "ix.clxxxviii"): "Antipater"}
 # The line over a chapter, homily or letter that numbers it: "Chapter I.", "Homily IX.",
 # "Letter CCCLX.".
 # Rule E (3.3's way): paragraphs a translator left in Greek, cut from the chapter, by
@@ -685,7 +689,7 @@ def _npnf_document(filename, w: NpnfWork, work, parent_map):
         number = f"Letter {n}"
         part = _letter_part(filename, elem, parent_map)
         works.append(Work(work_key=elem.get("id"), ordinal=len(works) + 1, title=number,
-                          author=w.author))
+                          author=_NPNF_SENDERS.get((filename, elem.get("id")), w.author)))
         chapters.append((None, elem, ChapterPlan(label=title, work_key=elem.get("id"),
                                                  work_label=number, any_length=True)))
         if part is not None:
@@ -908,6 +912,16 @@ def _rule_e(document: Document) -> Document:
     return replace(document, passages=passages)
 
 
+def _without_empty_works(document: Document) -> Document:
+    """An NPNF addition (5.6a) without the works whose passages the removal registry
+    retires (rule A's letters), so the reader's list of works names only what it holds.
+    The registry keeps their rows; documents built before 5.6a are left as published."""
+    if (document.metadata or {}).get("source_file") not in NPNF_WORKS:
+        return document
+    used = {p.work_key for p in document.passages}
+    return replace(document, works=[w for w in document.works if w.work_key in used])
+
+
 def build_all() -> list[Document]:
     docs: list[Document] = []
     for path in sorted(glob(os.path.join(_SRC_DIR, "*.xml"))):
@@ -919,7 +933,7 @@ def build_all() -> list[Document]:
     # asks the registry, never an author or title.
     held = removed_document_ids()
     # Stromata III, which ANF left in Latin, is read from Chadwick's English (#399).
-    docs = [drop_removed(_rule_e(stromata_chadwick.restore(d)))
+    docs = [_without_empty_works(drop_removed(_rule_e(stromata_chadwick.restore(d))))
             for d in distinct_titles(docs) if d.id not in held]
     built = {(d.id, p.anchor) for d in docs for p in d.passages}
     missing = sorted(set(NON_ENGLISH_PARAGRAPHS) - built)

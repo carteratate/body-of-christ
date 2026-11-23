@@ -3274,11 +3274,11 @@
  {
   "collection": "church-fathers",
   "path": "church-fathers/manifest.json",
-  "sha256": "cfa843d4cab79f8b408f8b88ee02974cab573bd07bd251a6ecc65b585741a986",
-  "bytes": 2556,
+  "sha256": "b07ff80e9d9c5198e10ef54632705d122e71784681c347f8abc70fa6db0f6fba",
+  "bytes": 2810,
   "url": null,
   "acquired": "unknown-before-2026-11-13",
-  "hashed_on": "2026-11-13",
+  "hashed_on": "2026-11-23",
   "role": "adapter-auxiliary"
  },
  {

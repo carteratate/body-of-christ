@@ -287,6 +287,12 @@ BASIL_LETTER_LABELS = {
     **{div: {"author": "Gregory of Nazianzus", "certainty": "disputed",
              "attribution_note": _NAZIANZUS, "basis": FEDWICK}
        for div in ("ix.clxviii", "ix.clxx", "ix.clxxi", "ix.clxxii")},
+    # Basil's own letters to Libanius: Quasten counts 335 to 346 authentic, Fedwick lists
+    # these among the Dubia (342 among the Spuria). Limit 2 passes them as a Doctor's.
+    **{div: {"author": "Basil", "certainty": "disputed",
+             "attribution_note": _DOUBTFUL.format("Basil"),
+             "basis": f"{QUASTEN_BASIL}; Fedwick (1981), Dubia and Spuria"}
+       for div in ("ix.cccxxx", "ix.cccxxxii", "ix.cccxxxiv", "ix.cccxxxvii", "ix.cccxxxix")},
     # Letter 187, the governor Antipater's reply to Letter 186, by its title line, as
     # 1.8c credits Cyprian's correspondents. No source records him as other than a
     # Christian, so rule A presumes him in communion.

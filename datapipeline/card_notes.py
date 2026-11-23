@@ -168,6 +168,7 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "Its attribution to Pamphilus is doubtful.": (),
     "Its attribution to Methodius is doubtful.": (),
     "Its attribution to Lactantius is doubtful.": (),
+    "Its attribution to Basil is doubtful.": (),
     "Not by Gregory Thaumaturgus.": (),
     "Written by Hegemonius; Archelaus is the bishop who debates Mani in it.": (
         overview("Archelaus is the bishop who debates Mani in it."),),
@@ -311,6 +312,14 @@ SCAN_TRANSLATORS = {
     "alexandrianchris012826mbp": "Translated by Henry Chadwick (1954)",
 }
 TRANSLATOR_COLLECTIONS = ("councils", "church-fathers")
+# Letters NPNF2-08 gives wholly or partly in Newman's translation (The Church of the Fathers,
+# 1840), as its notes say, by (document ID, letter's chapter key): each of their passages
+# names both translators (rule 3). 5.6a, Basil's Letters 2, 14, 90, 136, 138, 203 and 204.
+NEWMAN_AND_JACKSON = ("Translated by John Henry Newman (1840) and Blomfield Jackson "
+                      "(1895)")
+PASSAGE_TRANSLATORS = {
+    ("75cc7965-7501-595d-af44-9997bb7498be", key): NEWMAN_AND_JACKSON
+    for key in ("ix.iii", "ix.xv", "ix.xci", "ix.cxxxvii", "ix.cxxxix", "ix.cciv", "ix.ccv")}
 
 
 # --------------------------------------------------------------------------- translator
@@ -404,7 +413,8 @@ def _passage(p: Passage, translator: str | None) -> Passage:
 def _passage_translator(document: Document, p: Passage, card: str) -> str | None:
     if document.collection not in TRANSLATOR_COLLECTIONS:
         return None
-    named = SCAN_TRANSLATORS.get((p.metadata or {}).get("scan_id") or "")
+    named = SCAN_TRANSLATORS.get((p.metadata or {}).get("scan_id") or "") \
+        or PASSAGE_TRANSLATORS.get((document.id, p.chapter_key))
     return named if named and named != card else None
 
 

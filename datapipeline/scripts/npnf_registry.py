@@ -31,6 +31,7 @@ Writes the registry only when it validates. Then, as for any adapter change:
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 import os
 import sys
@@ -54,8 +55,6 @@ NOTE_DETAIL = ("Translator and editor footnotes (ThML <note>) printed inline in 
                "only their count is kept, as editor_note_count.")
 R1_ADDENDUM = "docs/research/R1-rule-a-dating.md, 5.6a addendum (Basil)"
 QUASTEN = "Quasten, Patrología II (BAC 1978)"
-FEDWICK_CHRONOLOGY = ("P. J. Fedwick, \"A Chronology of the Life and Works of Basil of "
-                      "Caesarea\", in Basil of Caesarea: Christian, Humanist, Ascetic (1981)")
 
 # Rule A, limit 1: Evagrius is condemned by name in the Second Council of Nicaea's
 # definition ("the mythical speculations of Origen, Evagrius and Didymus").
@@ -67,24 +66,11 @@ T_EVAGRIUS = ("Removed because Evagrius Ponticus wrote this letter, which came d
 T_NOT_CHRISTIAN = "Removed because its author was not a Christian."
 T_JULIAN = ("Removed because this letter is in the name of the emperor Julian, who had "
             "abandoned the faith.")
-T_BEFORE_BAPTISM = ("Removed because Basil may have written this before he was baptized, "
-                    "and it cannot be shown to date from after.")
-
 _LIBANIUS = ("Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a "
              "Christian (Quasten, p. 245: \"un pagano declarado\").")
-_BEFORE_BAPTISM = ("Rule A, limit 3: Basil's letter to Libanius; Quasten names the "
-                   "correspondence's dates as 356 to 372 (after Seeck) and dates none of its "
-                   "letters, so no chronology places it after Basil's baptism in 357 or 358; "
-                   "errors fall toward exclusion (R1).")
 # The letters rule A takes out, by div in NPNF2-08: (detail, tombstone, Church act).
 EXCLUDED = {
     "npnf208.xml": {
-        "ix.ii": ("Rule A, limit 3: Letter 1, to Eustathius the philosopher, written on Basil's "
-                  "return from his journey to the monks. The named chronology places his "
-                  f"baptism before that journey ({QUASTEN}, pp. 224-225), but {FEDWICK_CHRONOLOGY} "
-                  "places it after the letter, so standard sources disagree and the letter "
-                  "cannot be shown to date from after it (R1).",
-                  T_BEFORE_BAPTISM, None),
         "ix.ix": ("Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus "
                   f"(Bousset, Melcher; {QUASTEN}, p. 247; Fedwick 1981, Spuria), condemned by "
                   "name by the Second Council of Nicaea (787), confirming the fifth council.",
@@ -98,33 +84,30 @@ EXCLUDED = {
            for div in ("ix.cccxxxi", "ix.cccxxxiii", "ix.cccxxxv", "ix.cccxxxvi",
                        "ix.cccxxxviii", "ix.cccxl", "ix.cccxli", "ix.cccxlii", "ix.cccxliv",
                        "ix.cccxlvii", "ix.cccxlix", "ix.cccl", "ix.ccclii", "ix.cccliii")},
-        **{div: (_BEFORE_BAPTISM, T_BEFORE_BAPTISM, None)
-           for div in ("ix.cccxxx", "ix.cccxxxii", "ix.cccxxxiv", "ix.cccxxxvii",
-                       "ix.cccxxxix")},
     },
 }
 
-# Each document's rule A record (works.json `rule_a`), by works.json work_id. Dates are
-# ISO with the day unknown, as 3.1's are: baptized in 357 or 358 (Fedwick), written about
-# 375, preached before 370 (Quasten).
+# Each document's rule A record (works.json `rule_a`), by works.json work_id. Basil is a
+# Doctor of the Church, so limit 2 passes every work of his whatever its date: his letters
+# from before his baptism (357 or 358) need no dating. Dates are ISO with the day unknown,
+# as 3.1's are: written about 375, preached before 370 (Quasten).
+_DOCTOR = "Basil is a Doctor of the Church: limit 2 passes his works whatever their date"
 _BASIL_RULE_A = {
     "applies": True, "communion_start": "0357-01-01", "communion_end": None,
-    "chronology_source": f"{QUASTEN}, pp. 224-249 (Quasten's vol. III in English); for the "
-                         f"early letters also {FEDWICK_CHRONOLOGY}",
+    "chronology_source": f"{QUASTEN}, pp. 224-249 (Quasten's vol. III in English)",
     "church_acts": [], "decision": "include"}
 RULE_A = {
     "church-fathers/npnf208/vii": {**_BASIL_RULE_A, "work_date": "0375-01-01",
-                                   "decision_basis": "Written about 375 (Quasten, p. 231), long "
-                                                     f"after Basil's baptism ({R1_ADDENDUM})."},
+                                   "decision_basis": f"{_DOCTOR}; written about 375 "
+                                                     f"(Quasten, p. 231) ({R1_ADDENDUM})."},
     "church-fathers/npnf208/viii": {**_BASIL_RULE_A, "work_date": "0370-01-01",
-                                    "decision_basis": "Preached as a presbyter, before 370 "
-                                                      "(Quasten, pp. 238-239), after Basil's "
-                                                      f"baptism ({R1_ADDENDUM})."},
+                                    "decision_basis": f"{_DOCTOR}; preached as a "
+                                                      "presbyter, before 370 (Quasten, pp. "
+                                                      f"238-239) ({R1_ADDENDUM})."},
     "church-fathers/npnf208/ix": {**_BASIL_RULE_A, "work_date": None,
-                                  "decision_basis": "Basil's letters date from his retreat to "
-                                                    "his death; the letters rule A takes out "
-                                                    "(Letters 1 and 8, Julian's, and the "
-                                                    "correspondence with Libanius) have removal "
+                                  "decision_basis": f"{_DOCTOR}. The letters by "
+                                                    "others rule A takes out (Evagrius's Letter "
+                                                    "8, Julian's and Libanius's) have removal "
                                                     f"entries ({R1_ADDENDUM})."},
 }
 
@@ -189,6 +172,22 @@ def register(reg: registry.WorkRegistry, documents, today: str) -> list:
         if w["work_id"] in RULE_A:
             w["rule_a"] = {**w["rule_a"], **RULE_A[w["work_id"]]}
     return added
+
+
+def seed_works(reg: registry.WorkRegistry, documents) -> None:
+    """Give each document's entry a `works` row for every work the full build holds (rule
+    A's letters included, which their retired rows still name), where it has none yet;
+    `document_facts_registry.py` then adds the labels, as for any work."""
+    by_id = {d.id: d for d in documents}
+    for w in reg.works:
+        d = by_id.get(w["document_id"])
+        if d is None or not d.works:
+            continue
+        have = {x["work_key"] for x in w.get("works", [])}
+        rows = list(w.get("works", []))
+        rows += [{**dataclasses.asdict(x), "ordinal": len(rows) + k}
+                 for k, x in enumerate((x for x in d.works if x.work_key not in have), 1)]
+        w["works"] = rows
 
 
 def build(reg: registry.WorkRegistry):
@@ -260,31 +259,56 @@ def plan(reg: registry.WorkRegistry, today: str):
     documents, log = build(reg)
     register(reg, documents, today)
     documents, log = build(reg)
+    seed_works(reg, documents)
     rec = registry.reconcile(reg, documents, item=ITEM, today=today)
     problems = list(rec.problems)
-    # A letter rule A takes out keeps its work (D6), as Cyprian's do: its retired rows
-    # name it, since no built passage will.
-    excluded = {d.id: EXCLUDED.get(d.metadata["source_file"], {}) for d in documents}
+    # Every row names its passage's work (D6), from the full build, so a letter rule A
+    # takes out keeps its work, as Cyprian's do: its retired rows still name it.
+    work_keys = {(d.id, p.anchor): p.work_key for d in documents for p in d.passages}
     for r in rec.rows:
-        div = r["anchor"].split("/")[0]
-        if div in excluded.get(r["document_id"], ()):
-            r["work_key"] = div
+        key = work_keys.get((r["document_id"], r["anchor"]))
+        if key is not None:
+            r["work_key"] = key
     base = registry.WorkRegistry(reg.works, rec.rows, rec.redirects, reg.removals,
                                  reg.kept_text, held_texts=reg.held_texts)
     entries, found, more = er.generate(base, documents, log, {}, today, item=ITEM)
     problems += more
     for e in entries:
         if e["detail"] == er.DETAIL["not-english"]:
+            # By hash only, as 3.3's rule-E entries are: no excerpt of the text cut.
             e["reason"] = "translation-in-preparation"
+            e["span"] = {"rule": "ingest.church_fathers.NOT_ENGLISH",
+                         "sha1": e["span"]["sha1"]}
     entries = ([e for e in entries if not (e["scope"] == "class" and
                                            (e.get("span") or {}).get("rule") == NOTE_RULE)]
                + rule_a_entries(base, documents, today) + note_entries(documents, today))
     staged, unreviewed = er.plan(base, entries, found, item=ITEM, id_block=IDS)
     if staged is None:
         return None, entries, [], [f"unreviewed judgment: {u}" for u in unreviewed]
+    staged = lifted(reg, staged, today)
     judgments(staged.works)
     problems += registry.validate(staged)
     return staged, entries, rights_rows(documents), problems
+
+
+def lifted(before: registry.WorkRegistry, staged: registry.WorkRegistry,
+           today: str) -> registry.WorkRegistry:
+    """`staged` with each of 5.6a's earlier passage entries that this run no longer writes
+    (an exclusion lifted, a letter back) kept, closed, as the record of the removal, and
+    the passage rows nothing retires any more active again, under their frozen IDs."""
+    written = {e["id"] for e in staged.removals}
+    closed = [{**e, "closed_by": ITEM, "closed_on": today} for e in before.removals
+              if e.get("added_by") == ITEM and e["scope"] == "passage"
+              and not e.get("closed_by") and e["id"] not in written]
+    removals = sorted(staged.removals + closed, key=lambda e: (
+        e["collection"], e["document_id"], e.get("anchor") or ""))
+    explained = {e["passage_id"] for e in removals
+                 if e["scope"] == "passage" and not e.get("closed_by")}
+    back = {e["passage_id"] for e in closed} - explained
+    rows = [{**r, "status": "active"} if r["passage_id"] in back else r
+            for r in staged.passages]
+    return registry.WorkRegistry(staged.works, rows, staged.redirects, removals,
+                                 staged.kept_text, held_texts=staged.held_texts)
 
 
 def rights_rows(documents) -> list[dict]:
