@@ -39,6 +39,12 @@ def _mine(reg):
     return [e for e in reg.removals if e.get("added_by") == "3.3"]
 
 
+def _open(reg):
+    """3.3's entries still applied: #399 closed Stromata III's when Chadwick's English
+    brought it back."""
+    return [e for e in _mine(reg) if not e.get("closed_by")]
+
+
 # ── The registry entries ────────────────────────────────────────────────────
 
 def test_registry_is_valid(reg):
@@ -60,15 +66,22 @@ def test_exactly_the_approved_entries(reg):
     assert approved <= {(e["document_id"], e["passage_id"]) for e in passages}
     assert len(passages) == len(approved) + 2
     for e in passages:
-        assert rows[e["passage_id"]]["status"] == "retired"
+        status = rows[e["passage_id"]]["status"]
+        # #399 closed Stromata III's entries: its passages are active again, and the piece
+        # 1.10c merged into one of them is redirected as before.
+        assert status == "retired" if not e.get("closed_by") else status in ("active",
+                                                                            "redirected")
         assert rows[e["passage_id"]]["live_anchor"] == e["anchor"]
+    closed = [e for e in passages if e.get("closed_by")]
+    assert sorted(e["id"] for e in closed) == [f"rm-{n}" for n in range(4002, 4036)]
+    assert all(e["closed_by"] == "#399" and e["document_id"] == lr.STROMATA for e in closed)
     spans = [e for e in mine if e["scope"] == "span"]
     assert {(e["document_id"], e["anchor"], e["span"]["sha1"]) for e in spans} == {
         (d, a, s) for (d, a), shas in cf.NON_ENGLISH_PARAGRAPHS.items() for s in shas}
 
 
 def test_the_redirects_into_retired_pieces_are_closed(reg):
-    retired = {e["passage_id"] for e in _mine(reg) if e["scope"] == "passage"}
+    retired = {e["passage_id"] for e in _open(reg) if e["scope"] == "passage"}
     for r in reg.redirects:
         if r["new_passage_id"] in retired or r["old_passage_id"] in retired:
             assert r.get("closed_by") == "3.3", r
@@ -82,10 +95,7 @@ def test_no_entry_holds_the_original_text(reg):
 def test_rerun_changes_nothing(reg):
     copy = WorkRegistry(*(json.loads(json.dumps(x)) for x in (
         reg.works, reg.passages, reg.redirects, reg.removals, reg.kept_text)))
-    entries = lr.plan(copy, "2026-11-14")
-    dates = {e["id"]: e["added_on"] for e in _mine(reg)}
-    for e in entries:
-        e["added_on"] = dates[e["id"]]
+    entries = lr.keep_earlier(copy, lr.plan(copy, "2026-11-14"))
     lr.apply(copy, entries, "2026-11-14")
     assert copy.removals == reg.removals
     assert copy.passages == reg.passages
@@ -93,7 +103,7 @@ def test_rerun_changes_nothing(reg):
 
 
 def test_works_that_keep_passages_are_the_noted_ones(reg):
-    losing = {e["document_id"] for e in _mine(reg) if e["scope"] in ("passage", "span")}
+    losing = {e["document_id"] for e in _open(reg) if e["scope"] in ("passage", "span")}
     assert losing == set(cf.NON_ENGLISH_OMITTED)
 
 
@@ -187,8 +197,8 @@ def test_mostly_foreign_is_an_untranslated_paragraph_not_a_quotation():
 
 def test_withheld_chapters_are_those_retired_whole():
     from checks.source_text import withheld_chapters
-    assert withheld_chapters() == {("second-century.xml", "vi.iv.iii"),
-                                   ("third-fourth-century.xml", "iii.ii.vi.xxiii"),
+    # Stromata III left the list when it came back in Chadwick's English (#399).
+    assert withheld_chapters() == {("third-fourth-century.xml", "iii.ii.vi.xxiii"),
                                    ("third-fourth-century.xml", "iii.iv.xii")}
 
 
