@@ -38,6 +38,7 @@ const SUGGESTED_QUERIES = [
   "Are emotions good, bad, or neither? How should a Christian handle emotions?",
   "Give me non heretical analogies for the Trinity",
   "What exactly does it mean to be poor in spirit? What does this tell us about the Beatitudes?",
+  "Why does Jesus speak in parables?",
 ] as const;
 
 const DISPLAYED_QUERY_COUNT = 4;

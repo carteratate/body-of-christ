@@ -55,6 +55,17 @@ describe("EmptyState", () => {
     expect(chips.some((chip) => !FIRST_FOUR.includes(chip))).toBe(true);
   });
 
+  it("can suggest asking why Jesus speaks in parables", async () => {
+    // Relies on the question being last in SUGGESTED_QUERIES: the first shuffle step
+    // swaps the last query to the front, and the rest swap nothing. Guests and signed-in
+    // users share this component and its pool.
+    vi.spyOn(Math, "random").mockReturnValueOnce(0).mockReturnValue(0.9999);
+
+    const chips = await renderEmptyState();
+
+    expect(chips[0]).toBe("Why does Jesus speak in parables?");
+  });
+
   it("forwards the clicked suggestion", async () => {
     const onSelectQuery = vi.fn();
     const chips = await renderEmptyState(onSelectQuery);
