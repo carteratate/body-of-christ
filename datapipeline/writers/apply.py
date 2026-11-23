@@ -783,12 +783,13 @@ async def retire_only(conn, qdrant, release: str, collection: str, *, alias: str
     from writers.qdrant import alias_target
 
     registry = registry or reg.current()
-    # Removal entries name the source and live may still file it under an old key
-    # (5.1b.3), so both are matched through the collection they publish in.
+    # Removal entries name the document's source, which need not be the collection it
+    # is filed under (5.1b.3: Boethius's source is `medieval`, his collection
+    # `church-fathers`), so entries are found by document and the live document's
+    # stored key scopes the retirement.
     published = collection_keys.canonical(collection)
     entries = {e["document_id"]: e for e in reg.open_removals(registry)
-               if e.get("scope") == "document"
-               and collection_keys.canonical(e.get("collection") or "") == published}
+               if e.get("scope") == "document"}
     live = await conn.fetch(
         """SELECT id::text AS id, title, author FROM public.documents
            WHERE collection = ANY($1::text[]) AND retired_at IS NULL AND id = ANY($2::uuid[])""",

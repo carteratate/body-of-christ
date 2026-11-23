@@ -437,9 +437,10 @@ class StageRunner:
             # stored with: until 5.1b.3's publish, that is the old key. The old keys of a
             # staged collection are staged with it, so none of their points is copied.
             copied = {}
+            staged_keys = set(collection_keys.live_keys(publish_collections))
             unstaged = sorted(set(self._source_adapters) - set(publish_collections))
             for c in collection_keys.live_keys(unstaged):
-                if collection_keys.canonical(c) in publish_collections:
+                if c in staged_keys:
                     continue
                 # Always copied afresh: a count alone cannot show that live changed.
                 copied[c] = await qd.count_points(client, live, c)

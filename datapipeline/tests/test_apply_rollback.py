@@ -935,6 +935,24 @@ async def test_retire_only_finds_a_removal_through_the_rename(world):
     assert d["retired"] is True
 
 
+async def test_retire_only_finds_a_moved_documents_removal_by_its_id(world):
+    """Boethius's removal entry would name his source (`medieval`) while live files him
+    under `church-fathers`: asked for `church-fathers`, it finds him by document."""
+    await world.fetch("UPDATE documents SET collection = 'church-fathers' WHERE id = $1::uuid",
+                      DOC_B)
+    world.registry.removals.append(_removal(
+        id="rm-0922", scope="document", document_id=DOC_B,
+        reason="translation-in-preparation", tombstone="Being replaced."))
+    conn = await world.connect()
+    try:
+        done = await A.retire_only(conn, world.qdrant, "incarnation-withdraw", "church-fathers",
+                                   alias="chunks_live", registry=world.registry,
+                                   root=world.snapshots)
+    finally:
+        await conn.close()
+    assert done["documents"] == 1
+
+
 async def test_retire_only_leaves_an_unsearchable_point_unsearchable(world):
     """A point already marked not searchable is neither flipped nor recorded, so the
     rollback does not make it searchable."""
