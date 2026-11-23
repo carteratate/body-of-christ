@@ -85,8 +85,11 @@ async def get_preferences(
     return await _read_preferences(pool, user.user_id)
 
 
-async def _read_preferences(pool, user_id: str) -> PreferencesResponse:
-    with_card_style = _card_style_column()
+async def _read_preferences(pool, user_id: str, with_card_style: bool | None = None) -> PreferencesResponse:
+    # A PUT passes the answer it already acted on, so a recheck falling due in between
+    # cannot report a style that PUT did not save.
+    if with_card_style is None:
+        with_card_style = _card_style_column()
     try:
         try:
             row = await pool.fetchrow(
@@ -179,7 +182,7 @@ async def update_preferences(
             # a read rather than rewrite the other preferences (or create a row).
             if body.result_card_style is not None and not body.model_dump(
                     exclude_none=True, exclude={"result_card_style"}):
-                return await _read_preferences(pool, user.user_id)
+                return await _read_preferences(pool, user.user_id, with_card_style=False)
             row = await _upsert_preferences(pool, user.user_id, body, False)
     except HTTPException:
         raise

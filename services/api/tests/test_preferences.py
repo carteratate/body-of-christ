@@ -322,3 +322,18 @@ def test_an_empty_put_without_the_column_still_saves_as_before():
 
     assert response.status_code == 200
     assert "INSERT INTO user_preferences" in conn.fetchrow.await_args_list[1].args[0]
+
+
+def test_a_style_only_put_reports_null_even_if_the_recheck_falls_due_mid_request():
+    pool, conn = _transactional_pool()
+    pool.fetchrow = AsyncMock(return_value=_row(result_card_style="tint"))
+    # The PUT finds the column missing; the next check would find 0046 applied.
+    checks = iter([False, True, True])
+
+    with patch("app.routes.preferences.get_pool", return_value=pool), \
+         patch("app.routes.preferences._card_style_column", side_effect=lambda: next(checks)):
+        response = _client().put("/v1/preferences", json={"result_card_style": "plain"})
+
+    assert response.status_code == 200
+    assert response.json()["result_card_style"] is None
+    assert "result_card_style" not in pool.fetchrow.await_args.args[0]
