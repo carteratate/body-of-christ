@@ -15,6 +15,7 @@ from dataclasses import dataclass, replace
 
 from xml.etree.ElementTree import tostring as et_tostring  # serialization only
 
+import headings
 from config import settings
 from model import Document, Passage, Work
 from normalize.text import clean_text, fold_ligatures
@@ -38,6 +39,14 @@ class ChapterPlan:
                                     # document's: a work inside another (C-15)
     any_length: bool = False        # kept however short (a letter's greeting)
     meta: dict | None = None        # added to its passages' metadata (1.8b's quotations)
+    # Paragraphs that are the work's own headings, by `<p>` id: (id, level, whether it
+    # repeats the chapter label). Each stays in the text, is marked (`headings.py`,
+    # #445) and is kept in one piece with what follows it.
+    headings: tuple[tuple[str, int, bool], ...] = ()
+    # Headings the work prints before the chapter, outside its div (a book's or part's
+    # own title over its first chapter): (text, level). Each opens the chapter's text,
+    # marked, in the order given.
+    lead: tuple[tuple[str, int], ...] = ()
 
 
 # The Panegyric's chapters carry the editor's "Argument I" as their short title (1.8c).
@@ -127,6 +136,41 @@ def _label(text: str) -> str:
     return fold_ligatures(text.strip().rstrip(" ."))
 
 
+def _locator(pid: str, div: str) -> str:
+    """A paragraph's id as `paragraph_segments` names it: without its div's id in front."""
+    return pid[len(div) + 1:] if div and pid.startswith(div + "-") else pid
+
+
+def _heading_marks(raw: str, segments: list[Segment], headings_wanted: list,
+                   filename: str) -> list[dict]:
+    """(locator, level, repeats the label) as marks on `raw`, whose paragraphs are
+    `segments` in order."""
+    spans = headings.paragraphs(raw)
+    if len(spans) != len(segments):
+        raise ValueError(f"{filename}: {len(spans)} paragraphs read, {len(segments)} named")
+    wanted = {locator: (level, repeats) for locator, level, repeats in headings_wanted}
+    out = []
+    for (at, end), segment in zip(spans, segments):
+        if segment.locator in wanted:
+            level, repeats = wanted.pop(segment.locator)
+            out.append(headings.mark(at, end, level=level, chapter_title=repeats))
+    if wanted:
+        raise ValueError(f"{filename}: headings {sorted(wanted)} are not paragraphs read")
+    return out
+
+
+def _marks_in_content(part: str, content: str, marks: list[dict], filename: str,
+                      anchor: str) -> list[dict]:
+    """A piece's marks, offsets into `part`, moved to the same paragraphs of `content`
+    (`clean_text` changes lengths, never the paragraphs)."""
+    before, after = headings.paragraphs(part), headings.paragraphs(content)
+    if len(before) != len(after):
+        raise ValueError(f"{filename}: {anchor}: cleaning changed its paragraphs")
+    index = {span: k for k, span in enumerate(before)}
+    return [{**m, "at": after[index[(m["at"], m["end"])]][0],
+             "end": after[index[(m["at"], m["end"])]][1]} for m in marks]
+
+
 def _reference(title: str, label: str) -> str:
     """A chapter's citation: no author (C-15). The card, the copied citation and the
     models take the author from the resolved display author, so a relabel reaches them."""
@@ -190,12 +234,26 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             meta.update(extra_meta)
         if plan.meta:
             meta.update(plan.meta)
+        segments = paragraph_segments(elem, edit)
+        wanted = [(_locator(pid, ch_key), level, repeats)
+                  for pid, level, repeats in plan.headings]
+        if plan.lead:
+            prefix = "\n\n".join(text for text, _ in plan.lead)
+            raw = f"{prefix}\n\n{raw}"
+            removed = [(at + len(prefix) + 2, text) for at, text in removed]
+            leads = [Segment(f"lead-{k}", text) for k, (text, _) in enumerate(plan.lead, 1)]
+            segments = leads + segments
+            wanted = [(s.locator, level, False)
+                      for s, (_, level) in zip(leads, plan.lead)] + wanted
         # Pieces hold whole paragraphs and verse blocks (1.10c); `raw` joins them so.
         parts = [p.text for p in pack_units([(None, b) for b in raw.split("\n\n")], maxc)]
-        named = name_pieces(plan.anchor or ch_key, raw, parts,
-                            paragraph_segments(elem, edit))
-        for k, (part, (anchor, units), notes) in enumerate(zip(
-                parts, named, notes_per_piece(raw, parts, removed)), 1):
+        marks = _heading_marks(raw, segments, wanted, filename) if wanted else []
+        if marks:
+            parts = headings.hold_headings(raw, parts, marks)
+        piece_marks = headings.split_marks(raw, parts, marks) if marks else [[]] * len(parts)
+        named = name_pieces(plan.anchor or ch_key, raw, parts, segments)
+        for k, (part, (anchor, units), notes, held) in enumerate(zip(
+                parts, named, notes_per_piece(raw, parts, removed), piece_marks), 1):
             # Notes are editor material (rule G): their count is kept, and the scripture
             # references among them become the passage's footnotes.
             content = clean_text(part)
@@ -205,6 +263,9 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
                 refs = footnotes(part, content, notes)
                 if refs:
                     piece_meta["footnotes"] = refs
+            if held:
+                piece_meta = headings.with_headings(
+                    piece_meta, _marks_in_content(part, content, held, filename, anchor))
             passages.append(Passage(
                 content=content,
                 reference=piece_reference(

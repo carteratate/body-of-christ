@@ -4,13 +4,15 @@ Each work is one vendored ThML file under `sources/theologians/` and one entry i
 `WORKS`: its labels, its dates and translation, and which of the file's divs are the
 author's. The file's other divs (title page, editors' introductions and prefaces, annals,
 indexes) are never read, so an editor's essay cannot reach a passage by default. Inside a
-chapter, rule G drops the editors' paragraphs (`_TeresaEditor`), and their notes leave
+chapter, rule G drops the editors' paragraphs (`_WorkEditor`), and their notes leave
 the text as everywhere (`ingest.thml_doc`).
 
-The works' own headings are chapter labels, never passage text. Where the author wrote a
-longer heading than the label holds (each chapter of the Interior Castle opens "This
-chapter treats of…"; Teresa's arguments of the Life's chapters stand together before the
-book), it is kept whole as `metadata["heading"]` on the chapter's passages.
+The works' own headings are chapter labels, and a heading the work prints longer than
+its label stays in the text, marked through `headings.py` (#445; Carter, 23 Nov 2026):
+each chapter of the Interior Castle opens with Teresa's "This chapter treats of…", her
+arguments of the Life's chapters (printed together before the book) each open their
+chapter, and a book's, part's or mansion's own heading opens its first chapter. Levels:
+1 for a division the label names, 2 below it, 3 deeper (`headings.py`).
 
 The documents join the collection `COLLECTION`, today's `medieval`, which 5.1b.3 renames
 to `theologians`: that rename changes the one constant `ingest.keys.THEOLOGIANS`. The files stay in
@@ -27,11 +29,10 @@ from typing import Callable
 import defusedxml.ElementTree as ET
 
 from model import Document
-from normalize.caps import roman_capitals
 from ingest.common import _block_text, _build_parent_map
 from ingest.keys import THEOLOGIANS
 from ingest.editorial import PLAIN_CALLERS, ChapterEdit, Editor, Removed
-from ingest.thml_doc import ChapterPlan, make_doc
+from ingest.thml_doc import ChapterPlan, _clip, make_doc
 
 # The collection these works publish under; 5.1b.3 renames it in `ingest.keys`.
 COLLECTION = THEOLOGIANS
@@ -48,10 +49,13 @@ class ThmlWork:
     title: str
     author: str
     year: int                  # when the author finished it
-    translator: str
-    translation_year: int
+    translation: str           # as the card reads it after "Translated by", or whole
     chapters: Callable         # root -> [(book, div, ChapterPlan)]
     genre: str                 # D5's writer value, or `other` (registry.genres)
+    # Paragraph classes the work prints its own headings in (a chapter's title, Teresa's
+    # chapter headings): kept in the text though they repeat a title line, and set as
+    # printed (no opening-capitals change); the chapter plans mark them.
+    title_classes: frozenset[str] = frozenset()
 
     @property
     def source_key(self) -> str:
@@ -90,12 +94,13 @@ _CHAPTER_TITLE = re.compile(r"^Chapter ([IVXLC]+)\.\s+(.+?)\.?$")
 
 def _castle_chapters(root):
     preface = _div(root, "iv")
-    title = _castle_heading(preface)      # Teresa's title line over her preface
-    out = [(None, preface, ChapterPlan(label="Preface",
-                                       meta={"heading": title} if title else None))]
+    out = [(None, preface, ChapterPlan(label="Preface", headings=_castle_heading(preface)))]
     for mansion_id in _CASTLE_MANSIONS:
         mansion = _div(root, mansion_id)
         book = (mansion.get("title") or "").strip()
+        # The mansion's own heading ("THE FIRST MANSIONS", `<h1>`) opens its first chapter.
+        lead = ((_text(mansion.find("h1")), 1),)
+        first = True
         for ch in mansion:
             if not (isinstance(ch.tag, str) and ch.tag == "div2"):
                 continue
@@ -105,50 +110,30 @@ def _castle_chapters(root):
             if not m:
                 raise ValueError(f"teresa-castle2.xml: unexpected chapter title "
                                  f"{ch.get('title')!r}")
-            heading = _castle_heading(ch)
-            out.append((book, ch, ChapterPlan(
-                label=f"Chapter {m.group(1)}. {m.group(2)}",
-                meta={"heading": heading} if heading else None)))
+            out.append((book, ch, ChapterPlan(label=f"Chapter {m.group(1)}. {m.group(2)}",
+                                              headings=_castle_heading(ch),
+                                              lead=lead if first else ())))
+            first = False
     out.append((None, _div(root, "xii"), ChapterPlan(label="Epilogue")))
     return out
 
 
-def _castle_heading(chapter) -> str | None:
-    """Teresa's heading of a Castle chapter ("This chapter treats of…"), or her title line
-    over the preface, printed in capitals as the div's first `Centered` paragraph, in
-    sentence case."""
+def _castle_heading(chapter) -> tuple[tuple[str, int, bool], ...]:
+    """Teresa's heading of a Castle chapter ("THIS CHAPTER TREATS OF…"), or her title
+    line over the preface, printed in capitals as the div's first `Centered` paragraph:
+    level 2, under the chapter's label."""
     for block in chapter:
         if block.tag != "p" or not _text(block):
             continue          # an empty paragraph stands before it in VI ch. ii and IV
-        return _sentence_case(_text(block)) if block.get("class") == "Centered" else None
-    return None
-
-
-def _sentence_case(text: str) -> str:
-    """A heading printed in capitals, in sentence case: each sentence's first letter
-    capital, and the words that are always capital (God, Our Lord, His Majesty, names)
-    left to `_ALWAYS_CAPITAL`."""
-    out = text.lower()
-    out = re.sub(r"(^|[.!?]\s+)([a-z])", lambda m: m.group(1) + m.group(2).upper(), out)
-    for word in sorted(_ALWAYS_CAPITAL, key=len, reverse=True):   # "Mother of God" first
-        # "St." ends in no word character, so its end is not a word boundary.
-        end = "" if word.endswith(".") else r"\b"
-        out = re.sub(rf"\b{re.escape(word.lower())}{end}", word, out)
-    return roman_capitals(out)
-
-
-_ALWAYS_CAPITAL = (
-    "God", "Our Lord", "Lord", "His Majesty", "Majesty", "Christ", "Jesus", "Holy Ghost",
-    "Holy Spirit", "Blessed Trinity", "Trinity", "He", "Him", "His", "Himself", "Bridegroom",
-    "Spouse", "King", "Teresa", "Carmel", "Discalced", "Carmelite", "Martha", "Mary",
-    "Magdalen", "Mother of God", "Our Lady", "Interior Castle", "Saviour", "St.", "Saint", "Church", "Catholic", "Gospel", "Communion", "I")
+        return ((block.get("id"), 2, False),) if block.get("class") == "Centered" else ()
+    return ()
 
 
 # The Life (Lewis, 1904): Teresa's prologue and forty chapters, then the Relations she
 # wrote for her confessors, which Lewis prints after them. Left out: the frontispiece and
 # title page (i, ii), the contents (iii), Zimmerman's introduction (iv), Teresa's
-# arguments of the chapters gathered before the book (v; each is kept as its chapter's
-# heading), Lewis's preface (vi), the annals (vii), the index (x) and CCEL's indexes (xi).
+# arguments of the chapters gathered before the book (v; each opens its chapter, level 2),
+# Lewis's preface (vi), the annals (vii), the index (x) and CCEL's indexes (xi).
 # A sentence's end in an argument line; "St." is not one.
 _FIRST_SENTENCE = re.compile(r"(?<!\bSt)\.\s+")
 _LIFE_ARGUMENT = re.compile(r"^(?:J\.H\.S\.\s*)?Chapter ([IVXLC]+)\.\s*[—-]+\s*(.+)$")
@@ -173,17 +158,21 @@ def _life_chapters(root):
             raise ValueError(f"teresa-life.xml: chapter {ch.get('id')!r} has no number "
                              f"or argument")
         # The label takes the first sentence of the edition's argument line, which is
-        # Lewis's; Teresa's own heading is the chapter's `heading`.
+        # Lewis's; Teresa's own heading opens the chapter's text, level 2.
         subject = _FIRST_SENTENCE.split(_text(argument), 1)[0].rstrip(".")
         out.append((None, ch, ChapterPlan(label=f"Chapter {n}. {subject}",
-                                          meta={"heading": headings[n]})))
+                                          lead=((headings[n], 2),))))
+    # "The Relations." (`<h2>`) opens the first of them, level 1.
+    lead = ((_text(relations.find("h2")), 1),)
     for rel in relations:
         if not (isinstance(rel.tag, str) and rel.tag == "div2"):
             continue
         if (rel.get("type") or "").lower() != "relation" or not rel.get("n"):
             raise ValueError(f"teresa-life.xml: unexpected div {rel.get('id')!r} in the "
                              f"Relations")
-        out.append(("The Relations", rel, ChapterPlan(label=f"Relation {rel.get('n')}")))
+        out.append(("The Relations", rel, ChapterPlan(label=f"Relation {rel.get('n')}",
+                                                      lead=lead)))
+        lead = ()
     return out
 
 
@@ -203,10 +192,11 @@ def _life_headings(arguments) -> dict[str, str]:
 
 
 # What is no passage text though it stands in the author's chapters, by file: paragraphs
-# by class (heading: the author's heading, kept as `heading`; apparatus: an editor's), and
-# divs whose text is the author's headings, kept as each chapter's `heading`. The editor
-# drops them, and the checks' extractor (`checks.source_text.thml_units`) reads them so.
-NOT_BODY_CLASSES = {"teresa-castle2.xml": {"Centered": "heading", "Outline": "apparatus"}}
+# by class (an editor's), which the editor drops; and divs whose own paragraphs are the
+# author's headings (the Life's arguments, which open their chapters through `lead`),
+# which the build never reads. The checks' extractor (`checks.source_text.thml_units`)
+# reads both so.
+NOT_BODY_CLASSES = {"teresa-castle2.xml": {"Outline": "apparatus"}}
 HEADING_DIVS = {"teresa-life.xml": frozenset({"v"})}
 # Single paragraphs by id: in the Life, Báñez's signed note on the manuscript after
 # Teresa's last line (ch. xl) and the transcriber's page marker "{p. 479}" (Relation XI).
@@ -225,12 +215,11 @@ def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str], dict[str
             NOT_BODY_PARAGRAPHS.get(name, {}))
 
 
-class _TeresaEditor(Editor):
-    """Rule G for the Teresa files, beyond the editors' lines `Editor` finds. The Castle's
-    chapters open with Teresa's heading in capitals (`Centered`, kept as the chapter's
-    `heading`) and Zimmerman's outline of the chapter's numbered paragraphs (`Outline`,
-    "1. Plan of this book. 2. …"), and its preface with Teresa's title line in capitals
-    (`Centered`): none is passage text. In the Life, two single paragraphs go by id
+class _WorkEditor(Editor):
+    """Rule G for these files, beyond the editors' lines `Editor` finds. The Castle's
+    chapters open with Zimmerman's outline of the chapter's numbered paragraphs
+    (`Outline`, "1. Plan of this book. 2. …"), which goes; Teresa's heading in capitals
+    before it (`Centered`) stays, marked. In the Life, two single paragraphs go by id
     (`NOT_BODY_PARAGRAPHS`).
 
     The Castle also prints the first word of a chapter's first paragraph in capitals
@@ -240,8 +229,20 @@ class _TeresaEditor(Editor):
     capitals of its own. A caller printed as a plain digit is read without it
     (`ingest.editorial.PLAIN_CALLERS`)."""
 
+    def __init__(self, *args, title_classes: frozenset[str] = frozenset(), **kwargs):
+        super().__init__(*args, **kwargs)
+        self.title_classes = title_classes
+
     def chapter(self, elem, label: str) -> ChapterEdit:
         edit = super().chapter(elem, label)
+        for block in elem:
+            # A title the work prints as the chapter's first paragraph is marked, not
+            # dropped, though it repeats the label `Editor` would drop it for.
+            if block.tag == "p" and block.get("class") in self.title_classes \
+                    and edit.dropped.get(id(block)) == "heading":
+                del edit.dropped[id(block)]
+                edit.removed = [x for x in edit.removed
+                                if x.block != edit.locators[id(block)]]
         for block in elem:
             if block.tag != "p":
                 continue
@@ -260,6 +261,8 @@ class _TeresaEditor(Editor):
             marked = _NOTE_CALL.sub("", marked)
             for printed, without in PLAIN_CALLERS.get((callers, block.get("id")), ()):
                 marked = marked.replace(printed, without)
+            if block.get("class") in self.title_classes:
+                return marked, notes          # a title in capitals throughout stays so
             return _OPENING_CAPS.sub(_opening, marked, count=1), notes
 
         edit.edit = opened
@@ -279,23 +282,15 @@ def _opening(m: re.Match) -> str:
     return m.group(1) + (m.group(2) or "") + word
 
 
-WORKS: tuple[ThmlWork, ...] = (
-    ThmlWork(file="teresa-castle2.xml", url="https://ccel.org/ccel/t/teresa/castle2.xml",
-             title="The Interior Castle", author="Teresa of Avila", year=1577,
-             translator="Benedictines of Stanbrook", translation_year=1921,
-             chapters=_castle_chapters, genre="treatise"),
-    ThmlWork(file="teresa-life.xml", url="https://ccel.org/ccel/t/teresa/life.xml",
-             title="The Life of St. Teresa of Jesus", author="Teresa of Avila", year=1565,
-             translator="David Lewis", translation_year=1904, chapters=_life_chapters,
-             genre="other"),
-)
-
 
 # A paragraph the file closes mid-sentence: it ends on a lower-case word, a comma, a
 # semicolon, a dash or the word "I", or the next part starts in lower case. A next part
 # that opens with its section number ("25. The devils") is a paragraph of its own.
 _OPEN_END = re.compile(r"(?:[a-z,;—-]|\bI)$")
 _SECTION_START = re.compile(r"^\d+\.?\s")
+# The classes a file gives its plain text paragraphs; any other class (a heading, an
+# outline, a note) is never joined on.
+_BODY_CLASSES = (None,)
 
 
 def _rejoin_split_paragraphs(chapters, work: ThmlWork) -> int:
@@ -319,7 +314,8 @@ def _rejoin_split_paragraphs(chapters, work: ThmlWork) -> int:
                 j += 1
             nxt = kids[j] if j < len(kids) else None
             head, tail = _text(first), _text(nxt) if nxt is not None else ""
-            if nxt is None or nxt.tag != "p" or not head or not tail or nxt.get("class") \
+            if nxt is None or nxt.tag != "p" or not head or not tail \
+                    or nxt.get("class") not in _BODY_CLASSES \
                     or _SECTION_START.match(tail) \
                     or not (_OPEN_END.search(head) or tail[0].islower()):
                 k += 1
@@ -341,19 +337,31 @@ def _append(first, nxt) -> None:
     first.extend(list(nxt))
 
 
+WORKS: tuple[ThmlWork, ...] = (
+    ThmlWork(file="teresa-castle2.xml", url="https://ccel.org/ccel/t/teresa/castle2.xml",
+             title="The Interior Castle", author="Teresa of Avila", year=1577,
+             translation="Benedictines of Stanbrook (1921)", chapters=_castle_chapters,
+             genre="treatise", title_classes=frozenset({"Centered"})),
+    ThmlWork(file="teresa-life.xml", url="https://ccel.org/ccel/t/teresa/life.xml",
+             title="The Life of St. Teresa of Jesus", author="Teresa of Avila", year=1565,
+             translation="David Lewis (1904)", chapters=_life_chapters, genre="other"),
+)
+
+
 def build_work(work: ThmlWork) -> Document:
     root = _read_root(os.path.join(_SRC, work.file))
     chapters = work.chapters(root)
     _rejoin_split_paragraphs([div for _, div, _ in chapters], work)
     parent_map = _build_parent_map(root)
-    editor = _TeresaEditor(work.file, work.source_key, parent_map)
+    editor = _WorkEditor(work.file, work.source_key, parent_map,
+                         title_classes=work.title_classes)
     doc = make_doc(collection=COLLECTION, filename=f"../{SOURCE_DIR}/{work.file}",
                    author=work.author, title=work.title,
                    chapters=chapters, source_key=work.source_key,
                    year=work.year, extra_meta={"source_url": work.url}, editor=editor)
     if doc is None:
         raise ValueError(f"{work.file}: no passages")
-    doc.translation = f"{work.translator} ({work.translation_year})"
+    doc.translation = work.translation
     return doc
 
 
