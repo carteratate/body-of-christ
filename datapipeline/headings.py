@@ -311,6 +311,8 @@ def problems(content: str, marks) -> list[str]:
     elif paras and len(paras) - 1 in marked:
         found.append("the passage ends on a heading")
     for i, m in placed:
+        if m.get("pairs_next") and marked.get(i - 1, {}).get("pairs_next"):
+            found.append(f"mark at {m['at']}: a pair's title cannot open another pair")
         if m.get("pairs_next"):
             title = marked.get(i + 1)
             if title is None or title.get("role") != HEADING \
@@ -336,6 +338,10 @@ MAX_HEADING_CHARS = 110
 _OPENS_AS_TEXT = re.compile(r"""^(?:§|\{\{v:|["“”‘’'«(\[]|[-–—•*]\s|\d+[.)]\s)""")
 _ENDS_AS_SENTENCE = re.compile(r"""[.!?:;,]["”’'»)\]]*$|:—$""")
 _LETTER = re.compile(r"[^\W\d_]")
+# A numbered section head: "I. WHY DID THE WORD BECOME FLESH?", "2. The diocesan curia
+# and commissions", "A) General norms". A numbered sentence ends with a stop instead.
+_NUMBERED_HEAD = re.compile(r"^(?:[IVXLC]+|[A-Z]|\d+)[.)]\s+\S")
+_ENDS_AS_STATEMENT = re.compile(r"""[.:;,]["”’'»)\]]*$|:—$""")
 _DIVISION = re.compile(
     r"""^(?:PART|SECTION|CHAPTER|ARTICLE|BOOK|QUESTION|TITLE|PARAGRAPH)\s+
         (?:[0-9]+|[IVXLC]+|ONE|TWO|THREE|FOUR|FIVE|SIX|SEVEN|EIGHT|NINE|TEN)\b
@@ -365,6 +371,8 @@ def looks_like_heading(paragraph: str) -> bool:
         return False
     if _DIVISION.match(text):
         return True
+    if _NUMBERED_HEAD.match(text):
+        return len(text) <= MAX_HEADING_CHARS and not _ENDS_AS_STATEMENT.search(text)
     return (len(text) <= MAX_HEADING_CHARS and not _OPENS_AS_TEXT.match(text)
             and not _ENDS_AS_SENTENCE.search(text))
 
@@ -388,5 +396,10 @@ def repeats_label(heading: str, label: str) -> bool:
     heading, label = normalized(heading), normalized(label)
     if not heading or not label:
         return False
-    return heading == label or _DIVISION_PREFIX.sub("", heading) == label \
-        or heading == _DIVISION_PREFIX.sub("", label)
+    # A breadcrumb label ("Part Three Section Two Chapter Two Article 5 The Fifth
+    # Commandment") is compared from each division it names.
+    words = label.split()
+    labels = {label} | {" ".join(words[k:]) for k in range(1, len(words))
+                        if _DIVISION_PREFIX.match(" ".join(words[k:]))}
+    return any(heading == form or _DIVISION_PREFIX.sub("", heading) == form
+               or heading == _DIVISION_PREFIX.sub("", form) for form in labels)

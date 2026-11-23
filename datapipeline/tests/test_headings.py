@@ -302,3 +302,31 @@ def test_a_sentence_opening_with_a_division_is_not_a_title():
         "Article 1 of the Constitution sets out the rights of the faithful in detail.")
     assert not headings.looks_like_division("Article 1 of the Constitution sets out…")
     assert headings.looks_like_division("CHAPTER ONE: WHAT IS HAPPENING TO OUR COMMON HOME")
+
+
+@pytest.mark.parametrize("line", [
+    "I. WHY DID THE WORD BECOME FLESH?", "2. The diocesan curia and commissions",
+    "A) General norms",
+])
+def test_numbered_section_heads_are_heading_like(line):
+    assert headings.looks_like_heading(line)
+
+
+@pytest.mark.parametrize("line", [
+    "1. Let a bishop be ordained by two or three bishops.", "2. See above;",
+])
+def test_numbered_sentences_are_not(line):
+    assert not headings.looks_like_heading(line)
+
+
+def test_a_pair_matches_the_last_division_of_a_breadcrumb_label():
+    label = "Part Three, Section Two, Chapter Two, Article 5, The Fifth Commandment"
+    assert headings.repeats_label("Article 5 The Fifth Commandment", label)
+    assert not headings.repeats_label("Article 4 The Fifth Commandment", label)
+
+
+def test_a_pairs_title_cannot_open_another_pair():
+    content = "Article 1\n\nTitle\n\nMore\n\n" + BODY
+    marks = [_h(0, 9, level=1, pairs_next=True), _h(11, 16, level=1, pairs_next=True),
+             _h(18, 22, level=1)]
+    assert any("cannot open another pair" in f for f in headings.problems(content, marks))

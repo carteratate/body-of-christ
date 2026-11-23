@@ -395,15 +395,17 @@ async def get_search_results(
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
     # Outside the restore deadline: optional notes must never turn a restore into a
-    # 504. `fetch_footnotes` bounds itself and falls back to none.
-    notes = await fetch_footnotes(pool, [
-        (str(row["chunk_id"]), row["content"]) for row in shown.values()
-        if has_footnotes(row["collection"], row["document_title"])
-    ])
-    # Bounded on its own like the notes (issue #445).
-    marks = await fetch_headings(pool, [
-        (str(row["chunk_id"]), row["content"]) for row in shown.values()
-    ])
+    # 504. `fetch_footnotes` bounds itself and falls back to none; the headings (issue
+    # #445) likewise, read alongside so they add no wait of their own.
+    notes, marks = await asyncio.gather(
+        fetch_footnotes(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+            if has_footnotes(row["collection"], row["document_title"])
+        ]),
+        fetch_headings(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+        ]),
+    )
     # Outside the deadline for the same reason; bounded on its own (2.4a).
     facts, _ = await document_facts.fetch_best_effort(pool, [
         str(row["chunk_id"]) for row in shown.values()

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import time
 import uuid
@@ -185,13 +186,16 @@ async def list_bookmarks(
         logger.error("list_bookmarks query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
-    notes = await fetch_footnotes(pool, [
-        (str(row["chunk_id"]), row["content"]) for row in shown.values()
-        if has_footnotes(row["collection"], row["document_title"])
-    ])
-    marks = await fetch_headings(pool, [
-        (str(row["chunk_id"]), row["content"]) for row in shown.values()
-    ])
+    # Notes and headings (issue #445), each best-effort and bounded, read together.
+    notes, marks = await asyncio.gather(
+        fetch_footnotes(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+            if has_footnotes(row["collection"], row["document_title"])
+        ]),
+        fetch_headings(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+        ]),
+    )
     facts, _ = await document_facts.fetch_best_effort(pool, [
         str(row["chunk_id"]) for row in shown.values()
     ])

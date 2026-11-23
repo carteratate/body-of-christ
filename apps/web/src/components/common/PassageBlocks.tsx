@@ -90,7 +90,7 @@ export function PassageBlocks({
   style?: CSSProperties;
   id?: string;
   /** The reader, where the passage opens its chapter: a level-1 heading that repeats
-   *  the chapter heading above it is left out, unless a footnote marker sits in it. */
+   *  the chapter heading above it is left out. */
   hideChapterTitle?: boolean;
   /** The reader's `§N` superscript, set on the first paragraph after the headings. */
   unitMarker?: (paragraph: string) => ReactNode;
@@ -103,8 +103,8 @@ export function PassageBlocks({
   }
   const shown = blocks
     .map((block, index) => ({ block, index }))
-    .filter(({ block, index }) => !(hideChapterTitle && block.kind === "heading" && block.level === 1
-      && block.chapterTitle && !notesFor.has(index)));
+    .filter(({ block }) => !(hideChapterTitle && block.kind === "heading" && block.level === 1
+      && block.chapterTitle));
   const firstParagraph = shown.find(({ block }) => block.kind === "paragraph")?.index;
 
   return (
