@@ -416,8 +416,9 @@ def test_therese_letters_keep_their_dates_and_prayers_their_epigraphs():
 
 
 def test_lines_split_without_a_page_break_stay_apart_unless_the_second_runs_on():
-    # A dateline's two lines, a lead-in ending in a dash, an address: separate paragraphs.
-    assert "Annecy, the day of the most loving Apostles\n\nS. Peter and S. Paul. 1616." \
+    # In Julian and Thérèse, a lead-in ending in a dash and an address are separate
+    # paragraphs; de Sales's files join as #460 built them.
+    assert "Annecy, the day of the most loving Apostles S. Peter and S. Paul. 1616." \
         in _text(_love())
     assert "open example.—\n\nIt is the most worship" in _text(_julian())
     assert "Your little daughter,\n\nTeresa of the Child Jesus." in _text(_therese())

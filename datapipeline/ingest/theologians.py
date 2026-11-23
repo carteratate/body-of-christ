@@ -574,6 +574,11 @@ _SECTION_START = re.compile(r"^\d+\.?\s")
 _BODY_CLASSES = (None, "Body", "noindent")
 
 
+# Files whose paragraphs split with nothing between are joined only when the second part
+# runs on: Julian's lead-ins and Thérèse's addresses and signatures are lines of their own.
+_RUN_ON_FILES = frozenset({"julian-revelations.xml", "therese-autobio.xml"})
+
+
 def _rejoin_split_paragraphs(chapters, work: ThmlWork) -> int:
     """Join each paragraph of the chapters the build reads that the CCEL file splits at a
     page break (`<pb>` between two `<p>`; the Life, 25 times) back into one, so a
@@ -596,10 +601,12 @@ def _rejoin_split_paragraphs(chapters, work: ThmlWork) -> int:
             nxt = kids[j] if j < len(kids) else None
             head, tail = _text(first), _text(nxt) if nxt is not None else ""
             # Across a page break (or a dropped line) a paragraph ending mid-sentence or a
-            # part starting in lower case is one paragraph; with nothing between, only the
-            # second (an address's or a signature's lines are paragraphs of their own).
+            # part starting in lower case is one paragraph; with nothing between, in the
+            # files of `_RUN_ON_FILES`, only the second (an address's or a signature's
+            # lines are paragraphs of their own there).
             broken = j > k + 1
-            if nxt is not None and tail and not broken and not re.match(r"[a-z.,;:]", tail):
+            if nxt is not None and tail and not broken and work.file in _RUN_ON_FILES \
+                    and not re.match(r"[a-z.,;:]", tail):
                 k += 1
                 continue
             if nxt is None or nxt.tag != "p" or not head or not tail \
