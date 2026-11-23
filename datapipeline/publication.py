@@ -174,6 +174,15 @@ FROM public.chunks c JOIN public.documents d ON d.id = c.document_id
 WHERE d.collection = ANY($1::text[]) AND c.retired_at IS NULL
 ORDER BY d.collection, c.document_id, c.position
 """
+# Retired passages that show a tombstone (`retirements.compute`'s `tombstoned`).
+TOMBSTONED_PASSAGES_SQL = """
+SELECT c.id::text AS id, c.document_id::text AS document_id, d.collection, c.anchor,
+       c.chapter_key, c.chapter_label, c.reference, c.position, d.title, d.author
+FROM public.chunks c JOIN public.documents d ON d.id = c.document_id
+JOIN public.corpus_tombstones t ON t.entity = 'passage' AND t.id = c.id
+WHERE d.collection = ANY($1::text[]) AND c.retired_at IS NOT NULL
+ORDER BY d.collection, c.document_id, c.position
+"""
 LIVE_DOCUMENTS_SQL = """
 SELECT id::text AS id, collection, title, author FROM public.documents
 WHERE collection = ANY($1::text[]) AND retired_at IS NULL
@@ -336,10 +345,13 @@ class StageRunner:
                     await reader_writer.write_staged_document(conn, d)
                 await reader_writer.copy_live_annotations(conn, collections)
                 live_passages, live_documents = await live_rows(conn, collections)
+                tombstoned = [retirements.LivePassage(**dict(r)) for r in
+                              await conn.fetch(TOMBSTONED_PASSAGES_SQL, collections)]
                 found = retirements.compute(
                     live_passages, live_documents, documents, registry,
                     release=request.release, at=at,
-                    live_anchor_redirects=await live_anchor_redirects(conn))
+                    live_anchor_redirects=await live_anchor_redirects(conn),
+                    tombstoned=tombstoned)
                 if found.problems:
                     raise StageRefused(
                         f"REFUSING: {len(found.problems)} live IDs the build drops are "
