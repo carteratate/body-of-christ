@@ -158,7 +158,7 @@ def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOU
     documents = [reg.attach_held_texts(
                      reg.apply_document_facts(reg.drop_removed(d, registry), registry), registry)
                  for d in documents if d.id not in removed]
-    validate_documents(collection, documents)
+    validate_documents(collection, documents, registry)
     # 4.3: every held removal of these documents belongs to one held-text entry. Off
     # only for scripts/held_texts.py, which drafts the entries that are missing.
     problems = (reg.held_text_problems(registry, {d.id for d in documents})
@@ -169,7 +169,8 @@ def build(collection: str, *, source_adapters: Mapping[str, SourceAdapter] = SOU
     return documents
 
 
-def validate_documents(collection: str, documents: list[Document]) -> None:
+def validate_documents(collection: str, documents: list[Document],
+                       registry: reg.WorkRegistry | None = None) -> None:
     wrong_collection = next(
         (document.collection for document in documents if document.collection != collection),
         None,
@@ -181,7 +182,7 @@ def validate_documents(collection: str, documents: list[Document]) -> None:
     # Health block rules (item 0.1b). build() runs this before a stage opens any store,
     # and a dry run runs it too. Rules and their known defects are per source, so a
     # published collection is judged source by source (5.1b.3).
-    for source, docs in by_source(documents).items():
+    for source, docs in by_source(documents, registry).items():
         refuse_block_violations(source, docs)
     # Contents trees (#250): a node must open a chapter the document has, in reading
     # order. Raises contents.ContentsError, a ValueError.

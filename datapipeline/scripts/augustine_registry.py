@@ -42,7 +42,7 @@ if DATAPIPELINE not in sys.path:
 
 import registry  # noqa: E402
 from ingest import editorial  # noqa: E402
-from publication import build  # noqa: E402
+from publication import SOURCE_BUILDS, build  # noqa: E402
 from scripts import editorial_removals as er  # noqa: E402
 from scripts.reconcile_registry import kept_entries, low_scores, lost_text, settle_by_text  # noqa: E402
 
@@ -221,7 +221,7 @@ def plan(reg: registry.WorkRegistry, live: dict[str, str], today: str):
     previous = registry.activate(reg)
     try:
         with editorial.recording() as log:
-            documents = build(COLLECTION)
+            documents = build(COLLECTION, source_adapters=SOURCE_BUILDS)
     finally:
         registry.activate(previous)
     reg = move_rows(register_works(reg, documents, today), documents)

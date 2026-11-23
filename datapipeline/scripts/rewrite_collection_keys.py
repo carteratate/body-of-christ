@@ -292,6 +292,11 @@ async def _run(conn, write: bool, vocabulary: list[str]) -> int:
         if not write:
             print("dry run: nothing written")
             return 0
+        still = report["tables"]["documents"]["live_still_under_old_keys"]
+        if still:
+            print(f"REFUSING: {sum(still.values())} live documents still carry an old key "
+                  "(apply the 5.1b.3 publish first)", file=sys.stderr)
+            return 1
         strings = sum(t.get("double_encoded_filters", 0) for t in report["tables"].values())
         if strings:
             print(f"REFUSING: {strings} saved filters are a double-encoded JSON string; "

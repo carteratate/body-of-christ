@@ -89,6 +89,12 @@ SCHEMA = """
 """
 
 
+# The database after the publish apply: no live document under an old key, and no
+# double-encoded filters (which a write run refuses).
+AFTER_APPLY = SCHEMA.replace("'encyclicals', 'Live', NULL", "'papal', 'Live', NULL").replace(
+    "to_jsonb('{\"collections\": [\"encyclicals\"]}'::text)", "'{}'")
+
+
 @pytest.fixture(scope="module")
 def cluster():
     cluster, stop = pg_corpus.start()
@@ -242,8 +248,7 @@ def test_a_malformed_outcome_takes_part_in_no_merge():
 
 async def test_the_write_run_locks_and_completes(cluster):
     database = cluster.new_database()
-    cluster.psql(database, SCHEMA.replace(
-        "to_jsonb('{\"collections\": [\"encyclicals\"]}'::text)", "'{}'"))
+    cluster.psql(database, AFTER_APPLY)
     conn = await cluster.connect(database)
     try:
         assert await R._run(conn, True, VOCAB) == 0
@@ -271,8 +276,7 @@ async def test_a_guest_claim_during_the_run_is_waited_for_not_deadlocked(cluster
     import asyncio
 
     database = cluster.new_database()
-    cluster.psql(database, SCHEMA.replace(
-        "to_jsonb('{\"collections\": [\"encyclicals\"]}'::text)", "'{}'"))
+    cluster.psql(database, AFTER_APPLY)
     claim = await cluster.connect(database)
     run = await cluster.connect(database)
     try:
@@ -295,3 +299,18 @@ async def test_a_guest_claim_during_the_run_is_waited_for_not_deadlocked(cluster
     finally:
         await claim.close()
         await run.close()
+
+
+async def test_apply_refuses_while_live_documents_carry_old_keys(cluster):
+    """The script runs after the publish apply; before it, a live document still under
+    an old key means the order is wrong."""
+    database = cluster.new_database()
+    cluster.psql(database, SCHEMA.replace(
+        "to_jsonb('{\"collections\": [\"encyclicals\"]}'::text)", "'{}'"))
+    conn = await cluster.connect(database)
+    try:
+        assert await R._run(conn, True, VOCAB) == 1
+        assert await conn.fetchval(
+            "SELECT collection FROM documents WHERE id = '00000000-0000-0000-0000-0000000000d1'") == "encyclicals"
+    finally:
+        await conn.close()
