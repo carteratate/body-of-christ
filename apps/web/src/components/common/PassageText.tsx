@@ -1,10 +1,28 @@
 import { Fragment } from "react";
 import { footnoteSegments, type Footnote } from "@/lib/footnotes";
+import type { PassageHeading } from "@/lib/passage-headings";
 import { renderVerseMarkers } from "@/lib/verse-markers";
+import { PassageBlocks } from "./PassageBlocks";
 
 /** A passage's text with a superscript marker, carrying the note's own number, at
- *  each footnote's offset (issue #279). Without notes it is the plain passage. */
-export function PassageText({ content, footnotes }: { content: string; footnotes: Footnote[] }) {
+ *  each footnote's offset (issue #279). Without notes it is the plain passage. With
+ *  marked headings (issue #445) its headings and paragraphs are set apart. */
+export function PassageText({ content, footnotes, headings = [] }: {
+  content: string;
+  footnotes: Footnote[];
+  headings?: PassageHeading[];
+}) {
+  if (headings.length > 0) {
+    return (
+      <PassageBlocks
+        surface="card"
+        content={content}
+        headings={headings}
+        footnotes={footnotes}
+        className="text-sm text-brand-primary leading-relaxed"
+      />
+    );
+  }
   return (
     <p className="text-sm text-brand-primary leading-relaxed whitespace-pre-wrap">
       {footnotes.length === 0

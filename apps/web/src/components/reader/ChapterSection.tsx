@@ -44,6 +44,8 @@ export function ChapterSection({
       history.set(p.superseded_by, [...(history.get(p.superseded_by) ?? []), p]);
     }
   }
+  // The passage that opens the chapter, right under its heading (issue #445).
+  const opening = chapter.passages.find((p) => !(p.superseded_by && ids.has(p.superseded_by)))?.id;
   const work = workLabel(chapter);
   const credit = chapter.document.facts?.source_credit?.trim() || null;
   return (
@@ -65,7 +67,7 @@ export function ChapterSection({
         <Fragment key={p.id}>
           {p.superseded_by && ids.has(p.superseded_by)
             ? null
-            : <Passage passage={p} highlighted={p.anchor === highlightAnchor} history={history.get(p.id)} highlightAnchor={highlightAnchor} />}
+            : <Passage passage={p} highlighted={p.anchor === highlightAnchor} history={history.get(p.id)} highlightAnchor={highlightAnchor} opensChapter={p.id === opening} />}
           {heldAfter(p.anchor, heldTexts).map((held) => <HeldLine key={held.key} held={held} />)}
         </Fragment>
       ))}

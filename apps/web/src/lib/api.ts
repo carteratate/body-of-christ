@@ -143,6 +143,8 @@ export interface ReaderPassage {
   official_latin_url?: string | null;
   /** Set only on a history passage: the ID of the current passage that replaced it. */
   superseded_by?: string | null;
+  /** Headings marked inside the passage (issue #445); checked by `parseHeadings`. */
+  headings?: unknown;
 }
 
 export interface ReaderChapter {
@@ -233,6 +235,8 @@ export interface BookmarkChunkInfo {
   };
   /** See ChunkResult.footnotes (issue #279). */
   footnotes?: Footnote[];
+  /** See ChunkResult.headings (issue #445); checked by `parseHeadings` where shown. */
+  headings?: unknown;
 }
 
 export interface Bookmark {

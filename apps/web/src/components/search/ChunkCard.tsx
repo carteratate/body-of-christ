@@ -24,6 +24,7 @@ import { displayRole, opensWithRole, rejectedLabel } from "@/lib/passageRole";
 import { RejectedVoice, RoleCaption } from "@/components/common/RejectedVoice";
 import { stripVerseMarkers } from "@/lib/verse-markers";
 import { contentWithMarkers, footnotesCopyText, parseFootnotes } from "@/lib/footnotes";
+import { parseHeadings } from "@/lib/passage-headings";
 import { PassageNotes, PassageText } from "@/components/common/PassageText";
 import { useAppContext } from "@/components/layout/AppShell";
 import { saveFeedbackContext } from "@/lib/feedbackContext";
@@ -201,6 +202,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   const attached = result.context ?? null;
   // Restored searches skip the stream decoder, so the notes are checked here too.
   const footnotes = parseFootnotes(result.footnotes, content);
+  const headings = parseHeadings(result.headings, content);
   const { document_title, author, reference, document_id } = source;
   // A bookmark or a saved search can still carry an old key (5.1b.2).
   const collection = canonicalCollectionKey(source.collection);
@@ -462,7 +464,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
           )}
           {result.status === "moved" && <MovedNote kind={result.redirect?.kind} />}
           {!rejected && role && !opensWithRole(content, role) && <RoleCaption role={role} />}
-          <RejectedVoice label={rejected}><PassageText content={content} footnotes={footnotes} /></RejectedVoice>
+          <RejectedVoice label={rejected}><PassageText content={content} footnotes={footnotes} headings={headings} /></RejectedVoice>
           <PassageNotes footnotes={footnotes} />
           {attached?.relation === "answered_by" && (
             <AttachedPassage context={attached} color={color} rgb={rgb} />

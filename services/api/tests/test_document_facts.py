@@ -59,7 +59,8 @@ async def _events(pool, result):
     with patch("app.rag.pipeline.run_pipeline", AsyncMock(return_value=result)), \
          patch("app.rag.pipeline.get_pool", return_value=pool), \
          patch("app.rag.pipeline.stream_explanation", _no_explanation), \
-         patch("app.rag.pipeline.fetch_footnotes", AsyncMock(return_value={})):
+         patch("app.rag.pipeline.fetch_footnotes", AsyncMock(return_value={})), \
+         patch("app.rag.pipeline.fetch_headings", AsyncMock(return_value={})):
         return [e async for e in run_search_pipeline(
             query="logos", collections=["church-fathers"], translation="CPDV", quota=3,
             user_id=None)]
