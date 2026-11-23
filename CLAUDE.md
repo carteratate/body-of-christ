@@ -91,6 +91,13 @@ links to `/search`.
 
 SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tables.
 
+CI enforces it (`scripts/check_migrations.py`, in the `api` job): a new or changed migration
+fails on DROP TABLE/COLUMN/VIEW/TYPE/SCHEMA/FUNCTION/POLICY, RENAME, ALTER COLUMN … TYPE,
+SET NOT NULL or TRUNCATE outside the `staging` schema, unless the file has a line
+`-- non-additive: <what breaks for the running API, who approved it>`. Editing, renaming
+or deleting a migration already on `master` fails unless the file says
+`-- migration-edit-approved: <reason>`, and a new file may not reuse a number.
+
 ### Core (V1)
 - `user_usage` — the search rate-limit counters
 - `chat_sessions`, `chat_messages` — no longer written since the V1 chat API was removed;
