@@ -21,16 +21,14 @@ function rim(fx: number, fy: number, tx: number, ty: number, r: number) {
 // ── Palette ───────────────────────────────────────────────────────────────
 
 const PALETTE: Record<string, { hex: string; label: string; short: string }> = {
-  "bible":                    { hex: "#d4885a", label: "Bible",          short: "BI" },
-  "catechism":                { hex: "#5b9bd4", label: "Catechism",      short: "CA" },
-  "church-fathers":           { hex: "#b070d4", label: "Ch. Fathers",    short: "CF" },
-  "encyclicals":              { hex: "#e8c040", label: "Encyclicals",    short: "EN" },
-  "summa":                    { hex: "#55cc88", label: "Summa",          short: "ST" },
-  "canon-law":                { hex: "#e84040", label: "Canon Law",      short: "CL" },
-  "medieval":                 { hex: "#90a0a8", label: "Medieval",       short: "ME" },
-  "councils":                 { hex: "#60d4c8", label: "Councils",       short: "CO" },
-  "apostolic-exhortations":   { hex: "#4858c8", label: "Apost. Exhort.", short: "AE" },
-  "papal-documents":          { hex: "#b86080", label: "Papal Docs",     short: "PD" },
+  "bible":          { hex: "#d4885a", label: "Bible",          short: "BI" },
+  "catechism":      { hex: "#5b9bd4", label: "Catechism",      short: "CA" },
+  "church-fathers": { hex: "#b070d4", label: "Ch. Fathers",    short: "CF" },
+  "papal":          { hex: "#e8c040", label: "Papal Docs",     short: "PD" },
+  "summa":          { hex: "#55cc88", label: "Summa",          short: "ST" },
+  "church-law":     { hex: "#e84040", label: "Church Law",     short: "CL" },
+  "theologians":    { hex: "#90a0a8", label: "Theol. & Spir.", short: "TS" },
+  "councils":       { hex: "#60d4c8", label: "Councils",       short: "CO" },
 };
 
 const ACCENT = "#C4972A";

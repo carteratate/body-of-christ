@@ -11,7 +11,7 @@ export function LandingPage({ href = "/search/guest" }: { href?: string }) {
         </h1>
         <div className="text-brand-primary text-base leading-relaxed mb-12">
           <p>
-            TheoCorpus uses AI to find relevant passages across Scripture, the Catechism, Church Fathers, Aquinas, councils, encyclicals, and papal documents. Instead of generating an answer and asking you to trust it, TheoCorpus takes you directly to the texts of the Catholic tradition.
+            TheoCorpus uses AI to find relevant passages across Scripture, the Catechism, Church Fathers, the Summa, councils, and papal documents. Instead of generating an answer and asking you to trust it, TheoCorpus takes you directly to the texts of the Catholic tradition.
           </p>
         </div>
         <div className="flex justify-center">

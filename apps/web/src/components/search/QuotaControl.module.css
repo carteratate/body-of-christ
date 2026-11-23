@@ -56,10 +56,6 @@
   background: color-mix(in srgb, var(--focused-quota-color) 85%, var(--color-brand-surface));
 }
 
-.papalNumeral {
-  background: color-mix(in srgb, var(--color-brand-contrast-light) 3%, transparent);
-}
-
 .themeSensitiveNumeral {
   color: var(--color-brand-contrast-light);
 }

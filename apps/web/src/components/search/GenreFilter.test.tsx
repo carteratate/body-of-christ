@@ -39,17 +39,19 @@ describe("genre and issuer filter (5.1a)", () => {
   afterEach(cleanup);
 
   it("offers the caret only on a selected collection that can be narrowed", () => {
-    render(<Harness collections={["encyclicals", "bible"]} />);
-    expect(cue("Encyclicals").getAttribute("tabindex")).toBe("0");
-    expect(cue("Papal Documents").getAttribute("tabindex")).toBe("-1");
-    expect(cue("Papal Documents").getAttribute("aria-hidden")).toBe("true");
+    const { unmount } = render(<Harness collections={["bible"]} />);
+    expect(cue("Papal documents").getAttribute("tabindex")).toBe("-1");
+    expect(cue("Papal documents").getAttribute("aria-hidden")).toBe("true");
+    unmount();
+    render(<Harness collections={["papal", "bible"]} />);
+    expect(cue("Papal documents").getAttribute("tabindex")).toBe("0");
     expect(screen.queryByRole("button", { name: /Filter Bible/ })).toBeNull();
   });
 
   it("narrows with Only and a tick, and All returns to everything", () => {
-    render(<Harness collections={["encyclicals"]} />);
-    fireEvent.click(cue("Encyclicals"));
-    const dialog = screen.getByRole("dialog", { name: "Search within Encyclicals" });
+    render(<Harness collections={["papal"]} />);
+    fireEvent.click(cue("Papal documents"));
+    const dialog = screen.getByRole("dialog", { name: "Search within Papal documents" });
     expect(dialog.textContent).toContain("Kind");
     expect(dialog.textContent).toContain("Pope");
 
@@ -58,10 +60,10 @@ describe("genre and issuer filter (5.1a)", () => {
     expect(screen.getByRole("checkbox", { name: /^Encyclical/ }).getAttribute("aria-disabled")).toBe("true");
     fireEvent.click(screen.getByRole("checkbox", { name: /Apostolic letter/ }));
     expect(screen.getByRole("checkbox", { name: /^Encyclical/ }).hasAttribute("aria-disabled")).toBe(false);
-    expect(scopes()).toEqual({ encyclicals: { genres: ["encyclical", "apostolic-letter"] } });
+    expect(scopes()).toEqual({ papal: { genres: ["encyclical", "apostolic-letter"] } });
 
     fireEvent.click(screen.getByRole("button", { name: "Only Leo XIII" }));
-    expect(scopes().encyclicals.issuers).toEqual(["pope-leo-xiii"]);
+    expect(scopes().papal.issuers).toEqual(["pope-leo-xiii"]);
 
     fireEvent.click(screen.getByRole("button", { name: "All kinds" }));
     fireEvent.click(screen.getByRole("button", { name: "All popes" }));
@@ -69,45 +71,43 @@ describe("genre and issuer filter (5.1a)", () => {
   });
 
   it("choosing a pope narrows the Kind list to his kinds, and the last one shown stays ticked", () => {
-    render(<Harness collections={["papal-documents"]} />);
-    fireEvent.click(cue("Papal Documents"));
+    render(<Harness collections={["papal"]} />);
+    fireEvent.click(cue("Papal documents"));
     const kinds = () => screen.getAllByRole("checkbox")
       .filter((box) => box.closest('[role="group"]')?.getAttribute("aria-label") === "Kind")
       .map((box) => box.textContent);
-    expect(kinds()).toEqual(["Apostolic letter11", "Apostolic constitution2", "Motu proprio1"]);
+    // The three old papal collections' kinds together (5.1b.2).
+    expect(kinds()).toEqual([
+      "Encyclical71", "Apostolic exhortation32", "Apostolic letter14",
+      "Apostolic constitution4", "Motu proprio1", "Other1",
+    ]);
 
-    fireEvent.click(screen.getByRole("button", { name: "Only Benedict XVI" }));
-    expect(kinds()).toEqual(["Motu proprio1"]);
-    const motu = screen.getByRole("checkbox", { name: /^Motu proprio/ });
-    expect(motu.getAttribute("aria-disabled")).toBe("true");
-    fireEvent.click(motu);
-    expect(scopes()).toEqual({ "papal-documents": { issuers: ["pope-benedict-xvi"] } });
-  });
-
-  it("has no Kind list for a collection with one genre", () => {
-    render(<Harness collections={["apostolic-exhortations"]} />);
-    fireEvent.click(cue("Apostolic Exhortations"));
-    expect(screen.getByRole("dialog").textContent).not.toContain("Kind");
+    fireEvent.click(screen.getByRole("button", { name: "Only Boniface VIII" }));
+    expect(kinds()).toEqual(["Apostolic constitution1"]);
+    const constitution = screen.getByRole("checkbox", { name: /^Apostolic constitution/ });
+    expect(constitution.getAttribute("aria-disabled")).toBe("true");
+    fireEvent.click(constitution);
+    expect(scopes()).toEqual({ papal: { issuers: ["pope-boniface-viii"] } });
   });
 
   it("closes on a press outside and on Escape, not on a press inside", () => {
-    render(<Harness collections={["encyclicals"]} />);
-    fireEvent.click(cue("Encyclicals"));
+    render(<Harness collections={["papal"]} />);
+    fireEvent.click(cue("Papal documents"));
     fireEvent.pointerDown(screen.getByRole("checkbox", { name: /^Encyclical/ }));
     expect(screen.queryByRole("dialog")).not.toBeNull();
     fireEvent.pointerDown(screen.getByRole("button", { name: "Elsewhere" }));
     expect(screen.queryByRole("dialog")).toBeNull();
 
-    fireEvent.click(cue("Encyclicals"));
+    fireEvent.click(cue("Papal documents"));
     fireEvent.keyDown(document, { key: "Escape" });
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
   it("deselecting a narrowed collection closes its panel and drops its filter", () => {
-    render(<Harness collections={["encyclicals", "bible"]} />);
-    fireEvent.click(cue("Encyclicals"));
+    render(<Harness collections={["papal", "bible"]} />);
+    fireEvent.click(cue("Papal documents"));
     fireEvent.click(screen.getByRole("button", { name: "Only Encyclical" }));
-    fireEvent.click(screen.getByRole("button", { name: "Encyclicals", pressed: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Papal documents", pressed: true }));
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(scopes()).toBeNull();
   });
@@ -117,17 +117,17 @@ describe("genre and issuer filter focus (5.1a)", () => {
   afterEach(cleanup);
 
   it("moves focus into the panel once it is placed, and back to the caret on close or Escape", () => {
-    render(<Harness collections={["encyclicals"]} />);
-    fireEvent.click(cue("Encyclicals"));
+    render(<Harness collections={["papal"]} />);
+    fireEvent.click(cue("Papal documents"));
     const first = screen.getByRole("checkbox", { name: /^Encyclical/ });
     expect(screen.getByRole("dialog").style.visibility).toBe("visible");
     expect(document.activeElement).toBe(first);
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
-    expect(document.activeElement).toBe(cue("Encyclicals"));
+    expect(document.activeElement).toBe(cue("Papal documents"));
 
-    fireEvent.click(cue("Encyclicals"));
+    fireEvent.click(cue("Papal documents"));
     fireEvent.keyDown(document, { key: "Escape" });
-    expect(document.activeElement).toBe(cue("Encyclicals"));
+    expect(document.activeElement).toBe(cue("Papal documents"));
   });
 });
 
@@ -137,7 +137,7 @@ describe("genre and issuer filter while searching and near the top (5.1a)", () =
   function toggles(locked: boolean) {
     return (
       <CollectionToggles
-        activeCollections={["encyclicals"]}
+        activeCollections={["papal"]}
         onToggle={() => {}}
         translation="CPDV"
         onTranslationChange={() => {}}
@@ -150,11 +150,11 @@ describe("genre and issuer filter while searching and near the top (5.1a)", () =
 
   it("closes the panel and disables the caret while a search runs", () => {
     const { rerender } = render(toggles(false));
-    fireEvent.click(cue("Encyclicals"));
+    fireEvent.click(cue("Papal documents"));
     expect(screen.queryByRole("dialog")).not.toBeNull();
     rerender(toggles(true));
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(cue("Encyclicals").disabled).toBe(true);
+    expect(cue("Papal documents").disabled).toBe(true);
     rerender(toggles(false));
     expect(screen.queryByRole("dialog")).toBeNull();
   });
@@ -164,7 +164,7 @@ describe("genre and issuer filter while searching and near the top (5.1a)", () =
     ["below, from a caret near the top", 40, "top"],
   ])("opens %s", (_label, caretTop, side) => {
     render(toggles(false));
-    const caret = cue("Encyclicals");
+    const caret = cue("Papal documents");
     caret.getBoundingClientRect = () => ({
       top: caretTop, bottom: caretTop + 24, left: 200, right: 224, width: 24, height: 24, x: 200, y: caretTop,
       toJSON: () => ({}),

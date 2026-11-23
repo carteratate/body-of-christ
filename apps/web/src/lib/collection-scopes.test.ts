@@ -31,17 +31,17 @@ describe("collection scopes", () => {
 
   it("orders popes by pontificate and puts Other last", () => {
     const scopes = buildCollectionScopes([
-      { collection: "encyclicals", genre: "other", issuer: "pope-francis", issuer_label: "Pope Francis", year: 2015 },
-      { collection: "encyclicals", genre: "encyclical", issuer: "pope-leo-xiii", issuer_label: "Pope Leo XIII", year: 1891 },
-      { collection: "encyclicals", genre: "encyclical", issuer: "pope-leo-xiii", issuer_label: "Pope Leo XIII", year: 1879 },
-      { collection: "encyclicals", genre: null },
+      { collection: "papal", genre: "other", issuer: "pope-francis", issuer_label: "Pope Francis", year: 2015 },
+      { collection: "papal", genre: "encyclical", issuer: "pope-leo-xiii", issuer_label: "Pope Leo XIII", year: 1891 },
+      { collection: "papal", genre: "encyclical", issuer: "pope-leo-xiii", issuer_label: "Pope Leo XIII", year: 1879 },
+      { collection: "papal", genre: null },
     ]);
-    expect(scopes.encyclicals.genres.map((g) => g.value)).toEqual(["encyclical", "other"]);
-    expect(scopes.encyclicals.issuers).toEqual([
+    expect(scopes.papal.genres.map((g) => g.value)).toEqual(["encyclical", "other"]);
+    expect(scopes.papal.issuers).toEqual([
       { value: "pope-leo-xiii", label: "Leo XIII" },
       { value: "pope-francis", label: "Francis" },
     ]);
-    expect(scopes.encyclicals.documents).toEqual({
+    expect(scopes.papal.documents).toEqual({
       encyclical: { "pope-leo-xiii": 2 }, other: { "pope-francis": 1 },
     });
   });
@@ -49,25 +49,25 @@ describe("collection scopes", () => {
 
 describe("reading a stored selection back (restore)", () => {
   it("returns what a saved search sent, for collections it searched", () => {
-    const saved = { encyclicals: { genres: ["encyclical", "apostolic-letter"], issuers: ["pope-leo-xiii"] } };
-    expect(parseScopeSelections(saved, ["encyclicals", "bible"])).toEqual(saved);
+    const saved = { papal: { genres: ["encyclical", "apostolic-letter"], issuers: ["pope-leo-xiii"] } };
+    expect(parseScopeSelections(saved, ["papal", "bible"])).toEqual(saved);
   });
 
   it("drops other collections and bad shapes", () => {
     expect(parseScopeSelections({
-      encyclicals: { genres: ["encyclical", 7], issuers: "pope-leo-xiii" },
+      papal: { genres: ["encyclical", 7], issuers: "pope-leo-xiii" },
       bible: { genres: ["encyclical"] },
       "papal-documents": { genres: ["motu-proprio"] },
-    }, ["encyclicals", "bible"])).toEqual({ encyclicals: { genres: ["encyclical"] } });
-    expect(parseScopeSelections(null, ["encyclicals"])).toBeUndefined();
-    expect(parseScopeSelections(["encyclicals"], ["encyclicals"])).toBeUndefined();
+    }, ["papal", "bible"])).toEqual({ papal: { genres: ["encyclical"] } });
+    expect(parseScopeSelections(null, ["papal"])).toBeUndefined();
+    expect(parseScopeSelections(["papal"], ["papal"])).toBeUndefined();
   });
 
   it("never reads a selection back broader than it was searched", () => {
     // `letter` is a valid papal genre with no Encyclicals today; dropping it would read
     // "letters only" back as every Encyclical.
-    expect(parseScopeSelections({ encyclicals: { genres: ["letter"] } }, ["encyclicals"]))
-      .toEqual({ encyclicals: { genres: ["letter"] } });
+    expect(parseScopeSelections({ papal: { genres: ["letter"] } }, ["papal"]))
+      .toEqual({ papal: { genres: ["letter"] } });
   });
 });
 

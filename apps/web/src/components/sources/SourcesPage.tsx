@@ -5,7 +5,7 @@ import { ExternalLink, Search } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { LibrarySkeleton } from "@/components/common/PageSkeletons";
 import { listReadingProgress, type ReadingProgress, type SourceDocument } from "@/lib/api";
-import { COLLECTIONS, getCollectionMeta } from "@/lib/collections";
+import { canonicalDocuments, COLLECTIONS, getCollectionMeta } from "@/lib/collections";
 import { readerHref } from "@/lib/readerNavigation";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
 import { IntentLink } from "@/components/common";
@@ -375,7 +375,11 @@ function CollectionSection({ collectionKey, docs, opener }: { collectionKey: str
 }
 
 export function SourcesPage() {
-  const { token, sources, sourcesLoading, sourcesReady, sourcesError, reloadSources } = useAppContext();
+  const {
+    token, sources: storedSources, sourcesLoading, sourcesReady, sourcesError, reloadSources,
+  } = useAppContext();
+  // Old stored keys read as new ones, so the papal documents form one section (5.1b.2).
+  const sources = useMemo(() => canonicalDocuments(storedSources), [storedSources]);
   const loading = sourcesLoading || !sourcesReady;
   const [query, setQuery] = useState("");
   const [collection, setCollection] = useState("all");

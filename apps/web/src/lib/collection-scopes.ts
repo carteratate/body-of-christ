@@ -1,5 +1,6 @@
 import { genreLabel } from "./attribution";
 import data from "./collection-scopes.json";
+import { canonicalCollectionKey, LEGACY_COLLECTIONS } from "./collections";
 
 /**
  * Which collections a search can narrow by genre and issuer (corpus cleanup 5.1a), and
@@ -37,7 +38,7 @@ export interface RegistryWork {
 }
 
 // The collections the API can narrow. Roman Curia joins with 5.3a.
-export const SCOPED_COLLECTIONS = ["encyclicals", "apostolic-exhortations", "papal-documents"] as const;
+export const SCOPED_COLLECTIONS = ["papal"] as const;
 
 export const COLLECTION_SCOPES: Readonly<Record<string, CollectionScopeOptions>> = data;
 
@@ -65,8 +66,9 @@ export function buildCollectionScopes(
     const issuers = new Map<string, { label: string; first: number }>();
     const documents: Record<string, Record<string, number>> = {};
     for (const work of works) {
-      // A work without a genre is not published (held for permission).
-      if (work.collection !== collection || !work.genre) continue;
+      // A work without a genre is not published (held for permission). The registry
+      // keeps old collection keys until 5.1b.3, so a work counts under its new one.
+      if (canonicalCollectionKey(work.collection) !== collection || !work.genre) continue;
       genres.set(work.genre, (genres.get(work.genre) ?? 0) + 1);
       if (work.issuer && work.issuer_label) {
         const seen = issuers.get(work.issuer);
@@ -158,4 +160,75 @@ export function parseScopeSelections(
     if (selection.genres || selection.issuers) scopes[collection] = selection;
   }
   return Object.keys(scopes).length > 0 ? scopes : undefined;
+}
+
+function stringList(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const kept = [...new Set(value.filter((v): v is string => typeof v === "string"))];
+  return kept.length > 0 ? kept : undefined;
+}
+
+/**
+ * A stored request in today's vocabulary (5.1b.2): old collection keys become new ones,
+ * and the old papal keys become a Papal documents genre selection, so a restored
+ * "Encyclicals" search reopens as Papal documents with only encyclicals on.
+ *
+ * The genres searched are, for each old papal key, the genres its own stored selection
+ * named (5.1a), or else the genres that key stands for; all three old keys without a
+ * selection are the whole collection. Popes narrow only if every old papal key named
+ * some, and then to all they named. A stored `papal` reads as itself, as the API drops
+ * an old key beside its new one. Unknown keys are dropped; the caller decides what an
+ * empty list means.
+ */
+export function canonicalSearchFilters(
+  collections: readonly unknown[],
+  scopes: unknown,
+): { collections: string[]; scopes: Record<string, ScopeSelection> | undefined } {
+  const keys = [...new Set(collections.filter((c): c is string => typeof c === "string"))];
+  const stored = typeof scopes === "object" && scopes !== null && !Array.isArray(scopes)
+    ? scopes as Record<string, unknown> : {};
+  const selection = (key: string) => {
+    const raw = stored[key];
+    return typeof raw === "object" && raw !== null
+      ? raw as Record<string, unknown> : {};
+  };
+  const oldPapal = keys.filter((key) => LEGACY_COLLECTIONS[key]?.key === "papal");
+  const canonical = keys.map(canonicalCollectionKey);
+  const out: Record<string, ScopeSelection> = {};
+
+  // Selections of collections that were already new keys pass through unchanged.
+  for (const key of keys) {
+    if (key === canonicalCollectionKey(key) && scopeOptions(key)) {
+      const genres = stringList(selection(key).genres);
+      const issuers = stringList(selection(key).issuers);
+      if (genres || issuers) out[key] = { ...(genres ? { genres } : {}), ...(issuers ? { issuers } : {}) };
+    }
+  }
+
+  const papal = scopeOptions("papal");
+  if (oldPapal.length > 0 && !keys.includes("papal") && papal) {
+    const vocabulary = papal.genres.map((g) => g.value);
+    const genres = new Set<string>();
+    for (const key of oldPapal) {
+      const legacy = LEGACY_COLLECTIONS[key];
+      const named = stringList(selection(key).genres);
+      const own = legacy.genres
+        ?? vocabulary.filter((genre) => !legacy.withoutGenres?.includes(genre));
+      for (const genre of named ?? own) genres.add(genre);
+    }
+    const issuerLists = oldPapal.map((key) => stringList(selection(key).issuers));
+    const issuers = issuerLists.every((list) => list !== undefined)
+      ? [...new Set(issuerLists.flat() as string[])] : undefined;
+    const narrowed = vocabulary.some((genre) => !genres.has(genre));
+    const entry: ScopeSelection = {
+      ...(narrowed ? { genres: vocabulary.filter((genre) => genres.has(genre)) } : {}),
+      ...(issuers ? { issuers } : {}),
+    };
+    if (entry.genres || entry.issuers) out.papal = entry;
+  }
+
+  return {
+    collections: [...new Set(canonical)],
+    scopes: Object.keys(out).length > 0 ? out : undefined,
+  };
 }

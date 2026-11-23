@@ -29,6 +29,7 @@ concern, and duplicating it in a component is the usual way this codebase regres
 | SSE decoding | `src/lib/search-stream.ts` | Add a second decoder, or parse events in a component. Add a new event field here **once**. |
 | Search + restore lifecycle | `src/lib/search-experience/` | Put AbortControllers, run generations, stream buffers, terminal flags, or animation timers in `SearchPage.tsx`. |
 | Draft quota/collection rules, and genre/issuer selections (5.1a) | `src/lib/search-draft.ts` | Re-derive focused eligibility from a raw quota int. |
+| Collection keys, old and new (5.1b) | `src/lib/collections.ts` (`canonicalCollectionKey`, `getCollectionMeta`), `src/lib/collection-scopes.ts` (`canonicalSearchFilters`) | Compare a stored collection key (a bookmark, a document, a saved search) without translating it first: until 5.1b.3 rewrites them, stored keys are old (`encyclicals`, `canon-law`, `medieval`). |
 
 (Root §12, §14, §18)
 

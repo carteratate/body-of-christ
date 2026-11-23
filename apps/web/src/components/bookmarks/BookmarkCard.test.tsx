@@ -620,7 +620,7 @@ describe("BookmarkCard rejected voice (corpus cleanup 2.4d)", () => {
     renderBookmark();
     await userEvent.click(screen.getByRole("button", { name: "Copy passage" }));
     expect(writeText.mock.calls[0][0]).toBe(
-      `${TEXT} — The Octavius, Chapter V [${LABEL}] (church-fathers)`,
+      `${TEXT} — The Octavius, Chapter V [${LABEL}] (Church Fathers)`,
     );
   });
 
