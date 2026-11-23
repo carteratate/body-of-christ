@@ -26,7 +26,9 @@ _HEADINGS_SQL = """
 """
 
 # Headings are optional, so a slow lookup must not hold up the response it decorates.
-_TIMEOUT_SECONDS = 2.0
+# The facts lookup's bound (`document_facts.TIMEOUT_SECONDS`): run beside it after a
+# restore's deadline, headings add no wait of their own.
+_TIMEOUT_SECONDS = 1.0
 
 _ROLES = ("heading", "epigraph")
 _LEVELS = (1, 2, 3)
