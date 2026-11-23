@@ -210,13 +210,16 @@ def _chapter_starts(sections: list[_Section]) -> list[int]:
 
 def label(headings: list[str]) -> str | None:
     """A section's label: its last heading that is not a Part's or a chapter's, in title
-    case where the print sets it in capitals ("ADVANTAGES OF CONFESSION")."""
+    case where the print sets it in capitals ("ADVANTAGES OF CONFESSION"), a quotation's
+    first word capitalized."""
     own = [h for h in headings if not _STRUCTURAL.match(h.strip(" .:"))]
     if not own:
         return None
     text = own[-1].strip().lstrip(".")
     text = text if text.lower().endswith("etc.") else text.rstrip(" .")
-    return _title(text) if text.upper() == text else text
+    if text.upper() != text:
+        return text
+    return re.sub(r"(?<=“)[a-z]", lambda m: m.group().upper(), _title(text))
 
 
 def _pieces(paragraphs: list[str]) -> list[tuple[int, str]]:

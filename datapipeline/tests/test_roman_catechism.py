@@ -172,3 +172,16 @@ def test_no_passage_holds_a_short_unclosed_line(document):
                   and (p.unit_label.count("“") != p.unit_label.count("”")
                        or re.match(r"^\W*[a-z]", p.unit_label))]
     assert unbalanced == []
+
+
+@needs_text
+def test_no_heading_runs_onto_a_paragraph_or_breaks_into_a_label(document):
+    """A heading's first line run onto the paragraph before it ends that paragraph in
+    capitals; a heading's last line taken alone makes a label that opens mid-phrase."""
+    run_on = [(p.anchor, q[-60:]) for p in document.passages for q in p.content.split("\n\n")
+              if re.search(r"(?:\b[A-Z][A-Z’”“,:]+\W*){3}$", q)]
+    assert run_on == []
+    broken = [p.unit_label for p in document.passages if p.unit_label
+              and re.match(r"(?:Due|Through|Because|Also|And|Of)\b",
+                           p.unit_label)]
+    assert broken == []

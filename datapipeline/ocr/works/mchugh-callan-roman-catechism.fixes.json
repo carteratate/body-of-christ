@@ -1299,5 +1299,130 @@
   "find": "On Virgins.\" 4",
   "replace": "On Virgins.\"",
   "why": "A note call left in the text; the note itself is stripped (rule G). Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0015",
+  "find": "created us? GOD IS CALLED “FATHER”\n\nBECAUSE HE ADOPTS CHRISTIANS\n\nTHROUGH GRACE",
+  "replace": "created us?\n\nGOD IS CALLED “FATHER” BECAUSE HE ADOPTS CHRISTIANS THROUGH GRACE",
+  "why": "A heading set over two or three lines, and its first line run onto the paragraph before it; joined as the page prints it (Fordham's transcription has the same words)."
+ },
+ {
+  "passage": "0015",
+  "find": "GOD IS CALLED “FATHER”\n\nBECAUSE HE IS CREATOR AND RULER",
+  "replace": "GOD IS CALLED “FATHER” BECAUSE HE IS CREATOR AND RULER",
+  "why": "A heading set over two lines; joined as the page prints it (Fordham's transcription has the same words)."
+ },
+ {
+  "passage": "0016",
+  "find": "THE NAME “FATHER”\n\nALSO DISCLOSES THE PLURALITY OF PERSONS\n\nIN GOD",
+  "replace": "THE NAME “FATHER” ALSO DISCLOSES THE PLURALITY OF PERSONS IN GOD",
+  "why": "A heading set over three lines; joined as the page prints it (Fordham's transcription has the same words)."
+ },
+ {
+  "passage": "0053",
+  "find": "glory! “HE DESCENDED INTO HELL, THE THIRD DAY HE ROSE AGAIN\n\nFROM THE DEAD”",
+  "replace": "glory!\n\n“HE DESCENDED INTO HELL, THE THIRD DAY HE ROSE AGAIN FROM THE DEAD”",
+  "why": "A caption the clean-up ran onto the paragraph before it; set apart as its heading, as the page prints it. Article V's caption, over two lines."
+ },
+ {
+  "passage": "0070",
+  "find": "teaches. “From THENCE He SHALL CoME To JUDGE THE LIVING AND\n\nTHE DEAD”",
+  "replace": "teaches.\n\n“FROM THENCE HE SHALL COME TO JUDGE THE LIVING AND THE DEAD”",
+  "why": "A caption the clean-up ran onto the paragraph before it; set apart as its heading, as the page prints it. Article VII's caption, over two lines, its small capitals misread."
+ },
+ {
+  "passage": "0168",
+  "find": "sins. THE SECOND EFFECT OF BAPTISM:\n\nREMISSION OF ALL PUNISHMENT\n\nDUE TO SIN",
+  "replace": "sins.\n\nTHE SECOND EFFECT OF BAPTISM: REMISSION OF ALL PUNISHMENT DUE TO SIN",
+  "why": "A heading set over two or three lines, and its first line run onto the paragraph before it; joined as the page prints it (Fordham's transcription has the same words)."
+ },
+ {
+  "passage": "0535",
+  "find": "spoil. THE SEAL OF THE LORD’S PRAYER\n\n“Amen”",
+  "replace": "spoil.\n\nTHE SEAL OF THE LORD’S PRAYER\n\n“Amen”",
+  "why": "A caption the clean-up ran onto the paragraph before it; set apart as its heading, as the page prints it."
+ },
+ {
+  "passage": "0321",
+  "find": "Christ with PRR A OF",
+  "replace": "Christ with",
+  "why": "OCR debris at the foot of p. 350; the sentence goes on in 0322 (Fordham's transcription: \"the union of Christ with His Church\")."
+ },
+ {
+  "passage": "0015",
+  "find": "thee?? And",
+  "replace": "thee? And",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0062",
+  "find": "dead.. In",
+  "replace": "dead. In",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0184",
+  "find": "God,; but",
+  "replace": "God; but",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0188",
+  "find": "committed..",
+  "replace": "committed.",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0230",
+  "find": "(of Trent)..",
+  "replace": "(of Trent).",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0327",
+  "find": "written,. as",
+  "replace": "written, as",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0338",
+  "find": "servant??",
+  "replace": "servant?",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0347",
+  "find": "honour??",
+  "replace": "honour?",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0358",
+  "find": "glory., So",
+  "replace": "glory. So",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0377",
+  "find": "tradition,.",
+  "replace": "tradition.",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0490",
+  "find": "the Lord.,\n\n",
+  "replace": "the Lord.\n\n",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0535",
+  "find": "glory?? A",
+  "replace": "glory? A",
+  "why": "A mark left by a note call. Checked against Fordham's transcription."
+ },
+ {
+  "passage": "0322",
+  "continues": true,
+  "why": "Its first paragraph runs on from 0321's \"union of Christ with\", once the debris is out."
  }
 ]
