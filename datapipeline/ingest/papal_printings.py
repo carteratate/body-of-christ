@@ -151,7 +151,8 @@ def additions() -> dict[str, tuple[Addition, ...]]:
 
 def with_additions(doc: Document, collection: str, slug: str) -> Document:
     """`doc` with the passages a printing adds to it (`papal_additions.json`), each its own
-    unit and chapter after the paragraph it follows, and positions renumbered."""
+    unit and chapter after the paragraph it follows, which must end its chapter, and
+    positions renumbered."""
     adds = additions().get(f"{collection}/{slug}", ())
     if not adds:
         return doc
@@ -161,6 +162,11 @@ def with_additions(doc: Document, collection: str, slug: str) -> Document:
         at = [k for k, x in enumerate(passages) if papal_common.unit_anchor(x.anchor) == after]
         if not at:
             raise ValueError(f"{a.key}: no paragraph {a.after} for {a.part!r} to follow")
+        # Its own chapter, so only after a chapter's last passage: the reader groups a
+        # chapter's passages, and one left after it would show before the addition.
+        if at[-1] + 1 < len(passages) and \
+                passages[at[-1] + 1].chapter_key == passages[at[-1]].chapter_key:
+            raise ValueError(f"{a.key}: paragraph {a.after} does not end its chapter")
         frozen = read_text(a.work)
         blocks = ocr_blocks(frozen)
         text = papal_common._clean("\n\n".join(t for _, t in blocks), slug, callers=False)

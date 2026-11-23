@@ -269,13 +269,13 @@ def test_a_signature_in_capitals_after_the_dating_line_joins_the_last_unit():
 def test_an_addition_follows_its_paragraph_in_its_own_chapter(monkeypatch):
     from model import Document, Passage
 
-    def para(n, k):
+    def para(n, k, chapter="test/bucket-0"):
         return Passage(content=f"Proposition {n}.", reference=f"Test, §{n}",
-                       anchor=f"test/{n}", chapter_key="test/bucket-0",
-                       chapter_label="Paragraphs 1–2", position=k, unit_label=f"§{n}")
+                       anchor=f"test/{n}", chapter_key=chapter,
+                       chapter_label="Paragraphs", position=k, unit_label=f"§{n}")
 
     doc = Document(id="d", collection="papal-documents", title="Test", author="Pope Leo X",
-                   year=1520, passages=[para(1, 0), para(2, 1)])
+                   year=1520, passages=[para(1, 0), para(2, 1, "test/bucket-1")])
     add = papal_printings.Addition(key="papal-documents/test", work="w",
                                    url="https://example.org/book", part="censure",
                                    label="Censure", after=1, why="a test")
@@ -298,6 +298,11 @@ def test_an_addition_follows_its_paragraph_in_its_own_chapter(monkeypatch):
         dataclasses.replace(add, after=9),)})
     with pytest.raises(ValueError, match="no paragraph 9"):
         papal_printings.with_additions(doc, "papal-documents", "test")
+    # Inside a chapter it would split it in the reader.
+    monkeypatch.setattr(papal_printings, "additions", lambda: {add.key: (add,)})
+    one_chapter = dataclasses.replace(doc, passages=[para(1, 0), para(2, 1)])
+    with pytest.raises(ValueError, match="does not end its chapter"):
+        papal_printings.with_additions(one_chapter, "papal-documents", "test")
 
 
 def test_every_addition_says_why_and_passed_its_gate():
