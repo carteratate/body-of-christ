@@ -102,19 +102,23 @@ CHAPTERS: list[Chapter] = [
               rf"^THE SACRAMENT OF {name.upper()}$") for k, name, page in _SACRAMENTS],
     Chapter("decalogue", "Part III, The Decalogue", "Decalogue", 357, r"^PART III$"),
     *[Chapter(f"decalogue/commandment-{k}",
-              f"Part III, The Decalogue, The {word} Commandment",
+              f"Part III, The Decalogue, The {word} Commandment: {words}",
               f"Decalogue, {word} Commandment", page, opens)
-      for k, (word, page, opens) in enumerate([
-          ("First", 366, r"^THE FIRST COMMANDMENT$"),
-          ("Second", 382, r"^THE SECOND COMMANDMENT$"),
-          ("Third", 396, r"^THE THIRD COMMANDMENT$"),
-          ("Fourth", 408, r"^THE FOURTH COMMANDMENT$"),
-          ("Fifth", 420, r"^THE FIFTH COMMANDMENT$"),
-          ("Sixth", 431, r"^THE POSITION OF THIS COMMANDMENT"),
-          ("Seventh", 440, r"^THE SEVENTH COMMANDMENT$"),
-          ("Eighth", 454, r"^THE EIGHTH COMMANDMENT$")], 1)],
+      for k, (word, words, page, opens) in enumerate([
+          ("First", "“I am the Lord thy God”", 366, r"^THE FIRST COMMANDMENT$"),
+          ("Second", "“Thou shalt not take the name of the Lord thy God in vain”", 382,
+           r"^THE SECOND COMMANDMENT$"),
+          ("Third", "“Remember that thou keep holy the sabbath day”", 396,
+           r"^THE THIRD COMMANDMENT$"),
+          ("Fourth", "“Honour thy father and thy mother”", 408, r"^THE FOURTH COMMANDMENT$"),
+          ("Fifth", "“Thou shalt not kill”", 420, r"^THE FIFTH COMMANDMENT$"),
+          ("Sixth", "“Thou shalt not commit adultery”", 431,
+           r"^THE POSITION OF THIS COMMANDMENT"),
+          ("Seventh", "“Thou shalt not steal”", 440, r"^THE SEVENTH COMMANDMENT$"),
+          ("Eighth", "“Thou shalt not bear false witness against thy neighbour”", 454,
+           r"^THE EIGHTH COMMANDMENT$")], 1)],
     Chapter("decalogue/commandments-9-10",
-            "Part III, The Decalogue, The Ninth and Tenth Commandments",
+            "Part III, The Decalogue, The Ninth and Tenth Commandments: “Thou shalt not covet”",
             "Decalogue, Ninth and Tenth Commandments", 466,
             r"^THE NINTH AND TENTH COMMANDMENTS$"),
     Chapter("lords-prayer", "Part IV, The Lord’s Prayer", "Lord’s Prayer", 477, r"^PART IV$"),
@@ -210,7 +214,8 @@ def label(headings: list[str]) -> str | None:
     own = [h for h in headings if not _STRUCTURAL.match(h.strip(" .:"))]
     if not own:
         return None
-    text = own[-1].strip(" .")
+    text = own[-1].strip().lstrip(".")
+    text = text if text.lower().endswith("etc.") else text.rstrip(" .")
     return _title(text) if text.upper() == text else text
 
 

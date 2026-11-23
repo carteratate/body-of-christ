@@ -143,6 +143,18 @@ def test_every_chapter_is_found_in_order_with_its_passages_labelled(document):
 
 
 @needs_text
+def test_every_commandment_and_petition_names_its_words(document):
+    """The book captions each Commandment and Petition with its words; the units read a
+    short caption as a heading, which a section's label then drops, so the chapter label
+    carries them."""
+    labels = {p.chapter_key: p.chapter_label for p in document.passages}
+    quoted = [key for key, label in labels.items()
+              if re.search(r"/(commandment|petition)", key) and not re.search(r": “[^”]+”$", label)]
+    assert quoted == []
+    assert labels["roman-catechism/decalogue/commandment-5"].endswith("“Thou shalt not kill”")
+
+
+@needs_text
 def test_no_note_or_heading_text_reaches_a_passage(document):
     for p in document.passages:
         assert not re.search(r"Summa Theol|[®™©]", p.content), p.anchor
