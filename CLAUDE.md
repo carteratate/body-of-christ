@@ -200,6 +200,18 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   with each link resolved (the entry's, else `held_text_url`, else `url`) and drops a stale
   list whole; `/documents/{id}` and `/sources` return only `held_count`; no returned
   `metadata` carries it. Held texts never reach search. Live has no list until 4.3's publish.
+- `chunks.metadata.headings` — **headings inside a passage** (issue #445; no migration).
+  Headings stay in `content`; the build marks each as `{at, end, role, level?, pairs_next?,
+  chapter_title?}`, offsets of one whole paragraph, `role` `heading` (level 1–3) or
+  `epigraph`. Contract and adapter helper: `datapipeline/headings.py` (`MarkedText`,
+  `prepend`; `hold_headings` and `split_marks` carry marks through a cut). Block rule H6
+  refuses a malformed mark anywhere; H7 (heading-like paragraph unmarked) and H8 (chapter
+  repeat without `chapter_title`) run only in collections listed under
+  `H7_unmarked_heading` in `health_patterns.json`, which a collection joins when its adapter
+  marks. The API sends `headings` with chunk events (only when non-empty), restored
+  results, bookmarks and reader passages (`app/headings.py`); the web draws them with
+  `components/common/PassageBlocks.tsx` and draws an unmarked passage as before. No live
+  passage carries marks yet.
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
   Places for what the cleanup decides. 2.2w's writer fills them, and every existing row
@@ -295,7 +307,7 @@ Two layers, and the split is the point:
 - `rag/pipeline.py` owns the **SSE contract and DB side-effects only**.
 - `rag/pipelines/runner.py` owns the **compute**; `rag/pipelines/registry.py` names the configurations.
 
-Production runs the `hyde_cohere_luna_seats10t80_ftsminmatch` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → Qdrant vector retrieval, with Supabase FTS running alongside from the start → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`.
+Production runs the `hyde_cohere_luna_seats10t80_ftsminmatch` config (`_PRODUCTION_PIPELINE` in `pipeline.py`): HyDE → embed → Qdrant vector retrieval, with Supabase FTS running alongside from the start → RRF merge → **Cohere rerank per collection → one global listwise LLM call** → dedup → collection guarantee → quota cap → `min_floor` (only if everything else emptied). Steps live in `rag/steps/`. The collection guarantee is per collection, never per genre (5.1c): a genre selection adds no slots.
 
 **How many Cohere candidates reach the listwise call is a per-pipeline seat rule**,
 `RerankConfig.terminal_seats` (`budget.TerminalSeats`, issue #235). Production seats
@@ -311,6 +323,19 @@ is the single place that normalizes collections and enforces the focused-search 
 and it hands the runner three derived values: `focused`, `terminal_candidate_budget`, and
 `max_passages_per_source`. `SearchPlanError` carries a stable `code` so routes translate
 failures consistently. See §18.
+
+**HyDE writes one passage per collection, except** the Bible (its genres, above) and `papal`
+(5.1b.1), which writes one per kind of papal document its genre filter leaves on, in the
+prompt of that kind's old key (`hyde_s25.papal_hyde_kinds`; Carter, 22 Nov 2026).
+
+**A plan can narrow a collection to some genres and issuers** (item 5.1a, `SearchPlan.scopes`,
+`rag/collection_scope.py`). The request lists what to search; a `CollectionScope` holds the
+complement, and retrieval excludes only those values (Qdrant `must_not`, SQL
+`genre IS NULL OR genre <> ALL(...)`), so a document without a genre or issuer is searched
+under every selection. Only the papal collections can be narrowed (`GENRES_BY_COLLECTION`,
+`ISSUERS_BY_COLLECTION` in `constants.py`, `papal` included, the genres a copy of `datapipeline/registry/genres.py`
+kept equal by a test). A search without scopes sends master's exact Qdrant filter and SQL
+(`tests/test_collection_scope.py`); keep it that way.
 
 The registry also holds evaluation arms (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical, Luna 6 and reasoning effort, seat rules). **Every pipeline runs Cohere**, alone or followed by one listwise LLM call; the single-stage pointwise LLM reranker (`llm_only`) was removed in October 2026. Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
 
@@ -444,8 +469,8 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/me` | Current user |
-| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. |
-| POST | `/search/guest` | SSE stream; guest session token, trial-limited |
+| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. Optional `filters.scopes: {collection: {genres?, issuers?}}` narrows a papal collection (§5); `invalid_genre`/`invalid_issuer` are 422 with `detail.code` |
+| POST | `/search/guest` | SSE stream; guest session token, trial-limited; same optional `filters.scopes` |
 | POST | `/guest/claim` | Transfer guest work into a new account |
 | GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
 | DELETE | `/searches/{id}` | Retrievals cascade |
@@ -459,7 +484,8 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | GET/PUT | `/preferences` | User preferences |
 
 Authenticated searches persist `outcome` and `collection_outcomes` in the
-`searches.filters` jsonb alongside the submitted filters. The saved-results endpoint
+`searches.filters` jsonb alongside the submitted filters, and `scopes` only when a
+collection was narrowed. The saved-results endpoint
 returns them as optional fields so restored searches reproduce their original notices.
 Older rows return `null`; the frontend keeps its result-count fallback instead of
 inventing degradation details.
@@ -540,8 +566,20 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 15. Collections — Canonical Source
 
-- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`), 10 collections.
-- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection).
+- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`). It holds
+  two vocabularies while corpus cleanup 5.1b runs: the eight `CANONICAL_COLLECTIONS` (with
+  `papal`, `church-law` and `theologians`) and the five old keys in `LEGACY_COLLECTIONS`, which
+  map to them (`encyclicals`, `apostolic-exhortations` and `papal-documents` to genres of
+  `papal`; `canon-law` to `church-law`; `medieval` to `theologians`). Since 5.1b.2 the web
+  offers only the eight new keys (labels: Papal documents, Church law, Theology &
+  Spirituality) and translates any old key it reads (`canonicalCollectionKey` in
+  `lib/collections.ts`; a restored old papal search becomes a Papal documents genre
+  selection, `canonicalSearchFilters`). `collection_scope.reads` decides which stored values a key reads,
+  so both vocabularies work whether or not 5.1b.3 has rewritten the stored values, and a
+  search's results are labelled with the key it sent. A plan drops an old key named beside
+  its new one and logs `legacy_collection_key`; 5.1b.4 removes the old keys.
+- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection, and
+  `LEGACY_COLLECTIONS`, the old keys' meaning, mirroring the API's).
 - **To add one:** update `constants.py`, sync `collections.ts`, add a `--color-collection-*` token in `globals.css`, and add a migration extending the DB collection constraint.
 
 ---
@@ -577,13 +615,16 @@ collection**, and it changes retrieval shape rather than just raising the result
 `rag/search_plan.py`. Do not re-derive "is this focused?" from a raw quota int anywhere
 else; take `SearchPlan.focused`. `SearchPlanError.code` is stable and routes translate it:
 `no_valid_collections` → 400, everything else (`invalid_quota`, `duplicate_collections`,
-`invalid_collections`, `focused_collection_count`) → 422.
+`invalid_collections`, `focused_collection_count`, and 5.1a's `invalid_genre` and
+`invalid_issuer`, whose detail is `{code, message}`) → 422. (The guest route answers 422 for
+all of them.) A genre or issuer selection is not a collection: it never changes focused
+eligibility, and a focused search may narrow its one collection.
 
 What focused changes, all derived from the plan:
 
 | | Standard | Focused |
 |---|---|---|
-| Collections | 1–10 | exactly 1 |
+| Collections | 1–8 (the API also accepts the five old keys until 5.1b.4) | exactly 1 |
 | `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
 | `max_passages_per_source` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |
@@ -592,7 +633,7 @@ What focused changes, all derived from the plan:
 takes no cap; it is bounded by `min(quota, _FLOOR_N)` and spreads across sources itself.
 
 **The cap is per *source*, and a source is the reader chapter for the chapter-keyed
-collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law`, `bible`) — see
+collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law` and `church-law`, `bible`) — see
 `dedup.source_key`. Those four are each stored as a single document (the Bible as one per
 book), so an earlier per-*document* cap limited a focused search to 4 results in total
 however many distinct articles or psalms ranked, which made issue #28's "return exactly
@@ -628,7 +669,11 @@ changing quota rules.
 ### Frontend
 
 **`lib/search-draft.ts` owns draft quota/collection state and focused eligibility** —
-`SearchQuota`, `StandardQuota`, `focusedEligible`, and the draft reducer. This is the one
+`SearchQuota`, `StandardQuota`, `focusedEligible`, and the draft reducer. It also owns the
+genre and issuer selections (5.1a: `excluded`, `scopes`, and the `genre-toggled`,
+`issuer-toggled`, `scope-only` and `scope-all` events), which never change focused
+eligibility. `lib/collection-scopes.json`, the values each papal collection offers, is
+generated from `datapipeline/registry/works.json` by its test. This is the one
 exception to §12's "draft controls stay in the page": the page renders it, but the
 transition rules live here and are unit-tested directly. `QuotaControl.tsx` and
 `BottomBar.tsx` render it. `LoadingAnimation` takes `quota` as a prop and scales its

@@ -105,6 +105,24 @@ SNAPSHOT_TABLES = {
 }
 REDIRECT_ROW = ("entity", "old_id", "old_document_id", "old_anchor", "new_id",
                 "new_document_id", "new_anchor", "kind", "publish_id", "created_at")
+# The live redirects an apply replaces (step 5's DELETE), for the before-snapshot. The
+# repeated `s.entity IN ('anchor', 'chapter')` lets the planner use staging's partial index
+# on (entity, old_document_id, old_anchor): without it every live row scanned all of
+# staging, which with 44,891 live and 36,677 staged redirects outran the 2-minute statement
+# timeout (card-notes-2026-11's first apply, 22 Nov 2026).
+SNAPSHOT_REDIRECTS_SQL = f"""
+    SELECT {', '.join(REDIRECT_ROW)} FROM public.corpus_redirects t
+    WHERE (t.entity = 'passage' AND t.old_id IN (
+             SELECT id FROM staging.chunks
+             UNION SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))
+       OR (t.entity IN ('anchor', 'chapter') AND EXISTS (
+             SELECT 1 FROM staging.corpus_redirects s
+             WHERE s.entity IN ('anchor', 'chapter') AND s.entity = t.entity
+               AND s.old_document_id = t.old_document_id
+               AND s.old_anchor = t.old_anchor))
+       OR (t.entity = 'document' AND t.old_id IN (
+             SELECT id FROM staging.documents
+             UNION SELECT old_id FROM staging.corpus_redirects WHERE entity = 'document'))"""
 
 
 def _document_scope(collections: list[str] | None, document_ids: list[str] | None) -> str:
@@ -142,18 +160,7 @@ async def read_snapshot_rows(conn, collections: list[str] | None = None,
                 WHERE t.id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)
                    OR (t.entity = 'passage' AND t.id IN (
                          SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))""")]
-        out["corpus_redirects"] = [dict(r) for r in await conn.fetch(
-            f"""SELECT {', '.join(REDIRECT_ROW)} FROM public.corpus_redirects t
-                WHERE (t.entity = 'passage' AND t.old_id IN (
-                         SELECT id FROM staging.chunks
-                         UNION SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))
-                   OR (t.entity IN ('anchor', 'chapter') AND EXISTS (
-                         SELECT 1 FROM staging.corpus_redirects s WHERE s.entity = t.entity
-                           AND s.old_document_id = t.old_document_id
-                           AND s.old_anchor = t.old_anchor))
-                   OR (t.entity = 'document' AND t.old_id IN (
-                         SELECT id FROM staging.documents
-                         UNION SELECT old_id FROM staging.corpus_redirects WHERE entity = 'document'))""")]
+        out["corpus_redirects"] = [dict(r) for r in await conn.fetch(SNAPSHOT_REDIRECTS_SQL)]
     return out
 
 

@@ -32,6 +32,7 @@ RESTRICTED_CODE = "reader_restricted"
 _COLLECTION_SOURCE_URLS = {
     "catechism": catechism_pages.COVER_URL,
     "canon-law": "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.html",
+    "church-law": "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.html",
 }
 
 

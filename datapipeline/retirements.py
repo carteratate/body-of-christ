@@ -27,6 +27,14 @@ _RULES = {"rule-a": "A", "rule-b": "B", "rule-c": "C", "rule-g-editorial": "G",
 
 
 @dataclass(frozen=True)
+class LiveAnchorRedirect:
+    """An anchor redirect already live: its old place and the document it points into."""
+    old_document_id: str
+    old_anchor: str
+    new_document_id: str
+
+
+@dataclass(frozen=True)
 class LivePassage:
     id: str
     document_id: str
@@ -95,9 +103,11 @@ def _redirect(entity: str, *, old_id=None, old_document_id, old_anchor=None, new
 
 def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument],
             staged: list[Document], registry: reg.WorkRegistry, *, release: str,
-            at: datetime, tombstoned: list[LivePassage] = ()) -> Retirements:
+            at: datetime, live_anchor_redirects: list[LiveAnchorRedirect] = (),
+            tombstoned: list[LivePassage] = ()) -> Retirements:
     """Tombstones, redirects and problems for one stage. `staged` is every staged
-    document of the staged collections, with `Passage.id` set. `tombstoned` are the
+    document of the staged collections, with `Passage.id` set; `live_anchor_redirects`
+    are the anchor redirects already live (see `anchor_redirects`). `tombstoned` are the
     retired live passages of those collections that show a tombstone: one whose
     registry redirect has opened since (a merged piece whose text came back in English,
     #399) gets its passage redirect, and the apply drops the tombstone."""
@@ -190,7 +200,8 @@ def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument]
             passage_redirect(p, declared)
             returning.append(p)
 
-    out.redirects += anchor_redirects(live_passages, staged, registry, release)
+    out.redirects += anchor_redirects(live_passages, staged, registry, release,
+                                      live_anchor_redirects)
     out.redirects += chapter_redirects(live_passages + returning, staged, redirects, release)
     return out
 
@@ -204,13 +215,25 @@ def primary_target(targets: list[str], old_document: str,
 
 
 def anchor_redirects(live_passages: list[LivePassage], staged: list[Document],
-                     registry: reg.WorkRegistry, release: str) -> list[dict]:
+                     registry: reg.WorkRegistry, release: str,
+                     live_anchor_redirects: list[LiveAnchorRedirect] = ()) -> list[dict]:
     """One `anchor` redirect per passage-registry row of the staged documents whose
     anchor or document changed since it was live. A redirected row points at its open
     passage redirect's new anchor, never its own (a piece name the build no longer
     emits, or `<anchor>#moved-<item>`). An old anchor a staged passage of the same
-    document still carries resolves directly and gets none."""
+    document still carries resolves directly and gets none.
+
+    The old document is the one the passage is live in, unless a live anchor redirect
+    already sends this old anchor into the passage's document from another one: then the
+    passage moved document in an earlier publish, its current document never held the
+    anchor, and the live redirect's old document is kept (#439; the republish's moved
+    Augustine passages gave 623 such rows at 4.4's stage)."""
     live = {p.id: p for p in live_passages}
+    moved_from: dict[tuple[str, str], list[str]] = {}
+    for r in live_anchor_redirects:
+        if r.old_document_id != r.new_document_id:
+            moved_from.setdefault((r.old_anchor, r.new_document_id), []).append(
+                r.old_document_id)
     staged_by_id = {p.id: (d, p) for d in staged for p in d.passages}
     carried = {(d.id, p.anchor) for d in staged for p in d.passages}
     staged_documents = {d.id for d in staged}
@@ -235,6 +258,9 @@ def anchor_redirects(live_passages: list[LivePassage], staged: list[Document],
         if target_id not in staged_by_id:
             continue
         d, q = staged_by_id[target_id]
+        earlier = moved_from.get((row["live_anchor"], d.id))
+        if earlier and old_document == d.id:
+            old_document = min(earlier)
         key = (old_document, row["live_anchor"])
         if key == (d.id, q.anchor) or key in carried or key in seen:
             continue

@@ -60,7 +60,7 @@ def read_elsewhere_url(reason_code: str, collection: str | None, document_scope:
     `metadata.official_latin_urls` keyed by the passage's anchor (`can/295`), with any
     `#retired-<release>` suffix 2.2w added dropped. No entry, no link: the Code's own
     URL is an index page that does not hold the canon (2.4f)."""
-    if (not document_scope and collection == "canon-law"
+    if (not document_scope and collection in ("canon-law", "church-law")
             and reason_code in _ELSEWHERE_CANON_PASSAGE_REASONS):
         latin = (metadata or {}).get("official_latin_urls")
         if not anchor or not isinstance(latin, dict):

@@ -44,7 +44,9 @@ def _fires(rule, document, collection=None):
 def test_rules_are_the_spec_ids():
     assert health.BLOCK_RULES == ("H1_blank", "H2_debris", "H3_positions",
                                   "H4_anchor_unique", "H5_anchor_nonempty",
-                                  "R10_site_boilerplate", "R9_trailing_heading")
+                                  "R10_site_boilerplate", "R9_trailing_heading",
+                                  "H6_heading_marks", "H7_unmarked_heading",
+                                  "H8_chapter_title")
     assert health.REPORT_RULES == ("R1_short", "R2_footer", "R3_note_start", "R4_dup_text",
                                    "R5_repeated_reference", "R6_joined_paragraphs",
                                    "R7_non_english", "R8_anchor_suffix",

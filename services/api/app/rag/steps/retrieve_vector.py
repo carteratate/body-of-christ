@@ -3,9 +3,16 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from typing import Mapping
+
+from qdrant_client.http.exceptions import UnexpectedResponse
 
 from app.config import settings
-from app.rag.qdrant_client import get_qdrant_client, read_collection, searchable_indexed
+from app.rag.collection_scope import CollectionScope, reads
+from app.rag.qdrant_client import (
+    forget_searchable_index, genre_indexed, get_qdrant_client, read_collection,
+    searchable_indexed,
+)
 from app.rag.steps import degradation
 from app.rag.steps.types import RetrievalPath
 
@@ -13,15 +20,19 @@ logger = logging.getLogger(__name__)
 
 _MAX_COSINE_DISTANCE = 0.50
 _QDRANT_SCORE_THRESHOLD = 1.0 - _MAX_COSINE_DISTANCE
+# Strict mode's refusal of a filter on an unindexed `genre`, as the JSON body escapes it.
+_MISSING_GENRE_INDEX = b'Index required but not found for \\"genre\\"'
 
 
 async def _search_vector(
-    collection: str,
+    scope: CollectionScope,
     vec: list[float],
     limit: int,
     label: str,
 ) -> list[dict]:
-    from qdrant_client.models import FieldCondition, Filter, MatchValue
+    from qdrant_client.models import FieldCondition, MatchValue
+
+    collection = scope.collection
 
     client = get_qdrant_client()
     if client is None:
@@ -35,17 +46,33 @@ async def _search_vector(
         [FieldCondition(key="searchable", match=MatchValue(value=False))]
         if await searchable_indexed() else None
     )
-    response = await client.query_points(
-        collection_name=read_collection(),
-        query=vec,
-        query_filter=Filter(
-            must=[FieldCondition(key="collection", match=MatchValue(value=collection))],
-            must_not=must_not,
-        ),
-        limit=limit,
-        with_payload=True,
-        score_threshold=_QDRANT_SCORE_THRESHOLD,
-    )
+    async def _query(by_genre: bool):
+        return await client.query_points(
+            collection_name=read_collection(),
+            query=vec,
+            query_filter=scope.to_qdrant_filter(must_not, genre_indexed=by_genre),
+            limit=limit,
+            with_payload=True,
+            score_threshold=_QDRANT_SCORE_THRESHOLD,
+        )
+
+    # An old papal key reads the new value's genres only where `genre` is indexed
+    # (5.1b.1). The answer is cached for five minutes, so after a rollback points the
+    # alias at a collection without the index, strict mode refuses the genre filter
+    # until the cache expires. That refusal (400, naming `genre`) forgets the cache and
+    # runs today's filter, which is all a collection without the index can match. Any
+    # other failure takes the usual path: dropping the branch would hide new values.
+    by_genre = reads(collection).part is not None and await genre_indexed()
+    try:
+        response = await _query(by_genre)
+    except UnexpectedResponse as exc:
+        if not (by_genre and exc.status_code == 400
+                and _MISSING_GENRE_INDEX in (exc.content or b"")):
+            raise
+        logger.warning("retrieve_vector: %s genre filter refused (%s); retrying without it",
+                       collection, exc.__class__.__name__)
+        forget_searchable_index()
+        response = await _query(False)
     results: list[dict] = []
     for r in response.points:
         payload = r.payload or {}
@@ -62,7 +89,9 @@ async def _search_vector(
             "id": str(r.id),
             "content": payload["content"],
             "reference": payload.get("reference"),
-            "collection": payload["collection"],
+            # The key searched, not the stored value (5.1b.1), so results come back in
+            # the vocabulary the request used.
+            "collection": collection,
             "document_id": payload["document_id"],
             "document_title": payload["document_title"],
             "author": payload.get("author"),
@@ -86,10 +115,13 @@ async def run(
     quota: int,
     user_id: str | None = None,
     k: int | None = None,
+    scopes: Mapping[str, CollectionScope] | None = None,
 ) -> dict[str, list[RetrievalPath]]:
     """Run all Qdrant vector searches per collection.
 
     hyde_vecs may be {} (S4/hyde_none) — falls back to query_vec only.
+    scopes narrows a collection to some genres or issuers (5.1a); a collection
+    without one is searched whole.
     Returns col → ranked paths labeled as HyDE or original query.
     user_id is accepted but unused (retained for caller compatibility).
     """
@@ -98,14 +130,15 @@ async def run(
     n = k if k is not None else quota * settings.candidate_multiplier
 
     async def _search_collection(col: str) -> tuple[str, list[RetrievalPath]]:
+        scope = (scopes or {}).get(col) or CollectionScope(col)
         col_vecs = hyde_vecs.get(col, [])
         coros = []
         labels = []
         for i, vec in enumerate(col_vecs):
             label = "hyde" if i == 0 else f"hyde_{i}"
-            coros.append(_search_vector(col, vec, n, label))
+            coros.append(_search_vector(scope, vec, n, label))
             labels.append(label)
-        coros.append(_search_vector(col, query_vec, n, "query"))
+        coros.append(_search_vector(scope, query_vec, n, "query"))
         labels.append("query")
 
         raw = await asyncio.gather(*coros, return_exceptions=True)

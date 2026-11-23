@@ -13,6 +13,7 @@ from app import corpus_lifecycle, corpus_schema
 from app.config import settings
 from app.db import get_pool
 from app.footnotes import fetch_footnotes, has_footnotes
+from app.headings import fetch_headings
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.reader_access import access_fields, document_access
@@ -26,10 +27,11 @@ from app.models.search import (
     SearchResultsResponse,
     SearchSummary,
 )
+from app.rag.collection_scope import GENRE_UNKNOWN, requested_label
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 from app.rag.pipeline import run_search_pipeline
-from app.rag.search_plan import SearchPlan, SearchPlanError, resolve_search_plan
+from app.rag.search_plan import SearchPlan, SearchPlanError, http_detail, resolve_search_plan
 from app.rag.steps import document_facts, fetch_context, stitch
 from app.rag.steps.types import RankedChunk
 
@@ -49,10 +51,12 @@ async def _resolve_search_plan(body: SearchRequest) -> SearchPlan:
     as well as requests with no valid collections, cannot consume an allowance.
     """
     try:
-        return resolve_search_plan(body.filters.collections, body.quota)
+        return resolve_search_plan(
+            body.filters.collections, body.quota, body.filters.scope_filters(),
+        )
     except SearchPlanError as exc:
         status_code = 400 if exc.code == "no_valid_collections" else 422
-        raise HTTPException(status_code=status_code, detail=exc.detail) from exc
+        raise HTTPException(status_code=status_code, detail=http_detail(exc)) from exc
 
 
 async def check_search_rate_limit(
@@ -391,22 +395,41 @@ async def get_search_results(
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
     # Outside the restore deadline: optional notes must never turn a restore into a
-    # 504. `fetch_footnotes` bounds itself and falls back to none.
-    notes = await fetch_footnotes(pool, [
-        (str(row["chunk_id"]), row["content"]) for row in shown.values()
-        if has_footnotes(row["collection"], row["document_title"])
-    ])
-    # Outside the deadline for the same reason; bounded on its own (2.4a).
-    facts, _ = await document_facts.fetch_best_effort(pool, [
-        str(row["chunk_id"]) for row in shown.values()
-    ])
+    # 504. `fetch_footnotes` bounds itself and falls back to none, as do the headings
+    # (issue #445) and the facts (2.4a); the three run together, so the wait after the
+    # deadline is the slowest one's, never their sum.
+    notes, marks, (facts, _) = await asyncio.gather(
+        fetch_footnotes(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+            if has_footnotes(row["collection"], row["document_title"])
+        ]),
+        fetch_headings(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+        ]),
+        document_facts.fetch_best_effort(pool, [
+            str(row["chunk_id"]) for row in shown.values()
+        ]),
+    )
+
+    saved_filters = (
+        search_row.get("filters")
+        if isinstance(search_row.get("filters"), dict)
+        else json.loads(search_row.get("filters"))
+        if search_row.get("filters")
+        else None
+    )
+    # Passages are labelled with the saved request's key, as the live search labelled
+    # them (5.1b.1): a `papal` search restores as `papal`, not its stored old values.
+    requested = (saved_filters.get("collections")
+                 if isinstance(saved_filters, dict) else None)
 
     def source(row, content: str | None) -> ChunkSource:
         passage = facts.get(str(row["chunk_id"]))
         card_access = access_fields(access, row["document_id"], row["unit_label"],
                                     chunk_id=row["chunk_id"], content=content)
         return ChunkSource(**{
-            "collection": row["collection"],
+            "collection": requested_label(row["collection"], requested,
+                                          passage.facts.genre if passage else GENRE_UNKNOWN),
             "document_title": row["document_title"],
             "author": row["author"],
             "reference": row["reference"],
@@ -437,6 +460,7 @@ async def get_search_results(
             explanation=row["explanation"],
             context=context.get(str(display["chunk_id"])) if display is not None else None,
             footnotes=notes.get(str(display["chunk_id"]), []) if display is not None else [],
+            headings=marks.get(str(display["chunk_id"]), []) if display is not None else [],
             status=resolution.status,
             tombstone=resolution.tombstone,
             redirect=resolution.redirect,
@@ -456,13 +480,6 @@ async def get_search_results(
             len(results),
         )
 
-    saved_filters = (
-        search_row.get("filters")
-        if isinstance(search_row.get("filters"), dict)
-        else json.loads(search_row.get("filters"))
-        if search_row.get("filters")
-        else None
-    )
     delivery_outcome = (
         saved_filters.get("delivery_outcome")
         if isinstance(saved_filters, dict)

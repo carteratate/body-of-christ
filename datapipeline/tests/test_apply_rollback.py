@@ -1056,3 +1056,21 @@ async def test_retire_only_needs_its_collection(world):
     args = publish.build_parser().parse_args(["apply", "--retire-only", "--release", "x-1"])
     with pytest.raises(ValueError, match="--retire-only needs --collection"):
         await publish.apply(args)
+
+
+async def test_snapshot_redirects_can_use_the_staged_index(world):
+    """The before-snapshot's redirect query can look staged anchor and chapter redirects up
+    by staging's partial index. Without it each live redirect scanned all of staging, and
+    card-notes-2026-11's first apply hit the statement timeout (22 Nov 2026). Sequential
+    scans are switched off so the plan shows whether the index is usable at all, which the
+    planner decides by the query's shape, not the table's size."""
+    await _stage(world)
+    conn = await world.connect()
+    try:
+        async with conn.transaction():
+            await conn.execute("SET LOCAL enable_seqscan = off")
+            plan = "\n".join(r[0] for r in await conn.fetch("EXPLAIN " + A.SNAPSHOT_REDIRECTS_SQL))
+    finally:
+        await conn.close()
+    # The partial index `LIKE ... INCLUDING ALL` copies into staging (0043).
+    assert "Scan on corpus_redirects_entity_old_document_id_old_anchor_idx" in plan, plan

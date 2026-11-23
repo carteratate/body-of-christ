@@ -6,8 +6,9 @@ import { getCollectionMeta } from "@/lib/collections";
 import styles from "./QuotaControl.module.css";
 
 const QUOTA_OPTIONS = [3, 4, 5] as const;
-const LIGHT_NUMERAL_COLLECTIONS = new Set(["apostolic-exhortations"]);
-const THEME_SENSITIVE_COLLECTIONS = new Set(["canon-law", "papal-documents"]);
+// Church law's red takes a light numeral on dark and a dark one on light; every other
+// collection colour reads with the dark numeral in both themes.
+const THEME_SENSITIVE_COLLECTIONS = new Set(["church-law"]);
 
 interface QuotaControlProps {
   value: number;
@@ -116,16 +117,12 @@ export function QuotaControl({ value, onChange, focusedCollection }: QuotaContro
             focusedEligible && value === 10
               ? collection && THEME_SENSITIVE_COLLECTIONS.has(collection.key)
                 ? styles.themeSensitiveNumeral
-                : collection && LIGHT_NUMERAL_COLLECTIONS.has(collection.key)
-                  ? "text-brand-contrast-light"
-                  : "text-brand-contrast-dark"
+                : "text-brand-contrast-dark"
               : "text-brand-primary",
             "border-[4px] text-xs font-semibold focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-focus",
           ].join(" ")}
         >
-          <span className={collection?.key === "papal-documents" && value === 10 ? styles.papalNumeral : undefined}>
-            10
-          </span>
+          <span>10</span>
         </button>
       </div>
     </div>

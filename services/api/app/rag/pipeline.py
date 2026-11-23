@@ -15,6 +15,7 @@ import uuid
 from app.config import settings
 from app.db import get_pool
 from app.footnotes import fetch_footnotes, has_footnotes
+from app.headings import fetch_headings
 from app.reader_access import access_fields, document_access
 from app.rag.constants import VALID_COLLECTIONS
 from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
@@ -171,6 +172,7 @@ def _saved_search_filters(
     delivery_outcome: str | None,
     outcome: PersistedSearchOutcome,
     collection_outcomes: dict[str, str],
+    scopes: dict[str, dict[str, list[str]]] | None = None,
 ) -> dict:
     filters = {
         "collections": collections,
@@ -179,6 +181,10 @@ def _saved_search_filters(
         "outcome": outcome,
         "collection_outcomes": collection_outcomes,
     }
+    # The genre and issuer selection (5.1a), only when one narrows a collection, so a
+    # search without one saves the same object as before. The restore returns it as is.
+    if scopes:
+        filters["scopes"] = scopes
     if quota == 10 and delivery_outcome in {"complete", "underfilled", "minimum_floor"}:
         filters["delivery_outcome"] = delivery_outcome
     return filters
@@ -234,6 +240,7 @@ async def _persist_empty_search(
     quota: int,
     collection_outcomes: dict[str, CollectionOutcome],
     delivery_outcome: str | None = None,
+    scopes: dict[str, dict[str, list[str]]] | None = None,
 ) -> bool:
     if user_id is None:
         return False
@@ -259,6 +266,7 @@ async def _persist_empty_search(
                     delivery_outcome,
                     PersistedSearchOutcome.NO_CANDIDATES,
                     persisted_collection_outcomes,
+                    scopes,
                 ),
             )
         return True
@@ -394,6 +402,7 @@ async def run_search_pipeline(
                 quota=quota,
                 collection_outcomes=pipeline_result.collection_outcomes,
                 delivery_outcome=pipeline_result.delivery_outcome,
+                scopes=plan.saved_scopes(),
             )
             cost_search_id = empty_search_id if persisted else None
             yield {
@@ -412,12 +421,13 @@ async def run_search_pipeline(
         # ------------------------------------------------------------------
         # Step 6 — Yield chunk events
         # ------------------------------------------------------------------
-        # Three independent lookups, each best-effort, run together: every round trip
+        # Four independent lookups, each best-effort, run together: every round trip
         # here is time before the first card.
-        access, notes, facts = await asyncio.gather(
+        access, notes, facts, marks = await asyncio.gather(
             _document_access_for(final_results),
             _footnotes_for(final_results),
             _facts_for(final_results, pipeline_result),
+            fetch_headings(get_pool(), [(r.chunk_id, r.content) for r in final_results]),
         )
         for chunk in final_results:
             card_access = access_fields(access, chunk.document_id, chunk.unit_label,
@@ -469,6 +479,9 @@ async def run_search_pipeline(
                 ),
                 # Shown with the passage, never part of `content` (issue #279).
                 "footnotes": notes.get(chunk.chunk_id, []),
+                # Headings marked inside the passage (issue #445), sent only when it has
+                # some, so every event today is unchanged.
+                **({"headings": marks[chunk.chunk_id]} if marks.get(chunk.chunk_id) else {}),
             }
 
         # ------------------------------------------------------------------
@@ -501,6 +514,7 @@ async def run_search_pipeline(
                                             for collection, value
                                             in pipeline_result.collection_outcomes.items()
                                         },
+                                        plan.saved_scopes(),
                                     ),
                                     len(final_results),
                                 )
