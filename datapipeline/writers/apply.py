@@ -33,6 +33,7 @@ from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Protocol
 
+import collection_keys
 import reader_access
 import registry as reg
 import retirements
@@ -407,7 +408,9 @@ async def apply(conn, release: str, *, remap: UserDataRemap | None = None,
         await lock_publishes(conn)
         row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
         _check_applicable(row, release)
-        collections = list(row["collections"])
+        # Live rows still filed under an old key of a staged collection are part of it
+        # (5.1b.3): snapshotted for the rollback, and renamed in place by ID below.
+        collections = collection_keys.live_keys(row["collections"])
         # The before-snapshot is read here, under the publish lock and before any write, so
         # a concurrent apply of the same release cannot overwrite it with applied rows. The
         # publish is unapplied, so an earlier refused attempt's snapshot is safe to replace.
@@ -682,7 +685,7 @@ async def _rollback(conn, qdrant, release: str, *, alias: str,
                                "discard it first")
         await _load_snapshot_into_staging(conn, rows)
         scope = ([d["id"] for d in rows["documents"]] if retire_only
-                 else await _live_documents(conn, list(row["collections"])))
+                 else await _live_documents(conn, collection_keys.live_keys(row["collections"])))
         core = await _core(conn, scope, release=release, rollback=True)
         ledger = RemapLedger()
         if remap is not None:

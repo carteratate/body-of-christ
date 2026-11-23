@@ -5,7 +5,7 @@
                               [--out <dir>] [--public | --no-public]
 
 Tells a reviewer what a build would change against what users see today. Builds the
-collections through SOURCE_ADAPTERS, maps every live passage in the snapshot to one remap
+sources through SOURCE_BUILDS, maps every live passage in the snapshot to one remap
 outcome (release/remap.py), checks D1, counts the saved user rows each outcome touches,
 and runs 0.1b's health rules on the build and on the snapshot and, when the vendored
 sources are present, 0.1a's coverage and sequence checks. Writes to <out> (default
@@ -511,7 +511,11 @@ def report_md(data: dict, public: bool) -> str:
 
 def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool = True,
         registry: R.Registry | None = None, build: dict[str, list[Document]] | None = None,
-        run_checks: bool | None = None, index_path: str = SNAPSHOT_INDEX) -> int:
+        run_checks: bool | None = None, index_path: str = SNAPSHOT_INDEX,
+        published: tuple[str, ...] | None = None) -> int:
+    """`collections` are sources (`publication.SOURCE_BUILDS`). A staged report passes
+    `published`, the collections the publish writes, so live rows are read only where
+    that publish covers them, under whichever key they are filed (5.1b.3)."""
     meta, problems = verify_snapshot(snapshot_dir, index_path)
     if problems:
         for p in problems:
@@ -520,11 +524,11 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
               file=sys.stderr)
         return 1
 
-    live = health_cli.load_snapshot(snapshot_dir, collections)
+    live = health_cli.load_snapshot(snapshot_dir, collections, published=published)
     old = old_passages(live)
     if build is None:
         checks_report.placeholder_credentials()
-        build = {c: checks_report.SOURCE_ADAPTERS[c]() for c in collections}
+        build = {c: checks_report.SOURCE_BUILDS[c]() for c in collections}
     registry = registry if registry is not None else load_registry()
     built = [d for c in collections for d in build[c]]
     result = R.remap(old, built, registry)

@@ -41,6 +41,8 @@ DATAPIPELINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if DATAPIPELINE not in sys.path:
     sys.path.insert(0, DATAPIPELINE)
 
+import collection_keys  # noqa: E402
+import publication  # noqa: E402
 from model import ContentsNode, Document, Passage, Work  # noqa: E402
 from release import report as release_report  # noqa: E402
 from writers import search_writer  # noqa: E402
@@ -168,10 +170,12 @@ async def export_live(conn, root: str) -> str:
 
 async def explanation_checks(conn, collections: list[str], registry_rows: dict) -> dict:
     """retirements_explained and ids_kept."""
+    # Live rows still filed under an old key of a staged collection count (5.1b.3).
     live = {str(r["id"]): r for r in await conn.fetch(
         """SELECT c.id, c.document_id, d.collection FROM public.chunks c
            JOIN public.documents d ON d.id = c.document_id
-           WHERE d.collection = ANY($1::text[]) AND c.retired_at IS NULL""", collections)}
+           WHERE d.collection = ANY($1::text[]) AND c.retired_at IS NULL""",
+        collection_keys.live_keys(collections))}
     staged = {str(r["id"]) for r in await conn.fetch(
         """SELECT s.id FROM staging.chunks s JOIN staging.documents d ON d.id = s.document_id
            WHERE d.collection = ANY($1::text[])""", collections)}
@@ -251,6 +255,8 @@ async def live_point_changes(qdrant, name: str, live: str | None,
     out = {}
     if live is None:
         return out
+    # A point staging has under another collection is not dropped (Boethius, 5.1b.3).
+    all_staged = {p.id for docs in documents.values() for d in docs for p in d.passages}
     for collection, docs in documents.items():
         payload = embed = compared = missing = 0
         fields: set[str] = set()
@@ -270,10 +276,10 @@ async def live_point_changes(qdrant, name: str, live: str | None,
                     payload += 1
                     fields |= {k for k in a.keys() | b.keys() if a.get(k) != b.get(k)}
                 embed += a.get("embed_sha256") != b.get("embed_sha256")
-        staged_ids = {p.id for d in docs for p in d.passages}
         live_only = 0
-        async for page in scroll_points(qdrant, live, collection):
-            live_only += sum(str(p.id) not in staged_ids for p in page)
+        for key in [collection, *collection_keys.old_keys(collection)]:
+            async for page in scroll_points(qdrant, live, key):
+                live_only += sum(str(p.id) not in all_staged for p in page)
         out[collection] = {"compared": compared, "payload_changed": payload,
                            "embed_sha256_changed": embed, "missing_live": missing,
                            "live_only": live_only, "fields": sorted(fields)}
@@ -310,8 +316,9 @@ async def dedup_checks(conn, qdrant, name: str, live: str | None,
         for r in await conn.fetch(
                 """SELECT c.id::text AS id, c.document_id::text AS document_id
                    FROM public.chunks c JOIN public.documents d ON d.id = c.document_id
-                   WHERE d.collection = $1 AND c.retired_at IS NULL
-                   ORDER BY c.document_id, c.position""", collection):
+                   WHERE d.collection = ANY($1::text[]) AND c.retired_at IS NULL
+                   ORDER BY c.document_id, c.position""",
+                [collection, *collection_keys.old_keys(collection)]):
             live_order[r["document_id"]].append(r["id"])
         sides = [("new", name, d.id, [p.id for p in d.passages]) for d in docs]
         if live is not None:
@@ -627,9 +634,14 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
     content_before = await staged_content_sha256(conn)
     snapshot_dir = await export_live(conn, os.path.join(out, "live"))
     staged = await staged_documents(conn, collections)
-    code = release_report.run(snapshot_dir, tuple(collections), out, public,
-                              registry=_remap_registry(registry), build=staged,
-                              run_checks=run_checks,
+    # 0.1c judges sources (`publication.by_source`), the names its known defects use, and
+    # reads the live rows of the staged collections under whatever key they are filed.
+    by_source = publication.by_source([d for docs in staged.values() for d in docs], registry)
+    sources = tuple(sorted(set(by_source) | set(_live_sources(snapshot_dir, collections))))
+    code = release_report.run(snapshot_dir, sources, out, public,
+                              registry=_remap_registry(registry),
+                              build={s: by_source.get(s, []) for s in sources},
+                              run_checks=run_checks, published=tuple(collections),
                               index_path=os.path.join(out, "live", "snapshots.json"))
 
     registry_rows = {r["passage_id"]: r for r in (registry or _current()).passages}
@@ -678,6 +690,14 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
           f"{data['ids']['retired']:,}, redirected {data['ids']['redirected']:,}, new "
           f"{len(data['ids']['new']):,}")
     return 0 if data["pass"] else 1
+
+
+def _live_sources(snapshot_dir: str, collections: list[str]) -> list[str]:
+    """The sources of the live documents a publish of `collections` covers, so a source
+    whose documents the build drops is still judged."""
+    from checks import health as health_cli
+
+    return sorted(health_cli.load_snapshot(snapshot_dir, None, published=collections))
 
 
 def _current():

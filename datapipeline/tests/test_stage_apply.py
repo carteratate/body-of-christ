@@ -460,12 +460,38 @@ async def test_point_count_check_includes_copied_collections(world, monkeypatch)
         await world.runner().stage(STAGE)
 
 
-async def test_renamed_collection_old_points_are_not_copied(world):
-    """5.1b.3: a collection renamed by this publish counts as staged under its old key,
-    so its old points are never copied."""
-    result = await world.runner().stage(replace(STAGE, renames={"medieval": "summa"}))
-    assert result.copied == {}
-    assert (await world.qdrant.count("chunks-test-release")).count == 5
+async def test_a_renamed_collection_stages_its_old_key_live_rows(world):
+    """5.1b.3: staging `theologians` reads the live rows filed under `medieval`, its old
+    key, by ID: nothing is retired, the documents stage under the new key, no point is
+    copied under the old one, and every other collection is copied as it is stored."""
+    from qdrant_client.models import FieldCondition, Filter, MatchValue
+
+    renamed = {"theologians": lambda: [replace(d, collection="theologians") for d in world.build],
+               "summa": lambda: []}
+    live_summa = (await world.qdrant.count("chunks", count_filter=Filter(must=[
+        FieldCondition(key="collection", match=MatchValue(value="summa"))]))).count
+    result = await world.runner(source_adapters=renamed).stage(
+        StageRequest(release="test-release", collections=("theologians",)))
+
+    assert result.tombstones == 0 and result.redirects == {}
+    assert {r["collection"] for r in await world.fetch(
+        "SELECT collection FROM staging.documents")} == {"theologians"}
+    assert result.copied == {"summa": live_summa}
+    old_key = Filter(must=[FieldCondition(key="collection", match=MatchValue(value="medieval"))])
+    assert (await world.qdrant.count("chunks-test-release", count_filter=old_key)).count == 0
+    staged = sum(len(d.passages) for d in world.build)
+    assert (await world.qdrant.count("chunks-test-release")).count == staged + live_summa
+
+
+async def test_stage_refuses_a_document_moving_from_a_collection_it_does_not_cover(world):
+    """A build may not take a live document from a collection the stage leaves alone
+    (5.1b.3's Boethius: stage `church-fathers` with `theologians` until it is applied)."""
+    moved = {"summa": lambda: [replace(d, collection="summa") for d in world.build],
+             "medieval": lambda: []}
+    with pytest.raises(StageRefused, match="stage theologians with it|stage medieval with it"):
+        await world.runner(source_adapters=moved).stage(
+            StageRequest(release="test-release", collections=("summa",)))
+    assert not await world.fetch("SELECT 1 FROM corpus_publishes")
 
 
 async def test_stage_refuses_without_the_live_alias(world):
@@ -736,9 +762,9 @@ def test_stage_asks_the_lock_for_its_step(tmp_path, monkeypatch, capsys):
     _remote(monkeypatch)
     lock = tmp_path / "PUBLISH_LOCK.json"
     lock.write_text(json.dumps({"reason": "test", "approved_applies": [
-        {"collection": "medieval", "release": "test-release", "steps": ["apply"]}]}))
+        {"collection": "theologians", "release": "test-release", "steps": ["apply"]}]}))
     with pytest.raises(SystemExit) as raised:
-        publish.main(["stage", "--collection", "medieval", "--release", "test-release"],
+        publish.main(["stage", "--collection", "theologians", "--release", "test-release"],
                      lock_path=lock)
     assert raised.value.code == 2
     assert "step 'stage'" in capsys.readouterr().err
@@ -814,4 +840,14 @@ def test_release_names_follow_the_publish_id_rule(capsys):
         publish.build_parser().parse_args(["status", "--release", "Bad_Name"])
     args = publish.build_parser().parse_args(["stage", "--collection", "all",
                                               "--release", "2026-11-republish"])
-    assert args.collection == "all"
+    assert args.collection == ["all"]
+
+
+def test_stage_takes_collections_a_document_moves_between_in_one_call():
+    """5.1b.3: Boethius moves from `theologians` to `church-fathers`, so both stage at once."""
+    import publish
+
+    args = publish.build_parser().parse_args([
+        "stage", "--collection", "church-fathers", "--collection", "theologians",
+        "--release", "collection-keys"])
+    assert args.collection == ["church-fathers", "theologians"]

@@ -228,6 +228,6 @@ def test_approved_file_is_sorted_and_holds_no_long_text():
 @vendored
 @pytest.mark.sources
 def test_the_build_is_english():
-    from publication import SOURCE_ADAPTERS
-    docs = [d for c in ("church-fathers", "encyclicals") for d in SOURCE_ADAPTERS[c]()]
+    from publication import SOURCE_BUILDS
+    docs = [d for c in ("church-fathers", "encyclicals") for d in SOURCE_BUILDS[c]()]
     assert [(d.title, p.anchor, x) for d, p, x in english_only(docs)] == []

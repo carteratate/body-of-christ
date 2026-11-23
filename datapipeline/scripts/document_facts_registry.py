@@ -33,14 +33,14 @@ import attributions  # noqa: E402
 import document_facts  # noqa: E402
 import registry  # noqa: E402
 import rights_inventory  # noqa: E402
-from publication import SOURCE_ADAPTERS  # noqa: E402
+from publication import SOURCE_BUILDS  # noqa: E402
 
 
 def build_all(reg: registry.WorkRegistry) -> list:
     """Every document the adapters build, before the registry's facts are applied."""
     held = registry.removed_document_ids(reg)
-    return [registry.drop_removed(d, reg) for c in SOURCE_ADAPTERS
-            for d in SOURCE_ADAPTERS[c]() if d.id not in held]
+    return [registry.drop_removed(d, reg) for c in SOURCE_BUILDS
+            for d in SOURCE_BUILDS[c]() if d.id not in held]
 
 
 def _attribution(w: dict, built: bool) -> dict:

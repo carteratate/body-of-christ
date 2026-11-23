@@ -58,9 +58,9 @@ async def _sql(world, sql, *args):
         await conn.close()
 
 
-async def _stage(world, request=STAGE):
+async def _stage(world, request=STAGE, **runner):
     """Stage, then record a report hash as a passing report would."""
-    await world.runner().stage(request)
+    await world.runner(**runner).stage(request)
     conn = await world.connect()
     try:
         content = await staged_content_sha256(conn)
@@ -462,6 +462,30 @@ async def test_rollback_apply_restores_rows_alias_and_outline(world):
     # Staging holds the snapshot again, so it must be cleaned up before the next stage.
     [p] = await world.fetch("SELECT rolled_back_at IS NOT NULL AS r, cleaned_up_at FROM corpus_publishes")
     assert p == {"r": True, "cleaned_up_at": None}
+
+
+async def test_a_renamed_collection_is_renamed_in_place_and_rolled_back(world):
+    """5.1b.3: publishing `theologians` over live rows filed under `medieval` changes
+    `documents.collection` in place by ID, retires nothing and keeps every passage; the
+    rollback files them under `medieval` again."""
+    renamed = {"theologians": lambda: [replace(d, collection="theologians") for d in world.build],
+               "summa": lambda: []}
+    live_ids = {r["id"] for r in await world.fetch(
+        "SELECT id::text FROM chunks WHERE retired_at IS NULL")}
+    await _stage(world, StageRequest(release=RELEASE, collections=("theologians",)),
+                 source_adapters=renamed)
+    await _apply(world)
+    await _switch(world)
+    assert {r["id"]: r["collection"] for r in await world.fetch(
+        "SELECT id::text, collection FROM documents WHERE id = ANY($1::uuid[])",
+        [DOC_A, DOC_B])} == {DOC_A: "theologians", DOC_B: "theologians"}
+    assert {r["id"] for r in await world.fetch(
+        "SELECT id::text FROM chunks WHERE retired_at IS NULL")} == live_ids
+    assert not await world.fetch("SELECT 1 FROM corpus_tombstones")
+    await _cleanup(world)
+    await _rollback(world)
+    assert {r["collection"] for r in await world.fetch(
+        "SELECT collection FROM documents WHERE id = ANY($1::uuid[])", [DOC_A, DOC_B])} == {"medieval"}
 
 
 async def test_concurrent_applies_keep_the_before_snapshot(world):

@@ -319,15 +319,16 @@ if __name__ == "__main__":
                     help="release named by the PUBLISH_LOCK.json entry that approves --apply")
     args = ap.parse_args()
 
-    # SOURCE_ADAPTERS is the datapipeline's canonical collection registry: the values
-    # stored today, all of which services/api's VALID_COLLECTIONS accepts. Import it here so importing this module for
-    # its helpers does not pull in publication dependencies.
+    # The collections a Qdrant payload can carry: the published ones, and the old keys
+    # live payloads keep until 5.1b.3's publish (`collection_keys`). Imported here so
+    # importing this module for its helpers does not pull in publication dependencies.
+    from collection_keys import RENAMES  # noqa: E402
     from publication import SOURCE_ADAPTERS  # noqa: E402
 
     try:
         names, fields = resolve_args(
             args.fields, args.collection, args.apply,
-            args.allow_content_sync, args.batch_size, set(SOURCE_ADAPTERS),
+            args.allow_content_sync, args.batch_size, set(SOURCE_ADAPTERS) | set(RENAMES),
         )
     except ArgError as exc:
         ap.error(str(exc))

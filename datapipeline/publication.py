@@ -14,13 +14,14 @@ from __future__ import annotations
 
 import os
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from importlib import import_module
 
 import asyncpg
 
 import card_notes
+import collection_keys
 import contents
 import registry as reg
 import retirements
@@ -42,7 +43,11 @@ def _build_from(module_name: str, builder_name: str, single: bool = False) -> li
     return [built] if single else built
 
 
-SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
+# The builds by source (`datapipeline/sources/<key>/`): each adapter as it is, its
+# documents filed under the key its frozen IDs are registered by. The coverage, health
+# and release checks (0.1a to 0.1c) judge sources, and their known defects are keyed by
+# these names, before and after 5.1b.3.
+SOURCE_BUILDS: dict[str, SourceAdapter] = {
     "apostolic-exhortations": lambda: _build_from(
         "apostolic_exhortations", "build_documents"
     ),
@@ -56,6 +61,68 @@ SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
     "papal-documents": lambda: _build_from("papal_documents", "build_documents"),
     "summa": lambda: _build_from("summa", "build_document", single=True),
 }
+
+# Boethius's Consolation of Philosophy: built from the medieval source, published with
+# the Fathers since 5.1b.3 (by its frozen registry ID).
+BOETHIUS_DOCUMENT_ID = "9a6599ee-ac40-5017-a2c6-7aad2cf14296"
+
+
+def _published_as(collection: str, documents: list[Document]) -> list[Document]:
+    """Documents filed under the collection they are published in (5.1b.3)."""
+    for document in documents:
+        document.collection = collection
+    return documents
+
+
+def _papal() -> list[Document]:
+    """The three papal sources as one collection. Publishing one of them alone under
+    `papal` would make 2.2w retire the other two, which nothing in the removal registry
+    explains (D4), so they are one adapter."""
+    return _published_as("papal", [
+        *SOURCE_BUILDS["encyclicals"](),
+        *SOURCE_BUILDS["apostolic-exhortations"](),
+        *SOURCE_BUILDS["papal-documents"](),
+    ])
+
+
+def _theologians() -> list[Document]:
+    return _published_as("theologians", [
+        d for d in SOURCE_BUILDS["medieval"]() if d.id != BOETHIUS_DOCUMENT_ID])
+
+
+def _church_fathers() -> list[Document]:
+    boethius = [d for d in SOURCE_BUILDS["medieval"]() if d.id == BOETHIUS_DOCUMENT_ID]
+    return _published_as("church-fathers", [*SOURCE_BUILDS["church-fathers"](), *boethius])
+
+
+# The builds by the collection each publishes (`collection_keys`): what a stage writes,
+# and what `documents.collection` and the Qdrant payload hold after it.
+SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
+    "bible": SOURCE_BUILDS["bible"],
+    "catechism": SOURCE_BUILDS["catechism"],
+    "church-fathers": _church_fathers,
+    "church-law": lambda: _published_as("church-law", SOURCE_BUILDS["canon-law"]()),
+    "councils": SOURCE_BUILDS["councils"],
+    "papal": _papal,
+    "summa": SOURCE_BUILDS["summa"],
+    "theologians": _theologians,
+}
+
+
+source_of = collection_keys.source_of
+
+
+def by_source(documents: list[Document], registry: reg.WorkRegistry | None = None
+              ) -> dict[str, list[Document]]:
+    """Documents grouped by source, each a copy filed under its source key."""
+    import dataclasses
+
+    out: dict[str, list[Document]] = {}
+    for d in documents:
+        key = source_of(d.id, d.collection, registry)
+        out.setdefault(key, []).append(
+            d if key == d.collection else dataclasses.replace(d, collection=key))
+    return out
 
 
 WORK_ORDINAL_LIMIT = 1_000_000
@@ -101,8 +168,10 @@ def validate_documents(collection: str, documents: list[Document]) -> None:
             f"source adapter for '{collection}' emitted a '{wrong_collection}' document"
         )
     # Health block rules (item 0.1b). build() runs this before a stage opens any store,
-    # and a dry run runs it too.
-    refuse_block_violations(collection, documents)
+    # and a dry run runs it too. Rules and their known defects are per source, so a
+    # published collection is judged source by source (5.1b.3).
+    for source, docs in by_source(documents).items():
+        refuse_block_violations(source, docs)
     # Contents trees (#250): a node must open a chapter the document has, in reading
     # order. Raises contents.ContentsError, a ValueError.
     for document in documents:
@@ -138,9 +207,6 @@ def prepare(documents: list[Document], registry: reg.WorkRegistry | None = None
 class StageRequest:
     release: str
     collections: tuple[str, ...]
-    # A collection renamed by this publish (5.1b.3), new key → old key. The old key
-    # counts as staged, so its points are never copied into the new collection.
-    renames: Mapping[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -329,13 +395,17 @@ class StageRunner:
 
             at = datetime.now(timezone.utc)
             async with conn.transaction():
+                # Live rows still filed under an old key of a staged collection are
+                # part of it (5.1b.3): compared by ID, never retired for the rename.
+                live_scope = collection_keys.live_keys(collections)
+                await refuse_moves_out_of_scope(conn, documents, live_scope)
                 await begin_publish(conn, request.release, collections, name)
                 await reader_writer.ensure_staging(conn)
-                await reader_writer.clear_staged_collections(conn, collections)
+                await reader_writer.clear_staged_collections(conn, live_scope)
                 for d in documents:
                     await reader_writer.write_staged_document(conn, d)
                 await reader_writer.copy_live_annotations(conn, collections)
-                live_passages, live_documents = await live_rows(conn, collections)
+                live_passages, live_documents = await live_rows(conn, live_scope)
                 found = retirements.compute(
                     live_passages, live_documents, documents, registry,
                     release=request.release, at=at,
@@ -361,9 +431,14 @@ class StageRunner:
             for d in documents:
                 await write_document(client, d, collection_name=name, vectors=vectors)
 
-            staged_keys = set(publish_collections) | set(request.renames.values())
+            # Every collection not staged keeps its live points, under the key they are
+            # stored with: until 5.1b.3's publish, that is the old key. The old keys of a
+            # staged collection are staged with it, so none of their points is copied.
             copied = {}
-            for c in sorted(set(self._source_adapters) - staged_keys):
+            unstaged = sorted(set(self._source_adapters) - set(publish_collections))
+            for c in collection_keys.live_keys(unstaged):
+                if collection_keys.canonical(c) in publish_collections:
+                    continue
                 # Always copied afresh: a count alone cannot show that live changed.
                 copied[c] = await qd.count_points(client, live, c)
                 await qd.clear_staged_points(client, name, c, alias=alias)
@@ -386,6 +461,26 @@ class StageRunner:
             passages=sum(len(d.passages) for d in documents), new_ids=new_ids,
             tombstones=len(found.tombstones), redirects=kinds, moved=len(found.moved),
             copied=copied, vectors=dict(vectors.counts))
+
+
+async def refuse_moves_out_of_scope(conn: asyncpg.Connection, documents: list[Document],
+                                    live_scope: list[str]) -> None:
+    """Refuse a build that holds a document live files under a collection this stage
+    does not cover. Its live rows would not be compared, so it would look new here and
+    unexplained to the next publish of its live collection. 5.1b.3 moves Boethius from
+    the medieval collection to the Fathers: until that publish is applied, stage
+    `church-fathers` with `theologians`."""
+    elsewhere = await conn.fetch(
+        """SELECT id::text AS id, collection, title FROM public.documents
+           WHERE id = ANY($1::uuid[]) AND retired_at IS NULL
+             AND NOT (collection = ANY($2::text[]))""",
+        [d.id for d in documents], live_scope)
+    if elsewhere:
+        where = "; ".join(f"{r['title']!r} is live in {r['collection']!r}" for r in elsewhere[:5])
+        needed = sorted({collection_keys.canonical(r["collection"]) for r in elsewhere})
+        raise StageRefused(f"REFUSING: the build moves {len(elsewhere)} live documents from a "
+                           f"collection this stage does not cover ({where}); stage "
+                           f"{', '.join(needed)} with it")
 
 
 async def check_point_counts(conn: asyncpg.Connection, client, name: str,
