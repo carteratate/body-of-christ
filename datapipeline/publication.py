@@ -73,6 +73,11 @@ SPLIT_SOURCES: dict[str, frozenset[str]] = {
 }
 
 
+def published_in(document_id: str, source: str) -> str:
+    """The collection a document of `source` is published in."""
+    return "church-fathers" if document_id == BOETHIUS_DOCUMENT_ID else collection_keys.canonical(source)
+
+
 def _published_as(collection: str, documents: list[Document]) -> list[Document]:
     """Documents filed under the collection they are published in (5.1b.3)."""
     for document in documents:

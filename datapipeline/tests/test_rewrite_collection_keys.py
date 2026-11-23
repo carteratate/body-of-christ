@@ -203,17 +203,19 @@ def test_malformed_saved_filters_do_not_stop_the_rewrite():
 
 
 def test_a_source_published_in_part_is_checked_whole(monkeypatch):
-    """After 5.1b.3 the medieval source feeds `theologians` and Boethius in
-    `church-fathers`; a release staging only one of them has its coverage checks judge
-    the whole source, which reads every file of it, so the other part is not missing."""
+    """After 5.1b.3 the medieval source feeds `theologians` and Boethius `church-fathers`.
+    A release staging one of them has its coverage checks see the other part as built,
+    and never a document of a collection it stages, so a dropped one stays missing."""
     import publication
+    from model import Document
     from release import staged
 
-    monkeypatch.setitem(publication.SOURCE_BUILDS, "medieval", lambda: ["whole medieval"])
+    boethius = Document(id=publication.BOETHIUS_DOCUMENT_ID, collection="medieval", title="B")
+    anselm = Document(id="anselm", collection="medieval", title="A")
+    monkeypatch.setitem(publication.SOURCE_BUILDS, "medieval", lambda: [boethius, anselm])
     assert staged._whole_sources(("church-fathers", "medieval"), ["church-fathers"]) == {
-        "medieval": ["whole medieval"]}
-    assert staged._whole_sources(("medieval",), ["theologians"]) == {
-        "medieval": ["whole medieval"]}
+        "medieval": [anselm]}
+    assert staged._whole_sources(("medieval",), ["theologians"]) == {"medieval": [boethius]}
     assert staged._whole_sources(("church-fathers", "medieval"),
                                  ["church-fathers", "theologians"]) == {}
     assert staged._whole_sources(("encyclicals",), ["papal"]) == {}

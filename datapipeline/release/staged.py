@@ -694,13 +694,19 @@ async def run(conn, qdrant, release: str, out: str, *, public: bool = True,
 
 
 def _whole_sources(sources: tuple[str, ...], collections: list[str]) -> dict:
-    """The full build of each source this publish covers only in part (the medieval
-    source, when only one of `theologians` and `church-fathers` is staged). Its documents
-    outside the publish join the staged ones for the coverage checks, which judge a
-    source's every file; the staged ones are judged as staged."""
-    return {s: publication.SOURCE_BUILDS[s]() for s in sources
-            if s in publication.SPLIT_SOURCES
-            and not publication.SPLIT_SOURCES[s] <= set(collections)}
+    """For each source this publish covers only in part (the medieval source, when only
+    one of `theologians` and `church-fathers` is staged), its built documents that
+    publish in a collection the publish leaves alone. They join the staged documents for
+    the coverage checks, which judge a source's every file; a document of a staged
+    collection is never added, so one the build drops is still reported missing."""
+    wanted = set(collections)
+    out = {}
+    for source in sources:
+        if source not in publication.SPLIT_SOURCES or publication.SPLIT_SOURCES[source] <= wanted:
+            continue
+        out[source] = [d for d in publication.SOURCE_BUILDS[source]()
+                       if publication.published_in(d.id, source) not in wanted]
+    return out
 
 
 def _live_sources(snapshot_dir: str, collections: list[str]) -> list[str]:
