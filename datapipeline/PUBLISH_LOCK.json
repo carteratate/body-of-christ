@@ -10,7 +10,7 @@
       ],
       "reason": "Only to delete the Qdrant collection #399's publish replaced, chunks-held-texts-2026-11, with publish.py drop-old-collection --close-window-early, by Carter's decision closing Stromata III's rollback window early (23 Nov 2026, #399). drop-old-collection asks for an all entry; the church-fathers stage, apply and rollback entry is removed here, so the publish can no longer be rolled back. A later reviewed PR removes this entry.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 468
     }
   ]
 }
