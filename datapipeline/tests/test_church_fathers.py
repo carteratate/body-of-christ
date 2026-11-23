@@ -644,6 +644,7 @@ def test_basil_newman_letters_name_both_translators(fathers):
 
 def test_npnf_registry_lifting_an_exclusion_restores_the_letter(monkeypatch):
     from scripts import npnf_registry
+    npnf_registry_excluded = npnf_registry.EXCLUDED
     excluded = {f: dict(divs) for f, divs in npnf_registry.EXCLUDED.items()}
     del excluded["npnf208.xml"]["ix.xl"]
     monkeypatch.setattr(npnf_registry, "EXCLUDED", excluded)
@@ -656,6 +657,13 @@ def test_npnf_registry_lifting_an_exclusion_restores_the_letter(monkeypatch):
     assert {e["anchor"].split("/")[0] for e in closed} == {"ix.xl"}
     ids = {e["passage_id"] for e in closed}
     assert {r["status"] for r in staged.passages if r["passage_id"] in ids} == {"active"}
+    # Excluded again: a new entry under a new ID, and the closed one kept as it was.
+    monkeypatch.setattr(npnf_registry, "EXCLUDED", npnf_registry_excluded)
+    again, _, _, problems = npnf_registry.plan(staged, "2026-11-26")
+    assert problems == []
+    assert {e["id"] for e in again.removals if e.get("closed_by")} >= {e["id"] for e in closed}
+    reopened = [e for e in again.removals if e["passage_id"] in ids and not e.get("closed_by")]
+    assert reopened and not {e["id"] for e in reopened} & {e["id"] for e in closed}
 
 
 def test_basil_rule_a_removals_cover_every_excluded_passage(basil):

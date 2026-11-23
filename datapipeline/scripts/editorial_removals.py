@@ -509,7 +509,8 @@ def plan(reg: registry.WorkRegistry, entries: list[dict], found: list, item: str
     # order, since one passage can lose the same text twice (two rule lines).
     previous: dict[tuple, list[str]] = defaultdict(list)
     for e in reg.removals:
-        if e.get("added_by") == item:
+        # A closed entry keeps its ID as the record; a removal made again takes a new one.
+        if e.get("added_by") == item and not e.get("closed_by"):
             previous[_entry_key(e)].append(e["id"])
     for e in entries:
         ids = previous.get(_entry_key(e))
