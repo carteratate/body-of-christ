@@ -72,10 +72,14 @@ def canonical_keys(keys: list) -> list:
     return out
 
 
-def merge_outcomes(values: list[str]) -> str:
-    if any(v in ("results", "results_degraded") for v in values):
-        return "results_degraded" if any(v in OUTCOME_FAILURES for v in values) else "results"
-    return next((o for o in OUTCOME_ORDER if o in values), values[0])
+def merge_outcomes(values: list) -> object:
+    """Values restore does not accept (it skips them) take part in no merge."""
+    valid = [v for v in values if isinstance(v, str) and v in OUTCOME_ORDER]
+    if not valid:
+        return values[0]
+    if any(v in ("results", "results_degraded") for v in valid):
+        return "results_degraded" if any(v in OUTCOME_FAILURES for v in valid) else "results"
+    return next(o for o in OUTCOME_ORDER if o in valid)
 
 
 def canonical_outcomes(outcomes: dict) -> dict:
@@ -273,6 +277,13 @@ async def _run(conn, write: bool, vocabulary: list[str]) -> int:
     """Plan and print; with `write`, apply in the same transaction, which a refusal or a
     concurrent change rolls back whole."""
     async with conn.transaction(readonly=not write):
+        if write:
+            # No search or guest trial is written while the rows are read and rewritten:
+            # a guest claim copies a trial's filters into a new search, which a scan
+            # already past it would miss. Searches wait about a second; an open claim is
+            # waited for, so its row is read.
+            await conn.execute("SET LOCAL lock_timeout = '10s'")
+            await conn.execute("LOCK TABLE public.searches, public.guest_trials IN SHARE MODE")
         report = await plan(conn, vocabulary)
         print(summary(report))
         if not write:

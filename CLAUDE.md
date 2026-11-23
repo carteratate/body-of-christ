@@ -585,8 +585,9 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
   which the work registry, the 0.1a to 0.1c checks, their known defects and the embedding
   overlap stay keyed by (`collection_keys.source_of`). Until 5.1b.3's publish is applied,
   live rows carry the old keys, and 2.2w reads them as part of the new key
-  (`collection_keys.live_keys`). Boethius moves from `theologians` to `church-fathers`, so
-  until then those two stage together (`publish.py stage --collection` repeats).
+  (`collection_keys.live_keys`). Boethius moves from `theologians` to `church-fathers` only
+  in a stage of both (`publish.py stage --collection` repeats); a Fathers-only stage
+  before then leaves him where he is (`publication.place_boethius`).
 - **To add one:** update `constants.py`, sync `collections.ts`, add a `--color-collection-*` token in `globals.css`, and add a migration extending the DB collection constraint.
 
 ---

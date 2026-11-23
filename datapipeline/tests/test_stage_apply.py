@@ -514,6 +514,38 @@ async def test_a_release_staged_under_an_old_key_is_not_copied_over(world):
     assert "medieval" not in result.copied
 
 
+async def test_boethius_moves_only_when_both_collections_stage(world, monkeypatch):
+    """Before 5.1b.3's apply, a Fathers-only stage leaves him where live has him (his
+    points copied as stored), a stage of `theologians` alone refuses, and a stage of
+    both moves him."""
+    import publication
+
+    monkeypatch.setattr(publication, "BOETHIUS_DOCUMENT_ID", DOC_B)
+    adapters = {"church-fathers": lambda: [replace(_doc(world, DOC_B), collection="church-fathers")],
+                "theologians": lambda: [replace(_doc(world, DOC_A), collection="theologians")],
+                "summa": lambda: []}
+    fathers = await world.runner(source_adapters=adapters).stage(
+        StageRequest(release="fathers-only", collections=("church-fathers",)))
+    assert fathers.documents == 0 and fathers.tombstones == 0
+    assert "medieval" in fathers.copied
+    conn = await world.connect()
+    try:
+        await conn.execute("UPDATE corpus_publishes SET discarded_at = now()")
+        await reader_writer.clear_staged_collections(conn, ["church-fathers", "medieval",
+                                                            "theologians", "summa"])
+    finally:
+        await conn.close()
+    with pytest.raises(StageRefused, match="stage theologians with church-fathers"):
+        await world.runner(source_adapters=adapters).stage(
+            StageRequest(release="theologians-only", collections=("theologians",)))
+    both = await world.runner(source_adapters=adapters).stage(
+        StageRequest(release="both", collections=("church-fathers", "theologians")))
+    assert both.tombstones == 0
+    assert {r["id"]: r["collection"] for r in await world.fetch(
+        "SELECT id::text, collection FROM staging.documents")} == {
+        DOC_B: "church-fathers", DOC_A: "theologians"}
+
+
 async def test_stage_refuses_a_document_moving_from_a_collection_it_does_not_cover(world):
     """A build may not take a live document from a collection the stage leaves alone
     (5.1b.3's Boethius: stage `church-fathers` with `theologians` until it is applied)."""

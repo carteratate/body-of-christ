@@ -392,6 +392,7 @@ class StageRunner:
                     "copies vectors and untouched collections from its target")
             if name in (live, alias, qd.PRE_ALIAS_COLLECTION):
                 raise StageRefused(f"REFUSING: '{name}' is what users search")
+            documents = await place_boethius(conn, documents, collections)
 
             # Decide whether the Qdrant collection is ours before anything is written: a
             # refused stage must leave no publish row that a retry would read as proof.
@@ -475,6 +476,28 @@ class StageRunner:
             passages=sum(len(d.passages) for d in documents), new_ids=new_ids,
             tombstones=len(found.tombstones), redirects=kinds, moved=len(found.moved),
             copied=copied, vectors=dict(vectors.counts))
+
+
+async def place_boethius(conn: asyncpg.Connection, documents: list[Document],
+                         collections: list[str]) -> list[Document]:
+    """Where Boethius is staged while 5.1b.3's move is pending. He moves from the
+    medieval collection to the Fathers only in a stage of both. A stage of
+    `church-fathers` alone leaves him where live has him (dropped from its build; his
+    points are copied as stored), so an ordinary Fathers publish needs neither the new
+    keys nor migration 0046. A stage of `theologians` alone while he is live there would
+    retire him, so it refuses. Once he is live in `church-fathers`, nothing changes."""
+    live = await conn.fetchval(
+        "SELECT collection FROM public.documents WHERE id = $1::uuid AND retired_at IS NULL",
+        BOETHIUS_DOCUMENT_ID)
+    if live is None or collection_keys.canonical(live) == "church-fathers":
+        return documents
+    if "church-fathers" in collections and "theologians" not in collections:
+        return [d for d in documents if d.id != BOETHIUS_DOCUMENT_ID]
+    if "theologians" in collections and "church-fathers" not in collections:
+        raise StageRefused(
+            f"REFUSING: Boethius is live in {live!r} and moves to the Fathers (5.1b.3): "
+            "stage theologians with church-fathers")
+    return documents
 
 
 async def refuse_moves_out_of_scope(conn: asyncpg.Connection, documents: list[Document],

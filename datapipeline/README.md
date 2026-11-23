@@ -32,8 +32,9 @@ A source keeps its old name: the work registry files each frozen ID under it, th
 (0.1a to 0.1c) and their known defects are keyed by it, and the embedding overlap follows
 it, so the rename moves no ID and changes no vector. Until 5.1b.3's publish is applied,
 live rows carry the old keys; a stage, report or apply of a new key also covers the live
-rows under each old key that becomes it (`collection_keys.live_keys`). Until then, stage
-`church-fathers` together with `theologians`: Boethius moves between them.
+rows under each old key that becomes it (`collection_keys.live_keys`). Boethius moves only
+in a stage of both `church-fathers` and `theologians`; a Fathers-only stage before then
+leaves him where he is (`publication.place_boethius`).
 
 Vendored adapters read local files under `sources/<collection>/`; they do not fetch
 from source websites during publication. Acquire missing vendored sources separately:

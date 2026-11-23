@@ -232,3 +232,34 @@ def test_coverage_checks_judge_the_staged_documents_and_build_only_the_rest():
     out = with_supplement({"medieval": [staged]}, {"medieval": [rebuilt, anselm]})
     assert [d.title for d in out["medieval"]] == ["Staged copy", "Proslogium"]
     assert with_supplement({"summa": []}, {}) == {"summa": []}
+
+
+def test_a_malformed_outcome_takes_part_in_no_merge():
+    assert R.canonical_outcomes({"encyclicals": "results", "papal-documents": ["x"]}) == {
+        "papal": "results"}
+    assert R.canonical_outcomes({"encyclicals": ["x"], "papal-documents": ["y"]}) == {"papal": ["x"]}
+
+
+async def test_the_write_run_locks_and_completes(cluster):
+    database = cluster.new_database()
+    cluster.psql(database, SCHEMA.replace(
+        "to_jsonb('{\"collections\": [\"encyclicals\"]}'::text)", "'{}'"))
+    conn = await cluster.connect(database)
+    try:
+        assert await R._run(conn, True, VOCAB) == 0
+        assert await R._run(conn, False, VOCAB) == 0
+    finally:
+        await conn.close()
+
+
+def test_a_release_of_all_old_keys_asks_for_the_all_entry(monkeypatch):
+    import publication
+    import publish
+
+    asked = []
+    monkeypatch.setattr(publication, "publish_lock_guard",
+                        lambda step, lock_path=None: lambda c, r: asked.append(c))
+    publish.guard_publish("rollback", sorted(publication.SOURCE_BUILDS), "old-all")
+    publish.guard_publish("rollback", sorted(publication.SOURCE_ADAPTERS), "new-all")
+    publish.guard_publish("rollback", ["papal"], "one")
+    assert asked == ["all", "all", "papal"]

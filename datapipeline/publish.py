@@ -136,7 +136,12 @@ def guard_publish(step: str, collections: Sequence[str], release: str, lock_path
     from publication import publish_lock_guard
 
     guard = publish_lock_guard(step, lock_path)
-    for c in ["all"] if set(collections) == set(SOURCE_ADAPTERS) else collections:
+    # Every collection, in either vocabulary: a release staged with `all` before 5.1b.3
+    # merged lists the ten old keys.
+    from publication import SOURCE_BUILDS
+
+    every = set(collections) in (set(SOURCE_ADAPTERS), set(SOURCE_BUILDS))
+    for c in ["all"] if every else collections:
         guard(c, release)
 
 
