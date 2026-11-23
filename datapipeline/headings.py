@@ -384,13 +384,14 @@ def normalized(text: str) -> str:
 
 
 _DIVISION_PREFIX = re.compile(
-    r"^(?:part|section|chapter|article|book|question|title|paragraph)\s+"
-    r"(?:[0-9]+|[ivxlc]+|one|two|three|four|five|six|seven|eight|nine|ten)\b\s*")
+    r"^(?:(?:part|section|chapter|article|book|question|title|paragraph)\s+"
+    r"(?:[0-9]+|[ivxlc]+|one|two|three|four|five|six|seven|eight|nine|ten)|[0-9]+)\b\s*")
 
 
 def repeats_label(heading: str, label: str) -> bool:
     """Whether a heading says what its chapter label says, one of them allowed to drop
-    a leading division and number the other prints ("Chapter One What is ..." and "What
+    a leading division and number, or a bare number ("2. Christian Education"), the
+    other prints ("Chapter One What is ..." and "What
     is ...", "Article 1 The Revelation of God" and "The Revelation of God"). Two
     different numbers never match ("Article 1 The Church", "Article 2 The Church")."""
     heading, label = normalized(heading), normalized(label)

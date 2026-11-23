@@ -176,7 +176,9 @@ def _heading_rules(collection: str, document: Document, add) -> list[Violation]:
     """H6 on every passage that carries marks; H7 and H8 in the collections that opt in.
     Calls `add` and returns [] so it reads like the rules above."""
     rule = load_patterns()["H7_unmarked_heading"]
-    opted_in = collection in rule["collections"]
+    # A whole collection, or its documents by one author (Vatican II among the councils).
+    opted_in = (collection in rule["collections"]
+                or document.author in rule.get("authors", {}).get(collection, ()))
     not_headings = {headings.normalized(entry["text"])
                     for entry in rule["not_headings"].get(document.id, [])}
     seen_chapters: set[str] = set()

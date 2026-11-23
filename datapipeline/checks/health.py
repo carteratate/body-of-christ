@@ -46,7 +46,8 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
                   ) -> dict[str, list[Document]]:
     """The 0.1c snapshot's passages as Documents, per collection. Each row has id,
     document_id, collection, title, author, anchor, chapter_key, chapter_label,
-    reference, unit_label, position and content; the passage ID is kept as
+    reference, unit_label, position, content and, from format 3, headings (issue #445);
+    the passage ID is kept as
     `metadata["passage_id"]` for the release report. Passages are put in position
     order, so H3 judges whether the positions are 0..n-1, not the export's row order.
     Every requested collection gets an entry, empty if the snapshot holds none of its
@@ -70,7 +71,10 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
                 content=row.get("content") or "", reference=row.get("reference") or "",
                 anchor=row.get("anchor") or "", chapter_key=row.get("chapter_key") or "",
                 chapter_label=row.get("chapter_label") or "", position=row.get("position"),
-                unit_label=row.get("unit_label"), metadata={"passage_id": row["id"]}))
+                unit_label=row.get("unit_label"),
+                # A snapshot from before format 3 has no marks: its passages read unmarked.
+                metadata={"passage_id": row["id"],
+                          **({"headings": row["headings"]} if row.get("headings") else {})}))
     out: dict[str, list[Document]] = {c: [] for c in collections or ()}
     for doc in documents.values():
         # A NULL position sorts last and fails H3.

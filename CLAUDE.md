@@ -210,8 +210,10 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   `H7_unmarked_heading` in `health_patterns.json`, which a collection joins when its adapter
   marks. The API sends `headings` with chunk events (only when non-empty), restored
   results, bookmarks and reader passages (`app/headings.py`); the web draws them with
-  `components/common/PassageBlocks.tsx` and draws an unmarked passage as before. No live
-  passage carries marks yet.
+  `components/common/PassageBlocks.tsx` and draws an unmarked passage as before. The
+  Catechism and Vatican II (the councils' documents by "Second Vatican Council", opted in
+  through `authors`) mark theirs in the build (#445 part 2); no live passage carries marks
+  until their metadata publish. Snapshots from format 3 export the marks.
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
   Places for what the cleanup decides. 2.2w's writer fills them, and every existing row

@@ -21,6 +21,10 @@ P1 = "22222222-2222-2222-2222-222222222222"
 P2 = "33333333-3333-3333-3333-333333333333"
 
 
+# asyncpg hands jsonb back as text: one passage's marks (issue #445).
+HEADINGS_JSON = '[{"at": 0, "end": 5, "level": 3, "role": "heading"}]'
+
+
 class FakeConnection:
     """Records every statement; answers the exporter's queries with tiny rows."""
 
@@ -56,12 +60,12 @@ class FakeConnection:
         if sql == E.PASSAGES_SQL:
             return [dict(id=P1, document_id=DOC, collection="summa", title="T", author="A",
                          anchor="q1/0", chapter_key="q1", chapter_label="Q 1",
-                         reference="R", unit_label="Objection 1", position=0,
+                         reference="R", unit_label="Objection 1", position=0, headings=None,
                          content="Text one."),
                     dict(id=P2, document_id=DOC, collection="summa", title="T", author="A",
                          anchor="q1/1", chapter_key="q1", chapter_label="Q 1",
                          reference="R", unit_label="Objection 1", position=1,
-                         content="Text two.")]
+                         headings=HEADINGS_JSON, content="Title\n\nText two.")]
         if sql == E.DOCUMENT_COLUMNS_SQL:
             return [{"column_name": c} for c in E.DOCUMENT_FIELDS if c != "chunk_count"]
         if sql.startswith("SELECT id::text AS id"):
@@ -210,7 +214,7 @@ SCHEMA = f"""
         author text, year int, translation text, metadata jsonb, chunk_count int);
     CREATE TABLE chunks (id uuid PRIMARY KEY, document_id uuid NOT NULL REFERENCES documents(id),
         content text NOT NULL, position int NOT NULL, reference text, anchor text,
-        chapter_key text, chapter_label text, unit_label text);
+        chapter_key text, chapter_label text, unit_label text, metadata jsonb);
     CREATE TABLE retrievals (id serial, chunk_id uuid REFERENCES chunks(id), user_id uuid);
     CREATE TABLE bookmarks (id serial, chunk_id uuid REFERENCES chunks(id), user_id uuid);
     CREATE TABLE reading_progress (user_id uuid, document_id uuid, chapter_key text, anchor text);
@@ -285,3 +289,13 @@ def test_export_against_postgres_reads_everything_and_cannot_write(database, tmp
     assert data["documents"][0]["metadata"] == {"k": 1}
     out = E.write_snapshot(data, str(tmp_path / "s"), "2026-10-05", "t", str(tmp_path / "i.json"))
     assert load_snapshot(out)["summa"][0].passages[0].metadata["passage_id"] == P1
+
+
+def test_a_snapshot_carries_passage_headings_to_the_health_reader(tmp_path):
+    """Format 3 (issue #445): the marks are exported, so live is read as built."""
+    data = asyncio.run(E.read_live(FakeConnection()))
+    out = E.write_snapshot(data, str(tmp_path / "snapshots"), "2026-10-05",
+                           "2026-10-05T12:00:00Z", str(tmp_path / "snapshots.json"))
+    docs = load_snapshot(out)["summa"]
+    marks = [p.metadata.get("headings") for p in docs[0].passages]
+    assert marks == [None, [{"at": 0, "end": 5, "level": 3, "role": "heading"}]]

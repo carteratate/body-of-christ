@@ -37,6 +37,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import headings  # noqa: E402
 from identity import PIECE_MARK, anchor as make_anchor  # noqa: E402
 from model import ContentsNode, Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
@@ -412,6 +413,92 @@ def _split_notes(spans: list[tuple[int, int]], notes: list[dict]) -> list[list[d
 
 
 _PARAGRAPH_KEY = re.compile(r"^p(\d+)$")
+
+# The heading marks the US edition's printing gives each kind of heading (issue #445):
+# the structural titles (Part to Article, the Creed's "Paragraph N.") are level 1, a
+# label line and its title a pair; the numbered sub-heads and IN BRIEF ("head") level 2;
+# the sentence-case sub-heads level 3; the scripture set under a title ("pre",
+# "headpre", "subheadpre") epigraphs.
+_HEADING_LEVELS = {"head": 2, "subhead": 3}
+_EPIGRAPH_STYLES = frozenset({"pre", "headpre", "subheadpre"})
+# Headings among the source lines kept as printed (ccc.json's, which no US item holds),
+# by unit key, with their text, which the build checks: the Creeds set before Section
+# Two, the Decalogue table's title and columns, and three sub-heads the US pages lack.
+# The table's rows are text (health_patterns.json, `not_headings`).
+_SOURCE_LINE_HEADINGS = {
+    "src:toc-44:0": ("The Credo", 2),
+    "src:toc-44:1": ("The Apostles' Creed", 3),
+    "src:toc-44:3": ("The Nicene Creed", 3),
+    "src:toc-195:11": ("Mixed marriages and disparity of cult", 3),
+    "src:toc-277:7": ("The Ten Commandments", 2),
+    "src:toc-277:8": ("Exodus 20:2-17", 3),
+    "src:toc-277:31": ("Deuteronomy 5:6-21", 3),
+    "src:toc-277:43": ("A Traditional Catechetical Formula", 3),
+    "src:toc-283:10": ("Promises and vows", 3),
+    "src:toc-375:2": ('I. "OUR FATHER!"', 2),
+}
+
+
+def _heading_marks(items: dict, us_by_key: dict, held: list[tuple[str | None, str, int]],
+                   clean: str) -> list[dict]:
+    """The `metadata.headings` marks of a chunk's text: one per paragraph of each
+    heading item it holds, at its offset in `clean`."""
+    marks = []
+    for key, text, start in held:
+        if key in _SOURCE_LINE_HEADINGS:
+            words, level = _SOURCE_LINE_HEADINGS[key]
+            end = start + len(clean_text(text))
+            if clean[start:end].strip() != words:
+                raise ValueError(f"catechism: source line {key} reads "
+                                 f"{clean[start:end]!r}, not {words!r}")
+            marks.append(headings.mark(start, end, level=level))
+            continue
+        item = items.get(key) if key else None
+        if item is None or item["kind"] == "paragraph":
+            continue
+        span = clean[start:start + len(clean_text(text))]
+        paras = [(start + a, start + b) for a, b in headings.paragraphs(span)]
+        if item["kind"] == "structure":
+            if len(paras) > 2:
+                raise ValueError(f"catechism: structural title {key} prints {len(paras)} lines")
+            marks += [headings.mark(a, b, level=1, pairs_next=k + 1 < len(paras))
+                      for k, (a, b) in enumerate(paras)]
+            continue
+        style = us_by_key.get(key, {}).get("style")
+        if style in _EPIGRAPH_STYLES:
+            marks += [headings.mark(a, b, role=headings.EPIGRAPH) for a, b in paras]
+        elif style in _HEADING_LEVELS and len(paras) == 1:
+            marks.append(headings.mark(*paras[0], level=_HEADING_LEVELS[style]))
+        else:
+            raise ValueError(f"catechism: heading {key} of style {style!r} has no mark rule")
+    return _no_skipped_levels(marks, clean)
+
+
+def _no_skipped_levels(marks: list[dict], clean: str) -> list[dict]:
+    """`marks` with a heading set directly under another at most one level below it: a
+    sub-head straight under an Article's title is the tier below that title."""
+    out: list[dict] = []
+    for m in sorted(marks, key=lambda m: m["at"]):
+        prev = out[-1] if out else None
+        if (prev is not None and m["role"] == headings.HEADING
+                and prev["role"] == headings.HEADING and not clean[prev["end"]:m["at"]].strip()
+                and m["level"] > prev["level"] + 1):
+            m = {**m, "level": prev["level"] + 1}
+        out.append(m)
+    return out
+
+
+def _chapter_title(marks: list[dict], clean: str, label: str) -> list[dict]:
+    """`marks` with `chapter_title` on an opening level-1 heading (a pair read as one)
+    that repeats the chapter label, for a passage that opens its chapter."""
+    if not marks or marks[0]["at"] != 0 or marks[0].get("level") != 1:
+        return marks
+    words = clean[marks[0]["at"]:marks[0]["end"]]
+    if marks[0].get("pairs_next") and len(marks) > 1:
+        words += " " + clean[marks[1]["at"]:marks[1]["end"]]
+    if not headings.repeats_label(words, label):
+        return marks
+    return [{**marks[0], "chapter_title": True}, *marks[1:]]
 
 
 def _paragraph_starts(held: list[tuple[str | None, str, int]]) -> list[tuple[int, str]]:
@@ -802,6 +889,8 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
 
     did = resolve_document_id("catechism", "catechism", ("catechism",))
     chapter_of = chapters(data)
+    us_by_key = _us_heading_keys(us["items"])
+    opened: set[str] = set()                 # chapters whose first passage is built
     passages: list[Passage] = []
     pos = 0
     seen: set[str] = set()
@@ -813,6 +902,7 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
             placement.dropped.extend((key, text) for key, text, _ in held)
             continue                      # drop TOC-only fragments ("Article 2")
         notes = _footnotes_for(alignment.items, held, clean)
+        marks = _heading_marks(alignment.items, us_by_key, held, clean)
         paras = meta.get("ccc_paragraphs") or []
         first = paras[0] if paras else None
         chapter_key, chapter_label = chapter_of[meta["path"]]
@@ -832,8 +922,9 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
         refs = [make_reference(c, meta["path"]) for c in cited]
         shared = Counter(refs)
         part: Counter = Counter()
-        for (piece, (lo, hi), piece_notes, (anchor, units), piece_paras, ref) in zip(
-                pieces, spans, _split_notes(spans, notes), named, cited, refs):
+        for (piece, (lo, hi), piece_notes, piece_marks, (anchor, units), piece_paras,
+             ref) in zip(pieces, spans, _split_notes(spans, notes),
+                         headings.split_marks(clean, pieces, marks), named, cited, refs):
             if shared[ref] > 1:
                 part[ref] += 1
                 ref = piece_reference(ref, None, None, part[ref], shared[ref])
@@ -844,6 +935,10 @@ def build(source_path: str | None = None, us_path: str | None = None) -> Build:
             replaced = [TEXT_REPLACED[n] for n in TEXT_REPLACED if f"p{n}" in held_by[anchor]]
             if replaced:
                 piece_meta["text_replaced"] = "; ".join(replaced)
+            if chapter_key not in opened:
+                opened.add(chapter_key)
+                piece_marks = _chapter_title(piece_marks, piece, chapter_label)
+            piece_meta = headings.with_headings(piece_meta, piece_marks)
             passages.append(Passage(
                 content=piece, reference=ref, anchor=anchor,
                 chapter_key=chapter_key, chapter_label=chapter_label,

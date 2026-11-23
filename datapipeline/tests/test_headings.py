@@ -330,3 +330,8 @@ def test_a_pairs_title_cannot_open_another_pair():
     marks = [_h(0, 9, level=1, pairs_next=True), _h(11, 16, level=1, pairs_next=True),
              _h(18, 22, level=1)]
     assert any("cannot open another pair" in f for f in headings.problems(content, marks))
+
+
+def test_a_bare_section_number_may_be_dropped_but_not_a_word():
+    assert headings.repeats_label("Christian Education", "2. Christian Education")
+    assert not headings.repeats_label("Society", "Civil Society")
