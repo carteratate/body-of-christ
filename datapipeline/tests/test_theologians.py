@@ -314,6 +314,7 @@ def test_love_of_god_reads_its_verse_line_by_line():
 def test_de_sales_stray_note_callers_are_read_out():
     assert "and I am His. A bundle of myrrh" in _text(_devout())
     assert "as his own soul. The great Apostle" in _text(_love())
+    assert "excessive watching, fasting, or overwork" in _text(_devout())
 
 
 def test_de_sales_works_are_opted_into_the_heading_checks():

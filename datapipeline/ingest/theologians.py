@@ -36,7 +36,7 @@ from normalize.caps import roman_capitals, smart_title_case
 from ingest.common import _block_text, _build_parent_map
 from ingest.keys import THEOLOGIANS
 from ingest.editorial import PLAIN_CALLERS, ChapterEdit, Editor, Removed
-from ingest.thml_doc import ChapterPlan, make_doc
+from ingest.thml_doc import ChapterPlan, _clip, make_doc
 
 # The collection these works publish under; 5.1b.3 renames it in `ingest.keys`.
 COLLECTION = THEOLOGIANS
@@ -375,7 +375,6 @@ _LOVE_BOOKS = ("ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xi
 _LOVE_EDITOR_DIVS = frozenset({"xiii.xiv"})
 _LOVE_TITLES = frozenset({"subhead", "subhead1", "smallhead"})
 _ROMAN = ("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII")
-_LABEL_MAX = 140
 
 
 def _love_chapters(root):
@@ -416,14 +415,6 @@ def _book_heading(book) -> str:
 
 def _div2s(parent):
     return [d for d in parent if isinstance(d.tag, str) and d.tag == "div2"]
-
-
-def _clip(label: str) -> str:
-    """A label cut at a word before `_LABEL_MAX` characters, as `ingest.thml_doc` cuts
-    one taken from a long title."""
-    if len(label) <= _LABEL_MAX:
-        return label
-    return label[:_LABEL_MAX + 1].rsplit(None, 1)[0].rstrip(" ,;:.—-")
 
 
 # A paragraph the file closes mid-sentence: it ends on a lower-case word, a comma, a

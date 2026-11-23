@@ -111,8 +111,11 @@ PLAIN_CALLERS = {
     # Note 255's caller in the Interior Castle (VI, ch. iii, 19; 5.6b), left after the
     # <note> as " 8". The checks name 5.6b's files from the medieval folder.
     ("../theologians/teresa-castle2.xml", "x.iv-p21"): ((" 8 It takes", " It takes"),),
-    # Notes 190 and 39 in the de Sales files, each with a stray "1" before it (5.6b).
+    # Notes 190 and 39 in the de Sales files, each with a stray "1" before it, and a "1"
+    # printed with no note in the Devout Life, IV ch. xiv (5.6b).
     ("../theologians/desales-devout_life.xml", "vi.xii-p10"): (("His. 1", "His."),),
+    ("../theologians/desales-devout_life.xml", "vi.xv-p11"): (
+        ("watching, 1 fasting", "watching, fasting"),),
     ("../theologians/desales-love.xml", "ii.ix-p6"): (("own soul.1", "own soul."),),
 }
 
