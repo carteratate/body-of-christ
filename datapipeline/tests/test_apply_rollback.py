@@ -916,6 +916,25 @@ async def test_retire_only_and_its_rollback(world):
     assert a_["n"] == 4
 
 
+async def test_retire_only_finds_a_removal_through_the_rename(world):
+    """5.1b.3: the removal entry names the source (`medieval`) and live files the document
+    under it until the apply; asked for `theologians`, the new key, it still retires it."""
+    world.registry.removals.append(_removal(
+        id="rm-0921", scope="document", document_id=DOC_B,
+        reason="translation-in-preparation", tombstone="Being replaced."))
+    conn = await world.connect()
+    try:
+        done = await A.retire_only(conn, world.qdrant, "incarnation-withdraw", "theologians",
+                                   alias="chunks_live", registry=world.registry,
+                                   root=world.snapshots)
+    finally:
+        await conn.close()
+    assert done["documents"] == 1
+    [d] = await world.fetch("SELECT retired_at IS NOT NULL AS retired FROM documents "
+                            "WHERE id = $1::uuid", DOC_B)
+    assert d["retired"] is True
+
+
 async def test_retire_only_leaves_an_unsearchable_point_unsearchable(world):
     """A point already marked not searchable is neither flipped nor recorded, so the
     rollback does not make it searchable."""

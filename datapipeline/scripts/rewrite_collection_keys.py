@@ -3,10 +3,12 @@
     python3 scripts/rewrite_collection_keys.py                                    # dry run
     python3 scripts/rewrite_collection_keys.py --apply --release <name>           # write
 
-Three places hold keys: `user_preferences.default_collections`, and the saved filters of
-`searches` and `guest_trials` (`collections`, `collection_outcomes` and `scopes`).
-Bookmarks hold passage IDs only. The 5.1b.3 publish rewrites the corpus; this rewrites
-these rows, in one transaction. Since 5.1b.1 the API reads both vocabularies and since
+Three places in user rows hold keys: `user_preferences.default_collections`, and the
+saved filters of `searches` and `guest_trials` (`collections`, `collection_outcomes` and
+`scopes`). Bookmarks hold passage IDs only. The 5.1b.3 publish rewrites the live corpus;
+this rewrites these rows and the retired documents the publish does not build (the 52
+encyclicals held for permission, ADR 0001), in one transaction. Run it after the apply:
+it reports live documents still under an old key, which should then be none. Since 5.1b.1 the API reads both vocabularies and since
 5.1b.2 the web translates any old key it reads, so the rows work whether or not this
 has run, and it has no reverse (D11).
 
@@ -138,6 +140,8 @@ def key_counts(values) -> Counter:
 # --------------------------------------------------------------------------- database
 
 PREFERENCES_SQL = "SELECT user_id, default_collections FROM public.user_preferences"
+DOCUMENTS_SQL = """SELECT id::text AS id, collection, retired_at IS NOT NULL AS retired
+                   FROM public.documents WHERE collection = ANY($1::text[])"""
 FILTERS_SQL = """SELECT {key}::text AS key, filters, jsonb_typeof(filters) AS kind
                  FROM public.{table} WHERE filters IS NOT NULL"""
 FILTER_TABLES = {"searches": "id", "guest_trials": "id"}
@@ -145,8 +149,18 @@ FILTER_TABLES = {"searches": "id", "guest_trials": "id"}
 
 async def plan(conn, vocabulary: list[str]) -> dict:
     """Every change, and the counts the dry run prints."""
-    report: dict = {"tables": {}, "changes": {"user_preferences": [], "searches": [],
-                                               "guest_trials": []}}
+    report: dict = {"tables": {}, "changes": {"documents": [], "user_preferences": [],
+                                               "searches": [], "guest_trials": []}}
+    documents = await conn.fetch(DOCUMENTS_SQL, sorted(RENAMES))
+    for row in documents:
+        if row["retired"]:
+            report["changes"]["documents"].append(
+                (row["id"], row["collection"], RENAMES[row["collection"]]))
+    report["tables"]["documents"] = {
+        "retired_to_change": dict(sorted(Counter(
+            r["collection"] for r in documents if r["retired"]).items())),
+        "live_still_under_old_keys": dict(sorted(Counter(
+            r["collection"] for r in documents if not r["retired"]).items()))}
     prefs = await conn.fetch(PREFERENCES_SQL)
     keys = Counter()
     for row in prefs:
@@ -154,7 +168,7 @@ async def plan(conn, vocabulary: list[str]) -> dict:
         keys += key_counts(old)
         new = canonical_keys(old)
         if new != old:
-            report["changes"]["user_preferences"].append((row["user_id"], new))
+            report["changes"]["user_preferences"].append((row["user_id"], old, new))
     report["tables"]["user_preferences"] = {
         "rows": len(prefs), "to_change": len(report["changes"]["user_preferences"]),
         "old_keys": dict(sorted(keys.items()))}
@@ -177,7 +191,7 @@ async def plan(conn, vocabulary: list[str]) -> dict:
             new = rewrite_filters(filters, vocabulary)
             if new != filters:
                 scoped += "papal" in (new.get("scopes") or {}) and "papal" not in (filters.get("scopes") or {})
-                report["changes"][table].append((row["key"], new))
+                report["changes"][table].append((row["key"], filters, new))
         report["tables"][table] = {
             "rows": len(rows), "to_change": len(report["changes"][table]),
             "old_keys_in_collections": dict(sorted(keys.items())),
@@ -187,17 +201,33 @@ async def plan(conn, vocabulary: list[str]) -> dict:
     return report
 
 
+class ChangedMeanwhile(RuntimeError):
+    """A row changed between the read and the write (a preference autosave, say)."""
+
+
+async def _update(conn, sql: str, *args) -> None:
+    if await conn.execute(sql, *args) != "UPDATE 1":
+        raise ChangedMeanwhile("a row changed after it was read; nothing was written. "
+                               "Run the script again.")
+
+
 async def apply_changes(conn, report: dict) -> None:
-    for user_id, new in report["changes"]["user_preferences"]:
-        await conn.execute(
-            "UPDATE public.user_preferences SET default_collections = $2 WHERE user_id = $1",
-            user_id, new)
+    """Write each change only over the value it was planned from, so a concurrent edit is
+    never overwritten: any mismatch raises, and the caller's transaction rolls back."""
+    for doc_id, old, new in report["changes"]["documents"]:
+        await _update(conn, """UPDATE public.documents SET collection = $3
+                               WHERE id = $1::uuid AND collection = $2 AND retired_at IS NOT NULL""",
+                      doc_id, old, new)
+    for user_id, old, new in report["changes"]["user_preferences"]:
+        await _update(conn, """UPDATE public.user_preferences SET default_collections = $3
+                               WHERE user_id = $1 AND default_collections = $2""",
+                      user_id, old, new)
     for table, key in FILTER_TABLES.items():
-        for row_key, new in report["changes"][table]:
-            # A jsonb parameter: the datapipeline pool registers no codec (CLAUDE.md §4).
-            await conn.execute(
-                f"UPDATE public.{table} SET filters = $2::jsonb WHERE {key}::text = $1",
-                row_key, json.dumps(new))
+        for row_key, old, new in report["changes"][table]:
+            # jsonb parameters: the datapipeline pool registers no codec (CLAUDE.md §4).
+            await _update(conn, f"""UPDATE public.{table} SET filters = $3::jsonb
+                                    WHERE {key}::text = $1 AND filters = $2::jsonb""",
+                          row_key, json.dumps(old), json.dumps(new))
 
 
 def summary(report: dict) -> str:
@@ -229,22 +259,31 @@ async def main(argv: list[str] | None = None) -> int:
     vocabulary = papal_genres(registry.current().works)
     conn = await asyncpg.connect(settings.DATABASE_URL, statement_cache_size=0)
     try:
-        async with conn.transaction(readonly=not args.apply):
-            report = await plan(conn, vocabulary)
-            print(summary(report))
-            strings = sum(t.get("double_encoded_filters", 0) for t in report["tables"].values())
-            if not args.apply:
-                print("dry run: nothing written")
-                return 0
-            if strings:
-                print(f"REFUSING: {strings} saved filters are a double-encoded JSON string; "
-                      "repair them as 0033 did first", file=sys.stderr)
-                return 1
-            await apply_changes(conn, report)
-            print("applied")
-            return 0
+        return await _run(conn, args.apply, vocabulary)
+    except ChangedMeanwhile as exc:
+        print(f"REFUSING: {exc}", file=sys.stderr)
+        return 1
     finally:
         await conn.close()
+
+
+async def _run(conn, write: bool, vocabulary: list[str]) -> int:
+    """Plan and print; with `write`, apply in the same transaction, which a refusal or a
+    concurrent change rolls back whole."""
+    async with conn.transaction(readonly=not write):
+        report = await plan(conn, vocabulary)
+        print(summary(report))
+        if not write:
+            print("dry run: nothing written")
+            return 0
+        strings = sum(t.get("double_encoded_filters", 0) for t in report["tables"].values())
+        if strings:
+            print(f"REFUSING: {strings} saved filters are a double-encoded JSON string; "
+                  "repair them as 0033 did first", file=sys.stderr)
+            return 1
+        await apply_changes(conn, report)
+        print("applied")
+        return 0
 
 
 if __name__ == "__main__":

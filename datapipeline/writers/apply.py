@@ -783,12 +783,16 @@ async def retire_only(conn, qdrant, release: str, collection: str, *, alias: str
     from writers.qdrant import alias_target
 
     registry = registry or reg.current()
+    # Removal entries name the source and live may still file it under an old key
+    # (5.1b.3), so both are matched through the collection they publish in.
+    published = collection_keys.canonical(collection)
     entries = {e["document_id"]: e for e in reg.open_removals(registry)
-               if e.get("scope") == "document" and e.get("collection") == collection}
+               if e.get("scope") == "document"
+               and collection_keys.canonical(e.get("collection") or "") == published}
     live = await conn.fetch(
         """SELECT id::text AS id, title, author FROM public.documents
-           WHERE collection = $1 AND retired_at IS NULL AND id = ANY($2::uuid[])""",
-        collection, list(entries))
+           WHERE collection = ANY($1::text[]) AND retired_at IS NULL AND id = ANY($2::uuid[])""",
+        collection_keys.live_keys([published]), list(entries))
     if not live:
         raise ApplyRefused(f"REFUSING: no live document of '{collection}' has an open "
                            "document removal entry")

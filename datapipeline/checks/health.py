@@ -60,7 +60,7 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
     import collection_keys
     from publication import source_of
 
-    publish = set(published) if published is not None else None
+    publish = set(collection_keys.live_keys(published)) if published is not None else None
     if os.path.isdir(path):
         path = os.path.join(path, SNAPSHOT_FILE)
     documents: dict[str, Document] = {}
@@ -69,7 +69,7 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
             if not line.strip():
                 continue
             row = json.loads(line)
-            if publish is not None and collection_keys.canonical(row["collection"]) not in publish:
+            if publish is not None and row["collection"] not in publish:
                 continue
             source = source_of(row["document_id"], row["collection"])
             if collections is not None and source not in collections:

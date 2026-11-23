@@ -66,6 +66,10 @@ def test_merged_outcomes_follow_the_web():
 # --------------------------------------------------------------------------- database
 
 SCHEMA = """
+    INSERT INTO documents (id, collection, title, retired_at) VALUES
+      ('00000000-0000-0000-0000-0000000000d1', 'encyclicals', 'Held', now()),
+      ('00000000-0000-0000-0000-0000000000d2', 'encyclicals', 'Live', NULL),
+      ('00000000-0000-0000-0000-0000000000d3', 'papal', 'New', NULL);
     CREATE TABLE user_preferences (user_id uuid PRIMARY KEY, default_collections text[],
                                    default_quota int NOT NULL DEFAULT 4);
     CREATE TABLE searches (id uuid PRIMARY KEY, filters jsonb);
@@ -117,6 +121,8 @@ async def test_the_dry_run_writes_nothing_and_counts_without_content(cluster):
         assert report["tables"]["searches"]["to_change"] == 1
         assert report["tables"]["searches"]["double_encoded_filters"] == 1
         assert report["tables"]["guest_trials"]["to_change"] == 1
+        assert report["tables"]["documents"] == {
+            "retired_to_change": {"encyclicals": 1}, "live_still_under_old_keys": {"encyclicals": 1}}
         assert "grace" not in R.summary(report)
     finally:
         await conn.close()
@@ -139,8 +145,52 @@ async def test_apply_rewrites_in_place_and_leaves_unknown_and_encoded_rows(clust
         assert json.loads(searches["a2"]) == {"collections": ["bible"], "quota": 4}
         assert json.loads(json.loads(searches["a3"])) == {"collections": ["encyclicals"]}
         assert json.loads(trials["b1"]) == {"collections": ["church-law"], "quota": 3}
+        # The retired document is rekeyed; a live one is the publish's to rewrite.
+        assert {str(r["id"])[-2:]: r["collection"] for r in await conn.fetch(
+            "SELECT id, collection FROM documents WHERE id::text LIKE '00000000-%'")} == {"d1": "papal", "d2": "encyclicals",
+                                                         "d3": "papal"}
         # A second run finds nothing to do.
         again = await R.plan(conn, VOCAB)
         assert all(not rows for rows in again["changes"].values())
     finally:
         await conn.close()
+
+
+async def test_a_row_changed_after_the_read_is_never_overwritten(cluster):
+    """A preference autosave between the plan and the write aborts the whole run."""
+    database = cluster.new_database()
+    cluster.psql(database, SCHEMA)
+    conn = await cluster.connect(database)
+    try:
+        report = await R.plan(conn, VOCAB)
+        await conn.execute("UPDATE user_preferences SET default_collections = '{bible}' "
+                           "WHERE user_id = '00000000-0000-0000-0000-000000000001'")
+        before = await _rows(conn)
+        with pytest.raises(R.ChangedMeanwhile):
+            async with conn.transaction():
+                await R.apply_changes(conn, report)
+        assert await _rows(conn) == before
+    finally:
+        await conn.close()
+
+
+# --------------------------------------------------------------------------- 2.2w scope
+
+def test_the_live_snapshot_reads_a_publish_under_either_key(tmp_path):
+    """A release report reads the live rows a publish covers whichever key they are
+    filed under: an old key's rows for a publish of the old key (a release staged
+    before 5.1b.3 merged) and of its new key, and only those."""
+    import gzip
+
+    from checks.health import SNAPSHOT_FILE, load_snapshot
+
+    rows = [{"id": "p1", "document_id": "unregistered-1", "collection": "medieval", "title": "T",
+             "anchor": "a", "position": 0, "content": "x"},
+            {"id": "p2", "document_id": "unregistered-2", "collection": "summa", "title": "S",
+             "anchor": "a", "position": 0, "content": "y"}]
+    with gzip.open(tmp_path / SNAPSHOT_FILE, "wt", encoding="utf-8") as f:
+        f.writelines(json.dumps(r) + "\n" for r in rows)
+    for published in (("medieval",), ("theologians",)):
+        assert {c: [d.id for d in ds] for c, ds in load_snapshot(
+            str(tmp_path), None, published=published).items()} == {"medieval": ["unregistered-1"]}
+    assert load_snapshot(str(tmp_path), None, published=("papal",)) == {}

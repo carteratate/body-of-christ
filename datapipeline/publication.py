@@ -425,7 +425,9 @@ class StageRunner:
                 await qd.check_vectors(client, name)
             else:
                 await create_chunks_collection(client, name)
-            for c in collections:
+            # Old keys too: an earlier stage of this release may have copied a renamed
+            # collection's points under its old key (5.1b.3).
+            for c in live_scope:
                 await qd.clear_staged_points(client, name, c, alias=alias)
             vectors = VectorSource(client, self._cache(), reuse_from=live, embed=self._embed)
             for d in documents:

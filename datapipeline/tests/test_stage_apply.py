@@ -483,6 +483,27 @@ async def test_a_renamed_collection_stages_its_old_key_live_rows(world):
     assert (await world.qdrant.count("chunks-test-release")).count == staged + live_summa
 
 
+async def test_restaging_a_renamed_collection_clears_its_old_key_points(world):
+    """A release whose Qdrant collection holds the renamed collection's points under the
+    old key (copied by an earlier stage of the release that did not cover it) has them
+    cleared when the new key is staged, so the point counts agree and none is left."""
+    import uuid
+
+    from qdrant_client.models import FieldCondition, Filter, MatchValue, PointStruct
+
+    renamed = {"theologians": lambda: [replace(d, collection="theologians") for d in world.build],
+               "summa": lambda: []}
+    request = StageRequest(release="test-release", collections=("theologians",))
+    await world.runner(source_adapters=renamed).stage(request)
+    [live] = (await world.qdrant.scroll("chunks", limit=1, with_vectors=True, scroll_filter=Filter(
+        must=[FieldCondition(key="collection", match=MatchValue(value="medieval"))])))[0]
+    await world.qdrant.upsert("chunks-test-release", points=[PointStruct(
+        id=str(uuid.uuid4()), vector=live.vector, payload=live.payload)], wait=True)
+    await world.runner(source_adapters=renamed).stage(request)
+    old_key = Filter(must=[FieldCondition(key="collection", match=MatchValue(value="medieval"))])
+    assert (await world.qdrant.count("chunks-test-release", count_filter=old_key)).count == 0
+
+
 async def test_stage_refuses_a_document_moving_from_a_collection_it_does_not_cover(world):
     """A build may not take a live document from a collection the stage leaves alone
     (5.1b.3's Boethius: stage `church-fathers` with `theologians` until it is applied)."""
