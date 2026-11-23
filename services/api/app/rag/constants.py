@@ -62,7 +62,7 @@ WRITER_GENRES: tuple[str, ...] = ("treatise", "manual", "sermon", "commentary", 
 OTHER_GENRE = "other"
 
 PAPAL_ISSUERS: tuple[str, ...] = (
-    "pope-boniface-viii", "pope-leo-x", "pope-paul-iii", "pope-benedict-xiv",
+    "pope-boniface-viii", "pope-martin-v", "pope-leo-x", "pope-paul-iii", "pope-benedict-xiv",
     "pope-clement-xiv", "pope-pius-vii", "pope-leo-xii", "pope-pius-viii",
     "pope-gregory-xvi", "pope-pius-ix", "pope-leo-xiii", "pope-pius-x",
     "pope-benedict-xv", "pope-pius-xi", "pope-pius-xii", "pope-john-xxiii",

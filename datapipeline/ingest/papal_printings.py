@@ -85,6 +85,11 @@ class Printing:
     # The printing ends each unit with the letter it was condemned in (the Syllabus):
     # each citation becomes its own "[Source: ...]" paragraph (`mark_sources`).
     marks_sources: bool = False
+    # A document no site page gives, only this printing (Inter Cunctas, from Deferrari;
+    # 5.9): its `title`, `author` and `year`, in place of a manifest entry. Its genre and
+    # form are papal_genres.csv's, as a manifest's are. Nothing of it is held, so `notes`
+    # may say what the printing leaves out without `omits`.
+    document: dict | None = None
 
     @property
     def folder(self) -> str:
@@ -92,7 +97,11 @@ class Printing:
         return self.file.rsplit("/", 1)[0] + "/"
 
     @property
-    def text_replaced(self) -> str:
+    def text_replaced(self) -> str | None:
+        """What every passage declares it replaced; nothing for a document no site page
+        gives, whose passages replace no text."""
+        if self.document is not None:
+            return None
         return f"{self.translation} replaces papalencyclicals.net"
 
 
@@ -114,12 +123,34 @@ def printings() -> dict[str, Printing]:
                             numbered=d.get("numbered", True),
                             omits=tuple(d.get("omits", ())), notes=d.get("notes"),
                             passage_note=d.get("passage_note"),
-                            marks_sources=d.get("marks_sources", False))
+                            marks_sources=d.get("marks_sources", False),
+                            document=d.get("document"))
     return out
 
 
 def printing(collection: str, slug: str) -> Printing | None:
     return printings().get(f"{collection}/{slug}")
+
+
+def printed_only(collection: str) -> list[Printing]:
+    """The collection's documents no site page gives, only a printing (`document`)."""
+    return [p for key, p in printings().items()
+            if p.document is not None and key.split("/", 1)[0] == collection]
+
+
+def entry_of(p: Printing) -> dict:
+    """A printed-only document's entry, as a manifest's would be: its `document`, the
+    printing's URL, and its genre and form from papal_genres.csv (1.3b)."""
+    import papal_genres
+
+    collection, slug = p.key.split("/", 1)
+    labels = papal_genres.load().get(slug)
+    if labels is None or labels.collection != collection:
+        raise ValueError(f"{p.key}: papal_genres.csv has no row for it")
+    entry = {**p.document, "url": p.url, "slug": slug, "genre": labels.genre}
+    if labels.form:
+        entry["form"] = labels.form
+    return entry
 
 
 def _norm(text: str) -> str:
@@ -257,7 +288,9 @@ def build_printed(p: Printing, entry: dict, collection: str, src_dir: str) -> Do
     built = {t.number if t.number is not None else t.kind for t in toks}
     if built & set(p.omits):
         raise ValueError(f"{p.key}: units both printed and omitted: {sorted(built & set(p.omits))}")
-    if bool(p.omits) != bool(p.notes):
+    if p.document is not None and p.omits:
+        raise ValueError(f"{p.key}: a printed-only document has no site paragraphs to hold")
+    if p.document is None and bool(p.omits) != bool(p.notes):
         raise ValueError(f"{p.key}: an extract names its omitted paragraphs and its notes together")
     metadata = {"source_file": p.folder}
     if p.omits:

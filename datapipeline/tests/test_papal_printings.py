@@ -111,8 +111,12 @@ def test_every_printing_names_its_units_in_order():
 # ---------------------------------------------------------------- vendored checks
 
 def _manifest(collection):
+    """The collection's entries by slug, a printed-only document's (5.9) with them."""
     with open(os.path.join(_SOURCES, collection, "manifest.json"), encoding="utf-8") as f:
-        return {e["slug"]: e for e in json.load(f)}
+        entries = {e["slug"]: e for e in json.load(f)}
+    for p in papal_printings.printed_only(collection):
+        entries[p.key.split("/", 1)[1]] = papal_printings.entry_of(p)
+    return entries
 
 
 def _built():
@@ -163,7 +167,7 @@ def test_printed_documents_point_at_their_printing():
         assert doc.metadata["url"] == p.url and doc.translation == p.translation, p.key
         assert "papalencyclicals" not in doc.metadata["url"]
         for x in doc.passages:
-            assert x.metadata["text_replaced"] == p.text_replaced, x.anchor
+            assert x.metadata.get("text_replaced") == p.text_replaced, x.anchor
             assert x.metadata["url"] == p.url, x.anchor
             assert "papalencyclicals" not in x.content.lower(), x.anchor
 
@@ -180,7 +184,9 @@ def test_an_extract_holds_what_its_printing_lacks():
         held = {r["anchor"] for r in removals if r["document_id"] == doc.id
                 and r["scope"] == "passage" and r["reason"] == "awaiting-permission"}
         if not p.omits:
-            assert not held and "held_text_url" not in doc.metadata and not doc.notes, p.key
+            # A printed-only document (5.9) holds nothing; its notes say what it lacks.
+            assert not held and "held_text_url" not in doc.metadata, p.key
+            assert bool(doc.notes) == (p.document is not None), p.key
             continue
         extracts += 1
         slug = p.key.split("/", 1)[1]
@@ -262,3 +268,30 @@ def test_a_signature_in_capitals_after_the_dating_line_joins_the_last_unit():
     assert [t.number for t in toks] == [8] and toks[0].text.endswith("1875.\n\nPIUS, P.P. IX.")
     with pytest.raises(ValueError, match="in no unit"):
         printed_tokens(p, [("p0", "Join your prayers to ours."), ("p1", "PIUS, P.P. IX.")])
+
+
+def test_a_printed_only_document_takes_its_entry_from_the_printing_and_the_genre_table():
+    """Inter Cunctas has no site page (5.9): its printing names the document, and
+    papal_genres.csv its genre and form, as a manifest would."""
+    p = papal_printings.printing("papal-documents", "inter-cunctas")
+    assert p in papal_printings.printed_only("papal-documents") and p.text_replaced is None
+    assert papal_printings.entry_of(p) == {
+        "title": "Inter Cunctas", "author": "Pope Martin V", "year": 1418, "url": p.url,
+        "slug": "inter-cunctas", "genre": "apostolic-constitution", "form": "bull"}
+    assert not papal_printings.printed_only("encyclicals") or all(
+        x.document for x in papal_printings.printed_only("encyclicals"))
+
+
+@vendored
+def test_inter_cunctas_holds_the_questions_deferrari_prints():
+    doc = papal_common.build_documents(
+        "papal-documents", os.path.join(_SOURCES, "papal-documents"))
+    doc = next(d for d in doc if d.metadata["source_key"] == "papal-documents/inter-cunctas")
+    numbers = [int(x.anchor.split("/")[1]) for x in doc.passages]
+    assert numbers == [5, 6, 7, 8] + list(range(11, 40))
+    assert (doc.title, doc.author, doc.year, doc.metadata["genre"], doc.metadata["form"]) == (
+        "Inter Cunctas", "Pope Martin V", 1418, "apostolic-constitution", "bull")
+    by_number = dict(zip(numbers, doc.passages))
+    assert "have been duly and justly made" in by_number[7].content
+    assert "condemned as heretics by the sacred Council of Constance" in by_number[8].content
+    assert "some of them are notedly heretical" in by_number[11].content
