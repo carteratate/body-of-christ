@@ -5,9 +5,7 @@ import { useId } from "react";
 import { CornerDownRight } from "lucide-react";
 
 import type { AttachedContext } from "@/lib/api";
-import { parseHeadings } from "@/lib/passage-headings";
 import { renderVerseMarkers } from "@/lib/verse-markers";
-import { PassageBlocks } from "@/components/common/PassageBlocks";
 
 /**
  * The passage that completes a matched Summa result.
@@ -102,34 +100,19 @@ export function AttachedPassage({
       }}
     >
       <Boundary id={labelId} label={heading(context)} color={color} rgb={rgb} />
-      {parts.map((part, index) => {
-        // Not `text-brand-muted`: at 2.52:1 on the card background this text sits far
-        // under AA, and an attached determination can run several times longer than the
-        // objection it answers. Dimmed enough to keep the match primary, legible enough
-        // to actually read.
-        const style = { marginTop: index === 0 ? 0 : "10px" };
-        const headings = parseHeadings(part.headings, part.content);
-        return headings.length > 0
-          ? (
-            <PassageBlocks
-              key={part.anchor ?? index}
-              surface="card"
-              content={part.content}
-              headings={headings}
-              className="text-sm leading-relaxed text-brand-primary/75"
-              style={style}
-            />
-          )
-          : (
-            <p
-              key={part.anchor ?? index}
-              className="text-sm leading-relaxed whitespace-pre-wrap text-brand-primary/75"
-              style={style}
-            >
-              {renderVerseMarkers(part.content)}
-            </p>
-          );
-      })}
+      {parts.map((part, index) => (
+        <p
+          key={part.anchor ?? index}
+          // Not `text-brand-muted`: at 2.52:1 on the card background this text sits far
+          // under AA, and an attached determination can run several times longer than the
+          // objection it answers. Dimmed enough to keep the match primary, legible enough
+          // to actually read.
+          className="text-sm leading-relaxed whitespace-pre-wrap text-brand-primary/75"
+          style={{ marginTop: index === 0 ? 0 : "10px" }}
+        >
+          {renderVerseMarkers(part.content)}
+        </p>
+      ))}
       {context.relation === "answers" && (
         // A closing marker at the voice junction. The opening label sits at the very top
         // of the card, and an objection runs to 1,668 characters — past a phone viewport

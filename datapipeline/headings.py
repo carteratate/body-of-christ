@@ -59,7 +59,9 @@ def mark(at: int, end: int, *, level: int | None = None, role: str = HEADING,
     flags are written only when set."""
     if role not in ROLES:
         raise HeadingError(f"unknown heading role {role!r}")
-    if role == HEADING and level not in LEVELS:
+    if not (isinstance(pairs_next, bool) and isinstance(chapter_title, bool)):
+        raise HeadingError("pairs_next and chapter_title are booleans")
+    if role == HEADING and (type(level) is not int or level not in LEVELS):
         raise HeadingError(f"a heading's level is one of {LEVELS}, not {level!r}")
     if role == EPIGRAPH and (level is not None or pairs_next or chapter_title):
         raise HeadingError("an epigraph takes no level, pairs_next or chapter_title")
@@ -193,9 +195,9 @@ def _piece_starts(text: str, pieces: Sequence[str]) -> list[int]:
 
 
 def hold_headings(text: str, pieces: Sequence[str], marks: Sequence[dict]) -> list[str]:
-    """`pieces`, cut from `text` by any splitter, with no cut left after a heading: a
-    piece that ends on marked headings gives them to the next piece, and a piece that
-    held only headings joins it. Packing keeps a title with its first paragraph, as 1.3a
+    """`pieces`, cut from `text` by any splitter, with no cut left inside or after a
+    heading: a piece that ends on marked headings, or inside one, gives them to the next
+    piece, and a piece that held only headings joins it. Packing keeps a title with its first paragraph, as 1.3a
     does for papal headings (the City of God pieces that held only their capitulum).
     The last piece keeps what it ends with: a unit that ends on a heading is the
     adapter's to fix, and the health check blocks it."""
@@ -211,9 +213,10 @@ def hold_headings(text: str, pieces: Sequence[str], marks: Sequence[dict]) -> li
             start, carried = carried, None
         cut = end
         if k + 1 < len(spans):
-            # Walk back over the headings this piece ends with, last first.
+            # Walk back over the heading the cut falls in and those the piece then
+            # ends with, last first.
             for m in ordered:
-                if m["end"] == cut and m["at"] >= start:
+                if m["at"] >= start and (m["end"] == cut or m["at"] < cut < m["end"]):
                     cut = carried = m["at"]
                     while cut > start and text[cut - 1].isspace():
                         cut -= 1
@@ -336,6 +339,13 @@ _DIVISION = re.compile(
     re.IGNORECASE | re.VERBOSE)
 
 
+def looks_like_division(paragraph: str) -> bool:
+    """A paragraph that names a division with its number ("CHAPTER ONE: ...",
+    "Chapter 2.—On Twins."): a heading even where it stands alone in a passage."""
+    text = paragraph.strip()
+    return "\n" not in text and bool(_DIVISION.match(text))
+
+
 def looks_like_heading(paragraph: str) -> bool:
     text = paragraph.strip()
     if not text or "\n" in text or not _LETTER.search(text):
@@ -350,3 +360,19 @@ def normalized(text: str) -> str:
     """Text compared without case, punctuation or spacing: a chapter label against the
     heading that repeats it."""
     return " ".join(re.findall(r"[^\W_]+", text.casefold()))
+
+
+_DIVISION_PREFIX = re.compile(
+    r"^(?:part|section|chapter|article|book|question|title|paragraph)\s+"
+    r"(?:[0-9]+|[ivxlc]+|one|two|three|four|five|six|seven|eight|nine|ten)\b\s*")
+
+
+def repeats_label(heading: str, label: str) -> bool:
+    """Whether a heading says what its chapter label says, either allowed to drop a
+    leading division and number the other prints ("Chapter One What is ..." and "What
+    is ...", "Article 1 The Revelation of God" and "The Revelation of God")."""
+    heading, label = normalized(heading), normalized(label)
+    if not heading or not label:
+        return False
+    forms = {heading, _DIVISION_PREFIX.sub("", heading)}
+    return bool(forms & {label, _DIVISION_PREFIX.sub("", label)})

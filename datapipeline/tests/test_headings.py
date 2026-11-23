@@ -250,3 +250,35 @@ def test_h8_reads_a_pair_as_one_heading(opted_in):
     assert _rules(doc) == ["H8_chapter_title"]
     marks[0]["chapter_title"] = True
     assert _rules(doc) == []
+
+
+# --------------------------------------------------------------------------- review fixes
+
+def test_hold_headings_moves_a_heading_a_splitter_cut_inside():
+    content = MarkedText().paragraph(BODY).heading("III. THE DIFFERENT KINDS OF SINS", 2) \
+        .paragraph(BODY)
+    cut = content.text.index("KINDS") - 1
+    pieces = [content.text[:cut], content.text[cut + 1:]]
+    held = headings.hold_headings(content.text, pieces, content.marks)
+    assert held == [BODY, "III. THE DIFFERENT KINDS OF SINS\n\n" + BODY]
+    assert headings.split_marks(content.text, held, content.marks)[1][0]["at"] == 0
+
+
+@pytest.mark.parametrize("entry", [
+    {"level": True}, {"level": 2.0}, {"level": 2, "pairs_next": "yes"},
+    {"level": 1, "chapter_title": 1},
+])
+def test_problems_refuses_non_integer_levels_and_non_boolean_flags(entry):
+    content = "Title\n\n" + BODY
+    assert headings.problems(content, [{"at": 0, "end": 5, "role": "heading", **entry}])
+
+
+def test_h7_blocks_a_piece_that_holds_only_an_unmarked_title(opted_in):
+    assert _rules(_doc(_passage("Chapter 2.—On the Difference in the Health of Twins."))) \
+        == ["H7_unmarked_heading"]
+
+
+def test_h8_strips_only_a_division_prefix():
+    assert headings.repeats_label("CHAPTER ONE: WHAT IS HAPPENING", "What is happening")
+    assert headings.repeats_label("Article 1 THE REVELATION OF GOD", "The Revelation of God")
+    assert not headings.repeats_label("Introduction", "A Historical Introduction")

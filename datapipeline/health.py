@@ -192,18 +192,19 @@ def _heading_rules(collection: str, document: Document, add) -> list[Violation]:
         marks = marks or []
         covered = {(m["at"], m["end"]) for m in marks}
         paras = headings.paragraphs(p.content)
-        if len(paras) > 1:
-            unmarked = [p.content[a:b] for a, b in paras if (a, b) not in covered
-                        and headings.looks_like_heading(p.content[a:b])
-                        and headings.normalized(p.content[a:b]) not in not_headings]
-            if unmarked:
-                add("H7_unmarked_heading", p, f"{len(unmarked)} unmarked heading-like "
-                    f"paragraph{'s' * (len(unmarked) != 1)}, first {unmarked[0][:60]!r}")
+        # A passage of one paragraph is its own text unless that names a division (a
+        # piece that held only its title).
+        looks = headings.looks_like_heading if len(paras) > 1 else headings.looks_like_division
+        unmarked = [p.content[a:b] for a, b in paras if (a, b) not in covered
+                    and looks(p.content[a:b])
+                    and headings.normalized(p.content[a:b]) not in not_headings]
+        if unmarked:
+            add("H7_unmarked_heading", p, f"{len(unmarked)} unmarked heading-like "
+                f"paragraph{'s' * (len(unmarked) != 1)}, first {unmarked[0][:60]!r}")
         if opens_chapter:
             title = _opening_level1(p.content, marks)
-            label = headings.normalized(p.chapter_label or "")
-            if title is not None and label and not title[1] \
-                    and _repeats(headings.normalized(title[0]), label):
+            if title is not None and not title[1] \
+                    and headings.repeats_label(title[0], p.chapter_label or ""):
                 add("H8_chapter_title", p, "opening level-1 heading repeats the chapter "
                     "label without chapter_title")
     return []
@@ -225,15 +226,6 @@ def _opening_level1(content: str, marks: list[dict]) -> tuple[str, bool] | None:
     return text, flagged
 
 
-def _repeats(heading: str, label: str) -> bool:
-    """Whether a normalized heading and chapter label say the same, either allowed a
-    prefix the other leaves out: a label "chapter one what is happening ..." and a
-    heading "what is happening ...", or a heading "article 1 the revelation of god" and a
-    label "the revelation of god"."""
-    def tails(text: str) -> set[str]:
-        words = text.split()
-        return {" ".join(words[k:]) for k in range(len(words))}
-    return bool(heading) and (heading in tails(label) or label in tails(heading))
 
 
 # --------------------------------------------------------------------------- report rules

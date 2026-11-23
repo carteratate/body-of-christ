@@ -105,8 +105,6 @@ export interface ContextPart {
   reference: string | null;
   unit_label: string | null;
   anchor: string | null;
-  /** Headings marked inside the part (issue #445); checked by `parseHeadings`. */
-  headings?: unknown;
 }
 
 /**
@@ -291,7 +289,6 @@ function normalizeContext(value: unknown): AttachedContext | null {
         reference: nullableString(part.reference),
         unit_label: nullableString(part.unit_label),
         anchor: nullableString(part.anchor),
-        ...(part.headings !== undefined ? { headings: part.headings } : {}),
       };
     }),
   };
