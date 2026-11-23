@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { ExternalLink, Search } from "lucide-react";
 import { useAppContext } from "@/components/layout/AppShell";
 import { LibrarySkeleton } from "@/components/common/PageSkeletons";
@@ -15,6 +15,11 @@ import { OverviewNotes } from "@/components/common/PassageFacts";
 import { parseOverviewNotes } from "@/lib/card-notes";
 import { certaintyTag, formatAttribution, formatDate, formatTranslation } from "@/lib/attribution";
 import { heldCountLabel } from "@/lib/held-texts";
+
+// Continue Reading lists the most recent reading places the API returns, the first
+// two until the person asks for the rest.
+const PROGRESS_LIMIT = 6;
+const PROGRESS_COLLAPSED = 2;
 
 /** How the Library's rows link to the reader: one href per document, one same-tab hook. */
 interface DocOpener {
@@ -387,6 +392,8 @@ export function SourcesPage() {
   const [progressLoading, setProgressLoading] = useState(true);
   const [progressError, setProgressError] = useState(false);
   const [progressToken, setProgressToken] = useState<string | null>(null);
+  const [progressExpanded, setProgressExpanded] = useState(false);
+  const progressListId = useId();
   const progressRequestRef = useRef(0);
   // One return key for the page's rows, stable between navigations, so each
   // href is the URL its prefetch warmed. The marker is written only for a
@@ -401,7 +408,7 @@ export function SourcesPage() {
   const fetchProgress = useCallback((signal?: AbortSignal) => {
     if (!token) return Promise.resolve();
     const requestId = ++progressRequestRef.current;
-    return listReadingProgress(token, 3, signal)
+    return listReadingProgress(token, PROGRESS_LIMIT, signal)
       .then((items) => {
         if (requestId !== progressRequestRef.current) return;
         setProgress(items);
@@ -434,7 +441,9 @@ export function SourcesPage() {
     void fetchProgress();
   }, [fetchProgress]);
 
-  const visibleProgress = progressToken === token ? progress.slice(0, 3) : [];
+  const loadedProgress = progressToken === token ? progress : [];
+  const progressCollapsible = loadedProgress.length > PROGRESS_COLLAPSED;
+  const visibleProgress = progressExpanded ? loadedProgress : loadedProgress.slice(0, PROGRESS_COLLAPSED);
   const visibleProgressLoading = progressToken !== token || progressLoading;
   const visibleProgressError = progressToken === token && progressError;
 
@@ -504,14 +513,27 @@ export function SourcesPage() {
                 <button type="button" onClick={retryProgress} className="mt-2 text-sm font-medium text-brand-accent hover:underline">Retry</button>
               </div>
             ) : (
-              <div className="grid min-w-0 gap-2 sm:grid-cols-2">
-                {visibleProgress.map((item) => (
-                  <IntentLink key={item.document_id} href={libraryHref(item.document_id, item.chapter_key)} onNavigate={markReturn} className={`block w-full min-w-0 overflow-hidden rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left ${LIFT}`}>
-                    <span className="block truncate text-sm font-medium text-brand-primary">{item.document_title}</span>
-                    <span className="mt-1 block truncate text-xs text-brand-muted">{item.chapter_label}</span>
-                  </IntentLink>
-                ))}
-              </div>
+              <>
+                <div id={progressListId} className="grid min-w-0 gap-2 sm:grid-cols-2">
+                  {visibleProgress.map((item) => (
+                    <IntentLink key={item.document_id} href={libraryHref(item.document_id, item.chapter_key)} onNavigate={markReturn} className={`block w-full min-w-0 overflow-hidden rounded-md border border-brand-muted/20 bg-brand-surface p-3 text-left ${LIFT}`}>
+                      <span className="block truncate text-sm font-medium text-brand-primary">{item.document_title}</span>
+                      <span className="mt-1 block truncate text-xs text-brand-muted">{item.chapter_label}</span>
+                    </IntentLink>
+                  ))}
+                </div>
+                {progressCollapsible && (
+                  <button
+                    type="button"
+                    aria-expanded={progressExpanded}
+                    aria-controls={progressListId}
+                    onClick={() => setProgressExpanded((expanded) => !expanded)}
+                    className="mt-2 rounded text-sm font-medium text-brand-accent hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-focus"
+                  >
+                    {progressExpanded ? "Show less" : "Show more"}
+                  </button>
+                )}
+              </>
             )}
           </section>
         )}

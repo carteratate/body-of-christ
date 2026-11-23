@@ -8,7 +8,8 @@
      anchors), so nothing collides on the unique keys;
   3. upsert passages by ID: changed text keeps its ID (D1), new IDs insert, a staged ID
      that was retired is un-retired and loses its tombstone, a reclaimed ID loses its
-     redirect, and a passage moved between documents keeps its ID;
+     redirect, a retired ID the publish redirects loses its tombstone, and a passage
+     moved between documents keeps its ID;
   4. retire the live passages staging lacks: `retired_at` set and moved below every
      retired position of the document, never deleted (D3);
   5. write the staged tombstones and redirects;
@@ -148,10 +149,18 @@ async def read_snapshot_rows(conn, collections: list[str] | None = None,
         out[table] = [dict(r) for r in await conn.fetch(
             _rows_sql(table, SNAPSHOT_TABLES[table], f"t.document_id IN ({documents})"), arg)]
     out["corpus_tombstones"], out["corpus_redirects"] = [], []
+    out["retired_chunks"] = []
     if staged:
+        # Retired passages the publish brings back: the apply overwrites them, and a
+        # rollback puts them back retired as they were (old anchor and text, #399).
+        out["retired_chunks"] = [dict(r) for r in await conn.fetch(
+            _rows_sql("chunks", rw.CHUNK_COLUMNS + ("retired_at",),
+                      "t.retired_at IS NOT NULL AND t.id IN (SELECT id FROM staging.chunks)"))]
         out["corpus_tombstones"] = [dict(r) for r in await conn.fetch(
             f"""SELECT {', '.join(rw.TOMBSTONE_COLUMNS)} FROM public.corpus_tombstones t
-                WHERE t.id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)""")]
+                WHERE t.id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)
+                   OR (t.entity = 'passage' AND t.id IN (
+                         SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))""")]
         out["corpus_redirects"] = [dict(r) for r in await conn.fetch(SNAPSHOT_REDIRECTS_SQL)]
     return out
 
@@ -222,10 +231,12 @@ def _set(columns: tuple[str, ...], skip: tuple[str, ...] = ("id",)) -> str:
 
 
 async def _core(conn, scope_documents: list[str], *, release: str,
-                rollback: bool = False) -> CoreResult:
+                rollback: bool = False, reserved: list[dict] = ()) -> CoreResult:
     """Steps 1 to 4 and the contents trees, from the staging tables. `scope_documents`
     are the live documents considered: any of them staging lacks is retired, and so is
-    any of their live passages staging lacks."""
+    any of their live passages staging lacks. `reserved` are retired rows a rollback
+    puts back after this (`_restore_retired`): what this retires goes below their
+    positions too."""
     staged_documents = [str(r["id"]) for r in await conn.fetch("SELECT id FROM staging.documents")]
     retire_documents = [d for d in scope_documents if d not in set(staged_documents)]
     touched = sorted(set(staged_documents) | set(scope_documents))
@@ -287,10 +298,13 @@ async def _core(conn, scope_documents: list[str], *, release: str,
             SELECT {chunk_cols} FROM staging.chunks
             ON CONFLICT (id) DO UPDATE SET {_set(rw.CHUNK_COLUMNS)}, retired_at = NULL""")
     if not rollback:
-        # A live passage never also shows a removal notice or resolves as moved.
+        # A live passage never also shows a removal notice or resolves as moved, and a
+        # retired one the publish redirects (#399) no longer shows its notice.
         await conn.execute(
             """DELETE FROM public.corpus_tombstones
-               WHERE id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)""")
+               WHERE id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)
+                  OR (entity = 'passage' AND id IN (
+                        SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))""")
         await conn.execute(
             """DELETE FROM public.corpus_redirects
                WHERE (entity = 'passage' AND old_id IN (SELECT id FROM staging.chunks))
@@ -311,7 +325,9 @@ async def _core(conn, scope_documents: list[str], *, release: str,
             SELECT d AS document_id,
                    LEAST($2::int, coalesce((SELECT min(position) - 1 FROM public.chunks
                                             WHERE document_id = d AND retired_at IS NOT NULL),
-                                           $2::int)) AS base
+                                           $2::int),
+                         coalesce((SELECT min(x.p) - 1 FROM unnest($4::uuid[], $5::int[])
+                                   AS x(doc, p) WHERE x.doc = d), $2::int)) AS base
             FROM unnest($1::uuid[]) AS d)
         UPDATE public.chunks c
         SET retired_at = now(), position = b.base - (r.rn - 1)::int,
@@ -324,7 +340,8 @@ async def _core(conn, scope_documents: list[str], *, release: str,
         FROM r JOIN b USING (document_id)
         WHERE c.id = r.id
         RETURNING c.id
-        """, touched, RETIRED_BASE, release)
+        """, touched, RETIRED_BASE, release, [r["document_id"] for r in reserved],
+        [r["position"] for r in reserved])
     leftover = await conn.fetchval(
         """SELECT count(*) FROM public.chunks
            WHERE document_id = ANY($1::uuid[]) AND anchor LIKE '~%'""", touched)
@@ -580,6 +597,17 @@ async def _reinsert(conn, rows: dict[str, list[dict]]) -> None:
             *[r[c] for c in REDIRECT_ROW])
 
 
+async def _restore_retired(conn, rows: dict[str, list[dict]]) -> None:
+    """Put the retired passages the forward apply brought back as they were, retired."""
+    cols = rw.CHUNK_COLUMNS[1:] + ("retired_at",)
+    casts = {"document_id": "::uuid", "metadata": "::jsonb", "superseded_by": "::uuid",
+             "retired_at": "::text::timestamptz"}
+    sets = ", ".join(f"{c} = ${k}{casts.get(c, '')}" for k, c in enumerate(cols, 2))
+    for r in rows.get("retired_chunks", []):
+        await conn.execute(f"UPDATE public.chunks SET {sets} WHERE id = $1::uuid",
+                           r["id"], *[r[c] for c in cols])
+
+
 async def _rolled_back_tombstones(conn, release: str, documents: list[str],
                                   passages: list[str]) -> None:
     await conn.execute(
@@ -686,13 +714,15 @@ async def _rollback(conn, qdrant, release: str, *, alias: str,
         await _load_snapshot_into_staging(conn, rows)
         scope = ([d["id"] for d in rows["documents"]] if retire_only
                  else await _live_documents(conn, collection_keys.live_keys(row["collections"])))
-        core = await _core(conn, scope, release=release, rollback=True)
+        core = await _core(conn, scope, release=release, rollback=True,
+                           reserved=rows.get("retired_chunks", []))
         ledger = RemapLedger()
         if remap is not None:
             ledger = await remap.reverse(conn, release)
         await conn.execute("DELETE FROM public.corpus_redirects WHERE publish_id = $1", release)
         await conn.execute("DELETE FROM public.corpus_tombstones WHERE publish_id = $1", release)
         await _reinsert(conn, rows)
+        await _restore_retired(conn, rows)
         # Rows the publish inserted get a rolled-back tombstone. A row it un-retired is
         # retired again under the tombstone or redirect it had before, put back above.
         restored = {str(t["id"]) for t in rows.get("corpus_tombstones", [])} | {
