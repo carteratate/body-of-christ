@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAppContext } from "@/components/layout/AppShell";
 import { updatePreferences } from "@/lib/api";
 import { SettingsPageSkeleton } from "@/components/common/PageSkeletons";
+import { setResultCardStyle, useResultCardStyle, type ResultCardStyle } from "@/lib/result-card-style";
 
 function SettingsError({ onRetry }: { onRetry: () => void }) {
   return (
@@ -34,6 +35,7 @@ export function SettingsPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
+  const browserCardStyle = useResultCardStyle();
 
   async function handleSignOut() {
     if (signingOut) return;
@@ -78,6 +80,28 @@ export function SettingsPage() {
     }
   }
 
+  // The account's style; this browser's while the API cannot store one.
+  const cardStyle = preferences.result_card_style ?? browserCardStyle;
+
+  async function handleCardStyleToggle(next: ResultCardStyle) {
+    if (!token || !preferences) return;
+
+    // Apply immediately, as the theme does; the account save follows.
+    setResultCardStyle(next);
+    setPreferences({ ...preferences, result_card_style: next });
+
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const saved = await updatePreferences(token, { result_card_style: next });
+      setPreferences(saved);
+    } catch {
+      setSaveError("Couldn't save preference. It will reset on next load.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="p-6 max-w-lg">
       <div className="flex items-center gap-2 mb-6">
@@ -113,6 +137,32 @@ export function SettingsPage() {
             <span
               className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
                 theme === "light" ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
+
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium text-brand-primary">Result card style</p>
+            <p className="text-xs text-brand-muted mt-0.5">
+              {cardStyle === "plain" ? "Plain" : "Collection tint"}
+            </p>
+          </div>
+
+          <button
+            onClick={() => handleCardStyleToggle(cardStyle === "plain" ? "tint" : "plain")}
+            disabled={saving}
+            role="switch"
+            aria-checked={cardStyle === "plain"}
+            aria-label="Toggle plain result cards"
+            className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent disabled:opacity-50 ${
+              cardStyle === "plain" ? "bg-brand-accent" : "bg-brand-muted/50"
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                cardStyle === "plain" ? "translate-x-6" : "translate-x-1"
               }`}
             />
           </button>

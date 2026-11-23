@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { Bookmark, Copy, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp } from "lucide-react";
 import ReactDOM from "react-dom";
 import { IntentLink, ThemedTooltip, Toast, useToast } from "@/components/common";
@@ -37,6 +37,7 @@ import { certaintyTag, formatAttribution, formatDate, sourceCreditOf, withoutAut
 import { MovedNote, PassageFacts, RemovalNotice } from "@/components/common/PassageFacts";
 import { copiedCredit, parsePassageCard } from "@/lib/card-notes";
 import { parseTombstone, removalStatusLabel, type Tombstone } from "@/lib/corpus-lifecycle";
+import { useResultCardStyle, type ResultCardStyle } from "@/lib/result-card-style";
 
 function hexToRgb(color: string): string {
   if (!color.startsWith("#") || color.length < 7) return "196,151,42";
@@ -110,6 +111,8 @@ interface ChunkCardProps {
   onExpand?: () => void;
   showOpenContextHint?: boolean;
   onDismissOpenContextHint?: () => void;
+  /** Draw in this style instead of the stored one (lib/result-card-style.ts). */
+  cardStyle?: ResultCardStyle;
 }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -119,8 +122,26 @@ export function ChunkCard(props: ChunkCardProps) {
   // A restored search reaches here without the stream decoder, so the tombstone is
   // checked here: a removal with no sentence to show renders as today.
   const tombstone = props.result.status === "removed" ? parseTombstone(props.result.tombstone) : null;
-  if (tombstone) return <RemovedChunkCard result={props.result} tombstone={tombstone} isGuest={props.isGuest} />;
+  if (tombstone) return <RemovedChunkCard result={props.result} tombstone={tombstone} isGuest={props.isGuest} cardStyle={props.cardStyle} />;
   return <CurrentChunkCard {...props} />;
+}
+
+/**
+ * The card's border and background. `tint` lays the card on its collection's colour
+ * under a thin border. `plain` (Settings, "Result card style") is drawn like a saved
+ * passage: its surface, and its 3px border in the collection colour (`border-[3px]` in
+ * BookmarkCard), which the bar under the header matches (headerRule).
+ */
+function cardShellStyle(color: string, rgb: string, cardStyle: ResultCardStyle): CSSProperties {
+  return cardStyle === "plain"
+    ? { borderRadius: "8px", border: `3px solid ${color}`, background: "var(--color-brand-surface)" }
+    : { borderRadius: "8px", border: `1px solid rgba(${rgb},0.7)`, background: `rgba(${rgb},0.32)` };
+}
+
+/** The rule between an opened card's citation and its text. */
+function headerRule(color: string, rgb: string, cardStyle: ResultCardStyle, isExpanded: boolean): CSSProperties {
+  if (!isExpanded) return { borderBottom: "none" };
+  return { borderBottom: cardStyle === "plain" ? `3px solid ${color}` : `1px solid rgba(${rgb},0.25)` };
 }
 
 /**
@@ -128,12 +149,15 @@ export function ChunkCard(props: ChunkCardProps) {
  * neighbours, collapsed to its citation with "Removed" where the score would be.
  * Opening it shows why, and no text (Carter, 9 Nov 2026).
  */
-function RemovedChunkCard({ result, tombstone, isGuest = false }: {
+function RemovedChunkCard({ result, tombstone, isGuest = false, cardStyle: styleOverride }: {
   result: ChunkResult;
   tombstone: Tombstone;
   isGuest?: boolean;
+  cardStyle?: ResultCardStyle;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const storedStyle = useResultCardStyle();
+  const cardStyle = styleOverride ?? storedStyle;
   const { source, chunk_id } = result;
   const collectionMeta = getCollectionMeta(source.collection);
   const color = collectionMeta?.color ?? "var(--color-brand-accent)";
@@ -155,9 +179,9 @@ function RemovedChunkCard({ result, tombstone, isGuest = false }: {
     <div
       className="min-w-0 overflow-hidden"
       data-testid="removed-chunk-card"
-      style={{ borderRadius: "8px", border: `1px solid rgba(${rgb},0.7)`, background: `rgba(${rgb},0.32)` }}
+      style={cardShellStyle(color, rgb, cardStyle)}
     >
-      <div className="flex h-[96px] items-stretch p-3 sm:h-[68px]" style={{ borderBottom: isExpanded ? `1px solid rgba(${rgb},0.25)` : "none" }}>
+      <div className="flex h-[96px] items-stretch p-3 sm:h-[68px]" style={headerRule(color, rgb, cardStyle, isExpanded)}>
         <button
           type="button"
           onClick={() => setIsExpanded((value) => !value)}
@@ -195,8 +219,10 @@ function RemovedChunkCard({ result, tombstone, isGuest = false }: {
   );
 }
 
-function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint }: ChunkCardProps) {
+function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onExpand, showOpenContextHint = false, onDismissOpenContextHint, cardStyle: styleOverride }: ChunkCardProps) {
   const searchParams = useSearchParams();
+  const storedStyle = useResultCardStyle();
+  const cardStyle = styleOverride ?? storedStyle;
   const { chunk_id, content, source } = result;
   // Presentation only. Copying and saving still address the passage the user matched.
   const attached = result.context ?? null;
@@ -382,14 +408,10 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
   return (
     <div
       className="min-w-0 overflow-hidden"
-      style={{
-        borderRadius: "8px",
-        border: `1px solid rgba(${rgb},0.7)`,
-        background: `rgba(${rgb},0.32)`,
-      }}
+      style={cardShellStyle(color, rgb, cardStyle)}
     >
       {/* ── Header disclosure ── */}
-      <div className="flex h-[96px] items-stretch p-3 sm:h-[68px]" style={{ borderBottom: isExpanded ? `1px solid rgba(${rgb},0.25)` : "none" }}>
+      <div className="flex h-[96px] items-stretch p-3 sm:h-[68px]" style={headerRule(color, rgb, cardStyle, isExpanded)}>
         <button
           type="button"
           onClick={() => {
@@ -481,7 +503,7 @@ function CurrentChunkCard({ result, index, searchId, token, isGuest = false, onE
               : null}
           />
 
-          <RelevanceExplanation explanation={result.explanation} chunkId={chunk_id} color={color} rgb={rgb} />
+          <RelevanceExplanation explanation={result.explanation} chunkId={chunk_id} rgb={rgb} />
 
           {/* Action row */}
           <div className="flex items-center justify-between mt-3 gap-2 max-md:flex-wrap">
