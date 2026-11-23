@@ -10,9 +10,9 @@
         "apply",
         "rollback"
       ],
-      "reason": "#399's publish (PR #427): Clement's Stromata Book III back in Henry Chadwick's English, staged from master after #427. Only church-fathers is staged; the other collections are copied from live. Its report must show the 33 Book III passages un-retired with their IDs (text replaced, 33 vectors embedded), p12's passage redirect into vi.iv.iii/from-p67 with its tombstone dropped, the anchor and chapter redirects for Book III's old links, and the Stromata's credit line and omission note; no other text, ID or payload change. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
+      "reason": "#399's publish (data PR #427, lock PR #463): Clement's Stromata Book III back in Henry Chadwick's English, staged from master after #427. Only church-fathers is staged; the other collections are copied from live. Its report must show the 33 Book III passages un-retired with their IDs (text replaced, 33 vectors embedded), p12's passage redirect into vi.iv.iii/from-p67 with its tombstone dropped, the anchor and chapter redirects for Book III's old links, and the Stromata's credit line and omission note; no other text, ID or payload change. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 463
     }
   ]
 }
