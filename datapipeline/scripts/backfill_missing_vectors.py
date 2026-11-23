@@ -135,6 +135,7 @@ def plan(rows: list[PassageRow], missing: set[str]) -> list[tuple[PassageRow, st
     Groups by document so each passage is embedded against its real neighbours, then
     emits only the missing ones.
     """
+    from collection_keys import source_of
     from config import settings
     from writers.search_writer import build_embedding_input
 
@@ -163,7 +164,9 @@ def plan(rows: list[PassageRow], missing: set[str]) -> list[tuple[PassageRow, st
                 f"neighbour context cannot be reconstructed safely"
             )
         passages = to_passages(doc_rows)
-        k_prev, k_next = settings.overlap_for(doc_rows[0].collection)
+        # By source, as the stage embeds (`writers/search_writer.embedding_inputs`).
+        k_prev, k_next = settings.overlap_for(
+            source_of(doc_rows[0].document_id, doc_rows[0].collection))
         for index, row in enumerate(doc_rows):
             if row.chunk_id not in missing:
                 continue
@@ -282,11 +285,13 @@ if __name__ == "__main__":
                     help="release named by the PUBLISH_LOCK.json entry that approves --apply")
     args = ap.parse_args()
 
+    # Live payloads keep the old keys until 5.1b.3's publish (`collection_keys`).
+    from collection_keys import RENAMES  # noqa: E402
     from publication import SOURCE_ADAPTERS  # noqa: E402
 
     try:
         names = resolve_args(
-            args.collection, args.batch_size, set(SOURCE_ADAPTERS)
+            args.collection, args.batch_size, set(SOURCE_ADAPTERS) | set(RENAMES)
         )
     except ArgError as exc:
         ap.error(str(exc))
