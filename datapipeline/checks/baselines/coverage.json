@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "feat/5.6b-teresa 355ca6f",
+  "medieval": "feat/5.6b-teresa 11b46b4",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1113,8 +1113,8 @@
    "pct": 99.97
   },
   "medieval/../theologians/teresa-castle2.xml": {
-   "body_chars": 337503,
-   "covered_chars": 337503,
+   "body_chars": 337397,
+   "covered_chars": 337397,
    "pct": 100.0
   },
   "medieval/../theologians/teresa-life.xml": {
@@ -1788,8 +1788,8 @@
   "4451945f-fec4-5ab0-8d9e-5da62287ed24": {
    "collection": "medieval",
    "source_file": "../theologians/teresa-castle2.xml",
-   "body_chars": 337503,
-   "covered_chars": 337503,
+   "body_chars": 337397,
+   "covered_chars": 337397,
    "pct": 100.0
   },
   "4451c2f8-e836-58ab-a2eb-495a9cacef89": {

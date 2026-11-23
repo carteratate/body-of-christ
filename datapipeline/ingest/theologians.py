@@ -32,7 +32,7 @@ from model import Document
 from ingest.common import _block_text, _build_parent_map
 from ingest.keys import THEOLOGIANS
 from ingest.editorial import PLAIN_CALLERS, ChapterEdit, Editor, Removed
-from ingest.thml_doc import ChapterPlan, _clip, make_doc
+from ingest.thml_doc import ChapterPlan, make_doc
 
 # The collection these works publish under; 5.1b.3 renames it in `ingest.keys`.
 COLLECTION = THEOLOGIANS
@@ -40,6 +40,10 @@ SOURCE_DIR = "theologians"
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", SOURCE_DIR)
 
 CCEL_CREDIT = "Sourced via CCEL.org"
+# Teresa's headings of the Life's chapters are not Lewis's: he left them out, following
+# Bouix, and Zimmerman's introduction to the 1904 edition prints them before the book.
+LIFE_NOTE = ("Each chapter opens with Teresa's own heading, which Lewis's translation "
+             "left out; it is given as Benedict Zimmerman's 1904 edition prints it.")
 
 
 @dataclass(frozen=True)
@@ -56,6 +60,7 @@ class ThmlWork:
     # chapter headings): kept in the text though they repeat a title line, and set as
     # printed (no opening-capitals change); the chapter plans mark them.
     title_classes: frozenset[str] = frozenset()
+    notes: str | None = None   # the document's note (2.3's `notes`)
 
     @property
     def source_key(self) -> str:
@@ -199,9 +204,13 @@ def _life_headings(arguments) -> dict[str, str]:
 NOT_BODY_CLASSES = {"teresa-castle2.xml": {"Outline": "apparatus"}}
 HEADING_DIVS = {"teresa-life.xml": frozenset({"v"})}
 # Single paragraphs by id: in the Life, Báñez's signed note on the manuscript after
-# Teresa's last line (ch. xl) and the transcriber's page marker "{p. 479}" (Relation XI).
+# Teresa's last line (ch. xl) and the transcriber's page marker "{p. 479}" (Relation XI);
+# in the Castle, the printers' colophon.
 NOT_BODY_PARAGRAPHS = {"teresa-life.xml": {"viii.xli-p58": "apparatus",
-                                           "ix.xi-p12": "apparatus"}}
+                                           "ix.xi-p12": "apparatus"},
+                       # The printers' colophon after the Castle's last "Amen" ("HERE ENDS
+                       # THE INTERIOR CASTLE … PRINTED BY THE BENEDICTINES OF STANBROOK").
+                       "teresa-castle2.xml": {"xii-p3": "apparatus"}}
 
 
 def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str], dict[str, str]]:
@@ -344,7 +353,8 @@ WORKS: tuple[ThmlWork, ...] = (
              genre="treatise", title_classes=frozenset({"Centered"})),
     ThmlWork(file="teresa-life.xml", url="https://ccel.org/ccel/t/teresa/life.xml",
              title="The Life of St. Teresa of Jesus", author="Teresa of Avila", year=1565,
-             translation="David Lewis (1904)", chapters=_life_chapters, genre="other"),
+             translation="David Lewis (1904)", chapters=_life_chapters, genre="other",
+             notes=LIFE_NOTE),
 )
 
 
@@ -362,6 +372,7 @@ def build_work(work: ThmlWork) -> Document:
     if doc is None:
         raise ValueError(f"{work.file}: no passages")
     doc.translation = work.translation
+    doc.notes = work.notes
     return doc
 
 

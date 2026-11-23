@@ -140,6 +140,14 @@ def test_life_opens_each_chapter_with_teresas_own_heading():
                     if any(m["level"] == 2 for m in (p.metadata or {}).get("headings", []))}
     assert len(with_heading) == 40
     assert _opening_marks(_life(), "ix.i") == [("The Relations.", 1)]
+    # The headings are not Lewis's (Zimmerman's introduction); the document says so.
+    assert "Lewis's translation left out" in _life().notes
+
+
+def test_castle_epilogue_ends_with_teresas_amen():
+    epilogue = [p for p in _castle().passages if p.chapter_key == "xii"]
+    assert epilogue[-1].content.rstrip().endswith("Amen.")
+    assert "HERE ENDS THE INTERIOR CASTLE" not in _text(_castle())
 
 
 def test_life_leaves_out_the_editors_matter():
@@ -186,7 +194,7 @@ def test_genres_by_source_key():
 def test_the_extractor_reads_the_headings_as_the_adapter_does():
     classes, divs, paragraphs = T.not_body("../theologians/teresa-castle2.xml")
     assert classes == {"Outline": "apparatus"}
-    assert not divs and not paragraphs
+    assert not divs and paragraphs == {"xii-p3": "apparatus"}       # the colophon
     assert T.not_body("../theologians/teresa-life.xml") == (
         {}, frozenset({"v"}), {"viii.xli-p58": "apparatus", "ix.xi-p12": "apparatus"})
     assert T.not_body("teresa-life.xml") == ({}, frozenset(), {})
