@@ -145,18 +145,15 @@ def _heading_marks(raw: str, segments: list[Segment], headings_wanted: list,
                    filename: str) -> list[dict]:
     """(locator, level, repeats the label) as marks on `raw`, whose paragraphs are
     `segments` in order."""
-    blocks = raw.split("\n\n")
-    if len(blocks) != len(segments):
-        raise ValueError(f"{filename}: {len(blocks)} paragraphs read, {len(segments)} named")
+    spans = headings.paragraphs(raw)
+    if len(spans) != len(segments):
+        raise ValueError(f"{filename}: {len(spans)} paragraphs read, {len(segments)} named")
     wanted = {locator: (level, repeats) for locator, level, repeats in headings_wanted}
-    out, at = [], 0
-    for block, segment in zip(blocks, segments):
+    out = []
+    for (at, end), segment in zip(spans, segments):
         if segment.locator in wanted:
             level, repeats = wanted.pop(segment.locator)
-            lead = len(block) - len(block.lstrip())
-            out.append(headings.mark(at + lead, at + lead + len(block.strip()),
-                                     level=level, chapter_title=repeats))
-        at += len(block) + 2
+            out.append(headings.mark(at, end, level=level, chapter_title=repeats))
     if wanted:
         raise ValueError(f"{filename}: headings {sorted(wanted)} are not paragraphs read")
     return out
