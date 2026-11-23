@@ -804,17 +804,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/julian-revelations.xml",
-  "sha256": "4611e9128c4d957d342287dadc5adbcc82f0826815278875369fcf7045f2642d",
-  "bytes": 395019,
-  "url": "https://ccel.org/ccel/j/julian/revelations.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/lettersofblessed00johnuoft/lettersofblessed00johnuoft_djvu.txt",
   "sha256": "8aa3229a22a4263a777e852b2a1e1eb6df991c1aa8aea240242d8831f15cd4bd",
   "bytes": 275946,
@@ -1435,17 +1424,6 @@
   "sha256": "9bf138599cd88d26524d80c5b6514a7dd58d8b0bfef667ff0735a0f372133144",
   "bytes": 622703,
   "url": "https://archive.org/download/thepraiseofglory00elizuoft/thepraiseofglory00elizuoft_djvu.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/therese-autobio.xml",
-  "sha256": "efa45a4a96f66835f663c88c982795f2b6b5372f0628761831caeb8d5fadc463",
-  "bytes": 681615,
-  "url": "https://ccel.org/ccel/t/therese/autobio.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
@@ -6988,6 +6966,16 @@
  },
  {
   "collection": "theologians",
+  "path": "theologians/julian-revelations.xml",
+  "sha256": "4611e9128c4d957d342287dadc5adbcc82f0826815278875369fcf7045f2642d",
+  "bytes": 395019,
+  "url": "https://ccel.org/ccel/j/julian/revelations.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
   "path": "theologians/teresa-castle2.xml",
   "sha256": "8ff410eb6ad0bb12f3003fc902c1ff706f506d01de3cb0e4e36ef9523b10eaf7",
   "bytes": 582155,
@@ -7002,6 +6990,16 @@
   "sha256": "00e8143f2480767ce63c52159be78dab9a717ffc6defd9abd6d116c5ea9e86f0",
   "bytes": 1639686,
   "url": "https://ccel.org/ccel/t/teresa/life.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/therese-autobio.xml",
+  "sha256": "efa45a4a96f66835f663c88c982795f2b6b5372f0628761831caeb8d5fadc463",
+  "bytes": 681615,
+  "url": "https://ccel.org/ccel/t/therese/autobio.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "adapter-input"

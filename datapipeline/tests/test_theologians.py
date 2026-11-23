@@ -50,11 +50,13 @@ def _labels(doc) -> list[str]:
 
 def test_the_documents_under_the_collection_key():
     docs = _built()
-    assert sorted(docs) == ["Introduction to the Devout Life", "The Interior Castle",
-                            "The Life of St. Teresa of Jesus", "Treatise on the Love of God"]
+    assert sorted(docs) == ["Introduction to the Devout Life", "Revelations of Divine Love",
+                            "The Interior Castle", "The Life of St. Teresa of Jesus",
+                            "The Story of a Soul", "Treatise on the Love of God"]
     for d in docs.values():
         assert d.collection == T.COLLECTION
-        assert d.author in ("Teresa of Avila", "Francis de Sales")
+        assert d.author in ("Teresa of Avila", "Francis de Sales", "Julian of Norwich",
+                            "Thérèse of Lisieux")
         # The source key is the file's path under sources/, so 5.1b.3's rename keeps it.
         assert "../" + d.metadata["source_key"] == d.metadata["source_file"]
     assert (_castle().year, _life().year) == (1577, 1565)
@@ -341,3 +343,60 @@ def test_the_works_are_opted_into_the_heading_checks():
 
     documents = health.load_patterns()["H7_unmarked_heading"]["documents"]
     assert {d.id for d in _built().values()} <= set(documents)
+
+
+# --------------------------------------------------------------------------- Julian, Thérèse
+
+def _julian():
+    return _built()["Revelations of Divine Love"]
+
+
+def _therese():
+    return _built()["The Story of a Soul"]
+
+
+def test_julian_is_the_86_chapters_under_their_revelations():
+    labels = _labels(_julian())
+    assert labels[:4] == ["Chapter I", "Chapter II", "Chapter III",
+                          "The First Revelation · Chapter IV"]
+    numbers = [label.rsplit("Chapter ", 1)[1] for label in labels]
+    assert len(numbers) == len(set(numbers)) == 86
+    # The file types LXXXII as "LXXII"; its place says which it is.
+    assert "The Sixteenth Revelation · Chapter LXXXII" in labels
+    assert (_julian().year, _julian().translation) == (1393, "Grace Warrack (1901)")
+
+
+def test_julian_leaves_out_the_scribe_glosses_and_warracks_chapter_subtitles():
+    text = _text(_julian())
+    assert "Amen Jesu amen" not in text and "Sloane MS." not in text     # the scribe's
+    assert "dearworthy Passion" in text                                  # gloss gone
+    assert "precious, honoured" not in text
+    assert "I saw . . . as it were in the time of His Passion" not in text   # subtitle
+    first = next(p for p in _julian().passages if p.chapter_key == "ii.i")
+    assert first.content.startswith("In this [moment] suddenly I saw the red blood")
+    assert not any((p.metadata or {}).get("headings") for p in _julian().passages)
+
+
+def test_story_of_a_soul_is_hers_only():
+    labels = _labels(_therese())
+    assert labels[0] == "Chapter I. Earliest Memories"
+    assert labels[10] == "Chapter XI. A Canticle of Love"
+    assert labels[11] == "Counsels and Reminiscences"
+    assert "Letters to Her Sister Céline · Letter I" in labels
+    assert "Letter to Her Cousin, Jeanne Guérin (Madame La Néele)" in labels
+    assert "Prayers · An Act of Oblation As a Victim of Divine Love" in labels
+    text = _text(_therese())
+    for editors in ("electronic edition", "Cardinal Bourne", "END OF THE AUTOBIOGRAPHY",
+                    "Most of what follows has been gathered", "(Written during her retreat",
+                    "This Prayer was found after the death", "Written for a Novice",
+                    "MY SONG OF TO-DAY", "Oh! how I love Thee, Jesus!", "* * *", ". . . . . ."):
+        assert editors not in text, editors
+    assert "It is to you, dear Mother, that I am about to confide the story of" in text
+    assert "J.M.J.T.\n\nMay 8, 1888.\n\nDearest Céline,—There are moments" in text
+    assert "Thérèse." in text and "ThÉRÈSE" not in text            # accented opening caps
+    assert "novices recorded" in _therese().notes
+
+
+def test_julian_and_therese_genres():
+    assert T.genre("theologians/julian-revelations.xml") == "treatise"
+    assert T.genre("theologians/therese-autobio.xml") == "other"

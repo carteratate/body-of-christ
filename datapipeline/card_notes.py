@@ -151,6 +151,10 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "Zimmerman's 1904 edition.": (overview(
         "Teresa's chapter headings, left out of the original translation, follow Benedict "
         "Zimmerman's 1904 edition."),),
+    # 5.6b's Story of a Soul (`ingest.theologians.THERESE_NOTE`): a document-wide fact.
+    "Its Counsels and Reminiscences are her sayings as her novices recorded them.": (
+        overview("Its Counsels and Reminiscences are her sayings as her novices recorded "
+                 "them."),),
     # 3.2's labels.
     # The header names the Church of Smyrna.
     "A letter of the Church of Smyrna on Polycarp's death; its writer, Evarestus, is named "

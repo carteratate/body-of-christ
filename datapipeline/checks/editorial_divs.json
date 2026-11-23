@@ -1850,5 +1850,54 @@
   "div": "xiii.xiv",
   "title": "Other Books",
   "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/julian-revelations.xml",
+  "div": "xix",
+  "title": "Postscript by a Scribe",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "ii",
+  "title": "Note to This Electronic Edition",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "vi",
+  "title": "Preface",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "vii",
+  "title": "Prologue: The Parentage & Birth of Marie Françoise Thérèse Martin",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "viii",
+  "title": "Original Title Page",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "xx",
+  "title": "Epilogue: A Victim of Divine Love",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "xxxii",
+  "title": "Selected Poems (Susan L. Emery's translation)",
+  "item": "5.6b"
  }
 ]

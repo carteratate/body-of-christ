@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "feat/5.6b-de-sales 0dbd607",
+  "medieval": "feat/5.6b-julian-therese 19a512b",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1122,6 +1122,11 @@
    "covered_chars": 1141879,
    "pct": 100.0
   },
+  "medieval/../theologians/julian-revelations.xml": {
+   "body_chars": 264660,
+   "covered_chars": 264660,
+   "pct": 100.0
+  },
   "medieval/../theologians/teresa-castle2.xml": {
    "body_chars": 337397,
    "covered_chars": 337397,
@@ -1130,6 +1135,11 @@
   "medieval/../theologians/teresa-life.xml": {
    "body_chars": 833249,
    "covered_chars": 833249,
+   "pct": 100.0
+  },
+  "medieval/../theologians/therese-autobio.xml": {
+   "body_chars": 453702,
+   "covered_chars": 453702,
    "pct": 100.0
   },
   "medieval/consolation-of-philosophy.xml": {
@@ -2355,6 +2365,13 @@
    "covered_chars": 33252,
    "pct": 99.75
   },
+  "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe": {
+   "collection": "medieval",
+   "source_file": "../theologians/therese-autobio.xml",
+   "body_chars": 453702,
+   "covered_chars": 453702,
+   "pct": 100.0
+  },
   "8e5fb9cb-352a-59c8-8449-07d673b3671c": {
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
@@ -3158,6 +3175,13 @@
    "source_file": "third-century-3.xml",
    "body_chars": 10114,
    "covered_chars": 10114,
+   "pct": 100.0
+  },
+  "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3": {
+   "collection": "medieval",
+   "source_file": "../theologians/julian-revelations.xml",
+   "body_chars": 264660,
+   "covered_chars": 264660,
    "pct": 100.0
   },
   "f23f311d-4aa4-5091-bb8a-91b174e8f3a2": {

@@ -47,6 +47,9 @@ CCEL_CREDIT = "Sourced via CCEL.org"
 ANONYMOUS_1876 = "Anonymous translation (Rivingtons, 1876)"
 # Teresa's headings of the Life's chapters are not Lewis's: he left them out, following
 # Bouix, and Zimmerman's introduction to the 1904 edition prints them before the book.
+# The Counsels and Reminiscences are her words as others set them down.
+THERESE_NOTE = ("Its Counsels and Reminiscences are her sayings as her novices recorded "
+                "them.")
 LIFE_NOTE = ("Teresa's chapter headings, left out of the original translation, follow "
              "Benedict Zimmerman's 1904 edition.")
 
@@ -221,7 +224,15 @@ NOT_BODY_PARAGRAPHS = {"teresa-life.xml": {"viii.xli-p58": "apparatus",
                        # THE INTERIOR CASTLE … PRINTED BY THE BENEDICTINES OF STANBROOK").
                        "teresa-castle2.xml": {"xii-p3": "apparatus"},
                        # "THE END." after the Treatise's last chapter: the printer's.
-                       "desales-love.xml": {"xiii.xiii-p17": "apparatus"}}
+                       "desales-love.xml": {"xiii.xiii-p17": "apparatus"},
+                       # The Story of a Soul: the editors' opening of the Counsels, their
+                       # captions over letters and prayers ("(Written during her retreat
+                       # …)", "Written for a Novice"), one bracketed account of the
+                       # circumstances, and "END OF THE AUTOBIOGRAPHY".
+                       "therese-autobio.xml": {pid: "apparatus" for pid in (
+                           "xxi-p1", "xxiii.i-p1", "xxiii.ii-p1", "xxiii.iv-p1",
+                           "xxiii.viii-p1", "xxix.i-p1", "xxix.iii-p1", "xxix.vii-p1",
+                           "xxix.viii-p1", "xix-p56")}}
 
 
 def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str], dict[str, str]]:
@@ -266,6 +277,11 @@ class _WorkEditor(Editor):
         for block in elem:
             if block.tag != "p":
                 continue
+            if self.source_file in _SEPARATOR_FILES and _SEPARATOR.fullmatch(_text(block)):
+                kind = "heading"                  # a printer's rule or omission mark
+                edit.dropped[id(block)] = kind
+                edit.removed.append(Removed(edit.locators[id(block)], kind, _block_text(block)))
+                continue
             kind = (NOT_BODY_PARAGRAPHS.get(self.source_file, {}).get(block.get("id"))
                     or NOT_BODY_CLASSES.get(self.source_file, {}).get(block.get("class")))
             kind = {"apparatus": "summary"}.get(kind, kind)
@@ -286,12 +302,19 @@ class _WorkEditor(Editor):
                 marked = marked.replace(printed, read)
             if block.get("class") in self.title_classes:
                 return marked, notes          # a title in capitals throughout stays so
+            if _SALUTATION.match(marked):
+                return _SALUTATION.sub(lambda m: _title(m.group(1)) + ",—", marked,
+                                       count=1), notes
             return _OPENING_CAPS.sub(_opening, marked, count=1), notes
 
         edit.edit = opened
         return edit
 
 
+# A paragraph that is only a printer's rule or an omission mark ("* * * * * *", ". . . .
+# . ."), in the files that print them between items: never text.
+_SEPARATOR = re.compile(r"[*.\s]+")
+_SEPARATOR_FILES = frozenset({"therese-autobio.xml"})
 # A note's number printed in brackets just before the note (the Life, ch. xxvi and xxix):
 # "vision.[8]" with note 8 after it. The note leaves; so does its call.
 _NOTE_CALL = re.compile(r"\[\d+\](?=\u2063)")
@@ -302,9 +325,12 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
 # A numbered step run on to the sentence before it with no space ("in the Presence of
 # God.2. Humble yourself", the Devout Life's meditations VII to X): the space restored.
 _GLUED_STEP = re.compile(r"([a-z][.!?”])(\d{1,2}\. [A-Z])")
+# A letter's salutation printed in capitals up to its ",—" ("MY DEAR LITTLE CÉLINE,—"):
+# set in title case as a whole.
+_SALUTATION = re.compile(r"^([A-ZÀ-ÖØ-Þ’'][A-ZÀ-ÖØ-Þ’' ]*[A-ZÀ-ÖØ-Þ]),—")
 # A printer's opening: the paragraph's first word (after its number) in capitals, or the
 # word after an opening "I" ("1. I HAVE known", III ch. ii).
-_OPENING_CAPS = re.compile(r"^(\s*(?:\d+\.\s+)?)(I\s+)?([A-Z][A-Z’']+)(?![a-z])")
+_OPENING_CAPS = re.compile(r"^(\s*(?:\d+\.\s+)?)(I\s+)?([A-ZÀ-ÖØ-Þ][A-ZÀ-ÖØ-Þ’']+)(?![a-zß-ÿ])")
 
 
 def _opening(m: re.Match) -> str:
@@ -417,6 +443,105 @@ def _book_heading(book) -> str:
 
 def _div2s(parent):
     return [d for d in parent if isinstance(d.tag, str) and d.tag == "div2"]
+
+
+# --------------------------------------------------------------------------- Julian
+
+# Revelations of Divine Love (Warrack, 1901): the 86 chapters, the first three before the
+# sixteen Revelations (i), each Revelation a div (ii to xviii, with "Anent certain points
+# in the foregoing fourteen Revelations", xvi). Left out: the scribe's postscript (xix,
+# not Julian's) and CCEL's indexes (xx). Each chapter's number is its label; the quoted
+# subtitle under it (`<h3>`, "I saw . . . as it were in the time of His Passion") is
+# Warrack's choice of Julian's words, standing in for the Sloane MS's chapter titles, so
+# it is neither label nor text. A Revelation's heading names the label's book.
+# Chapter numbers the file misprints, by div id, with the evidence: LXXXII is typed
+# "LXXII" in its title and heading; it stands between LXXXI and LXXXIII.
+_JULIAN_NUMBER_FIXES = {"xviii.xvi": "LXXXII"}
+_JULIAN_PARTS = ("i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii",
+                 "xiii", "xiv", "xv", "xvi", "xvii", "xviii")
+
+
+def _julian_chapters(root):
+    out = []
+    for part_id in _JULIAN_PARTS:
+        part = _div(root, part_id)
+        title = " ".join((part.get("title") or "").split())
+        book = None if part_id == "i" else smart_title_case(title)
+        for ch in _div2s(part):
+            m = _CHAPTER.match(" ".join((ch.get("title") or "").split()))
+            if not m:
+                raise ValueError(f"julian-revelations.xml: unexpected chapter title "
+                                 f"{ch.get('title')!r}")
+            number = _JULIAN_NUMBER_FIXES.get(ch.get("id"), m.group(1))
+            out.append((book, ch, ChapterPlan(label=f"Chapter {number}")))
+    return out
+
+
+# --------------------------------------------------------------------------- Thérèse
+
+# The Story of a Soul (Taylor, 1912): the eleven chapters of the autobiography (ix to
+# xix), the Counsels and Reminiscences (xxi; her sayings as her novices recorded them),
+# her letters (xxii to xxviii) and her prayers (xxix). Left out: the electronic edition's
+# note, title pages, contents and dedication (i to v, viii), Cardinal Bourne's preface
+# (vi), the editors' prologue and epilogue on her family and death (vii, xx), the motto
+# (xxx, a line of St John of the Cross), the table of her "days of grace" (xxxi), the
+# poems (xxxii: Susan L. Emery's translation, not Taylor's, which the rights row does not
+# cover) and CCEL's indexes. Chapter, letter and prayer titles are the edition's
+# (`<h1>`-`<h3>`), so they are labels; no heading she wrote stands in the text.
+_STORY = ("ix", "x", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii", "xviii", "xix")
+_LETTERS = ("xxii", "xxiii", "xxiv", "xxv", "xxvi", "xxvii", "xxviii")
+# "CHAPTER I - EARLIEST MEMORIES"
+_STORY_CHAPTER = re.compile(r"^CHAPTER ([IVXL]+) - (.+)$")
+# A letter div's title: its number, then perhaps a caption and a date ("II (Written
+# during her retreat before receiving the habit.) January 8, 1889.").
+_LETTER_TITLE = re.compile(r"^([IVXL]+)\b\s*(?:\([^)]*\)\s*)?(.*?)\.?$")
+
+
+def _therese_chapters(root):
+    out = []
+    for cid in _STORY:
+        ch = _div(root, cid)
+        m = _STORY_CHAPTER.match(" ".join((ch.get("title") or "").split()))
+        if not m:
+            raise ValueError(f"therese-autobio.xml: unexpected chapter title "
+                             f"{ch.get('title')!r}")
+        out.append((None, ch, ChapterPlan(
+            label=f"Chapter {m.group(1)}. {_title(m.group(2))}")))
+    out.append((None, _div(root, "xxi"), ChapterPlan(label="Counsels and Reminiscences")))
+    for lid in _LETTERS:
+        section = _div(root, lid)
+        heads = [_text(h) for h in section if h.tag in ("h1", "h2", "h3") and _text(h)]
+        book = _title(_letters_heading(heads, section.get("title")))
+        letters = _div2s(section)
+        if not letters:                       # one letter, the section itself
+            out.append((None, section, ChapterPlan(label=book)))
+            continue
+        for letter in letters:
+            m = _LETTER_TITLE.match(" ".join((letter.get("title") or "").split()))
+            date = m.group(2).strip(" .")
+            out.append((book, letter, ChapterPlan(
+                label=f"Letter {m.group(1)}" + (f", {date}" if date else ""))))
+    for prayer in _div2s(_div(root, "xxix")):
+        title = " ".join((prayer.get("title") or "").split())
+        out.append(("Prayers", prayer, ChapterPlan(label=_title(title))))
+    return out
+
+
+def _title(text: str) -> str:
+    """A heading printed in capitals, or partly so ("GUÉRIN (MADAME LA NÉELE)"), in title
+    case, a word after "(" capitalized."""
+    out = smart_title_case(text.upper())
+    return re.sub(r"\((\w)", lambda m: "(" + m.group(1).upper(), out)
+
+
+def _letters_heading(heads: list[str], title: str | None) -> str:
+    """A letter section's name: its own heading line naming the recipient ("LETTERS OF
+    SOEUR THÉRÈSE TO HER SISTER CÉLINE"), shortened to "Letters to …", else the div's
+    title."""
+    named = [h for h in heads if " TO " in h.upper()] or [title or ""]
+    text = named[-1]
+    i = text.upper().find(" TO ")
+    return "Letters" + text[i:] if text.upper().startswith("LETTERS") else text
 
 
 # A paragraph the file closes mid-sentence: it ends on a lower-case word, a comma, a
@@ -544,6 +669,14 @@ WORKS: tuple[ThmlWork, ...] = (
              translation="Henry Benedict Mackey (1884)", chapters=_love_chapters,
              genre="treatise",
              title_classes=_LOVE_TITLES),
+    ThmlWork(file="julian-revelations.xml", url="https://ccel.org/ccel/j/julian/revelations.xml",
+             title="Revelations of Divine Love", author="Julian of Norwich", year=1393,
+             translation="Grace Warrack (1901)", chapters=_julian_chapters,
+             genre="treatise"),
+    ThmlWork(file="therese-autobio.xml", url="https://ccel.org/ccel/t/therese/autobio.xml",
+             title="The Story of a Soul", author="Thérèse of Lisieux", year=1897,
+             translation="T. N. Taylor (1912)", chapters=_therese_chapters, genre="other",
+             notes=THERESE_NOTE),
 )
 
 
