@@ -498,7 +498,7 @@ export function SourcesPage() {
           </div>
         )}
 
-        {!loading && !sourcesError && !filteredMode && (visibleProgressLoading || loadedProgress.length > 0 || visibleProgressError) && (
+        {!loading && !sourcesError && !filteredMode && (visibleProgressLoading || visibleProgress.length > 0 || visibleProgressError) && (
           <section className="mb-8" aria-labelledby="continue-reading-heading">
             <div className="mb-3 flex items-center gap-2">
               <h2 id="continue-reading-heading" className="text-base font-semibold text-brand-primary">Continue Reading</h2>
