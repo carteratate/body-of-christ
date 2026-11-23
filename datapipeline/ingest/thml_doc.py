@@ -40,8 +40,8 @@ class ChapterPlan:
     any_length: bool = False        # kept however short (a letter's greeting)
     meta: dict | None = None        # added to its passages' metadata (1.8b's quotations)
     # Paragraphs that are the work's own headings, by `<p>` id: (id, level, whether it
-    # repeats the chapter label). Each stays in the text, is marked (`headings.py`,
-    # #445) and is kept in one piece with what follows it.
+    # repeats the chapter label), level None for an epigraph. Each stays in the text, is
+    # marked (`headings.py`, #445) and is kept in one piece with what follows it.
     headings: tuple[tuple[str, int, bool], ...] = ()
     # Headings the work prints before the chapter, outside its div (a book's or part's
     # own title over its first chapter): (text, level). Each opens the chapter's text,
@@ -153,7 +153,10 @@ def _heading_marks(raw: str, segments: list[Segment], headings_wanted: list,
     for (at, end), segment in zip(spans, segments):
         if segment.locator in wanted:
             level, repeats = wanted.pop(segment.locator)
-            out.append(headings.mark(at, end, level=level, chapter_title=repeats))
+            if level is None:              # an epigraph: a quotation set over the text
+                out.append(headings.mark(at, end, role=headings.EPIGRAPH))
+            else:
+                out.append(headings.mark(at, end, level=level, chapter_title=repeats))
     if wanted:
         raise ValueError(f"{filename}: headings {sorted(wanted)} are not paragraphs read")
     return out

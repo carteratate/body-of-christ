@@ -269,8 +269,10 @@ class _WorkEditor(Editor):
         for block in elem:
             # A title the work prints as the chapter's first paragraph is marked, not
             # dropped, though it repeats the label `Editor` would drop it for.
-            if block.tag == "p" and block.get("class") in self.title_classes \
-                    and edit.dropped.get(id(block)) == "heading":
+            if block.tag == "p" and edit.dropped.get(id(block)) == "heading" and (
+                    block.get("class") in self.title_classes
+                    or self.source_file in _LETTER_FILES
+                    and _YEAR_LINE.fullmatch(_text(block))):
                 del edit.dropped[id(block)]
                 edit.removed = [x for x in edit.removed
                                 if x.block != edit.locators[id(block)]]
@@ -302,7 +304,7 @@ class _WorkEditor(Editor):
                 marked = marked.replace(printed, read)
             if block.get("class") in self.title_classes:
                 return marked, notes          # a title in capitals throughout stays so
-            if _SALUTATION.match(marked):
+            if self.source_file in _LETTER_FILES and _SALUTATION.match(marked):
                 return _SALUTATION.sub(lambda m: _title(m.group(1)) + ",—", marked,
                                        count=1), notes
             return _OPENING_CAPS.sub(_opening, marked, count=1), notes
@@ -319,12 +321,22 @@ _SEPARATOR_FILES = frozenset({"therese-autobio.xml"})
 # "vision.[8]" with note 8 after it. The note leaves; so does its call.
 _NOTE_CALL = re.compile(r"\[\d+\](?=\u2063)")
 # Words a file mistranscribes, by (file, paragraph id), each with the evidence: (as the
-# file reads, as the edition prints). The Ninth Meditation's subject reads "upon to you";
-# the same file's contents, from the same edition, prints "open to you".
-TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open to you"),)}
+# file reads, as it should read). The Ninth Meditation's subject reads "upon to you"; the
+# same file's contents, from the same edition, prints "open to you".
+TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open to you"),),
+              # Letter V to Céline is dated 12 March 1889 (Carmel of Lisieux, LT 85); the
+              # file prints 1899, two years after her death.
+              ("therese-autobio.xml", "xxii.v-p1"): (("March 12, 1899.", "March 12, 1889."),),
+              # The next paragraph opens with an omission mark, ". . . I must", which
+              # cleaning would fold into the date's full stop across the paragraph break.
+              ("therese-autobio.xml", "xxii.v-p2"): ((". . . I must", "… I must"),)}
 # A numbered step run on to the sentence before it with no space ("in the Presence of
 # God.2. Humble yourself", the Devout Life's meditations VII to X): the space restored.
 _GLUED_STEP = re.compile(r"([a-z][.!?”])(\d{1,2}\. [A-Z])")
+# The files whose letters print their salutations in capitals and date a letter by a line
+# holding only its year ("1889."), which `Editor` takes for a section number.
+_LETTER_FILES = frozenset({"therese-autobio.xml"})
+_YEAR_LINE = re.compile(r"\d{4}\.?")
 # A letter's salutation printed in capitals up to its ",—" ("MY DEAR LITTLE CÉLINE,—"):
 # set in title case as a whole.
 _SALUTATION = re.compile(r"^([A-ZÀ-ÖØ-Þ’'][A-ZÀ-ÖØ-Þ’' ]*[A-ZÀ-ÖØ-Þ]),—")
@@ -490,6 +502,9 @@ def _julian_chapters(root):
 # (`<h1>`-`<h3>`), so they are labels; no heading she wrote stands in the text.
 _STORY = ("ix", "x", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii", "xviii", "xix")
 _LETTERS = ("xxii", "xxiii", "xxiv", "xxv", "xxvi", "xxvii", "xxviii")
+# The quotations she set over two of her Various Prayers (John 16:23, and words of Sister
+# Mary of St Peter): epigraphs, marked, each kept with the prayer it opens.
+_THERESE_EPIGRAPHS = {"xxix.iv": (("xxix.iv-p1", None, False), ("xxix.iv-p3", None, False))}
 # "CHAPTER I - EARLIEST MEMORIES"
 _STORY_CHAPTER = re.compile(r"^CHAPTER ([IVXL]+) - (.+)$")
 # A letter div's title: its number, then perhaps a caption and a date ("II (Written
@@ -517,13 +532,18 @@ def _therese_chapters(root):
             out.append((None, section, ChapterPlan(label=book)))
             continue
         for letter in letters:
-            m = _LETTER_TITLE.match(" ".join((letter.get("title") or "").split()))
+            # The printed heading ("I February 21, 1888."), which carries the date the
+            # div's title leaves out.
+            head = letter.find("h2")
+            m = _LETTER_TITLE.match(_text(head) if head is not None else
+                                    " ".join((letter.get("title") or "").split()))
             date = m.group(2).strip(" .")
             out.append((book, letter, ChapterPlan(
                 label=f"Letter {m.group(1)}" + (f", {date}" if date else ""))))
     for prayer in _div2s(_div(root, "xxix")):
         title = " ".join((prayer.get("title") or "").split())
-        out.append(("Prayers", prayer, ChapterPlan(label=_title(title))))
+        out.append(("Prayers", prayer, ChapterPlan(
+            label=_title(title), headings=_THERESE_EPIGRAPHS.get(prayer.get("id"), ()))))
     return out
 
 
@@ -575,6 +595,13 @@ def _rejoin_split_paragraphs(chapters, work: ThmlWork) -> int:
                 j += 1
             nxt = kids[j] if j < len(kids) else None
             head, tail = _text(first), _text(nxt) if nxt is not None else ""
+            # Across a page break (or a dropped line) a paragraph ending mid-sentence or a
+            # part starting in lower case is one paragraph; with nothing between, only the
+            # second (an address's or a signature's lines are paragraphs of their own).
+            broken = j > k + 1
+            if nxt is not None and tail and not broken and not re.match(r"[a-z.,;:]", tail):
+                k += 1
+                continue
             if nxt is None or nxt.tag != "p" or not head or not tail \
                     or nxt.get("class") not in _BODY_CLASSES \
                     or _SECTION_START.match(tail) \

@@ -400,3 +400,27 @@ def test_story_of_a_soul_is_hers_only():
 def test_julian_and_therese_genres():
     assert T.genre("theologians/julian-revelations.xml") == "treatise"
     assert T.genre("theologians/therese-autobio.xml") == "other"
+
+
+def test_therese_letters_keep_their_dates_and_prayers_their_epigraphs():
+    labels = _labels(_therese())
+    assert "Letters to Sister Mary of the Sacred Heart · Letter I, February 21, 1888" in labels
+    text = _text(_therese())
+    assert re.search(r"(?m)^1889\.$", text)                    # a year-only dateline kept
+    # Letter V is of 1889 (the file prints 1899); the omission mark after it stays apart.
+    assert "March 12, 1889.\n\n… I must forget this world" in text
+    various = next(p for p in _therese().passages if p.chapter_key == "xxix.iv")
+    roles = [(various.content[m["at"]:m["end"]][:20], m["role"])
+             for m in various.metadata["headings"]]
+    assert roles == [('"If you ask the Fath', "epigraph"), ('"Just as the King\'s ', "epigraph")]
+
+
+def test_lines_split_without_a_page_break_stay_apart_unless_the_second_runs_on():
+    # A dateline's two lines, a lead-in ending in a dash, an address: separate paragraphs.
+    assert "Annecy, the day of the most loving Apostles\n\nS. Peter and S. Paul. 1616." \
+        in _text(_love())
+    assert "open example.—\n\nIt is the most worship" in _text(_julian())
+    assert "Your little daughter,\n\nTeresa of the Child Jesus." in _text(_therese())
+    # A sentence cut with nothing between, its second part in lower case, is one.
+    assert "as much devotion as I ought; I have not loved my neighbour" in _text(_devout())
+    assert "Our way and our heaven is true love" in _text(_julian())
