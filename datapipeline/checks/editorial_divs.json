@@ -351,6 +351,83 @@
  },
  {
   "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "ii.i",
+  "title": "Title Page.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "ii.ii",
+  "title": "Preface.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "ii.iii",
+  "title": "Introduction.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "iii.i",
+  "title": "Title Page.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "iii.ii",
+  "title": "Prolegomena.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "iii.xii",
+  "title": "Introduction to the 'Theological' Orations.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "iv.i",
+  "title": "Title Page.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "iv.ii.i",
+  "title": "Introduction.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "iv.iv.iii.i",
+  "title": "Letter XLII.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "iv.iv.vi.vi",
+  "title": "Letter CCII.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf207.xml",
+  "div": "iv.iv.ix.iv",
+  "title": "Letter CXXV.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
   "file": "npnf208.xml",
   "div": "vii.i",
   "title": "Preface.",

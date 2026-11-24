@@ -70,6 +70,8 @@ CHURCH_FATHERS = [
      "file": "apostolic fathers.xml", "title": "ANF01: Apostolic Fathers"},
     {"url": "https://ccel.org/ccel/s/schaff/npnf204.xml",
      "file": "npnf204.xml", "title": "NPNF2-04: Athanasius, Select Works and Letters"},
+    {"url": "https://ccel.org/ccel/s/schaff/npnf207.xml",
+     "file": "npnf207.xml", "title": "NPNF2-07: Cyril of Jerusalem, Gregory Nazianzen"},
     {"url": "https://ccel.org/ccel/s/schaff/npnf208.xml",
      "file": "npnf208.xml", "title": "NPNF2-08: Basil, Letters and Select Works"},
     {"url": "https://ccel.org/ccel/s/schaff/npnf103.xml",

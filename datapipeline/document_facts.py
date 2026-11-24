@@ -149,6 +149,9 @@ FATHERS_DATES = {
     # retreat to his death, have no one date there.
     _CF + "npnf208/vii": (375, "c. 375", "II (Spanish), Basil, p. 231"),
     _CF + "npnf208/viii": (None, "before 370", "II (Spanish), Basil, pp. 238-239"),
+    # Cyril's lectures: "347 or 348" (Quasten); Gregory's orations and letters span his
+    # life, with no one date.
+    _CF + "npnf207/ii": (347, "347 or 348", "II (Spanish), Cyril of Jerusalem, p. 404"),
 }
 # Works inside a container, by (work_id, work_key), as FATHERS_DATES.
 FATHERS_WORK_DATES = {
@@ -167,7 +170,8 @@ _LETTER = ("apostolic-fathers/ii.ii", "apostolic-fathers/iii.ii", "apostolic-fat
                                                   "viii", "x", "xi", "xii")),
            "apostolic-fathers/vi.ii", "third-century-2/iv.iv", "third-century-3/v.iii",
            "third-century-3/ix.iv", "third-century-3/x.iii", "third-century-3/vi.vii",
-           "third-century-3/vi.viii", "third-century-3/vi.x", "npnf208/ix")
+           "third-century-3/vi.viii", "third-century-3/vi.x", "npnf208/ix",
+           "npnf207/iv")
 _TREATISE = ("apostolic-fathers/viii.ii", "apostolic-fathers/viii.iii",
              "apostolic-fathers/viii.iv", "apostolic-fathers/viii.v",
              "apostolic-fathers/viii.vi", "apostolic-fathers/viii.vii",
@@ -191,7 +195,8 @@ FATHERS_GENRES = {
     **{_CF + k: "treatise" for k in _TREATISE},
     **{_CF + k: "commentary" for k in ("third-fourth-century/vi.ii", "third-century-3/iv.iv")},
     **{_CF + k: "sermon" for k in ("on-the-holy-trinity/iv.vii", "third-century-3/xi.ix",
-                                   "third-century-3/xi.x", "npnf208/viii")},
+                                   "third-century-3/xi.x", "npnf208/viii", "npnf207/ii",
+                                   "npnf207/iii")},
     _CF + "third-century/v.ii": "poem",
     _CF + "third-fourth-century/iii.vi": "poem",
     _CF + "on-the-holy-trinity/iv.ii": "manual",
@@ -258,6 +263,10 @@ TRANSLATION = {
 }
 # Anselm's three works share one file.
 TRANSLATION_BY_KEY = {
+    # NPNF2-07 (5.6a): one volume, two translations.
+    "church-fathers/npnf207.xml#ii": "Edwin Hamilton Gifford (1894)",
+    "church-fathers/npnf207.xml#iii": "Charles Gordon Browne and James Edward Swallow (1894)",
+    "church-fathers/npnf207.xml#iv": "Charles Gordon Browne and James Edward Swallow (1894)",
     "medieval/proslogium-monologium-and-cur-deus-homo.xml#iii": "Sidney Norton Deane (1903)",
     "medieval/proslogium-monologium-and-cur-deus-homo.xml#iv": "Sidney Norton Deane (1903)",
     "medieval/proslogium-monologium-and-cur-deus-homo.xml#vi": "James Gardiner Vose (1854-1855)",

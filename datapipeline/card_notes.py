@@ -214,6 +214,10 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "of Nicaea condemned.": (caution(
         "authorship", "Long read as Basil's; scholars now give it to this writer, whose "
                       "teachings the Second Council of Nicaea condemned."),),
+    "Some manuscripts give these lectures to Cyril's successor, John of Jerusalem; the "
+    "Catechism cites them as Cyril's.": (caution(
+        "authorship", "Some manuscripts give these lectures to Cyril's successor, John of "
+                      "Jerusalem; the Catechism cites them as Cyril's."),),
     "A later addition to Basil's letter to Ambrose.": (
         caution("authorship", "A later addition to Basil's letter to Ambrose."),),
     "Not by Basil. The Second Council of Nicaea (787) quoted it as his.": (

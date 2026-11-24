@@ -332,6 +332,26 @@ BASIL_LETTER_LABELS = {
                           "4)"},
 }
 WORKS.update({(_BASIL_LETTERS, div): labels for div, labels in BASIL_LETTER_LABELS.items()})
+# ---------------------------------------------------------- 5.6a: Cyril and Gregory
+
+# NPNF2-07 (5.6a, #205). Both are Doctors; the volume prints only their own works. The
+# Mystagogical Lectures' authorship is disputed (Quasten, Patrología II, pp. 404-407: one
+# manuscript gives them to Cyril's successor John, the evidence decides nothing); the
+# Catechism cites them as Cyril's ("St. Cyril of Jerusalem, Catech. myst."), so rule H
+# credits him and the certainty says the rest.
+R1_NPNF207 = f"{R1}, 5.6a addendum (Cyril and Gregory of Nazianzus)"
+for _work_id in ("church-fathers/npnf207/ii", "church-fathers/npnf207/iii",
+                 "church-fathers/npnf207/iv"):
+    DOCUMENTS[_work_id] = {"certainty": "genuine", "basis": R1_NPNF207}
+WORKS[("church-fathers/npnf207/ii", "ii.iv")] = {
+    "author": "Cyril of Jerusalem", "certainty": "genuine", "basis": R1_NPNF207}
+WORKS[("church-fathers/npnf207/ii", "ii.xxiii")] = {
+    "author": "Cyril of Jerusalem", "certainty": "disputed",
+    "attribution_note": "Some manuscripts give these lectures to Cyril's successor, John of "
+                        "Jerusalem; the Catechism cites them as Cyril's.",
+    "basis": f"Quasten, Patrología II (BAC 1978), pp. 404-407; CCC, footnotes citing "
+             f"\"Catech. myst.\"; {R1_NPNF207}"}
+
 # The Creed of Nicaea Letter 125 quotes in Greek is cut under rule E
 # (`ingest.church_fathers.NOT_ENGLISH`).
 _CREED_NOTE = ("The Creed of Nicaea, which this letter quotes in full, is omitted: the "

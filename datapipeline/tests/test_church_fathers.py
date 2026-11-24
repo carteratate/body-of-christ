@@ -89,8 +89,9 @@ def test_split_passages_have_complete_reader_boundaries():
     # 127 after 1.8a, whose rule G took Asterius Urbanus's only passage, his Elucidation;
     # 128 since 1.8c parses his text and brings the document back; 142 since 1.8b splits
     # the two Augustine treatise volumes into their 16 works; 109 since 3.1 removes 33
-    # works under rules A to C; 112 since 5.6a adds Basil's three works (NPNF2-08).
-    assert len(docs) == 112
+    # works under rules A to C; 112 since 5.6a adds Basil's three works (NPNF2-08); 115
+    # with Cyril's and Gregory of Nazianzus's (NPNF2-07).
+    assert len(docs) == 115
     for doc in docs:
         groups = defaultdict(list)
         for passage in doc.passages:
@@ -706,12 +707,67 @@ def test_basil_judgments_quote_their_notes():
     from ingest.common import _strip_tags
     from scripts.npnf_registry import JUDGMENTS
     from xml.etree.ElementTree import tostring
-    root = cf._read_root(os.path.join(_SRC, "npnf208.xml"))
-    divs = {e.get("id"): e for e in root.iter() if e.get("id")}
-
     def flat(t):
         return " ".join(t.replace("’", "'").replace("“", '"').replace("”", '"').split())
 
-    for rows in JUDGMENTS.values():
+    for work_id, rows in JUDGMENTS.items():
+        file = work_id.split("/")[1] + ".xml"            # church-fathers/npnf208/ix
+        root = cf._read_root(os.path.join(_SRC, file))
+        divs = {e.get("id"): e for e in root.iter() if e.get("id")}
         for element, quote, _, _ in rows:
             assert flat(quote) in flat(_strip_tags(tostring(divs[element], encoding="unicode")))
+
+
+# ------------------------------------------------------------------ 5.6a: NPNF2-07
+
+@pytest.fixture(scope="module")
+def npnf207():
+    return {d.metadata["source_key"].split("#")[1]: d
+            for d in build_documents(os.path.join(_SRC, "npnf207.xml"))}
+
+
+def test_npnf207_builds_cyril_and_gregorys_works(npnf207):
+    assert {k: (d.title, d.author) for k, d in npnf207.items()} == {
+        "ii": ("Catechetical Lectures", "Cyril of Jerusalem"),
+        "iii": ("Select Orations", "Gregory of Nazianzus"),
+        "iv": ("Select Letters", "Gregory of Nazianzus")}
+    assert len({p.chapter_key for p in npnf207["ii"].passages}) == 24
+    assert len({p.chapter_key for p in npnf207["iii"].passages}) == 24
+    assert [w.title for w in npnf207["ii"].works] == [
+        "Lectures to the Candidates for Baptism", "Mystagogical Lectures"]
+
+
+def test_cyril_reading_is_an_epigraph_and_his_headings_are_marked(npnf207):
+    cyril = npnf207["ii"]
+    first = next(p for p in cyril.passages if p.chapter_key == "ii.vi")
+    assert first.chapter_label.startswith("Lecture II. On Repentance")
+    marks = first.metadata["headings"]
+    assert [m["role"] for m in marks[:2]] == ["epigraph", "epigraph"]
+    assert first.content.startswith("Ezekiel xviii. 20–23")
+    inner = [(m, p) for p in cyril.passages if p.chapter_key == "ii.viii"
+             for m in (p.metadata or {}).get("headings", []) if m["role"] == "heading"]
+    assert len(inner) == 16 and all(m["level"] == 2 for m, _ in inner)
+    assert any(p.content[m["at"]:m["end"]] == "I. Of God." for m, p in inner)
+
+
+def test_npnf207_editors_matter_is_cut(npnf207):
+    text = "\n".join(p.content for d in npnf207.values() for p in d.passages)
+    for editor in ("It is generally agreed that this oration",      # Oration II's intro
+                   "Appendix to Lecture IX",                           # Gifford's variants
+                   "The Oration is thus analysed by Abbe Benoît",
+                   "(Perhaps about a.d. 357 or 358",                   # a letter's dating
+                   "(We insert here the three letters",
+                   "Division III.", "Gregory Nazianzen.\n"):
+        assert editor not in text, editor
+    assert "(To the Reader.)" in text          # the manuscripts' note, kept
+
+
+def test_gregory_letters_are_numbered_works(npnf207):
+    letters = npnf207["iv"]
+    titles = {w.work_key: w.title for w in letters.works}
+    assert titles["iv.ii.iii"] == "Letter CI"
+    label = next(p.chapter_label for p in letters.passages if p.chapter_key == "iv.iii.ii")
+    assert label == "Letter II · To Basil"
+    # The editor's pointers to letters printed above are not built.
+    assert not {"iv.iv.iii.i", "iv.iv.vi.vi", "iv.iv.ix.iv"} & {
+        p.chapter_key for p in letters.passages}

@@ -248,7 +248,8 @@ def excluded_divs(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
 # them is not part of any built work (NPNF2-04's other works wait for 5.6a; an NPNF volume
 # 5.6a adds has title pages, prolegomena and indexes around its works), so it is not read.
 # The adapter names the same divs (`ingest.church_fathers.VOLUME_WORKS` and `NPNF_WORKS`).
-VOLUME_SCOPE = {"npnf204.xml": ("vii.ii",), "npnf208.xml": ("vii", "viii", "ix")}
+VOLUME_SCOPE = {"npnf204.xml": ("vii.ii",), "npnf207.xml": ("ii", "iii", "iv"),
+                "npnf208.xml": ("vii", "viii", "ix")}
 
 
 def _in_scope(div_id: str | None, scope: tuple[str, ...] | None) -> bool:

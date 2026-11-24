@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import os
 import re
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from glob import glob
 from xml.etree.ElementTree import Element, tostring
 
@@ -28,8 +28,8 @@ from normalize.caps import smart_title_case
 from normalize.text import fold_ligatures
 from ingest.common import (_block_text, _build_parent_map, _cf_skippable, _strip_tags,
                            direct_blocks, iter_chapters)
-from ingest.editorial import (PLAIN_CALLERS, Editor, Removed, _cut_brackets, _norm, _record,
-                               span_sha1, strip_editorial_lines)
+from ingest.editorial import (PLAIN_CALLERS, RULE_LINE, Editor, Removed, _cut_brackets, _norm,
+                               _record, span_sha1, strip_editorial_lines)
 from ingest.editorial_keep import QuoteEdit, kept_quotes
 from ingest import stromata_chadwick
 from ingest.thml_doc import ChapterPlan, _chapter_label, _clip, distinct_titles, make_doc
@@ -72,6 +72,16 @@ class NpnfWork:
     title: str
     skip: frozenset[str] = frozenset()
     letters: bool = False
+    # How the volume prints a chapter's head (`_HEADS`): Basil's "Chapter I." and title,
+    # Cyril's lectures with their Scripture reading, Gregory's orations under the editor's
+    # notes, Gregory's letters under "Ep. N." and the editor's dating.
+    style: str = "basil"
+    # Each chapter a work of the document, titled by its number (Gregory's orations, D6).
+    works: bool = False
+    # Chapters that are a work of their own inside the document, by first chapter div:
+    # {div: (work key, title)}; a later chapter belongs to the last work opened (Cyril's
+    # Mystagogical Lectures, whose authorship is disputed apart from the rest).
+    groups: tuple = ()
 
 
 # Basil's letters that NPNF2-08 summarizes in brackets instead of translating ("[A short
@@ -83,7 +93,24 @@ _BASIL_SUMMARIES = frozenset(f"ix.{n}" for n in (
     "cccix", "cccx", "cccxi", "cccxii", "cccxiii", "cccxiv", "cccxv", "cccxvi", "cccxvii",
     "cccxviii", "cccxix", "cccxx", "cccxxiv", "cccxxv", "cccxxvi", "cccxxvii", "cccxxviii",
     "ccclvi"))
+# NPNF2-07's editors' divs inside its works: title pages, Gifford's preface and
+# introduction, the Prolegomena, the introduction to the Theological Orations, the
+# introduction to the letters' first division, and three letters listed again in a later
+# division with only the editor's pointer to where they are printed (Letters XLII, CCII
+# and CXXV).
+_NPNF207_SKIP = frozenset({"ii.i", "ii.ii", "ii.iii", "iii.i", "iii.ii", "iii.xii", "iv.i",
+                           "iv.ii.i", "iv.iv.iii.i", "iv.iv.vi.vi", "iv.iv.ix.iv"})
 NPNF_WORKS = {
+    "npnf207.xml": (
+        NpnfWork("ii", "Cyril of Jerusalem", "Catechetical Lectures", skip=_NPNF207_SKIP,
+                 style="lectures",
+                 groups=(("ii.iv", ("ii.iv", "Lectures to the Candidates for Baptism")),
+                         ("ii.xxiii", ("ii.xxiii", "Mystagogical Lectures")))),
+        NpnfWork("iii", "Gregory of Nazianzus", "Select Orations", skip=_NPNF207_SKIP,
+                 style="orations", works=True),
+        NpnfWork("iv", "Gregory of Nazianzus", "Select Letters", skip=_NPNF207_SKIP,
+                 letters=True, style="letters207"),
+    ),
     "npnf208.xml": (
         NpnfWork("vii", "Basil", "On the Holy Spirit", skip=frozenset({"vii.i"})),
         NpnfWork("viii", "Basil", "The Hexaemeron", skip=frozenset({"viii.i"})),
@@ -121,6 +148,24 @@ _NPNF_EDITOR_SPANS = {
     ("npnf208.xml", "vii.vi-p56"): (" (A.V., “of” instead of “through a woman”)",)}
 _NPNF_NUMBER = re.compile(r"^(Chapter|Homily|Letter) ([IVXLC]+)\.$")
 _CANONICA = re.compile(r"^\(?Canonica \w+\.?\)?$")
+# NPNF2-07: Cyril's number lines ("Lecture IV.", "FIRST CATECHETICAL LECTURE"), Gregory's
+# ("Oration II."), and a letter's "Ep. CCII." wherever its head line prints it.
+_LECTURE_NUMBER = re.compile(r"^(?:Lecture ([IVXLC]+)\.|(FIRST) CATECHETICAL LECTURE)$")
+_ORATION_NUMBER = re.compile(r"^Oration ([IVXLC]+)\.$")
+_EP = re.compile(r"\bEp\. ([CLXVI]+)\b")
+# A paragraph that numbers itself: Gregory's sections ("I.") and Cyril's ("1.").
+_NUMBERED = re.compile(r"^(?:\d+|[IVXLC]+)\.\s")
+# Oration XXXI prints no number line over its title.
+_ORATION_FIX = {("npnf207.xml", "iii.xvii"): "XXXI"}
+# The classes NPNF2-07 prints Cyril's Scripture reading in, under each lecture's title.
+_READING_CLASSES = frozenset({"c41", "c42", "c43", "c44"})
+# Cyril's own headings inside a lecture ("I. Of God." in Lecture IV), level 2.
+_LECTURE_HEADING_CLASS = "c40"
+# Gregory's letters without an address line: the division they stand in names it.
+_LETTER_ADDRESS = {("npnf207.xml", "iv.iii"): "To Basil"}
+# A chapter whose end is the editor's, from this paragraph on: Gifford's appendix to
+# Lecture IX, variant readings from a homily printed under Basil's name.
+_NPNF_TAILS = {("npnf207.xml", "ii.xiii"): "ii.xiii-p86"}
 
 # ------------------------------------------------------------------ 1.8c: names
 
@@ -555,9 +600,10 @@ class _NpnfEditor(Editor):
     (Decision log "Editors' chapter titles in passage text"). They count as heading lines,
     a letter's title line too, since its label names it."""
 
-    def __init__(self, source_file, source_key, parent_map, skip):
+    def __init__(self, source_file, source_key, parent_map, skip, style="basil"):
         super().__init__(source_file, source_key, parent_map)
         self.skips = skip
+        self.style = style
 
     def skip(self, elem) -> bool:
         if elem.get("id") in self.skips:
@@ -573,17 +619,32 @@ class _NpnfEditor(Editor):
         (the audit's fresh edit) drops the same."""
         plain = edit.again
         edit.again = lambda: self._headed(plain(), elem)
-        head = _npnf_head(elem)[3] if elem.get("id") not in _PART_DIVS else []
+        head = (_HEADS[self.style](self.source_file, elem)
+                if elem.get("id") not in _PART_DIVS else _Head(None, "", []))
         for r in edit.removed:
             if r.kind == "letter-title":
                 r.kind = "heading"
         for k, kind in edit.dropped.items():
             if kind == "letter-title":
                 edit.dropped[k] = "heading"
-        for b in head:
+        cut = [(b, "heading") for b in head.lines] + [(b, "editor-note") for b in head.notes]
+        tail = _NPNF_TAILS.get((self.source_file, elem.get("id")))
+        blocks = direct_blocks(elem)
+        if tail is not None:
+            at = [b.get("id") for b in blocks].index(tail)
+            cut += [(b, "editor-note") for b in blocks[at:] if _block_text(b)]
+        if self.style != "basil":
+            # Rule lines between sections ("______"), the editor's typography.
+            cut += [(b, "heading") for b in blocks if RULE_LINE.match(_block_text(b) or "x")]
+        if self.style == "letters207":
+            # A paragraph wholly in parentheses is the editor's in Gregory's letters, at
+            # their end too ("(We insert here the three letters to Eusebius…)").
+            cut += [(b, "editor-note") for b in blocks
+                    if (t := _text(b)).startswith("(") and t.endswith(")")]
+        for b, kind in cut:
             if id(b) not in edit.dropped:
-                edit.dropped[id(b)] = "heading"
-                edit.removed.append(Removed(edit.locators[id(b)], "heading", _block_text(b)))
+                edit.dropped[id(b)] = kind
+                edit.removed.append(Removed(edit.locators[id(b)], kind, _block_text(b)))
         greek = NOT_ENGLISH.get((self.source_file, elem.get("id")), frozenset())
         found = set()
         for b in direct_blocks(elem):
@@ -633,6 +694,124 @@ _NPNF_BODY_CLASSES = frozenset({"c20", "c21"})
 _PART_DIVS: set[str] = set()
 
 
+@dataclass
+class _Head:
+    """What a chapter prints over its text, as one volume's head reader reads it."""
+    number: str | None                  # the label's number: "Chapter V", "Letter CCII"
+    title: str                          # the label's title, as printed
+    lines: list                         # number and title lines, dropped (the label says them)
+    notes: list = field(default_factory=list)       # the editor's notes, dropped (rule G)
+    epigraphs: list = field(default_factory=list)   # Cyril's Scripture reading, kept, marked
+    headings: list = field(default_factory=list)    # (paragraph, level): the work's own
+
+
+def _basil_head(filename, elem) -> _Head:
+    kind, n, title, head = _npnf_head(elem)
+    return _Head(f"{kind} {n}", title, head)
+
+
+def _text(block) -> str:
+    return " ".join(_block_text(block).split())
+
+
+def _attr_title(elem) -> str:
+    return " ".join((elem.get("title") or "").split()).rstrip(" .")
+
+
+def _lecture_head(filename, elem) -> _Head:
+    """A lecture's head is everything above its first paragraph of text: the title page
+    lines of the series (the Procatechesis, the Mystagogical Lectures), the number line,
+    the title, and the Scripture reading Cyril set for it, which stays as an epigraph. His
+    own headings inside the lecture stay too, level 2."""
+    blocks = [b for b in direct_blocks(elem) if _text(b)]
+    start = next((k for k, b in enumerate(blocks) if b.get("class") in (None, "c23")), None)
+    if start is None:
+        raise ValueError(f"{elem.get('id')}: no text")
+    number, lines, readings = None, [], []
+    for b in blocks[:start]:
+        t = _text(b)
+        m = _LECTURE_NUMBER.match(t)
+        if m:
+            number = f"Lecture {m.group(1) or 'I'}"
+        if b.get("class") in _READING_CLASSES or (b.get("class") == "Centered"
+                                                   and t.startswith("With a ")):
+            readings.append(b)
+        else:
+            lines.append(b)
+    headings = [(b, 2) for b in blocks[start:] if b.get("class") == _LECTURE_HEADING_CLASS]
+    return _Head(number, _attr_title(elem), lines, epigraphs=readings, headings=headings)
+
+
+def _oration_head(filename, elem) -> _Head:
+    """An oration's head runs to its first numbered section ("I.", "1."). Above it, the
+    lines up to the number and the title lines under it go to the label; the rest is the
+    editor's: his introduction, his dating and his analysis of the oration."""
+    blocks = [b for b in direct_blocks(elem) if _text(b)]
+    start = next(k for k, b in enumerate(blocks)
+                 if b.get("class") in (None, "c23") and _NUMBERED.match(_text(b)))
+    head = blocks[:start]
+    at = next((k for k, b in enumerate(head) if _ORATION_NUMBER.match(_text(b))), None)
+    if at is None:
+        n, at = _ORATION_FIX[(filename, elem.get("id"))], -1
+    else:
+        n = _ORATION_NUMBER.match(_text(head[at])).group(1)
+    lines, notes, titles = list(head[:at + 1]), [], True
+    for b in head[at + 1:]:
+        t = _text(b)
+        titles = titles and len(t) < 200 and not t.startswith("(") \
+            and "a.d." not in t.lower() and not re.match(r"(?:Delivered|Preached) ", t)
+        (lines if titles else notes).append(b)
+    # "Introduction to Oration II." and its text stand above the number line.
+    notes += [b for b in head[:at + 1] if len(_text(b)) >= 200]
+    lines = [b for b in lines if b not in notes]
+    return _Head(f"Oration {n}", _attr_title(elem), lines, notes)
+
+
+def _letter207_head(filename, elem) -> _Head:
+    """A letter's head in NPNF2-07: the division and section heads over the first letter
+    of each, the "Ep. N." line (with its address, or after it), and the editor's notes in
+    parentheses, which date the letter or say what it answers."""
+    blocks = [b for b in direct_blocks(elem) if _text(b)]
+    lines, notes, number, address = [], [], None, None
+    k = 0
+    while k < len(blocks):
+        b, t = blocks[k], _text(blocks[k])
+        ep = _EP.search(t) if len(t) < 200 and (
+            b.get("class") == "c42" or t.startswith("Ep.") or "(Ep." in t) else None
+        if ep:
+            number = number or ep.group(1)
+            rest = re.sub(r"\(?\bEp\. [CLXVI]+\.?\)?|\(About a\.d\. \d+\)\.?|\band [CLXVI]+\.",
+                          "", t).strip(" .")
+            address = address or rest or None
+            lines.append(b)
+        elif t.startswith("(") and t.endswith(")"):
+            notes.append(b)
+        elif b.get("class") in ("c39", "c27", "c57", "c5", "c56") and len(t) < 200:
+            lines.append(b)
+        else:
+            break
+        k += 1
+    if number is None:
+        raise ValueError(f"{elem.get('id')}: no Ep. line")
+    if address is None:
+        title = _attr_title(elem)
+        parent = elem
+        while address is None and parent is not None:
+            parent = _PARENTS.get(id(parent))
+            if parent is None:
+                break
+            address = _LETTER_ADDRESS.get((filename, parent.get("id")))
+            if address is None and _attr_title(parent).startswith("To "):
+                address = _attr_title(parent)
+        if address is None and not re.fullmatch(r"Letter [CLXVI]+", title):
+            address = title
+    return _Head(f"Letter {number}", address or "", lines, notes)
+
+
+# The parent of each div the letter reader looks up, by id(), set as a volume is read.
+_PARENTS: dict[int, object] = {}
+
+
 def _npnf_head(elem) -> tuple[str, str, str, list]:
     """("Letter", "VIII", the title as printed, the head's paragraphs): the lines over a
     chapter, homily or letter that number and title it, as the volume prints them. The
@@ -653,6 +832,10 @@ def _npnf_head(elem) -> tuple[str, str, str, list]:
     if not titles or at != 0 or len(head) > 3:
         raise ValueError(f"{elem.get('id')}: a head of {len(head)} lines, titled {titles}")
     return kind, n, titles[0].rstrip(" ."), head
+
+
+_HEADS = {"basil": _basil_head, "lectures": _lecture_head, "orations": _oration_head,
+          "letters207": _letter207_head}
 
 
 def _letter_part(filename, letter, parent_map):
@@ -677,21 +860,42 @@ def _letter_part(filename, letter, parent_map):
 
 
 def _npnf_document(filename, w: NpnfWork, work, parent_map):
-    editor = _NpnfEditor(filename, _source_key(filename, work), parent_map, w.skip)
+    editor = _NpnfEditor(filename, _source_key(filename, work), parent_map, w.skip, w.style)
+    _PARENTS.update({id(e): p for e, p in parent_map.items()})
+    groups = dict(w.groups)
     chapters, works = [], []
+    group = None
     for _, elem in list(iter_chapters(work, parent_map, editor.skip,
                                       front_matter=lambda title: False)):
-        kind, n, title, _ = _npnf_head(elem)
-        title = _clip(title)
-        if not w.letters:
-            chapters.append((None, elem, ChapterPlan(label=f"{kind} {n}. {title}")))
+        head = _HEADS[w.style](filename, elem)
+        title = _clip(head.title)
+        # The work's own headings stay in the text, marked (#452): Cyril's reading as an
+        # epigraph, his headings inside a lecture at their level.
+        marks = tuple([(b.get("id"), None, False) for b in head.epigraphs]
+                      + [(b.get("id"), level, False) for b, level in head.headings])
+        if elem.get("id") in groups:
+            group = groups[elem.get("id")]
+            works.append(Work(work_key=group[0], ordinal=len(works) + 1, title=group[1],
+                              author=w.author))
+        if w.works:
+            works.append(Work(work_key=elem.get("id"), ordinal=len(works) + 1,
+                              title=head.number, author=w.author))
+            chapters.append((None, elem, ChapterPlan(
+                label=title, work_key=elem.get("id"), work_label=head.number,
+                headings=marks)))
             continue
-        number = f"Letter {n}"
+        if not w.letters:
+            label = f"{head.number}. {title}" if head.number else title
+            chapters.append((None, elem, ChapterPlan(
+                label=label, work_key=group[0] if group else None, headings=marks)))
+            continue
+        number = head.number
         part = _letter_part(filename, elem, parent_map)
         works.append(Work(work_key=elem.get("id"), ordinal=len(works) + 1, title=number,
                           author=_NPNF_SENDERS.get((filename, elem.get("id")), w.author)))
         chapters.append((None, elem, ChapterPlan(label=title, work_key=elem.get("id"),
-                                                 work_label=number, any_length=True)))
+                                                 work_label=number, any_length=True,
+                                                 headings=marks)))
         if part is not None:
             div, label = part
             works.append(Work(work_key=div.get("id"), ordinal=len(works) + 1,

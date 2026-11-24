@@ -54,7 +54,7 @@ COLLECTION = "church-fathers"
 # rule G's editor (the Confessions has none), 1.8d's Robertson's On the Incarnation in
 # NPNF2-04, 1.8a's every other.
 NPNF_FILES = frozenset({"city-of-god.xml", "on-the-holy-trinity.xml"})
-ITEM_FILES = {"npnf204.xml": "1.8d", "npnf208.xml": "5.6a"}
+ITEM_FILES = {"npnf204.xml": "1.8d", "npnf207.xml": "5.6a", "npnf208.xml": "5.6a"}
 ITEMS = ("1.8a", "1.8b", "1.8d", "5.6a")
 REASON = "rule-g-editorial"
 TOMBSTONE = ("This passage was an editor's note and was removed because TheoCorpus shows "
@@ -78,6 +78,8 @@ DETAIL = {
                        "summary, printed after its number), not the author's text",
     "not-english": "Rule E: a paragraph the translator left in Greek, cut from a chapter "
                    "whose English stays (5.6a)",
+    "editor-note": "The editor's note above or after the text (an introduction, a date, an "
+                   "analysis), not the author's (5.6a)",
 }
 # A chapter whose text was all the editors', by what it held (1.8b).
 WHOLE_DETAIL = {
@@ -147,11 +149,18 @@ NOT_JUDGMENTS: dict[str, str] = {
     "b02e664a0a01": "an Argument: doubtful signification of words",
     # 1.8d, Robertson's analytical headings in On the Incarnation.
     "2deb663e8643": "forgetfulness",
+    # 5.6a, NPNF2-07's notes.
+    "048ab09f9a3a": "a sermon of another writer, not this oration",
+    "33e7e2a34933": "forgive",
 }
 # The verdict for each flagged sentence that is an authenticity judgment (sha1 of the
 # sentence -> (verdict, overridden_by_plan)). The plan's "Labels for works that stay"
 # overrides the editors where it labels the work otherwise.
 VERDICTS: dict[str, tuple[str, bool]] = {
+    # 5.6a: Gregory of Nazianzus's Letters LXV and LXVI, also in Basil's collection (Basil's
+    # 166 and 167, which 5.6a credits to Gregory, as Fedwick does).
+    "720184853fe0": ("attributed", False),
+    "317ee4083de2": ("attributed", False),
     # Treatises Attributed to Cyprian: the plan labels On the Glory of Martyrdom and the
     # Exhortation to Repentance anonymous.
     "40e04bbdbe7d": ("dubious", False),

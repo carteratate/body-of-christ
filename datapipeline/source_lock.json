@@ -111,17 +111,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/church-fathers/npnf207.xml",
-  "sha256": "3ac73f4179c0b7d6e66e6fea04ae572e64c0e4a80e8fa38980b40366c8a13928",
-  "bytes": 4247548,
-  "url": "https://ccel.org/ccel/s/schaff/npnf207.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/church-fathers/npnf210.xml",
   "sha256": "c6f1a9d66653852d8b743c84a613c72c521dfb1b05602f0a2eff400c17665ee8",
   "bytes": 3837030,
@@ -3274,8 +3263,8 @@
  {
   "collection": "church-fathers",
   "path": "church-fathers/manifest.json",
-  "sha256": "b07ff80e9d9c5198e10ef54632705d122e71784681c347f8abc70fa6db0f6fba",
-  "bytes": 2810,
+  "sha256": "a084f5c22b73d46c4ec15b4b67bc3f2f4a5fe1057834c5279adfc1de85eafeaa",
+  "bytes": 3071,
   "url": null,
   "acquired": "unknown-before-2026-11-13",
   "hashed_on": "2026-11-23",
@@ -3287,6 +3276,16 @@
   "sha256": "bd625a0fa4f5ddd4b2fa13fcee753de8832ea4b316625e0e06454beb81cfa652",
   "bytes": 5809854,
   "url": "https://ccel.org/ccel/s/schaff/npnf204.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "church-fathers",
+  "path": "church-fathers/npnf207.xml",
+  "sha256": "3ac73f4179c0b7d6e66e6fea04ae572e64c0e4a80e8fa38980b40366c8a13928",
+  "bytes": 4247548,
+  "url": "https://ccel.org/ccel/s/schaff/npnf207.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "adapter-input"

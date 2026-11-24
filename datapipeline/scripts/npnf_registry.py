@@ -70,6 +70,9 @@ T_DUPLICATE = ("Removed because this letter is Gregory of Nazianzus's Letter 66,
                "TheoCorpus gives in his own Select Letters.")
 # The letters 5.6a takes out, by div: (reason, detail, tombstone, Church act).
 EXCLUDED = {
+    # NPNF2-07: Cyril and Gregory of Nazianzus are Doctors, and the volume prints no
+    # letter by another writer.
+    "npnf207.xml": {},
     "npnf208.xml": {
         **{div: ("rule-a",
                  "Rule A: a letter in the name of the emperor Julian, who had abandoned the "
@@ -101,7 +104,19 @@ _BASIL_RULE_A = {
     "applies": True, "communion_start": "0357-01-01", "communion_end": None,
     "chronology_source": f"{QUASTEN}, pp. 224-249 (Quasten's vol. III in English)",
     "church_acts": [], "decision": "include"}
+_DOCTOR_207 = ("{} is a Doctor of the Church: limit 2 passes his works whatever their date "
+               f"({R1_ADDENDUM.replace('(Basil)', '(Cyril and Gregory of Nazianzus)')}).")
 RULE_A = {
+    "church-fathers/npnf207/ii": {
+        "applies": True, "communion_start": None, "communion_end": None,
+        "work_date": "0347-01-01", "chronology_source": f"{QUASTEN}, pp. 404-407",
+        "church_acts": [], "decision": "include",
+        "decision_basis": _DOCTOR_207.format("Cyril of Jerusalem")},
+    **{key: {"applies": True, "communion_start": None, "communion_end": None,
+             "work_date": None, "chronology_source": None, "church_acts": [],
+             "decision": "include",
+             "decision_basis": _DOCTOR_207.format("Gregory of Nazianzus")}
+       for key in ("church-fathers/npnf207/iii", "church-fathers/npnf207/iv")},
     "church-fathers/npnf208/vii": {**_BASIL_RULE_A, "work_date": "0375-01-01",
                                    "decision_basis": f"{_DOCTOR}; written about 375 "
                                                      f"(Quasten, p. 231) ({R1_ADDENDUM})."},
@@ -123,6 +138,13 @@ RULE_A = {
 # it). Read from the notes `ingest.editorial.judgments` flags; the rest of what it flags is
 # not about authorship (a doubtful plant, a doubtful identification of a man).
 JUDGMENTS = {
+    "church-fathers/npnf207/ii": [
+        ("ii.iv-p93", "It is doubtful whether this caution proceeded from Cyril himself when "
+                      "issuing a written copy of his Lectures, or from some later editor.",
+         "dubious", False),
+        ("ii.xxiii-p4", "This general title of the five following Lectures is omitted in many "
+                        "mss.", "dubious", False),
+    ],
     "church-fathers/npnf208/vii": [
         ("vii.xxviii-p4", "The genuineness of this latter portion of the Treatise was objected "
                           "to by Erasmus on the ground that the style is unlike that of "
@@ -357,9 +379,12 @@ def rights_rows(documents) -> list[dict]:
         if mine is not None:
             mine.update(built)
             continue
-        volume = volumes.get(path) or next(
-            r for r in rows if r["source_path"] == path and r["document_id"] is None)
-        volumes[path] = volume
+        # A volume of two authors has a row for each (NPNF2-07: Cyril, Gregory).
+        key = (path, d.author)
+        volume = volumes.get(key) or next(
+            r for r in rows if r["source_path"] == path and r["document_id"] is None
+            and r["author"] == d.author)
+        volumes[key] = volume
         rows.append({**volume, **built})
     rows = [r for r in rows if not any(r is v for v in volumes.values())]
     rows.sort(key=lambda r: tuple(x or "" for x in rights_inventory.key(r)))

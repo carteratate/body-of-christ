@@ -2899,11 +2899,11 @@
   "planned_for": null
  },
  {
-  "work": "Cyril of Jerusalem: Catechetical Lectures (NPNF2-07)",
+  "work": "Catechetical Lectures",
   "author": "Cyril of Jerusalem",
   "collection": "church-fathers",
   "source_path": "church-fathers/npnf207.xml",
-  "document_id": null,
+  "document_id": "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
   "edition": "NPNF 2nd series vol. 7 (New York: Christian Literature Company; Oxford and London: Parker, 1894)",
   "translator": "Edwin Hamilton Gifford",
   "first_published": 1894,
@@ -2914,14 +2914,14 @@
   "credit_line": "Sourced via CCEL.org",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.6a"
+  "planned_for": null
  },
  {
-  "work": "Gregory Nazianzen: Select Orations and Letters (NPNF2-07)",
+  "work": "Select Letters",
   "author": "Gregory of Nazianzus",
   "collection": "church-fathers",
   "source_path": "church-fathers/npnf207.xml",
-  "document_id": null,
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
   "edition": "NPNF 2nd series vol. 7 (New York: Christian Literature Company; Oxford and London: Parker, 1894)",
   "translator": "Charles Gordon Browne and James Edward Swallow",
   "first_published": 1894,
@@ -2932,7 +2932,25 @@
   "credit_line": "Sourced via CCEL.org",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.6a"
+  "planned_for": null
+ },
+ {
+  "work": "Select Orations",
+  "author": "Gregory of Nazianzus",
+  "collection": "church-fathers",
+  "source_path": "church-fathers/npnf207.xml",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "edition": "NPNF 2nd series vol. 7 (New York: Christian Literature Company; Oxford and London: Parker, 1894)",
+  "translator": "Charles Gordon Browne and James Edward Swallow",
+  "first_published": 1894,
+  "source_url": "https://ccel.org/ccel/s/schaff/npnf207.xml",
+  "status": "pd-us-pre-1931",
+  "rights_holder": null,
+  "renewal_search": null,
+  "credit_line": "Sourced via CCEL.org",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": null
  },
  {
   "work": "Letters",
