@@ -264,10 +264,16 @@ def test_a_release_of_all_old_keys_asks_for_the_all_entry(monkeypatch):
     asked = []
     monkeypatch.setattr(publication, "publish_lock_guard",
                         lambda step, lock_path=None: lambda c, r: asked.append(c))
-    publish.guard_publish("rollback", sorted(publication.SOURCE_BUILDS), "old-all")
+    # The ten keys an `all` release staged before 5.1b.3 records (republish-2026-10's),
+    # written out: the sources have grown since (5.4's church-law).
+    old_all = ["apostolic-exhortations", "bible", "canon-law", "catechism",
+               "church-fathers", "councils", "encyclicals", "medieval", "papal-documents",
+               "summa"]
+    publish.guard_publish("rollback", old_all, "old-all")
+    publish.guard_publish("rollback", sorted(publication.SOURCE_BUILDS), "sources-all")
     publish.guard_publish("rollback", sorted(publication.SOURCE_ADAPTERS), "new-all")
     publish.guard_publish("rollback", ["papal"], "one")
-    assert asked == ["all", "all", "papal"]
+    assert asked == ["all", "all", "all", "papal"]
 
 
 async def test_a_guest_claim_during_the_run_is_waited_for_not_deadlocked(cluster):

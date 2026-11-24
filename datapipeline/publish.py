@@ -131,16 +131,23 @@ def _decision(value: str) -> str:
     return value.strip()
 
 
+# The ten keys a release staged with `all` before 5.1b.3 merged records.
+_OLD_ALL = frozenset({"apostolic-exhortations", "bible", "canon-law", "catechism",
+                      "church-fathers", "councils", "encyclicals", "medieval",
+                      "papal-documents", "summa"})
+
+
 def guard_publish(step: str, collections: Sequence[str], release: str, lock_path=None) -> None:
     """Ask the publish lock for `step` on each collection (one "all" entry for all)."""
     from publication import publish_lock_guard
 
     guard = publish_lock_guard(step, lock_path)
     # Every collection, in either vocabulary: a release staged with `all` before 5.1b.3
-    # merged lists the ten old keys.
+    # merged lists the ten old keys, fixed here because the sources have grown since
+    # (5.4's `church-law`).
     from publication import SOURCE_BUILDS
 
-    every = set(collections) in (set(SOURCE_ADAPTERS), set(SOURCE_BUILDS))
+    every = set(collections) in (set(SOURCE_ADAPTERS), set(SOURCE_BUILDS), _OLD_ALL)
     for c in ["all"] if every else collections:
         guard(c, release)
 

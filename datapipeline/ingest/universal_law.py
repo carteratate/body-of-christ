@@ -15,7 +15,7 @@ documents, all from vatican.va's English:
 
 *De aliquibus mutationibus* (2007), which replaced No. 75 before *Normas nonnullas*
 replaced it again, is Latin only on vatican.va, so it is not added (rule E, revised
-29 Oct 2026); Normas nonnullas' note links its Latin. The Congregation of Cardinals'
+29 Oct 2026); Normas Nonnullas' note says where its Latin is published. The Congregation of Cardinals'
 declaration of 30 April 2025 on No. 33 is a dispensation, not an amendment (source
 memo), so it is only named in the current text's note.
 
@@ -88,12 +88,6 @@ NORMAS = Edition(
                "hf_ben-xvi_motu-proprio_20130222_normas-nonnullas.html",
     "motu-proprio", False)
 EDITIONS = (CURRENT, ORIGINAL, NORMAS)
-
-# The 2007 act, Latin only on vatican.va, and the 2025 declaration (5.4).
-DE_ALIQUIBUS_URL = (_VATICAN + "benedict-xvi/la/motu_proprio/documents/"
-                    "hf_ben-xvi_motu-proprio_20070611_de-electione.html")
-DECLARATION_2025_URL = ("https://press.vatican.va/content/salastampa/en/bollettino/pubblico/"
-                        "2025/04/30/250430a.html")
 
 NUMBERS = 92
 # The numbers Normas nonnullas replaced, as the consolidated page's closing note lists
