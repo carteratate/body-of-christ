@@ -79,13 +79,6 @@ jobs:
       - name: Type check app/ (basedpyright, new errors only)
         run: basedpyright
         working-directory: services/api
-      # Known vulnerabilities in what the API image and the datapipeline install. Any
-      # finding blocks: upgrade it (scripts/lock_python_deps.sh --upgrade-package NAME),
-      # or, if it cannot apply to us, add `--ignore-vuln ID` here with a comment saying why.
-      - name: pip-audit (lock files)
-        run: |
-          pip-audit -r services/api/requirements.lock --require-hashes --disable-pip --progress-spinner off
-          pip-audit -r datapipeline/requirements.lock --require-hashes --disable-pip --progress-spinner off
       # The real-SQL tests (migrations, staging, republish checks, keyword-search SQL)
       # start their own throwaway clusters, so they need initdb and pg_ctl on PATH.
       # REQUIRE_LOCAL_POSTGRES makes them fail rather than skip if the tools are missing.
@@ -103,6 +96,15 @@ jobs:
         working-directory: services/api
         env:
           REQUIRE_LOCAL_POSTGRES: "1"
+      # Known vulnerabilities in what the API image and the datapipeline install. Any
+      # finding blocks: upgrade it (scripts/lock_python_deps.sh --upgrade-package NAME),
+      # or, if it cannot apply to us, add `--ignore-vuln ID` to both lines with a comment
+      # saying why. After the tests, so a new advisory does not hide their results.
+      - name: pip-audit (lock files)
+        if: ${{ !cancelled() }}
+        run: |
+          pip-audit -r services/api/requirements.lock --require-hashes --disable-pip --progress-spinner off
+          pip-audit -r datapipeline/requirements.lock --require-hashes --disable-pip --progress-spinner off
 
   datapipeline:
     runs-on: ubuntu-latest
