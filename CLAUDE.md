@@ -23,7 +23,7 @@ npm run build          # production build
 npm run lint           # ESLint — the repo baseline is ZERO errors
 npm test               # vitest run
 
-# Backend (services/api) — deps in pyproject.toml; `python3` on this machine
+# Backend (services/api) — deps in pyproject.toml, pinned in requirements*.lock; `python3` on this machine
 uvicorn app.main:app --reload   # dev server on :8000
 python3 -m pytest tests/
 
@@ -423,6 +423,11 @@ No LangGraph or agent frameworks. No pgvector for retrieval.
   and still logs to stderr.
 - Frontend: TypeScript, HTTP calls centralized in `src/lib/api.ts`, no DB SDK in frontend.
 - Lint baseline is zero errors. Leave no new warnings in files you touch.
+- Python dependencies are locked. Edit `services/api/pyproject.toml` or
+  `datapipeline/requirements.txt`, then run `scripts/lock_python_deps.sh` (needs uv) and
+  commit the regenerated `requirements*.lock`. The production image and CI install only
+  from the locks, and CI fails when a lock is out of date with its input. The script
+  keeps existing pins; `--upgrade-package NAME` moves one on purpose.
 
 ---
 
