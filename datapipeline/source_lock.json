@@ -7008,7 +7008,7 @@
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
-  "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/ (ingest/john_of_the_cross.py)"
+  "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/"
  },
  {
   "collection": "theologians",
@@ -7019,7 +7019,7 @@
   "acquired": "2026-11-23",
   "hashed_on": "2026-11-23",
   "role": "vendored-unregistered",
-  "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/ (ingest/john_of_the_cross.py)"
+  "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/"
  },
  {
   "collection": "theologians",
@@ -7030,6 +7030,6 @@
   "acquired": "2026-11-23",
   "hashed_on": "2026-11-23",
   "role": "vendored-unregistered",
-  "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/ (ingest/john_of_the_cross.py)"
+  "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/"
  }
 ]

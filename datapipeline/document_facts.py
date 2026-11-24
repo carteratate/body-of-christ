@@ -292,7 +292,7 @@ def _genre(document: Document, work_id: str) -> str | None:
         return FATHERS_GENRES[work_id]
     if document.collection in PAPAL_COLLECTIONS:
         return (document.metadata or {}).get("genre")
-    if (document.metadata or {}).get("source_key", "").startswith("theologians/"):
+    if ((document.metadata or {}).get("source_key") or "").startswith("theologians/"):
         return (document.metadata or {}).get("genre")   # 5.6c's scanned works
     return {"catechism": "catechism", "canon-law": "code", "church-law": "code"
             }.get(document.collection)
