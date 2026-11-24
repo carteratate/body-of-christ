@@ -66,12 +66,14 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.11"  # matches services/api/Dockerfile
-          cache: pip
-          cache-dependency-path: services/api/requirements-dev.lock
-      - run: pip install --require-hashes -r services/api/requirements-dev.lock
-      - run: pip install --no-deps -e services/api
+      # uv installs the lock into the runner's Python several times faster than pip; the
+      # lock check below uses it too. No cache: every dependency is a pre-built wheel,
+      # which uv downloads in parallel, and uv's own advice is not to cache those in CI.
+      - run: pip install uv==0.13.9
+      - run: uv pip install --system --require-hashes -r services/api/requirements-dev.lock
+      - run: uv pip install --system --no-deps -e services/api
       - name: Lock files match pyproject.toml
-        run: pip install uv==0.13.9 && scripts/lock_python_deps.sh --check api
+        run: scripts/lock_python_deps.sh --check api
       # Both pinned by requirements-dev.lock. ruff covers all three Python trees
       # (ruff.toml); basedpyright fails only on type errors not in its baseline.
       - name: Python lint (ruff)
@@ -117,15 +119,14 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
-          cache: pip
-          cache-dependency-path: datapipeline/requirements.lock
       - uses: actions/cache@v6
         with:
           path: .tiktoken-cache
           key: tiktoken-${{ hashFiles('datapipeline/requirements.lock') }}
-      - run: pip install --require-hashes -r datapipeline/requirements.lock
+      - run: pip install uv==0.13.9  # see the api job
+      - run: uv pip install --system --require-hashes -r datapipeline/requirements.lock
       - name: Lock file matches requirements.txt
-        run: pip install uv==0.13.9 && scripts/lock_python_deps.sh --check datapipeline
+        run: scripts/lock_python_deps.sh --check datapipeline
       # The real-SQL tests (migrations, staging, republish checks, keyword-search SQL)
       # start their own throwaway clusters, so they need initdb and pg_ctl on PATH.
       # REQUIRE_LOCAL_POSTGRES makes them fail rather than skip if the tools are missing.
