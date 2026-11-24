@@ -736,9 +736,10 @@ the backups' user-data files and the Qdrant snapshot; the corpus copies are kept
 
 **Publishing now:** the publish thread runs batches one at a time (Carter, 24 Nov 2026), under
 the standing decisions in the plan's Decision log. Each live step still needs its lock-file PR
-and Carter's approval when it runs (0.4). He has so far closed each publish's rollback window
-early once its smoke checks passed (the "rollback window closed early" rows), each time as his
-own decision: ask him for each one.
+and Carter's approval when it runs (0.4). A publish's rollback window closes once its smoke
+checks pass, unless Carter says otherwise when he approves the apply: the publish thread then
+deletes the previous Qdrant collection without asking again, quoting that decision, and stops
+and asks only if a smoke check fails (Decision log "Publishing: windows, lock PRs and batches").
 
 Start from the "Start here" section of `docs/2026-09-28-corpus-cleanup-plan.md`; detailed
 work specifications are in `docs/corpus-cleanup/`. The plan's Decision log is settled.
