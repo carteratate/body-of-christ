@@ -1,7 +1,8 @@
 """A throwaway local PostgreSQL cluster for tests that must run real SQL.
 
 Skips the calling test when initdb/pg_ctl/psql are unavailable or when running as
-root, so the suite still passes on machines without a local PostgreSQL install.
+root, so the suite still passes on machines without a local PostgreSQL install. CI sets
+REQUIRE_LOCAL_POSTGRES, which turns those skips into failures.
 """
 
 import contextlib
@@ -90,12 +91,20 @@ class Cluster:
             assert result.returncode == 0, result.stderr
 
 
+def postgres_unavailable(reason: str) -> None:
+    """Skips the test, or fails it where REQUIRE_LOCAL_POSTGRES is set (CI), so a runner
+    without PostgreSQL cannot quietly skip the real-SQL tests."""
+    if os.environ.get("REQUIRE_LOCAL_POSTGRES"):
+        pytest.fail(f"{reason}, and REQUIRE_LOCAL_POSTGRES is set", pytrace=False)
+    pytest.skip(reason)
+
+
 @contextlib.contextmanager
 def local_cluster(prefix: str) -> Iterator[Cluster]:
     if os.geteuid() == 0:
-        pytest.skip("initdb cannot run as root")
+        postgres_unavailable("initdb cannot run as root")
     if not all(shutil.which(command) for command in ("initdb", "pg_ctl", "psql")):
-        pytest.skip("local PostgreSQL tools are unavailable")
+        postgres_unavailable("local PostgreSQL tools are unavailable")
 
     # macOS limits Unix socket paths, so pytest's nested temp path is too long.
     short_tmp = "/private/tmp" if Path("/private/tmp").is_dir() else "/tmp"
