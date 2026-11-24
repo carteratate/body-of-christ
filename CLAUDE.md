@@ -296,7 +296,7 @@ or deleting a migration already on `master` fails unless the file says
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040–0047 are committed (0044 and 0045 were applied on 16 Nov 2026, 0047 on 23 Nov 2026; 0046, which widens `documents_collection_check` to the new keys for 5.1b.3, is not yet applied and awaits Carter's approval); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0048 are committed (0044 and 0045 were applied on 16 Nov 2026, 0047 on 23 Nov 2026; 0046, which widens `documents_collection_check` to the new keys for 5.1b.3, is not yet applied and awaits Carter's approval; 0048, 5.1b.4's narrowing of that constraint to the eight keys, is applied only after 5.1b.3's publish and user-row script, once the count in its PR reads zero, and with Carter's approval); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -345,8 +345,9 @@ and it hands the runner three derived values: `focused`, `terminal_candidate_bud
 failures consistently. See §18.
 
 **HyDE writes one passage per collection, except** the Bible (its genres, above) and `papal`
-(5.1b.1), which writes one per kind of papal document its genre filter leaves on, in the
-prompt of that kind's old key (`hyde_s25.papal_hyde_kinds`; Carter, 22 Nov 2026).
+(5.1b.1), which writes one per kind of papal document its genre filter leaves on
+(encyclical, apostolic exhortation, other), in the prompt its old collection used
+(`hyde_s25._PAPAL_KINDS`, `papal_hyde_kinds`; Carter, 22 Nov 2026).
 
 **A plan can narrow a collection to some genres and issuers** (item 5.1a, `SearchPlan.scopes`,
 `rag/collection_scope.py`). The request lists what to search; a `CollectionScope` holds the
@@ -586,20 +587,17 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 15. Collections — Canonical Source
 
-- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`). It holds
-  two vocabularies while corpus cleanup 5.1b runs: the eight `CANONICAL_COLLECTIONS` (with
-  `papal`, `church-law` and `theologians`) and the five old keys in `LEGACY_COLLECTIONS`, which
-  map to them (`encyclicals`, `apostolic-exhortations` and `papal-documents` to genres of
-  `papal`; `canon-law` to `church-law`; `medieval` to `theologians`). Since 5.1b.2 the web
-  offers only the eight new keys (labels: Papal documents, Church law, Theology &
-  Spirituality) and translates any old key it reads (`canonicalCollectionKey` in
-  `lib/collections.ts`; a restored old papal search becomes a Papal documents genre
-  selection, `canonicalSearchFilters`). `collection_scope.reads` decides which stored values a key reads,
-  so both vocabularies work whether or not 5.1b.3 has rewritten the stored values, and a
-  search's results are labelled with the key it sent. A plan drops an old key named beside
-  its new one and logs `legacy_collection_key`; 5.1b.4 removes the old keys.
-- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection, and
-  `LEGACY_COLLECTIONS`, the old keys' meaning, mirroring the API's).
+- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`, equal
+  to `CANONICAL_COLLECTIONS`): the eight collections, with `papal`, `church-law` and
+  `theologians` (labels Papal documents, Church law, Theology & Spirituality). Corpus cleanup
+  5.1b merged `encyclicals`, `apostolic-exhortations` and `papal-documents` into `papal` and
+  renamed `canon-law` and `medieval`; 5.1b.4 removed the old keys from the API (a plan drops
+  one like any unknown key) and from `documents_collection_check` (0048).
+- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection). It
+  keeps `LEGACY_COLLECTIONS`, the old keys' meaning, for keys a browser still holds (a
+  guest's saved draft, an old tab): `canonicalCollectionKey` translates them, and a
+  restored old papal search becomes a Papal documents genre selection
+  (`canonicalSearchFilters`), so the web never sends an old key (Carter, 23 Nov 2026).
 - **Datapipeline (5.1b.3):** `publication.SOURCE_ADAPTERS` builds the eight published
   collections; `SOURCE_BUILDS` builds the ten sources (`sources/<key>/`, the old names),
   which the work registry, the 0.1a to 0.1c checks, their known defects and the embedding
@@ -652,7 +650,7 @@ What focused changes, all derived from the plan:
 
 | | Standard | Focused |
 |---|---|---|
-| Collections | 1–8 (the API also accepts the five old keys until 5.1b.4) | exactly 1 |
+| Collections | 1–8 | exactly 1 |
 | `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
 | `max_passages_per_source` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |
@@ -661,7 +659,7 @@ What focused changes, all derived from the plan:
 takes no cap; it is bounded by `min(quota, _FLOOR_N)` and spreads across sources itself.
 
 **The cap is per *source*, and a source is the reader chapter for the chapter-keyed
-collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law` and `church-law`, `bible`) — see
+collections** in `rag/dedup.py` (`summa`, `catechism`, `church-law`, `bible`) — see
 `dedup.source_key`. Those four are each stored as a single document (the Bible as one per
 book), so an earlier per-*document* cap limited a focused search to 4 results in total
 however many distinct articles or psalms ranked, which made issue #28's "return exactly

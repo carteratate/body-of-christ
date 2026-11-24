@@ -497,7 +497,7 @@ def test_judge_prompt_omits_a_role_the_reference_already_carries():
         chunk_id="00000000-0000-0000-0000-000000000099",
         content="The Christian faithful are bound...",
         reference="Code of Canon Law, Can. 33",
-        collection="canon-law", document_id="d1",
+        collection="church-law", document_id="d1",
         document_title="Code of Canon Law", author=None,
         reranker_score=0.9, unit_label="Can. 33",
     )

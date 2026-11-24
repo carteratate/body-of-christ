@@ -117,18 +117,13 @@ def language_name(code: str | None) -> str | None:
 # not shown on the card, as the approved design shows none.
 PAPAL_GENRES = ("encyclical", "apostolic-exhortation", "apostolic-letter",
                 "apostolic-constitution", "motu-proprio", "letter")
-# The kind a collection's badge already names (rule 1: the record does not repeat it).
-_BADGE_KINDS = {"encyclicals": "encyclical", "apostolic-exhortations": "apostolic-exhortation"}
 
 
-def kind_and_form(facts: DocumentFacts, collection: str = "") -> str | None:
-    """"Apostolic constitution, issued as a bull"; "Apostolic exhortation" for Evangelii
-    Gaudium under the Encyclicals badge. A kind the badge already names shows only with
-    its form ("Encyclical, issued as a brief"), and a writer's genre not at all."""
+def kind_and_form(facts: DocumentFacts) -> str | None:
+    """"Apostolic constitution, issued as a bull"; "Encyclical". A writer's genre is not
+    shown."""
     form = _FORMS.get(facts.form or "")
     genre = facts.genre if facts.genre in PAPAL_GENRES else None
-    if genre and not form and genre == _BADGE_KINDS.get(collection):
-        genre = None
     if not genre:
         return f"Issued as {form}" if form else None
     words = genre.replace("-", " ")
@@ -183,7 +178,7 @@ def build(*, card_version_value: Any, card_notes: Any, card_translator: Any,
     cautions = [c for c in cautions if not (c.text in seen or seen.add(c.text))]
 
     record: list[str] = []
-    kind = kind_and_form(facts, collection)
+    kind = kind_and_form(facts)
     if kind:
         record.append(kind)
     record += [e["text"] for e in notes if e["show"] == "record"]

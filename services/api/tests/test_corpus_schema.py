@@ -53,9 +53,9 @@ async def test_a_missing_object_invalidates_and_retries_as_legacy(monkeypatch):
 
 
 @pytest.mark.parametrize("reason,collection,document_scope,expected", [
-    ("awaiting-permission", "papal-documents", True, "held"),
-    ("translation-in-preparation", "encyclicals", True, "held"),
-    ("awaiting-permission", "papal-documents", False, "held"),
+    ("awaiting-permission", "papal", True, "held"),
+    ("translation-in-preparation", "papal", True, "held"),
+    ("awaiting-permission", "papal", False, "held"),
     ("translation-in-preparation", "councils", False, "held"),
     ("translation-in-preparation", "church-fathers", False, None),
     ("rule-a", "church-fathers", True, None),
@@ -68,12 +68,12 @@ def test_read_elsewhere_url_rules(reason, collection, document_scope, expected):
 
 
 def test_read_elsewhere_url_falls_back_to_the_documents_url():
-    assert read_elsewhere_url("awaiting-permission", "encyclicals", True,
+    assert read_elsewhere_url("awaiting-permission", "papal", True,
                               {"url": "https://www.papalencyclicals.net/x"}) == \
         "https://www.papalencyclicals.net/x"
-    assert read_elsewhere_url("awaiting-permission", "encyclicals", True,
+    assert read_elsewhere_url("awaiting-permission", "papal", True,
                               {"url": "javascript:alert(1)"}) is None
-    assert read_elsewhere_url("awaiting-permission", "encyclicals", True, None) is None
+    assert read_elsewhere_url("awaiting-permission", "papal", True, None) is None
 
 
 CODE = {"url": "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.html",
@@ -91,15 +91,15 @@ CODE = {"url": "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.h
 def test_an_amended_canon_links_to_its_latin(anchor, expected):
     """2.4f: a canon-law passage removed for a translation in preparation links to its
     own Latin, from the Code's `official_latin_urls`, never the Code's index page."""
-    assert read_elsewhere_url("translation-in-preparation", "canon-law", False, CODE,
+    assert read_elsewhere_url("translation-in-preparation", "church-law", False, CODE,
                               anchor) == expected
 
 
 def test_other_canon_law_removals_keep_the_general_rules():
-    assert read_elsewhere_url("rule-a", "canon-law", False, CODE, "can/295") is None
-    assert read_elsewhere_url("awaiting-permission", "canon-law", False, CODE,
+    assert read_elsewhere_url("rule-a", "church-law", False, CODE, "can/295") is None
+    assert read_elsewhere_url("awaiting-permission", "church-law", False, CODE,
                               "can/295") == CODE["url"]
-    assert read_elsewhere_url("translation-in-preparation", "canon-law", True, CODE,
+    assert read_elsewhere_url("translation-in-preparation", "church-law", True, CODE,
                               "can/295") == CODE["url"]
     assert read_elsewhere_url("translation-in-preparation", "councils", False,
                               {"url": "https://example.org/c"}, "can/295") == \

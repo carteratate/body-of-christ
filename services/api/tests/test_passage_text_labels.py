@@ -38,10 +38,10 @@ INDEX = "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.html"
 
 SEED = f"""
     INSERT INTO corpus_publishes (id, collections, qdrant_collection)
-    VALUES ('rel-4', ARRAY['canon-law'], 'chunks-rel-4');
+    VALUES ('rel-4', ARRAY['church-law'], 'chunks-rel-4');
 
     INSERT INTO documents (id, collection, title, author, year, translation, metadata)
-    VALUES ('{CODE}', 'canon-law', 'Code of Canon Law', NULL, 1983, '',
+    VALUES ('{CODE}', 'church-law', 'Code of Canon Law', NULL, 1983, '',
             '{{"url": "{INDEX}", "official_latin_urls":
                {{"can/295": "{LATIN_295}", "can/579": "{LATIN_579}"}}}}'),
            ('{FATHERS}', 'church-fathers', 'Scanned Works', 'Aphrahat', 345, '', '{{}}');
@@ -70,16 +70,16 @@ SEED = f"""
       ('passage', '{P_RETIRED}', '{CODE}', now(), 'rel-4', 'rm-1948', 'other',
        'translation-in-preparation',
        'Canon 295 was amended in 2023; no English translation is available.', NULL,
-       '{{"collection": "canon-law", "title": "Code of Canon Law", "author": null,
+       '{{"collection": "church-law", "title": "Code of Canon Law", "author": null,
          "reference": "Can. 295", "chapter_label": "Book I"}}'),
       ('passage', '{P_SUFFIXED}', '{CODE}', now(), 'rel-4', 'rm-1950', 'other',
        'translation-in-preparation',
        'Canon 579 was amended in 2020; no English translation is available.', NULL,
-       '{{"collection": "canon-law", "title": "Code of Canon Law", "author": null,
+       '{{"collection": "church-law", "title": "Code of Canon Law", "author": null,
          "reference": "Can. 579", "chapter_label": "Book I"}}');
 
     INSERT INTO searches (id, user_id, query, filters, result_count)
-    VALUES ('{SEARCH}', '{USER}', 'marriage', '{{"collections": ["canon-law"]}}', 4);
+    VALUES ('{SEARCH}', '{USER}', 'marriage', '{{"collections": ["church-law"]}}', 4);
     INSERT INTO retrievals (search_id, chunk_id, rank, reranker_score, explanation) VALUES
       ('{SEARCH}', '{P_PLAIN}', 1, 0.9, NULL),
       ('{SEARCH}', '{P_UNOFFICIAL}', 2, 0.8, NULL),
@@ -96,7 +96,8 @@ LABELS = ("text_source", "text_status", "official_latin_url")
 def cluster():
     with local_cluster("tc-text-labels-") as running:
         running.sql(PRODUCTION_SCHEMA)
-        running.migrate(*EARLIER, SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name)
+        running.migrate(*EARLIER, SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name,
+                        "0046_collection_keys.sql", "0048_drop_legacy_collection_keys.sql")
         running.sql(USER_TABLES)
         running.sql(SEED)
         yield running

@@ -73,13 +73,13 @@ THREE_GENRES = ["encyclical", "apostolic-letter", "apostolic-constitution"]
 
 # document_id -> (collection, genre)
 DOCUMENTS = {
-    "enc-encyclical": ("encyclicals", "encyclical"),
-    "enc-letter": ("encyclicals", "apostolic-letter"),
-    "enc-constitution": ("encyclicals", "apostolic-constitution"),
-    "enc-motu-proprio": ("encyclicals", "motu-proprio"),
-    "enc-exhortation": ("encyclicals", "apostolic-exhortation"),
-    "pd-letter": ("papal-documents", "apostolic-letter"),
-    "pd-motu-proprio": ("papal-documents", "motu-proprio"),
+    "enc-encyclical": ("papal", "encyclical"),
+    "enc-letter": ("papal", "apostolic-letter"),
+    "enc-constitution": ("papal", "apostolic-constitution"),
+    "enc-motu-proprio": ("papal", "motu-proprio"),
+    "enc-exhortation": ("papal", "apostolic-exhortation"),
+    "cn-1": ("councils", None),
+    "cn-2": ("councils", None),
     "ccc-1": ("catechism", None),
     "ccc-2": ("catechism", None),
 }
@@ -88,9 +88,9 @@ DOCUMENTS = {
 # score highest, so a leaked one would be the passage it picks. The Catechism's are
 # included and survive dedup.
 SCORES = {
-    "enc-motu-proprio": 0.299, "enc-exhortation": 0.298, "pd-motu-proprio": 0.297,
+    "enc-motu-proprio": 0.299, "enc-exhortation": 0.298, "cn-1": 0.297,
     "enc-encyclical": 0.29, "enc-letter": 0.28, "enc-constitution": 0.27,
-    "pd-letter": 0.26,
+    "cn-2": 0.26,
     "ccc-1": 0.90, "ccc-2": 0.85,
 }
 
@@ -164,7 +164,7 @@ def _genre(chunk: RankedChunk) -> str | None:
 async def test_three_genres_in_one_collection_get_one_slot(corpus):
     """Each selected genre has an above-threshold candidate; still one injected passage."""
     final, pool = await _search(
-        ["encyclicals"], 4, {"encyclicals": {"genres": THREE_GENRES}})
+        ["papal"], 4, {"papal": {"genres": THREE_GENRES}})
 
     assert {_genre(c) for c in pool} == set(THREE_GENRES), "every selected genre was a candidate"
     assert [c.document_id for c in final] == ["enc-encyclical"]
@@ -173,27 +173,24 @@ async def test_three_genres_in_one_collection_get_one_slot(corpus):
 async def test_an_injected_passage_never_has_an_excluded_genre(corpus):
     """The excluded genres score highest in the corpus, and none is injected."""
     final, pool = await _search(
-        ["encyclicals", "papal-documents", "catechism"], 5,
-        {"encyclicals": {"genres": THREE_GENRES},
-         "papal-documents": {"genres": ["apostolic-letter"]}},
+        ["papal", "councils", "catechism"], 5, {"papal": {"genres": THREE_GENRES}},
     )
 
-    assert {c.document_id for c in pool}.isdisjoint(
-        {"enc-motu-proprio", "enc-exhortation", "pd-motu-proprio"})
+    assert {c.document_id for c in pool}.isdisjoint({"enc-motu-proprio", "enc-exhortation"})
     injected = [c for c in final if c.collection != "catechism"]
-    assert [c.document_id for c in injected] == ["enc-encyclical", "pd-letter"]
+    assert [c.document_id for c in injected] == ["cn-1", "enc-encyclical"]
 
 
 async def test_several_collections_get_one_slot_each(corpus):
     """Two absent collections with several candidates each gain one slot apiece; the
     represented one gains none."""
     final, _ = await _search(
-        ["encyclicals", "papal-documents", "catechism"], 5, None)
+        ["papal", "councils", "catechism"], 5, None)
 
     by_collection: dict[str, int] = {}
     for c in final:
         by_collection[c.collection] = by_collection.get(c.collection, 0) + 1
-    assert by_collection == {"catechism": 2, "encyclicals": 1, "papal-documents": 1}
+    assert by_collection == {"catechism": 2, "papal": 1, "councils": 1}
     # Unscoped, the guarantee takes each collection's best, whatever its genre.
     assert {c.document_id for c in final} == {
-        "ccc-1", "ccc-2", "enc-motu-proprio", "pd-motu-proprio"}
+        "ccc-1", "ccc-2", "enc-motu-proprio", "cn-1"}

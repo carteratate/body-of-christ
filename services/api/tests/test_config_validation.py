@@ -27,24 +27,16 @@ def test_invalid_retrieval_range_fails_at_startup(monkeypatch):
 
 
 def _most_scopes_and_passages() -> tuple[int, int]:
-    """The most scopes and HyDE passage calls one search can have (5.1b.1).
-
-    A plan drops an old key named beside its new one, so each new collection
-    contributes either itself or its old keys, whichever is more. Passages: 4 Bible
-    genres, one per papal kind a `papal` scope includes, one per other collection.
-    (The Bible genre pick finishes before its 4 genre calls start.)"""
-    from app.rag.constants import CANONICAL_COLLECTIONS, LEGACY_COLLECTIONS
+    """The most scopes and HyDE passage calls one search can have: one scope per
+    collection, and 4 Bible genres, one passage per papal kind and one per other
+    collection. (The Bible genre pick finishes before its 4 genre calls start.)"""
+    from app.rag.constants import VALID_COLLECTIONS
     from app.rag.steps.hyde_s25 import papal_hyde_kinds
 
     def passages(key: str) -> int:
         return {"bible": 4, "papal": len(papal_hyde_kinds())}.get(key, 1)
 
-    scopes = calls = 0
-    for key in CANONICAL_COLLECTIONS:
-        old = [k for k, v in LEGACY_COLLECTIONS.items() if v.canonical == key]
-        scopes += max(1, len(old))
-        calls += max(passages(key), sum(passages(k) for k in old))
-    return scopes, calls
+    return len(VALID_COLLECTIONS), sum(passages(key) for key in VALID_COLLECTIONS)
 
 
 def test_concurrency_defaults_let_a_full_search_run_in_one_round(monkeypatch):
