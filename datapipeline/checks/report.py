@@ -3,7 +3,7 @@
     python3 -m checks.report --collection all|<name> [--baseline checks/baselines/<file>]
                              [--out <dir>] [--write-baseline [<file>]]
 
-Builds documents through SOURCE_ADAPTERS, runs coverage, the sequence checks and the
+Builds documents through SOURCE_BUILDS (by source), runs coverage, the sequence checks and the
 sentinels, 0.1d's checks for the 6 Oct 2026 corpus reviews (checks/structure.py,
 checks/content.py, checks/unit_coverage.py and the tracked health report rules), and
 writes <out>/coverage.json, <out>/sequence.json and <out>/summary.md.
@@ -35,7 +35,7 @@ from checks.coverage import CoverageResult, coverage, documents_by_file  # noqa:
 from checks.source_text import SOURCES, collection_files, editorial_divs, file_units  # noqa: E402
 from ingest.pieces import unit_reference  # noqa: E402
 from model import Document  # noqa: E402
-from publication import SOURCE_ADAPTERS  # noqa: E402
+from publication import SOURCE_BUILDS  # noqa: E402
 
 CHECKS_DIR = os.path.dirname(os.path.abspath(__file__))
 KNOWN_DEFECTS_PATH = os.path.join(CHECKS_DIR, "known_defects.json")
@@ -51,9 +51,10 @@ BODY_TOLERANCE = 0.01
 # reported "fixed, remove entry".
 COVERAGE_ENTRY_BELOW = 95.0
 
-# The collections the datapipeline builds, from its one adapter registry (which a test
-# keeps inside the API's VALID_COLLECTIONS), so a new collection is checked too.
-COLLECTIONS = tuple(sorted(SOURCE_ADAPTERS))
+# The sources the datapipeline builds (`publication.SOURCE_BUILDS`), so a new one is
+# checked too. Checks judge sources, not the collections they publish in (5.1b.3), so
+# their check ids and known defects keep the source names.
+COLLECTIONS = tuple(sorted(SOURCE_BUILDS))
 SECTION_COLLECTIONS = ("apostolic-exhortations", "councils", "encyclicals", "papal-documents")
 THML_COLLECTIONS = ("church-fathers", "medieval")
 FAMILIES = ("bible_verses", "ccc_paragraphs", "canons", "summa_articles",
@@ -168,7 +169,7 @@ def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
         sources: str = SOURCES,
         documents_by_collection: dict[str, list[Document]] | None = None) -> RunResult:
     """Coverage, sequence, sentinels and health block rules for `collections`, building
-    each through SOURCE_ADAPTERS unless `documents_by_collection` already holds it (the
+    each through SOURCE_BUILDS unless `documents_by_collection` already holds it (the
     release report builds once and passes its build in)."""
     placeholder_credentials()
     started = time.monotonic()
@@ -176,7 +177,7 @@ def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
     for collection in collections:
         documents = (documents_by_collection or {}).get(collection)
         if documents is None:
-            documents = SOURCE_ADAPTERS[collection]()
+            documents = SOURCE_BUILDS[collection]()
         files = collection_files(collection, sources)
         units_by_file = {f: file_units(collection, f, sources) for f in files}
         units = [u for f in files for u in units_by_file[f]]
@@ -422,7 +423,7 @@ def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
                baseline_name: str) -> str:
     failing = failing_checks(result)
     failing_ids = set(failing) | coverage_failing(result)
-    lines = [f"# Coverage and sequence summary (0.1a)", "",
+    lines = ["# Coverage and sequence summary (0.1a)", "",
              f"Collections: {', '.join(result.collections)}. Runtime {result.seconds} s. "
              f"Baseline: `{baseline_name}`.", "",
              "Coverage is covered characters over the characters of body sentences of 30 "

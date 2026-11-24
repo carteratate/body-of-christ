@@ -26,8 +26,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 (cd "$wt/apps/web" && npm ci --no-audit --no-fund)
-(cd "$wt/services/api" && python3 -m venv .venv && .venv/bin/pip install -q -e ".[dev]")
+(cd "$wt/services/api" && python3 -m venv .venv && .venv/bin/pip install -q --require-hashes -r requirements-dev.lock && .venv/bin/pip install -q --no-deps -e .)
 if [ "${1:-}" = "--datapipeline" ]; then
-  (cd "$wt/datapipeline" && python3 -m venv .venv && .venv/bin/pip install -q -r requirements.txt)
+  (cd "$wt/datapipeline" && python3 -m venv .venv && .venv/bin/pip install -q --require-hashes -r requirements.lock)
 fi
 echo "worktree ready: $wt"

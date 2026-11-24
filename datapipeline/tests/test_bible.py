@@ -11,9 +11,7 @@ os.environ.setdefault("OPENAI_API_KEY", "sk-test")
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-import io
 import textwrap
-import unittest.mock as mock
 
 import pytest
 
@@ -23,7 +21,6 @@ from ingest.bible import (
     _format_reference,
     _parse_ref,
     BookVerses,
-    ExtraPericope,
     Verse,
     Pericope,
     build_documents,

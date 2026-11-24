@@ -37,11 +37,11 @@ def _once_per_run(tmp_path_factory, name: str, compute):
 
 @pytest.fixture(scope="session")
 def built(tmp_path_factory) -> dict:
-    """Every collection built once through SOURCE_ADAPTERS, shared by the checks run and
+    """Every collection built once through SOURCE_BUILDS, shared by the checks run and
     the tests that read passages directly."""
     report.placeholder_credentials()
     return _once_per_run(tmp_path_factory, "built",
-                         lambda: {c: report.SOURCE_ADAPTERS[c]() for c in report.COLLECTIONS})
+                         lambda: {c: report.SOURCE_BUILDS[c]() for c in report.COLLECTIONS})
 
 
 @pytest.fixture(scope="session")

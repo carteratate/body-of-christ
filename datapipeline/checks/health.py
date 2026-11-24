@@ -3,7 +3,7 @@
     python3 -m checks.health --collection all|<name> [--out <dir>] [--from-snapshot <path>]
 
 Runs the block rules (H1 to H5) and report rules (R1 to R8) of datapipeline/health.py on
-the documents SOURCE_ADAPTERS builds, or with --from-snapshot on the live snapshot 0.1c
+the documents SOURCE_BUILDS builds, or with --from-snapshot on the live snapshot 0.1c
 exports (its passages.jsonl.gz, or the directory holding it), and writes <out>/health.json
 and <out>/health.md: counts per rule and collection, and the first anchors of each.
 
@@ -42,7 +42,8 @@ SOURCES = ("build", "snapshot")
 
 # --------------------------------------------------------------------------- inputs
 
-def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = None
+def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = None,
+                  published: list[str] | tuple[str, ...] | None = None
                   ) -> dict[str, list[Document]]:
     """The 0.1c snapshot's passages as Documents, per collection. Each row has id,
     document_id, collection, title, author, anchor, chapter_key, chapter_label,
@@ -50,7 +51,16 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
     `metadata["passage_id"]` for the release report. Passages are put in position
     order, so H3 judges whether the positions are 0..n-1, not the export's row order.
     Every requested collection gets an entry, empty if the snapshot holds none of its
-    rows, so a rerun replaces an earlier result for it."""
+    rows, so a rerun replaces an earlier result for it.
+
+    Documents are filed by source (`publication.source_of`): the checks judge sources,
+    and live may file a document under the key it is published in (5.1b.3).
+    `collections` names sources. `published`, when given, keeps only the rows a publish
+    of those collections covers, whichever key they are stored under."""
+    import collection_keys
+    from publication import source_of
+
+    publish = set(collection_keys.live_keys(published)) if published is not None else None
     if os.path.isdir(path):
         path = os.path.join(path, SNAPSHOT_FILE)
     documents: dict[str, Document] = {}
@@ -59,12 +69,15 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
             if not line.strip():
                 continue
             row = json.loads(line)
-            if collections is not None and row["collection"] not in collections:
+            if publish is not None and row["collection"] not in publish:
+                continue
+            source = source_of(row["document_id"], row["collection"])
+            if collections is not None and source not in collections:
                 continue
             doc = documents.get(row["document_id"])
             if doc is None:
                 doc = documents[row["document_id"]] = Document(
-                    id=row["document_id"], collection=row["collection"],
+                    id=row["document_id"], collection=source,
                     title=row.get("title") or "", author=row.get("author"))
             doc.passages.append(Passage(
                 content=row.get("content") or "", reference=row.get("reference") or "",
@@ -81,7 +94,7 @@ def load_snapshot(path: str, collections: list[str] | tuple[str, ...] | None = N
 
 def build(collections: list[str] | tuple[str, ...]) -> dict[str, list[Document]]:
     report.placeholder_credentials()
-    return {c: report.SOURCE_ADAPTERS[c]() for c in collections}
+    return {c: report.SOURCE_BUILDS[c]() for c in collections}
 
 
 # --------------------------------------------------------------------------- results

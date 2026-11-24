@@ -22,7 +22,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import os
 import sys
 from datetime import date
 from pathlib import Path
@@ -125,9 +124,9 @@ def _printing_inputs() -> dict[str, str]:
 
 def registered_collections() -> list[str]:
     sys.path.insert(0, str(DATAPIPELINE))
-    from publication import SOURCE_ADAPTERS
+    from publication import SOURCE_BUILDS
 
-    return sorted(SOURCE_ADAPTERS)
+    return sorted(SOURCE_BUILDS)
 
 
 def _sha256(path: Path) -> tuple[str, int]:

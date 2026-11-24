@@ -5,10 +5,14 @@ RUN adduser --disabled-password --gecos "" appuser
 
 WORKDIR /app
 
-COPY pyproject.toml .
-RUN pip install --no-cache-dir .
+# Exactly the versions CI tested (scripts/lock_python_deps.sh writes the lock), then
+# the app itself with no further resolution.
+COPY requirements.lock .
+RUN pip install --no-cache-dir --require-hashes -r requirements.lock
 
+COPY pyproject.toml .
 COPY app/ app/
+RUN pip install --no-cache-dir --no-deps .
 
 USER appuser
 

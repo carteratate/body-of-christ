@@ -71,7 +71,7 @@ def test_live_publish_points_to_publish_py(capsys):
     builder = RecordingBuilder()
 
     with pytest.raises(SystemExit) as raised:
-        main(["--collection", "medieval"], builder=builder)
+        main(["--collection", "theologians"], builder=builder)
 
     assert raised.value.code == 2
     assert builder.calls == []
@@ -80,13 +80,13 @@ def test_live_publish_points_to_publish_py(capsys):
 
 @pytest.mark.parametrize("flag", [
     ["--target", "both"], ["--reset-search-index"], ["--wipe-reader"],
-    ["--confirm-reader-wipe", "medieval"], ["--release", "x"], ["--clean"],
+    ["--confirm-reader-wipe", "theologians"], ["--release", "x"], ["--clean"],
 ])
 def test_removed_flags_are_rejected(capsys, flag):
     builder = RecordingBuilder()
 
     with pytest.raises(SystemExit) as raised:
-        main(["--collection", "medieval", "--dry-run", *flag], builder=builder)
+        main(["--collection", "theologians", "--dry-run", *flag], builder=builder)
 
     assert raised.value.code == 2
     assert builder.calls == []
@@ -97,7 +97,7 @@ def test_build_refusal_is_reported_as_a_cli_usage_failure(capsys):
     builder = RecordingBuilder(ValueError("REFUSING: 1 health block-rule violations"))
 
     with pytest.raises(SystemExit) as raised:
-        main(["--collection", "medieval", "--dry-run"], builder=builder)
+        main(["--collection", "theologians", "--dry-run"], builder=builder)
 
     assert raised.value.code == 2
     assert "REFUSING: 1 health" in capsys.readouterr().err
@@ -106,12 +106,12 @@ def test_build_refusal_is_reported_as_a_cli_usage_failure(capsys):
 def test_dry_run_prints_counts(capsys):
     builder = RecordingBuilder()
 
-    exit_code = main(["--collection", "medieval", "--dry-run", "--limit", "5"],
+    exit_code = main(["--collection", "theologians", "--dry-run", "--limit", "5"],
                      builder=builder)
 
     assert exit_code == 0
-    assert builder.calls == [("medieval", 5)]
-    assert "medieval: dry run, 1 documents, 3 passages; nothing written" in capsys.readouterr().out
+    assert builder.calls == [("theologians", 5)]
+    assert "theologians: dry run, 1 documents, 3 passages; nothing written" in capsys.readouterr().out
 
 
 def test_dry_run_reports_a_contents_tree_and_the_chapters_it_misses(capsys):
@@ -123,7 +123,7 @@ def test_dry_run_reports_a_contents_tree_and_the_chapters_it_misses(capsys):
                                               short_label="Book 1", chapter_key="c1")]
             return [document]
 
-    assert main(["--collection", "medieval", "--dry-run"], builder=TreeBuilder()) == 0
+    assert main(["--collection", "theologians", "--dry-run"], builder=TreeBuilder()) == 0
     out = capsys.readouterr().out
     assert ("contents tree: On Loving God, 1 nodes; WARNING 1 chapters no node opens, "
             "first 'c2'") in out

@@ -7,7 +7,6 @@ interface RelevanceExplanationProps {
   /** `null` while the explanation is still streaming; `""` when there is none. */
   explanation: string | null;
   chunkId: string;
-  color: string;
   rgb: string;
 }
 
@@ -22,7 +21,7 @@ interface RelevanceExplanationProps {
  * re-expanding a card starts it closed again. Explanation deltas keep arriving through
  * `explanation` while it is closed, and an open panel fills in live.
  */
-export function RelevanceExplanation({ explanation, chunkId, color, rgb }: RelevanceExplanationProps) {
+export function RelevanceExplanation({ explanation, chunkId, rgb }: RelevanceExplanationProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   if (explanation === "") return null;
@@ -46,8 +45,9 @@ export function RelevanceExplanation({ explanation, chunkId, color, rgb }: Relev
         aria-controls={bodyId}
         className="flex min-h-9 w-full items-center gap-1.5 rounded-md px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-accent"
       >
-        <Sparkles size={11} style={{ color }} />
-        <span style={{ fontSize: "10px", color, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+        {/* In the passage's own text colour, which reads on every collection's tint. */}
+        <Sparkles size={11} className="text-brand-primary" />
+        <span className="text-brand-primary" style={{ fontSize: "10px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>
           {isOpen ? "Why this is relevant (AI generated)" : "Show why this is relevant (AI generated)"}
         </span>
         <Chevron size={15} className="ml-auto shrink-0 text-brand-muted" />

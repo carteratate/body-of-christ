@@ -30,7 +30,7 @@ if DATAPIPELINE not in sys.path:
 
 import registry  # noqa: E402
 from ingest import editorial  # noqa: E402
-from publication import SOURCE_ADAPTERS  # noqa: E402
+from publication import SOURCE_BUILDS  # noqa: E402
 
 ITEM = "1.9"
 TODAY = "2026-11-13"
@@ -119,7 +119,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     reg = registry.current()
     with editorial.recording() as log:
-        documents = SOURCE_ADAPTERS[COLLECTION]()
+        documents = SOURCE_BUILDS[COLLECTION]()
     entries = generate(reg, documents, log)
     for e in entries:
         print(e["anchor"], e["passage_id"], e["detail"])

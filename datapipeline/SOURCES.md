@@ -3,7 +3,12 @@
 Status of each collection's source material and its publication to both stores
 (`publish.py`; see "Publishing a collection" below).
 
-| Collection | Source | Re-published (both stores) | Notes |
+Rows are sources (`publication.SOURCE_BUILDS`). Since 5.1b.3 the three papal sources
+publish together as `papal`, `canon-law` as `church-law`, and `medieval` as
+`theologians`, except Boethius, who publishes with `church-fathers` (README, "Source
+data").
+
+| Source | Source files | Re-published (both stores) | Notes |
 |---|---|---|---|
 | **bible** | local `sources/bible/eng-web-c_usfm/` (+ pericope JSON) | ✅ | WEB-C; passage = pericope clamped to chapter |
 | **catechism** | structure: local `sources/catechism/ccc.json` (nossbigg/catechism-ccc-json, vatican.va's English); words and footnotes: local `sources/catechism/us-edition/ccc-us.json`, the US edition from Catholic Cross Reference's Catechism search, built once by `scripts/fetch_us_catechism.py` (#279), then corrected to the USCCB's current online book by the reviewed table `ingest/catechism_corrections.json` (each entry checked against the page image) | ✅ | three-tier chunking; TOC fragments dropped; US text aligned by paragraph number (`ingest/catechism_us.py`); footnotes in `metadata.footnotes` |
@@ -27,7 +32,7 @@ number of source files — one file can yield several documents (the medieval
 Re-check without touching either store:
 
 ```bash
-python3 -c "from publication import SOURCE_ADAPTERS as A; d=A['encyclicals'](); print(len(d))"
+python3 -c "from publication import SOURCE_BUILDS as B; d=B['encyclicals'](); print(len(d))"
 ```
 
 **Adapters read `manifest.json`, not the directory**, so a vendored file that no
@@ -46,7 +51,8 @@ Approved downloads that no PR has ingested yet wait in `sources/_incoming/<path>
 
 ## Publishing a collection
 
-Each entry in `publication.py`'s `SOURCE_ADAPTERS` registry returns a `list[Document]`
+Each entry in `publication.py`'s `SOURCE_ADAPTERS` registry (by published collection;
+`SOURCE_BUILDS` holds the same by source) returns a `list[Document]`
 of clean `Passage`s with anchors, chapter keys, and source-specific cleaning. To check
 one without writing anything:
 

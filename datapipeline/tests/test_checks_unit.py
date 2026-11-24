@@ -651,9 +651,12 @@ def test_paragraph_number_without_a_space_after_it(tmp_path):
 
 
 def test_report_checks_every_collection_the_pipeline_builds():
-    from publication import SOURCE_ADAPTERS
+    import collection_keys
+    from publication import SOURCE_ADAPTERS, SOURCE_BUILDS
 
-    assert set(report.COLLECTIONS) == set(SOURCE_ADAPTERS)
+    # The checks judge sources; every published collection is built from some of them.
+    assert set(report.COLLECTIONS) == set(SOURCE_BUILDS)
+    assert {collection_keys.canonical(s) for s in SOURCE_BUILDS} == set(SOURCE_ADAPTERS)
     assert set(report.SECTION_COLLECTIONS) | set(report.THML_COLLECTIONS) <= set(report.COLLECTIONS)
 
 

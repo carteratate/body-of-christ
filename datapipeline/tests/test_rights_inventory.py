@@ -114,9 +114,9 @@ def test_approval_is_all_or_nothing():
 def test_inventory_matches_the_built_works_exactly():
     import hashlib
 
-    from publication import SOURCE_ADAPTERS
+    from publication import SOURCE_BUILDS
 
-    documents = {c: SOURCE_ADAPTERS[c]() for c in SOURCE_ADAPTERS}
+    documents = {c: SOURCE_BUILDS[c]() for c in SOURCE_BUILDS}
     # The built document IDs (0.2 acceptance: the 421 live ones, and 1.8b's 14 new works):
     # the built inputs are the ones in use.
     ids = sorted(d.id for docs in documents.values() for d in docs)

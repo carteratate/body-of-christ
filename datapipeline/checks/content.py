@@ -78,7 +78,7 @@ import re
 import unicodedata
 from collections import Counter, defaultdict
 
-from checks.structure import (article_id, load_summa_corrections, summa_articles_built,
+from checks.structure import (load_summa_corrections, summa_articles_built,
                               summa_role)
 import registry
 from identity import unit_anchor
