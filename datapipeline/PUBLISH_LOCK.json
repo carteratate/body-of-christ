@@ -3,16 +3,62 @@
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
   "approved_applies": [
     {
-      "collection": "church-fathers",
-      "release": "stromata-iii-2026-11",
+      "collection": "papal",
+      "release": "collection-keys-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "#399's publish (data PR #427, lock PR #463): Clement's Stromata Book III back in Henry Chadwick's English, staged from master after #427. Only church-fathers is staged; the other collections are copied from live. Its report must show the 33 Book III passages un-retired with their IDs (text replaced, 33 vectors embedded), p12's passage redirect into vi.iv.iii/from-p67 with its tombstone dropped, the anchor and chapter redirects for Book III's old links, and the Stromata's credit line and omission note; no other text, ID or payload change. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
+      "reason": "5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026): papal, church-law, theologians and church-fathers staged together under the new keys from master after #461, with Boethius moving to church-fathers. Its report must show every passage same, no retirement, no new ID and no embedding call. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entries when its rollback window closes.",
       "approved_by": "Carter",
-      "pr": 463
+      "pr": 475
+    },
+    {
+      "collection": "church-law",
+      "release": "collection-keys-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026): papal, church-law, theologians and church-fathers staged together under the new keys from master after #461, with Boethius moving to church-fathers. Its report must show every passage same, no retirement, no new ID and no embedding call. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entries when its rollback window closes.",
+      "approved_by": "Carter",
+      "pr": 475
+    },
+    {
+      "collection": "theologians",
+      "release": "collection-keys-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026): papal, church-law, theologians and church-fathers staged together under the new keys from master after #461, with Boethius moving to church-fathers. Its report must show every passage same, no retirement, no new ID and no embedding call. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entries when its rollback window closes.",
+      "approved_by": "Carter",
+      "pr": 475
+    },
+    {
+      "collection": "church-fathers",
+      "release": "collection-keys-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026): papal, church-law, theologians and church-fathers staged together under the new keys from master after #461, with Boethius moving to church-fathers. Its report must show every passage same, no retirement, no new ID and no embedding call. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entries when its rollback window closes.",
+      "approved_by": "Carter",
+      "pr": 475
+    },
+    {
+      "collection": "all",
+      "release": "collection-keys-2026-11",
+      "steps": [
+        "repair"
+      ],
+      "reason": "Only for scripts/rewrite_collection_keys.py --apply after the publish is applied (runbook step 5): the keys stored in user rows and in the 52 retired encyclicals. 5.1b.3's collection-key migration (#200, PR #461, migration 0046 applied 23 Nov 2026).",
+      "approved_by": "Carter",
+      "pr": 475
     }
   ]
 }

@@ -42,7 +42,7 @@ if DATAPIPELINE not in sys.path:
 import identity  # noqa: E402
 import registry  # noqa: E402
 from ingest import editorial  # noqa: E402
-from publication import build  # noqa: E402
+from publication import SOURCE_BUILDS, build  # noqa: E402
 from scripts import editorial_removals as er  # noqa: E402
 
 ITEM = "1.8d"
@@ -182,7 +182,7 @@ def plan(reg: registry.WorkRegistry, snapshot_dir: str, today: str):
     previous = registry.activate(reg)
     try:
         with editorial.recording() as log:
-            documents = build(COLLECTION)
+            documents = build(COLLECTION, source_adapters=SOURCE_BUILDS)
     finally:
         registry.activate(previous)
     document = next(d for d in documents if d.id == DOCUMENT_ID)

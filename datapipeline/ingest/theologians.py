@@ -14,10 +14,10 @@ arguments of the Life's chapters (printed together before the book) each open th
 chapter, and a book's, part's or mansion's own heading opens its first chapter. Levels:
 1 for a division the label names, 2 below it, 3 deeper (`headings.py`).
 
-The documents join the collection `COLLECTION`, today's `medieval`, which 5.1b.3 renames
-to `theologians`: that rename changes the one constant `ingest.keys.THEOLOGIANS`. The files stay in
-`sources/theologians/` (5.1b.3 keeps source directory names), and each document's source
-key is its file's path there, so neither changes with the key.
+The documents are built under the source key `COLLECTION` (`ingest.keys.THEOLOGIANS`,
+`medieval`), which `publication.py` publishes as the `theologians` collection since 5.1b.3.
+The files are in `sources/theologians/`, and each document's source key is its file's
+path there.
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ from ingest.keys import THEOLOGIANS
 from ingest.editorial import PLAIN_CALLERS, ChapterEdit, Editor, Removed
 from ingest.thml_doc import ChapterPlan, _clip, make_doc
 
-# The collection these works publish under; 5.1b.3 renames it in `ingest.keys`.
+# The source key these works are built under (published as `theologians`).
 COLLECTION = THEOLOGIANS
 SOURCE_DIR = "theologians"
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", SOURCE_DIR)

@@ -46,7 +46,8 @@ import identity
 from ingest import theologians
 from model import Document
 
-PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
+# The papal collection under its key since 5.1b.3, and the old keys it replaces.
+PAPAL_COLLECTIONS = ("papal", "encyclicals", "apostolic-exhortations", "papal-documents")
 HOLY_SEE = ("holy-see", "Holy See")
 VATICAN_CREDIT = "© Dicastery for Communication – Libreria Editrice Vaticana"
 
@@ -282,7 +283,7 @@ def _issuer(document: Document) -> tuple[str | None, str | None]:
     if document.collection == "councils":
         label = meta.get("council") or document.title
         return issuer_slug(label), label
-    if document.collection in ("catechism", "canon-law"):
+    if document.collection in ("catechism", "canon-law", "church-law"):
         return HOLY_SEE
     return None, None
 
@@ -294,7 +295,8 @@ def _genre(document: Document, work_id: str) -> str | None:
         return (document.metadata or {}).get("genre")
     if (found := theologians.genre((document.metadata or {}).get("source_key"))):
         return found
-    return {"catechism": "catechism", "canon-law": "code"}.get(document.collection)
+    return {"catechism": "catechism", "canon-law": "code", "church-law": "code"
+            }.get(document.collection)
 
 
 def _form(document: Document) -> str | None:
