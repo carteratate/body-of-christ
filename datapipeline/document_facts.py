@@ -159,6 +159,11 @@ FATHERS_WORK_DATES = {
     (_CF + "third-century-2/iii.iv", "iii.iv.i.x"): (204, "c. 204", "II, Hippolytus"),
     (_CF + "third-century-2/v.iii", "v.iii.iii"): (None, "late 2nd century",
                                                    "II, The Muratorian Fragment"),
+    # 5.6a: the Mystagogical Lectures carry no date of the prebaptismal ones: Quasten
+    # dates only those (347 or 348), and some give these to Cyril's successor John
+    # (bishop 386-417).
+    (_CF + "npnf207/ii", "ii.xxiii"): (None, "date disputed",
+                                       "II (Spanish), Cyril of Jerusalem, pp. 404-407"),
 }
 # Genres from 2.1's writer genres (Carter, 15 Nov 2026): letters, treatises (apologies
 # and dialogues too), commentaries, sermons, poems, manuals, law for church orders, and

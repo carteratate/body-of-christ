@@ -775,3 +775,13 @@ def test_gregory_letters_are_numbered_works(npnf207):
     # The editor's pointers to letters printed above are not built.
     assert not {"iv.iv.iii.i", "iv.iv.vi.vi", "iv.iv.ix.iv"} & {
         p.chapter_key for p in letters.passages}
+
+
+def test_mystagogical_lectures_do_not_take_the_lectures_date():
+    import json
+    entry = next(w for w in json.load(open(os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "registry", "works.json")))
+        if w["work_id"] == "church-fathers/npnf207/ii")
+    assert entry["date_display"] == "347 or 348"
+    work = next(x for x in entry["works"] if x["work_key"] == "ii.xxiii")
+    assert work["date_display"] == "date disputed" and work["certainty"] == "disputed"
