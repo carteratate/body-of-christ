@@ -423,7 +423,7 @@ def summary_md(result: RunResult, baseline: dict, known: dict[str, dict],
                baseline_name: str) -> str:
     failing = failing_checks(result)
     failing_ids = set(failing) | coverage_failing(result)
-    lines = [f"# Coverage and sequence summary (0.1a)", "",
+    lines = ["# Coverage and sequence summary (0.1a)", "",
              f"Collections: {', '.join(result.collections)}. Runtime {result.seconds} s. "
              f"Baseline: `{baseline_name}`.", "",
              "Coverage is covered characters over the characters of body sentences of 30 "

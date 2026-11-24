@@ -451,7 +451,6 @@ def test_a_result_missing_from_its_own_article_is_reported():
     """The article was fetched but does not contain the passage that matched it: the two
     stores disagree about chunk ids. Silent, that is every Summa card quietly losing its
     attachment with nothing to look at."""
-    import logging
 
     passages = _article()
     stranger = _chunk("not-in-this-article", "Objection 1", position=0)

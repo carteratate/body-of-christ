@@ -1,5 +1,4 @@
 """Tests for the retrieve steps (retrieve_vector, retrieve_fts, rrf, fetch_positions)."""
-import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import asyncpg

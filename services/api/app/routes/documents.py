@@ -9,7 +9,6 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app import card_notes, corpus_lifecycle, corpus_schema, headings, held_texts
 from app.auth.verify import verify_supabase_jwt
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
-from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.corpus_lifecycle import CorpusLifecycleError
 from app.corpus_schema import CorpusSchema

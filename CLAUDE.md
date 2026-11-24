@@ -23,7 +23,7 @@ npm run build          # production build
 npm run lint           # ESLint — the repo baseline is ZERO errors
 npm test               # vitest run
 
-# Backend (services/api) — deps in pyproject.toml; `python3` on this machine
+# Backend (services/api) — deps in pyproject.toml, pinned in requirements*.lock; `python3` on this machine
 uvicorn app.main:app --reload   # dev server on :8000
 python3 -m pytest tests/
 
@@ -50,7 +50,8 @@ commands.
 CI (`.github/workflows/ci.yml`) runs only the jobs a PR's paths can affect
 (`scripts/ci_changes.sh`): `web` for `apps/web/` and the two outside files its tests read,
 `api` and `datapipeline` for anything but documentation (`docs/` except `docs/adr/`, and
-`*.md`). A skipped job reports success. **When a test starts reading a file in another
+`*.md`), and `api-image`, which builds `services/api/Dockerfile` without pushing it, for
+`services/api/`. A skipped job reports success. **When a test starts reading a file in another
 area of the repo, add that path to `scripts/ci_changes.sh`**, or CI will skip the test
 for PRs that change only that file. Pushes to `master` always run every job.
 
@@ -424,6 +425,23 @@ No LangGraph or agent frameworks. No pgvector for retrieval.
   and still logs to stderr.
 - Frontend: TypeScript, HTTP calls centralized in `src/lib/api.ts`, no DB SDK in frontend.
 - Lint baseline is zero errors. Leave no new warnings in files you touch.
+- Python dependencies are locked. Edit `services/api/pyproject.toml` or
+  `datapipeline/requirements.txt`, then run `scripts/lock_python_deps.sh` (needs uv) and
+  commit the regenerated `requirements*.lock`. The production image and CI install only
+  from the locks, and CI fails when a lock is out of date with its input. The script
+  keeps existing pins; `--upgrade-package NAME` moves one on purpose.
+- Python lint is zero errors too: `ruff check services/api datapipeline scripts` (Pyflakes
+  rules, `ruff.toml`). `services/api/app` is type-checked by basedpyright (pyright's
+  standard rules) against `services/api/.basedpyright/baseline.json`, which holds the 153
+  errors that existed when the check was added: CI fails only on new ones. When you fix
+  some, run `basedpyright --writebaseline` in `services/api` and commit the smaller
+  baseline. Both tools come with `requirements-dev.lock`.
+- Dependency audits in CI: `npm audit --omit=dev --audit-level=critical` (web job; every
+  other npm finding, from high down and in dev dependencies, is counted in the job summary
+  but does not block) and `pip-audit` on `services/api/requirements.lock` and
+  `datapipeline/requirements.lock` (api job, after the tests; any finding blocks). An
+  advisory published today can turn an unrelated PR red: upgrade the package, or, if it
+  cannot apply, add `--ignore-vuln ID` to both `pip-audit` lines with the reason.
 
 ---
 
@@ -709,16 +727,20 @@ winner count to it, so ten works without a special case.
 
 ## Active work: corpus cleanup
 
-The corpus is being fixed and republished before any collection is added or reorganized.
-The Phase 4 republish went live on 20 Nov 2026 (`republish-2026-10`, #192); its rollback window
-runs to 4 Dec 2026, and until its lock entry is removed then (4.1b step 13) no other publish can run.
-A rollback in that window restores a corpus with no stored Summa tree, and the Summa reader would
-fall back to its flat chapter list.
+The Phase 4 republish went live on 20 Nov 2026 (`republish-2026-10`, #192), and Phase 5 is
+under way. Carter closed the republish's rollback window early (21 Nov 2026), so its lock entry
+is gone and other publishes can run; only part 5 of 4.1b step 13 waits for 4 Dec 2026 (deleting
+the backups' user-data files and the Qdrant snapshot; the corpus copies are kept).
+
+**Publishing now:** the publish thread runs batches one at a time (Carter, 24 Nov 2026), under
+the standing decisions in the plan's Decision log. Each live step still needs its lock-file PR
+and Carter's approval when it runs (0.4). A publish's rollback window closes once its smoke
+checks pass, unless Carter says otherwise when he approves the apply: the publish thread then
+deletes the previous Qdrant collection without asking again, quoting that decision, and stops
+and asks only if a smoke check fails (Decision log "Publishing: windows, lock PRs and batches").
+
 Start from the "Start here" section of `docs/2026-09-28-corpus-cleanup-plan.md`; detailed
 work specifications are in `docs/corpus-cleanup/`. The plan's Decision log is settled.
-The findings of the 6 Oct 2026 corpus reviews (C-01 to C-30) are routed to their items in
-`docs/corpus-cleanup/REVIEW-GAPS-PLAN.md`; the order after 2.1 is 0.1d (their checks), then Phase 1,
-with 1.7 waiting for research item R7.
 
 ---
 
