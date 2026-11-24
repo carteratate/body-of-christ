@@ -30,6 +30,7 @@ from xml.etree.ElementTree import Element      # builds an element, parses nothi
 
 import defusedxml.ElementTree as ET
 
+import headings
 from model import Document
 from normalize.caps import smart_title_case
 from ingest.common import _block_text, _build_parent_map
@@ -700,7 +701,8 @@ def _ignatius_walk(div, book: str | None, prefix: str | None, out: list,
         label = f"{prefix}. {label}"
     own = [p for p in div if p.tag == "p" and p.get("class") != _HEAD_CLASS and _text(p)]
     if own:
-        heads = [(p.get("id"), level, opens and level == 1 and _title(_text(p)) == label)
+        heads = [(p.get("id"), level, opens and level == 1
+                  and headings.normalized(_text(p)) == headings.normalized(label))
                  for p, level, opens in runs]
         heads += [(p.get("id"), 2, False) for p in own if p.get("class") == "subtitle"
                   and p.get("id") not in _EXERCISES_NOT_SUBTITLES]

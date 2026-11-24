@@ -483,6 +483,9 @@ def test_exercises_keep_the_manuscripts_headlines_in_the_text_marked():
         ("FIRST EXERCISE", 1, True),
         ("IT IS A MEDITATION WITH THE THREE POWERS ON THE FIRST, THE SECOND AND THE THIRD "
          "SIN", 2, False)]
+    # A title repeats its label though the label lower-cases "at".
+    assert _heads(_passage(_exercises(), "xviii.xxv"))[0] == (
+        "OF THE SUPPER AT BETHANY", 1, True)
     # One printed heading set over several lines is one heading.
     assert _heads(_passage(_exercises(), "xiii.ii"))[0][0] == (
         "THE FIRST DAY AND FIRST CONTEMPLATION IT IS ON THE INCARNATION AND CONTAINS THE "
