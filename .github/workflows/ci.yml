@@ -66,9 +66,9 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.11"  # matches services/api/Dockerfile
-      # uv installs the lock into the runner's Python several times faster than pip, and
-      # also checks the locks. No cache: every dependency is a pre-built wheel, which uv
-      # downloads in parallel, and uv's own advice is not to cache those in CI.
+      # uv installs the lock into the runner's Python several times faster than pip; the
+      # lock check below uses it too. No cache: every dependency is a pre-built wheel,
+      # which uv downloads in parallel, and uv's own advice is not to cache those in CI.
       - run: pip install uv==0.13.9
       - run: uv pip install --system --require-hashes -r services/api/requirements-dev.lock
       - run: uv pip install --system --no-deps -e services/api
