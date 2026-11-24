@@ -782,28 +782,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/ignatius-autobiography.xml",
-  "sha256": "83a245891690b11af949368a219f3e5c910430be336d02626ddb671dabb0f093",
-  "bytes": 173374,
-  "url": "https://ccel.org/ccel/i/ignatius/autobiography.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/ignatius-exercises.xml",
-  "sha256": "f564e2bc19ffd108cf308a3ba0923f727658b6e910d8ddb7234a96cc82ef9f7b",
-  "bytes": 266222,
-  "url": "https://ccel.org/ccel/i/ignatius/exercises.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/lettersofblessed00johnuoft/lettersofblessed00johnuoft_djvu.txt",
   "sha256": "8aa3229a22a4263a777e852b2a1e1eb6df991c1aa8aea240242d8831f15cd4bd",
   "bytes": 275946,
@@ -6960,6 +6938,26 @@
   "sha256": "b76a42327e2a53ef47912374dd1746c70d263158cef7a62b6bb1a56f45e3c8f5",
   "bytes": 1890439,
   "url": "https://ccel.org/ccel/d/desales/love.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/ignatius-autobiography.xml",
+  "sha256": "83a245891690b11af949368a219f3e5c910430be336d02626ddb671dabb0f093",
+  "bytes": 173374,
+  "url": "https://ccel.org/ccel/i/ignatius/autobiography.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/ignatius-exercises.xml",
+  "sha256": "f564e2bc19ffd108cf308a3ba0923f727658b6e910d8ddb7234a96cc82ef9f7b",
+  "bytes": 266222,
+  "url": "https://ccel.org/ccel/i/ignatius/exercises.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "adapter-input"
