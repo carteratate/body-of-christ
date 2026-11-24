@@ -63,6 +63,7 @@ SEED = f"""
       ('{P_SUFFIXED}', '{CODE}', -1000001, 'can/579#retired-rel-4', 'book-1', 'Book I',
        'Can. 579', 'old 579', now());
 
+    -- Snapshots keep the key of their day: these were taken before 5.1b.3.
     INSERT INTO corpus_tombstones (entity, id, document_id, retired_at, publish_id,
                                    removal_key, rule, reason_code, public_reason,
                                    church_act, snapshot)
@@ -70,12 +71,12 @@ SEED = f"""
       ('passage', '{P_RETIRED}', '{CODE}', now(), 'rel-4', 'rm-1948', 'other',
        'translation-in-preparation',
        'Canon 295 was amended in 2023; no English translation is available.', NULL,
-       '{{"collection": "church-law", "title": "Code of Canon Law", "author": null,
+       '{{"collection": "canon-law", "title": "Code of Canon Law", "author": null,
          "reference": "Can. 295", "chapter_label": "Book I"}}'),
       ('passage', '{P_SUFFIXED}', '{CODE}', now(), 'rel-4', 'rm-1950', 'other',
        'translation-in-preparation',
        'Canon 579 was amended in 2020; no English translation is available.', NULL,
-       '{{"collection": "church-law", "title": "Code of Canon Law", "author": null,
+       '{{"collection": "canon-law", "title": "Code of Canon Law", "author": null,
          "reference": "Can. 579", "chapter_label": "Book I"}}');
 
     INSERT INTO searches (id, user_id, query, filters, result_count)

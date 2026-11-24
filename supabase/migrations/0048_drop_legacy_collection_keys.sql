@@ -12,18 +12,19 @@
 -- this narrowing in 5.1b.4 (issue #201, 23 Nov 2026); applying it needs his OK.
 --
 -- The staging schema copies the live constraint (0042's LIKE ... INCLUDING ALL), so
--- staging.documents is narrowed the same way when it exists.
-
-ALTER TABLE public.documents DROP CONSTRAINT IF EXISTS documents_collection_check;
-ALTER TABLE public.documents
-  ADD CONSTRAINT documents_collection_check
-  CHECK (collection IN (
-    'bible', 'catechism', 'church-fathers', 'councils', 'summa',
-    'papal', 'church-law', 'theologians'
-  ));
+-- staging.documents is narrowed the same way when it exists. One DO block, so the file
+-- is all or nothing even when run outside a transaction (psql -f).
 
 DO $$
 BEGIN
+  ALTER TABLE public.documents DROP CONSTRAINT IF EXISTS documents_collection_check;
+  ALTER TABLE public.documents
+    ADD CONSTRAINT documents_collection_check
+    CHECK (collection IN (
+      'bible', 'catechism', 'church-fathers', 'councils', 'summa',
+      'papal', 'church-law', 'theologians'
+    ));
+
   IF to_regclass('staging.documents') IS NOT NULL THEN
     ALTER TABLE staging.documents DROP CONSTRAINT IF EXISTS documents_collection_check;
     ALTER TABLE staging.documents

@@ -230,14 +230,15 @@ def test_0048_refuses_the_old_keys_live_and_staged():
         cluster.migrate(*EARLIER, SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name,
                         "0046_collection_keys.sql")
         cluster.sql("SELECT create_corpus_staging()")
-        insert(cluster, "documents", "canon-law")
+        insert(cluster, "staging.documents", "canon-law")
 
-        # A leftover old key makes the whole migration fail, changing nothing.
+        # A leftover old key, here only in staging, makes the whole file fail and change
+        # nothing, even run outside a transaction as by hand (psql -f).
         failed = subprocess.run(
-            [*cluster.psql_args(), "--single-transaction"],
-            input=(MIGRATIONS / NARROW).read_text(), capture_output=True, text=True,
-            timeout=30)
+            cluster.psql_args(), input=(MIGRATIONS / NARROW).read_text(),
+            capture_output=True, text=True, timeout=30)
         assert failed.returncode != 0 and "documents_collection_check" in failed.stderr
+        insert(cluster, "documents", "medieval")
         insert(cluster, "staging.documents", "medieval")
 
         cluster.sql("DELETE FROM documents; DELETE FROM staging.documents")

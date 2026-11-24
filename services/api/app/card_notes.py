@@ -132,7 +132,7 @@ def kind_and_form(facts: DocumentFacts) -> str | None:
 
 
 def build(*, card_version_value: Any, card_notes: Any, card_translator: Any,
-          facts: DocumentFacts, collection: str = "", work_key: str | None, note: str | None,
+          facts: DocumentFacts, work_key: str | None, note: str | None,
           note_kind: str | None, translator: str | None, language: str | None,
           text_labels: dict, notice: str | None) -> PassageCard | None:
     """One passage's card, or None when its document has no `card_version`.
