@@ -23,7 +23,6 @@ from qdrant_client.models import (
     Distance, FieldCondition, Filter, MatchValue, PointStruct, VectorParams,
 )
 
-from app import corpus_schema
 from app.config import settings
 from app.db import _init_connection
 from app.deps.auth import get_current_user
@@ -37,7 +36,6 @@ from tests.pg_cluster import local_cluster
 from tests.test_corpus_facts_migration import (
     EARLIER, PRODUCTION_SCHEMA, SCHEMA_MIGRATION, VALIDATE_MIGRATION,
 )
-from tests.test_retrieve_fts_sql import ALL
 
 PAPAL_OLD = ("encyclicals", "apostolic-exhortations", "papal-documents")
 

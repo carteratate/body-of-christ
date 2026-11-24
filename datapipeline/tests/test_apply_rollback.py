@@ -16,7 +16,7 @@ from model import Work
 from publication import StageRequest
 from release.staged import staged_content_sha256
 from tests import pg_corpus
-from tests.stage_world import DOC_A, DOC_B, DOC_S, LIVE, World, contents_tree, passage, pid
+from tests.stage_world import DOC_A, DOC_B, LIVE, World, contents_tree, passage, pid
 from writers import apply as A
 
 RELEASE = "test-release"
@@ -473,7 +473,7 @@ async def test_passage_moved_between_documents_keeps_its_id(world):
 async def test_a_piece_whose_text_moved_hands_its_anchor_on(world):
     """1.10b: the anchor takes a new ID and the old ID redirects; the retired row keeps
     its anchor with a suffix, so the unique key on (document_id, anchor) holds."""
-    a = _doc(world, DOC_A)
+    _doc(world, DOC_A)
     old = pid(DOC_A, "a/3")
     new = pid(DOC_A, "a/3#moved")
     world.registry.redirects.append(

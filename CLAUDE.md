@@ -50,7 +50,8 @@ commands.
 CI (`.github/workflows/ci.yml`) runs only the jobs a PR's paths can affect
 (`scripts/ci_changes.sh`): `web` for `apps/web/` and the two outside files its tests read,
 `api` and `datapipeline` for anything but documentation (`docs/` except `docs/adr/`, and
-`*.md`). A skipped job reports success. **When a test starts reading a file in another
+`*.md`), and `api-image`, which builds `services/api/Dockerfile` without pushing it, for
+`services/api/`. A skipped job reports success. **When a test starts reading a file in another
 area of the repo, add that path to `scripts/ci_changes.sh`**, or CI will skip the test
 for PRs that change only that file. Pushes to `master` always run every job.
 
@@ -428,6 +429,18 @@ No LangGraph or agent frameworks. No pgvector for retrieval.
   commit the regenerated `requirements*.lock`. The production image and CI install only
   from the locks, and CI fails when a lock is out of date with its input. The script
   keeps existing pins; `--upgrade-package NAME` moves one on purpose.
+- Python lint is zero errors too: `ruff check services/api datapipeline scripts` (Pyflakes
+  rules, `ruff.toml`). `services/api/app` is type-checked by basedpyright (pyright's
+  standard rules) against `services/api/.basedpyright/baseline.json`, which holds the 153
+  errors that existed when the check was added: CI fails only on new ones. When you fix
+  some, run `basedpyright --writebaseline` in `services/api` and commit the smaller
+  baseline. Both tools come with `requirements-dev.lock`.
+- Dependency audits in CI: `npm audit --omit=dev --audit-level=critical` (web job; every
+  other npm finding, from high down and in dev dependencies, is counted in the job summary
+  but does not block) and `pip-audit` on `services/api/requirements.lock` and
+  `datapipeline/requirements.lock` (api job, after the tests; any finding blocks). An
+  advisory published today can turn an unrelated PR red: upgrade the package, or, if it
+  cannot apply, add `--ignore-vuln ID` to both `pip-audit` lines with the reason.
 
 ---
 
