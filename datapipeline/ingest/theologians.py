@@ -349,6 +349,8 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
 # "(p. 152); and it contains"), or after a comma ("the Particular Examen, p. 21, and";
 # "Sins, pp. 37, 38; then"; "etc., p. 125. Let him").
 _PAGE_REF = re.compile(r"\s*\([Pp]\. \d+\)(?:;\s*)?")
+# One after a sentence's full stop, with a stop of its own ("different spirits. (P. 177).").
+_PAGE_REF_AFTER_STOP = re.compile(r"(?<=[.!?])\s*\([Pp]\. \d+\)\.")
 _PAGE_REF_AFTER_COMMA = re.compile(r",\s*pp?\. \d+(?:,\s*\d+)*(?=[.,;])")
 _PAGE_REF_FILES = frozenset({"ignatius-exercises.xml"})
 
@@ -360,6 +362,7 @@ def without_page_refs(source_file: str, text: str) -> str:
     "Examen, and", "etc., p. 125. Let" reads "etc. Let"."""
     if source_file.removeprefix(f"../{SOURCE_DIR}/") not in _PAGE_REF_FILES:
         return text
+    text = _PAGE_REF_AFTER_STOP.sub("", text)
     text = _PAGE_REF.sub(lambda m: "; " if m.start() and ";" in m.group() else "", text)
     text = _PAGE_REF_AFTER_COMMA.sub("", text)
     return text.replace("etc..", "etc.")

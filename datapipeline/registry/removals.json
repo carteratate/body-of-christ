@@ -44700,7 +44700,7 @@
   "anchor": null,
   "passage_id": null,
   "reason": "rule-g-editorial",
-  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count. The Exercises' 42nd note, on the work's title line (read as a heading, not a paragraph), leaves with it uncounted.",
   "tombstone": null,
   "church_act": null,
   "span": {

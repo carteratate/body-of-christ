@@ -501,6 +501,7 @@ def test_exercises_read_out_page_references_and_keep_the_examen_chart():
     assert not re.search(r"\b[Pp]p?\.\s*\d", text)
     assert "the Particular Examen, and then the General Examen" in text
     assert "the Deadly Sins, etc. Let him be recommended" in text
+    assert "for recognising different spirits.\n" in text and ".." not in text.replace("...", "")
     assert "Consolation and desolation are spoken of" not in text
     assert "Twelfth Day. On Palm Sunday." in text
     assert "INCLUSIVELY\n\nand it contains the Preparatory Prayer, three Preludes" in text
