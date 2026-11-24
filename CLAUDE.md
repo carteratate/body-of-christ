@@ -427,6 +427,11 @@ No LangGraph or agent frameworks. No pgvector for retrieval.
   errors that existed when the check was added: CI fails only on new ones. When you fix
   some, run `basedpyright --writebaseline` in `services/api` and commit the smaller
   baseline. Both tools come with `requirements-dev.lock`.
+- Dependency audits in CI: `npm audit --omit=dev --audit-level=critical` (web job; high and
+  dev-only findings are counted in the job summary but do not block) and `pip-audit` on
+  `services/api/requirements.lock` and `datapipeline/requirements.lock` (api job; any
+  finding blocks). An advisory published today can turn an unrelated PR red: upgrade the
+  package, or, if it cannot apply, add `--ignore-vuln ID` to the step with the reason.
 
 ---
 
