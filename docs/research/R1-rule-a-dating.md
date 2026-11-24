@@ -351,6 +351,22 @@ Letters 166 and 321 are Gregory of Nazianzus's too (Fedwick), and Letters 361 to
 
 5.6a records these decisions in its removal entries (rm-11501 to rm-11551, rm-11522 to rm-11531 retired), in `attributions.BASIL_LETTER_LABELS` and in each work's `rule_a` in works.json, not in `rule_a_R1.json`, which 3.1's `rule_removals.py` reads as its own complete list.
 
+## Addendum (5.6a, 24 Nov 2026): Cyril of Jerusalem and Gregory of Nazianzus (NPNF2-07)
+
+By the method of the Basil addendum above (Quasten's vol. III in its Spanish edition, `QUASTENPatrologaII`, search-inside; printed page = 2 × leaf − 8 or − 7).
+
+**Rule A.** Cyril of Jerusalem (Doctor, 1882) and Gregory of Nazianzus (Doctor, 1568) pass by limit 2, so none of their works is dated for rule A. NPNF2-07 prints no letter or work by anyone else: the 23 letters of its "Correspondence with Saint Basil" division are Gregory's to Basil and others (Letter XLI written in his father's name, still his own).
+
+**Rule H.**
+
+| Work | Credited to | Certainty | Basis |
+|---|---|---|---|
+| Procatechesis and Lectures 1 to 18 | Cyril of Jerusalem | genuine | "todos aceptan unánimemente como auténticas las catequesis prebautismales" (Quasten p. 406) |
+| Mystagogical Lectures (19 to 23) | Cyril of Jerusalem | disputed | Codex Monac. gr. 394 gives them to Cyril's successor John (386-417); Schermann, Swaans, Richard and Telfer follow it; Cross and others argue a common author; Quasten (p. 407): neither the manuscripts nor the cross-references settle it. The Catechism cites them as Cyril's ("St. Cyril of Jerusalem, Catech. myst."), which rule H follows first |
+| Select Orations (24) and Select Letters (96 with text) | Gregory of Nazianzus | genuine | Quasten's account of the orations (pp. 264-271) and letters (pp. 272-275) raises no doubt of authorship (a search of those leaves for "auténtic", "espuri" and "dudos" finds none); Letters LXV and LXVI, "sometimes attributed to Basil" (the editor), are Basil's 166 and 167, which Fedwick gives to Gregory (Basil addendum) |
+
+Dates for the facts: the lectures "347 or 348" (Quasten p. 404); the orations and letters span Gregory's life and carry none.
+
 ## Files
 
 - `datapipeline/registry/rule_a_R1.json`: 216 entries, as described above, and 16 more for Cyprian's correspondents since 3.1 (232).
