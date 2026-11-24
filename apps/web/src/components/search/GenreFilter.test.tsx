@@ -78,8 +78,8 @@ describe("genre and issuer filter (5.1a)", () => {
       .map((box) => box.textContent);
     // The three old papal collections' kinds together (5.1b.2).
     expect(kinds()).toEqual([
-      "Encyclical71", "Apostolic exhortation32", "Apostolic letter14",
-      "Apostolic constitution4", "Motu proprio1", "Other1",
+      "Encyclical71", "Apostolic exhortation33", "Apostolic letter14",
+      "Apostolic constitution4", "Motu proprio2", "Other1",
     ]);
 
     fireEvent.click(screen.getByRole("button", { name: "Only Boniface VIII" }));
