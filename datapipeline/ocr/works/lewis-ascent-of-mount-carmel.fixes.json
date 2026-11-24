@@ -1166,5 +1166,17 @@
   "find": "if we wish “a _ to receive",
   "replace": "if we wish to receive",
   "why": "A speck read as a quotation mark (and as \"a _\")."
+ },
+ {
+  "passage": "0112",
+  "find": "degrees of love. 10 Many",
+  "replace": "degrees of love.\n\nMany",
+  "why": "A speck at the foot of p. 94 read as \"10\"; p. 95 opens a new paragraph with \"Many, alas\"."
+ },
+ {
+  "passage": "0135",
+  "find": "medita- _ tions",
+  "replace": "meditations",
+  "why": "A word broken at a line end, with a speck read as \"_\"; the page prints \"meditations\"."
  }
 ]
