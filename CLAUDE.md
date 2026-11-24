@@ -50,7 +50,8 @@ commands.
 CI (`.github/workflows/ci.yml`) runs only the jobs a PR's paths can affect
 (`scripts/ci_changes.sh`): `web` for `apps/web/` and the two outside files its tests read,
 `api` and `datapipeline` for anything but documentation (`docs/` except `docs/adr/`, and
-`*.md`). `api-image` builds `services/api/Dockerfile` (no push) when `services/api/` changes. A skipped job reports success. **When a test starts reading a file in another
+`*.md`), and `api-image`, which builds `services/api/Dockerfile` without pushing it, for
+`services/api/`. A skipped job reports success. **When a test starts reading a file in another
 area of the repo, add that path to `scripts/ci_changes.sh`**, or CI will skip the test
 for PRs that change only that file. Pushes to `master` always run every job.
 
