@@ -712,14 +712,15 @@ winner count to it, so ten works without a special case.
 ## Active work: corpus cleanup
 
 The Phase 4 republish went live on 20 Nov 2026 (`republish-2026-10`, #192), and Phase 5 is
-adding works. Carter closed the republish's rollback window early (21 Nov 2026), so its lock
-entry is gone and publishing is open again; only part 5 of 4.1b step 13 waits for 4 Dec 2026
-(deleting the backups' user-data files and the Qdrant snapshot; the corpus copies are kept).
+under way. Carter closed the republish's rollback window early (21 Nov 2026), so its lock entry
+is gone and other publishes can run; only part 5 of 4.1b step 13 waits for 4 Dec 2026 (deleting
+the backups' user-data files and the Qdrant snapshot; the corpus copies are kept).
 
-**Publishing now:** the publish thread runs batches one at a time, under the standing decisions
-in the plan's Decision log (each publish's own lock-file PR, Carter's approval of each live step,
-and the early close of a publish's rollback window once its smoke checks pass, as in the
-"rollback window closed early" rows).
+**Publishing now:** the publish thread runs batches one at a time (Carter, 24 Nov 2026), under
+the standing decisions in the plan's Decision log. Each live step still needs its lock-file PR
+and Carter's approval when it runs (0.4). He has so far closed each publish's rollback window
+early once its smoke checks passed (the "rollback window closed early" rows), each time as his
+own decision: ask him for each one.
 
 Start from the "Start here" section of `docs/2026-09-28-corpus-cleanup-plan.md`; detailed
 work specifications are in `docs/corpus-cleanup/`. The plan's Decision log is settled.
