@@ -1,14 +1,15 @@
 {
  "measured_on": {
-  "apostolic-exhortations": "feat/1.3d-7-haerent-animo-menti-nostrae aee69b1",
+  "apostolic-exhortations": "feat/203-papal-universal-law e5c9867",
   "bible": "feat/1.4a-bible-every-verse 66c7561",
   "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
   "catechism": "feat/279-catechism-us-text 302b98d",
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
+  "church-law": "feat/203-papal-universal-law e5c9867",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
   "medieval": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "papal-documents": "feat/1.3d-6-extracts d276b44",
+  "papal-documents": "feat/203-papal-universal-law e5c9867",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
@@ -787,6 +788,16 @@
    "covered_chars": 1584170,
    "pct": 91.32
   },
+  "church-law/normas-nonnullas.html": {
+   "body_chars": 11194,
+   "covered_chars": 11194,
+   "pct": 100.0
+  },
+  "church-law/universi-dominici-gregis.html": {
+   "body_chars": 74773,
+   "covered_chars": 74178,
+   "pct": 99.2
+  },
   "councils/ecum-19-council-of-trent.html": {
    "body_chars": 535924,
    "covered_chars": 530469,
@@ -1186,6 +1197,11 @@
    "body_chars": 91649,
    "covered_chars": 91564,
    "pct": 99.91
+  },
+  "papal-documents/ubicumque-et-semper.html": {
+   "body_chars": 11550,
+   "covered_chars": 11550,
+   "pct": 100.0
   },
   "summa/summa.xml": {
    "body_chars": 14059391,
@@ -2328,6 +2344,13 @@
    "covered_chars": 11600,
    "pct": 100.0
   },
+  "8e9c9c76-9be1-5e01-841a-4622c78a304d": {
+   "collection": "papal-documents",
+   "source_file": "ubicumque-et-semper.html",
+   "body_chars": 11550,
+   "covered_chars": 11550,
+   "pct": 100.0
+  },
   "8f8055aa-5097-5b6f-a7d7-fd390eb1068a": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/94-3JNeng-web-c.usfm",
@@ -2368,6 +2391,13 @@
    "source_file": "second-century.xml",
    "body_chars": 397474,
    "covered_chars": 397474,
+   "pct": 100.0
+  },
+  "96723311-6eb4-5b12-8ab1-b7e07b00cb35": {
+   "collection": "church-law",
+   "source_file": "normas-nonnullas.html",
+   "body_chars": 11194,
+   "covered_chars": 11194,
    "pct": 100.0
   },
   "9679c400-d314-5394-b916-f6fc27b50104": {
@@ -2649,6 +2679,13 @@
    "body_chars": 76004,
    "covered_chars": 75973,
    "pct": 99.96
+  },
+  "ba99edda-440c-599c-9b2c-5e65c2896c0a": {
+   "collection": "church-law",
+   "source_file": "universi-dominici-gregis.html",
+   "body_chars": 74773,
+   "covered_chars": 74178,
+   "pct": 99.2
   },
   "bb35c577-ee5b-546e-abb6-41a0764cd6a7": {
    "collection": "church-fathers",

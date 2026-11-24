@@ -465,8 +465,10 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.4** [Phase 5]. A New Hope for Lebanon has no English on vatican.va, only French and Italian, and the vendored file is an empty English page. Recommended answer: keep the French text in the reader with a note, out of search, under the Decision log row "Non-English with no usable English" (R6).
   Answered 2026-10-05: recommendation accepted: the French text, in the reader with a note, out of search (Decision log "Non-English with no usable English").
   Revised 2026-10-29: rule E now keeps all non-English text out of the corpus, so A New Hope for Lebanon is not added.
+  Asked again 2026-11-23, during the 5.4 build: leave it out (rule E as revised stands).
 - **5.4** [Phase 5]. Amoris Laetitia's English exists on vatican.va only as a PDF; the vendored HTML has no text. Recommended answer: vendor the PDF and extract its text (R6).
   Answered 2026-10-05: recommendation accepted: vendor the English PDF and extract its text in 5.4.
+  Confirmed 2026-11-23: the PDF is downloaded, vendored and read by `ingest/papal_pdf.py`.
 - **5.4** [Phase 5]. Confirm that Universi Dominici Gregis (the law on electing a pope) goes in Church law, as the plan's collection table says.
 - **5.6b and 5.6c** [Phase 5]. Choose Rickaby's abridged Summa contra Gentiles or the complete English Dominican edition.
   Answered 2026-11-16: the English Dominican translation, books 1 to 3 (Decision log "Summa contra Gentiles edition (5.6c)").

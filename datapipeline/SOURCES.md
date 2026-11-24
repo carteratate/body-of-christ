@@ -15,8 +15,9 @@ data").
 | **church-fathers** | local `sources/church-fathers/*.xml` (vendored CCEL ANF/NPNF ThML) | ✅ | one document per (father, work) (128); book-structured works (City of God, etc.) flattened to `Book N · Chapter M` |
 | **summa** | local `sources/summa/summa.xml` (ThML) | ✅ | one passage per article part; apparatus expanded |
 | **encyclicals** | local `sources/encyclicals/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per encyclical (131); one passage per §; section or §-bucket chapters; footnotes stripped |
-| **apostolic-exhortations** | local `sources/apostolic-exhortations/*.html` (vendored from vatican.va) | ✅ | one document per exhortation (30); numbered-paragraph passages |
-| **papal-documents** | local `sources/papal-documents/*.html` (vendored from vatican.va) | ✅ | one document per papal text (14); numbered-paragraph passages |
+| **apostolic-exhortations** | local `sources/apostolic-exhortations/*.html` (vendored from vatican.va) | ✅ | one document per exhortation (31); numbered-paragraph passages; Amoris Laetitia read from vatican.va's PDF (`ingest/papal_pdf.py`, 5.4) |
+| **papal-documents** | local `sources/papal-documents/*.html` (vendored from vatican.va) | ✅ | one document per papal text (15, with Ubicumque et Semper from 5.4); numbered-paragraph passages |
+| **church-law** | local `sources/church-law/`: Universi Dominici Gregis as amended in 2013 (vatican.va HTML), its 1996 original (vatican.va PDF) and Normas Nonnullas (vatican.va HTML), 5.4 | not yet | `ingest/universal_law.py`; one passage per number; the 1996 text and Normas Nonnullas are history, `searchable = false` |
 | **canon-law** | local `sources/canon-law/*.html` (vendored from vatican.va) | ✅ | single doc; one passage per canon (1,747); Book by canon-range; Book/Title/Chapter chapters (233) |
 | **councils** | local `sources/councils/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per council / Vatican II document (36); canon + §-paragraph passages |
 | **medieval** | local `sources/medieval/*.xml` (vendored from ccel.org ThML) | ✅ | one doc per (author, work) (6); reuses the church-fathers ThML builder |
