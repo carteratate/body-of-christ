@@ -82,7 +82,7 @@ _CAPITALS = re.compile(r"^[^a-z]{12,}$")
 # The note calls: the marks themselves (the OCR reads a dagger as "{", "|" or "¢" too), a
 # dagger read as a lone "t" or "f" after a sentence's or a quotation's end ("disciple’ f
 # of Christ", "fatness.’f"), and a figure read for one ("defiled with it.’1 He").
-_CALL_MARKS = re.compile(r"\s?[*†‡§¶‖|{}¢®©]+")
+_CALL_MARKS = re.compile(r"\s?[*†‡§¶‖|{}¢®©+]+")
 _READ_CALL = re.compile(r"(?<=[.,;:!?’”'])\s?[tf](?=\s|$)")
 _FIGURE_CALL = re.compile(r"(?<=[.,;:!?][’”])\d(?=\s[A-Z])")
 

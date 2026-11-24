@@ -1178,5 +1178,65 @@
   "find": "medita- _ tions",
   "replace": "meditations",
   "why": "A word broken at a line end, with a speck read as \"_\"; the page prints \"meditations\"."
+ },
+ {
+  "passage": "0124",
+  "find": "from it. y% The second",
+  "replace": "from it. The second",
+  "why": "A speck read into the text; the page does not print it."
+ },
+ {
+  "passage": "0125",
+  "find": "understanding. €§ There",
+  "replace": "understanding.§ There",
+  "why": "A speck read as \"€\" beside the note call."
+ },
+ {
+  "passage": "0122",
+  "find": "in the second 4 place",
+  "replace": "in the second place",
+  "why": "A speck read into the text; the page does not print it."
+ },
+ {
+  "passage": "0122",
+  "find": "to sense, 5 and",
+  "replace": "to sense, and",
+  "why": "A speck read into the text; the page does not print it."
+ },
+ {
+  "passage": "0298",
+  "find": "fallen into ‘218 fourth degree",
+  "replace": "fallen into the fourth degree",
+  "why": "The word \"the\" misread as \"‘218\"."
+ },
+ {
+  "passage": "0101",
+  "find": "8. Paul",
+  "replace": "S. Paul",
+  "why": "\"S.\" (Saint) misread as \"8.\"."
+ },
+ {
+  "passage": "0203",
+  "find": "8. Paul",
+  "replace": "S. Paul",
+  "why": "\"S.\" (Saint) misread as \"8.\"."
+ },
+ {
+  "passage": "0214",
+  "find": "8. Paul",
+  "replace": "S. Paul",
+  "why": "\"S.\" (Saint) misread as \"8.\"."
+ },
+ {
+  "passage": "0057",
+  "find": "seek to posséss nothing",
+  "replace": "seek to possess nothing",
+  "why": "A speck read as an accent."
+ },
+ {
+  "passage": "0142",
+  "find": "and thereforé to be",
+  "replace": "and therefore to be",
+  "why": "A speck read as an accent."
  }
 ]

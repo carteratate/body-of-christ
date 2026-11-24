@@ -17,6 +17,7 @@ ASCENT = J.TREATISES[0]
     ("defiled with it.’1 He, then,", "defiled with it.’ He, then,"),
     ("‘Who will give us flesh to eat?’{ They", "‘Who will give us flesh to eat?’ They"),
     ("the wisdom~of this world", "the wisdom of this world"),
+    ("the wind of his love,’+ and again", "the wind of his love,’ and again"),
     ("all that the ___ imagination may", "all that the imagination may"),
 ])
 def test_note_calls_and_specks_come_off(ocr, clean):
@@ -99,7 +100,7 @@ def test_every_chapter_is_found_in_order(document):
 @needs_text
 def test_no_heading_mark_or_broken_paragraph_reaches_a_passage(document):
     for p in document.passages:
-        assert not re.search(r"\bCHAPTER\b|\bBOOK [IVX]+\.|\bSTANZA\b|[*†‡§¶|{}¢®©~_]",
+        assert not re.search(r"\bCHAPTER\b|\bBOOK [IVX]+\.|\bSTANZA\b|[*†‡§¶|{}¢®©~_+%€]",
                              p.content), p.anchor
     short = [(p.anchor, q) for p in document.passages for q in p.content.split("\n\n")
              if len(q.split()) <= 14 and not re.search(r"[.?!:;”’)'\"]$", q.strip())]
