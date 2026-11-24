@@ -48,13 +48,13 @@ def test_chapters_take_their_title_and_run_in_order_within_each_book():
         "PROLOGUE.\n\nThe prologue.\n\nBOOK I.\n\nTHE TITLE OF THE FIRST BOOK.\n\nCHAPTER I.\n\n"
         "The first title.\n\nThe first text.",
         "runs on.\n\nCHAPTER II.\n\nThe second title.\n\nSTANZA I.\n\nThe second text.",
-        "BOOK II.\n\nCHAPTER I.\n\nThe third title.\n\nThe third text.", continues=(3,)))
+        "BOOK II.\n\nCHAPTER I.\n\nSTANZA II.\n\nThe third text.", continues=(3,)))
     assert [(c.key, c.label, c.paragraphs) for c in chapters] == [
         ("argument", "Argument", ["The argument.", "In an obscure night."]),
         ("prologue", "Prologue", ["The prologue."]),
         ("book-1/chapter-1", "Book I, Chapter I. The first title", ["The first text. runs on."]),
         ("book-1/chapter-2", "Book I, Chapter II. The second title", ["The second text."]),
-        ("book-2/chapter-1", "Book II, Chapter I. The third title", ["The third text."])]
+        ("book-2/chapter-1", "Book II, Chapter I", ["The third text."])]
 
 
 def test_a_chapter_out_of_order_or_a_missing_one_fails():
@@ -106,5 +106,8 @@ def test_no_heading_mark_or_broken_paragraph_reaches_a_passage(document):
     short = [(p.anchor, q) for p in document.passages for q in p.content.split("\n\n")
              if len(q.split()) <= 14 and not re.search(r"[.?!:;”’)'\"]$", q.strip())]
     assert short == []
-    assert all(re.match(r"^(Argument|Prologue|Book (I|II|III), (Argument|Chapter [IVXL]+\. \S))",
-                        p.chapter_label) for p in document.passages)
+    labels = {p.chapter_label for p in document.passages}
+    shape = re.compile(r"^(Argument|Prologue|Book (I|II|III), (Argument|Chapter [IVXL]+(\. .+)?))$")
+    assert sorted(label for label in labels if not shape.match(label)
+                  or re.search(r"\. .*[A-Z]{4}|[.,]$", label)) == []
+    assert "Book II, Chapter I" in labels

@@ -42,7 +42,9 @@ def mark_built(rows: list[dict], document, scan: str) -> bool:
     `planned_for`; True when the row changed. Raises when the row names another
     document."""
     path = f"theologians/{scan}/"
-    row = next(r for r in rows if r["source_path"] == path and r["work"] == document.title)
+    row = next((r for r in rows if r["source_path"] == path and r["work"] == document.title), None)
+    if row is None:
+        raise ValueError(f"{path}: no rights-inventory row for {document.title!r}")
     if row["document_id"] not in (None, document.id):
         raise ValueError(f"{path}: its row names document {row['document_id']}")
     if (row["document_id"], row["planned_for"], row["collection"]) == (document.id, None,

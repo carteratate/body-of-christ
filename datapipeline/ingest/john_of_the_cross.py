@@ -11,7 +11,8 @@ keeps (`*`, `†`, `‡`, `§`, and the OCR's readings of them) are taken off he
 (`strip_calls`).
 
 A treatise is its Argument and Prologue, then its books' chapters. Each "CHAPTER N." is
-followed by Lewis's title for it, one paragraph (the work's fixes set it so); the title
+followed by Lewis's title for it, one paragraph (the work's fixes set it so), unless it opens
+on a stanza (Book II, Chapter I); the title
 goes into the chapter label, never the text, and the chapters must run 1, 2, 3 within each
 book. A passage is a chapter, cut at paragraphs where it runs past `MAX_CHARS`. Every
 passage carries the scanned-text label (`ocr.label`).
@@ -69,6 +70,7 @@ def roman(numeral: str) -> int:
 
 
 _CHAPTER = re.compile(r"^CHAPTER ([IVXL]+)\.$")
+_STANZA = re.compile(r"^STANZA [IVX]+\.$")
 _BOOK = re.compile(r"^BOOK ([IVX]+)\.$")
 _SECTION = re.compile(r"^(ARGUMENT|PROLOGUE)\.$")
 # The treatise's own title at its head, the stanzas' heading and numerals, and a stanza's
@@ -118,8 +120,11 @@ def chapters(treatise: Treatise, passages: list[dict]) -> list[_Chapter]:
                     raise ValueError(f"{treatise.work}: {p['id']} continues no paragraph")
                 out[-1].paragraphs[-1] += " " + para
             elif title_next:
-                out[-1].label += f". {para.rstrip('.')}"
                 title_next = False
+                if _STANZA.match(para):
+                    continue    # no title of its own: the chapter opens on its stanza
+                # The OCR reads the small type's closing full stop as a comma at times.
+                out[-1].label += f". {para.rstrip('.,')}"
             elif m := _SECTION.match(para):
                 name = m.group(1).title()
                 key = name.lower() if not book else f"book-{book}/{name.lower()}"
