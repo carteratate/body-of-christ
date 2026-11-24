@@ -102,6 +102,8 @@ _UNREGISTERED_NOTES = {
        "chadwick-stromata-3.json (#399)" for kind in ("djvu.xml", "djvu.txt")},
 }
 _UNREGISTERED_DIR_NOTES = {
+    "theologians": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/ "
+                   "(ingest/john_of_the_cross.py)",
     "roman-curia": "parked for 5.3 (branch feat/roman-curia-collection)",
     # Approved R6 downloads (docs/research/R6-editions.md, "Download list for Carter"),
     # held where no adapter reads them. The ingesting PR moves each file unchanged to

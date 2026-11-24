@@ -650,17 +650,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/completeworksofs01johnuoft/completeworksofs01johnuoft_djvu.txt",
-  "sha256": "d90faa2fd4bcf7cc40686b07a12b29af67ef807be81d7a47be81907132ec6f1b",
-  "bytes": 968665,
-  "url": "https://archive.org/download/completeworksofs01johnuoft/completeworksofs01johnuoft_djvu.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/completeworksofs02johnuoft/completeworksofs02johnuoft_djvu.txt",
   "sha256": "4c97ebc59d643881ed0321727df5c598ab39aade342d6acf5271c637311fc045",
   "bytes": 875181,
@@ -7009,5 +6998,38 @@
   "hashed_on": "2026-11-16",
   "role": "vendored-unregistered",
   "note": "the printed edition summa_recovered.json's text is read from (#360)"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/completeworksofs01johnuoft/completeworksofs01johnuoft_djvu.txt",
+  "sha256": "d90faa2fd4bcf7cc40686b07a12b29af67ef807be81d7a47be81907132ec6f1b",
+  "bytes": 968665,
+  "url": "https://archive.org/download/completeworksofs01johnuoft/completeworksofs01johnuoft_djvu.txt",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "vendored-unregistered",
+  "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/ (ingest/john_of_the_cross.py)"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/completeworksofs01johnuoft/completeworksofs01johnuoft_djvu.xml",
+  "sha256": "4eab4b4b24df4f7fcd3b69de6dd01c8aca7df2f14c640ee8f841a5db09a013ca",
+  "bytes": 13473279,
+  "url": "https://archive.org/download/completeworksofs01johnuoft/completeworksofs01johnuoft_djvu.xml",
+  "acquired": "2026-11-23",
+  "hashed_on": "2026-11-23",
+  "role": "vendored-unregistered",
+  "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/ (ingest/john_of_the_cross.py)"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/completeworksofs01johnuoft/completeworksofs01johnuoft_page_numbers.json",
+  "sha256": "584448d72f12f7a258fa68a832f65940f6670ae1410383000c6ee642bb1e809c",
+  "bytes": 87292,
+  "url": "https://archive.org/download/completeworksofs01johnuoft/completeworksofs01johnuoft_page_numbers.json",
+  "acquired": "2026-11-23",
+  "hashed_on": "2026-11-23",
+  "role": "vendored-unregistered",
+  "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/ (ingest/john_of_the_cross.py)"
  }
 ]

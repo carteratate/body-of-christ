@@ -18615,6 +18615,48 @@
   "card_translator": "Translated by James Gardiner Vose (1854-1855)"
  },
  {
+  "work_id": "medieval/theologians-completeworksofs01johnuoft-ascent-of-mount-carmel",
+  "document_id": "d28b5fff-a191-5d03-82c9-00341c628cb0",
+  "collection": "medieval",
+  "source_key": "theologians/completeworksofs01johnuoft/ascent-of-mount-carmel",
+  "title": "The Ascent of Mount Carmel",
+  "author": "John of the Cross",
+  "frozen_on": "2026-11-24",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": [],
+  "genre": "treatise",
+  "form": null,
+  "issuer": null,
+  "issuer_label": null,
+  "year": 1585,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by David Lewis (1864)",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null,
+  "card_translator": "Translated by David Lewis (1864)"
+ },
+ {
   "work_id": "papal-documents/dies-domini",
   "document_id": "03a95a7c-b492-587f-9a69-ebfa7f6da510",
   "collection": "papal-documents",

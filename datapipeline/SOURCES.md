@@ -20,6 +20,7 @@ data").
 | **canon-law** | local `sources/canon-law/*.html` (vendored from vatican.va) | ✅ | single doc; one passage per canon (1,747); Book by canon-range; Book/Title/Chapter chapters (233) |
 | **councils** | local `sources/councils/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per council / Vatican II document (36); canon + §-paragraph passages |
 | **medieval** | local `sources/medieval/*.xml` (vendored from ccel.org ThML) | ✅ | one doc per (author, work) (6); reuses the church-fathers ThML builder |
+| **medieval** (5.6c) | `sources/theologians/<IA item>/` scans, through the OCR tool's frozen text `ocr/texts/<work>.json` | ✅ | John of the Cross, Lewis 1864: one doc per treatise; the *Ascent of Mount Carmel* (220 passages) |
 
 **Vendoring:** web-sourced collections are vendored to `sources/<collection>/`
 (gitignored, with a `manifest.json` recording provenance) via

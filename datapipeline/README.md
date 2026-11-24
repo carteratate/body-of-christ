@@ -26,7 +26,7 @@ source's adapter in `SOURCE_BUILDS`, and the eight collections a publish writes 
 | `councils` | `councils` | `ingest/councils.py` |
 | `papal` | `encyclicals`, `apostolic-exhortations`, `papal-documents` | `ingest/encyclicals.py`, `ingest/apostolic_exhortations.py`, `ingest/papal_documents.py` |
 | `summa` | `summa` | `ingest/summa.py` |
-| `theologians` | `medieval` (all but Boethius) | `ingest/medieval.py` |
+| `theologians` | `medieval` (all but Boethius) | `ingest/medieval.py`, `ingest/john_of_the_cross.py` (5.6c's scans) |
 
 A source keeps its old name: the work registry files each frozen ID under it, the checks
 (0.1a to 0.1c) and their known defects are keyed by it, and the embedding overlap follows

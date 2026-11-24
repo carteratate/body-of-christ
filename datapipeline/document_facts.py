@@ -13,7 +13,8 @@ credits for document facts (2.3)"):
 
 - `genre`: a papal document's `metadata["genre"]` (1.3b, `papal_genres.csv`); `catechism`
   and `code` for the Catechism and the Code; a Church Fathers work's from
-  `FATHERS_GENRES` (3.2); otherwise none.
+  `FATHERS_GENRES` (3.2); a 5.6c scanned work's from its adapter's `metadata["genre"]`;
+  otherwise none.
 - `form`: how the papal chancery issued a papal document, `bull` or `brief`, from its
   `metadata["form"]` (1.3b, `papal_genres.csv`; issue #330); none where none is recorded,
   and for every other document.
@@ -291,6 +292,8 @@ def _genre(document: Document, work_id: str) -> str | None:
         return FATHERS_GENRES[work_id]
     if document.collection in PAPAL_COLLECTIONS:
         return (document.metadata or {}).get("genre")
+    if (document.metadata or {}).get("source_key", "").startswith("theologians/"):
+        return (document.metadata or {}).get("genre")   # 5.6c's scanned works
     return {"catechism": "catechism", "canon-law": "code", "church-law": "code"
             }.get(document.collection)
 
