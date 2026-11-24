@@ -18,6 +18,37 @@
   "planned_for": null
  },
  {
+  "work": "Amoris Laetitia",
+  "author": "Pope Francis",
+  "collection": "apostolic-exhortations",
+  "source_path": "apostolic-exhortations/amoris-laetitia.pdf",
+  "document_id": "d84a6847-b128-5142-a5f7-3b4923e89417",
+  "edition": "English text published on vatican.va as a PDF (the HTML page links to it)",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://www.vatican.va/content/dam/francesco/pdf/apost_exhortations/documents/papa-francesco_esortazione-ap_20160319_amoris-laetitia_en.pdf",
+  "status": "in-copyright",
+  "rights_holder": "Libreria Editrice Vaticana",
+  "renewal_search": null,
+  "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": null,
+  "excerpt_basis": {
+   "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
+   "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
+   "wording": "i testi originali del Magistero, che ogni privato ha la possibilità di scaricare liberamente dal sito internet della Santa Sede e di diffondere, purché non ne tragga profitto economico",
+   "read_on": "2026-11-16",
+   "conditions": [
+    "no economic profit: TheoCorpus stays free (Decision log \"Pricing\")",
+    "the text is taken from vatican.va",
+    "the text is shown verbatim and complete: the article names texts \"con errori o modifiche\" as what the Holy See acts against"
+   ],
+   "word_limit": null,
+   "source_host": "www.vatican.va"
+  }
+ },
+ {
   "work": "C'est la confiance",
   "author": "Pope Francis",
   "collection": "apostolic-exhortations",
@@ -5098,29 +5129,11 @@
   "planned_for": null
  },
  {
-  "work": "De aliquibus mutationibus in normis de electione Romani Pontificis",
-  "author": "Pope Benedict XVI",
-  "collection": "church-law",
-  "source_path": "church-law/de-aliquibus-mutationibus.html",
-  "document_id": null,
-  "edition": "Latin text on vatican.va (no English published there)",
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.vatican.va/content/benedict-xvi/la/motu_proprio/documents/hf_ben-xvi_motu-proprio_20070611_de-electione.html",
-  "status": "in-copyright",
-  "rights_holder": "Libreria Editrice Vaticana",
-  "renewal_search": null,
-  "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": "5.4"
- },
- {
   "work": "Normas Nonnullas",
   "author": "Pope Benedict XVI",
   "collection": "church-law",
   "source_path": "church-law/normas-nonnullas.html",
-  "document_id": null,
+  "document_id": "96723311-6eb4-5b12-8ab1-b7e07b00cb35",
   "edition": "English text published on vatican.va",
   "translator": null,
   "first_published": null,
@@ -5131,7 +5144,7 @@
   "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.4",
+  "planned_for": null,
   "excerpt_basis": {
    "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
    "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
@@ -5151,7 +5164,7 @@
   "author": "Pope John Paul II",
   "collection": "church-law",
   "source_path": "church-law/universi-dominici-gregis-1996.pdf",
-  "document_id": null,
+  "document_id": "91ea6448-e06b-5e84-92ba-f042b0e81885",
   "edition": "English original version of 22 Feb 1996, published on vatican.va as a PDF",
   "translator": null,
   "first_published": null,
@@ -5162,7 +5175,7 @@
   "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.4",
+  "planned_for": null,
   "excerpt_basis": {
    "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
    "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
@@ -5182,7 +5195,7 @@
   "author": "Pope John Paul II",
   "collection": "church-law",
   "source_path": "church-law/universi-dominici-gregis.html",
-  "document_id": null,
+  "document_id": "ba99edda-440c-599c-9b2c-5e65c2896c0a",
   "edition": "English text on vatican.va, revised per Normas nonnullas (22 Feb 2013)",
   "translator": null,
   "first_published": null,
@@ -5193,7 +5206,7 @@
   "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.4",
+  "planned_for": null,
   "excerpt_basis": {
    "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
    "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
@@ -8840,86 +8853,6 @@
   "planned_for": null
  },
  {
-  "work": "A New Hope for Lebanon",
-  "author": "Pope John Paul II",
-  "collection": "papal",
-  "source_path": "apostolic-exhortations/a-new-hope-for-lebanon.html",
-  "document_id": null,
-  "edition": "original French (Une espérance nouvelle pour le Liban, 10 May 1997), vatican.va French page, which replaces the empty English page vendored at this path; vatican.va publishes no English, only French and Italian",
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.vatican.va/content/john-paul-ii/fr/apost_exhortations/documents/hf_jp-ii_exh_19970510_lebanon.html",
-  "status": "in-copyright",
-  "rights_holder": "Libreria Editrice Vaticana",
-  "renewal_search": null,
-  "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": "5.4"
- },
- {
-  "work": "Amoris Laetitia",
-  "author": "Pope Francis",
-  "collection": "papal",
-  "source_path": "apostolic-exhortations/amoris-laetitia.pdf",
-  "document_id": null,
-  "edition": "English text published on vatican.va as a PDF (the HTML page links to it)",
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.vatican.va/content/dam/francesco/pdf/apost_exhortations/documents/papa-francesco_esortazione-ap_20160319_amoris-laetitia_en.pdf",
-  "status": "in-copyright",
-  "rights_holder": "Libreria Editrice Vaticana",
-  "renewal_search": null,
-  "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": "5.4",
-  "excerpt_basis": {
-   "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
-   "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
-   "wording": "i testi originali del Magistero, che ogni privato ha la possibilità di scaricare liberamente dal sito internet della Santa Sede e di diffondere, purché non ne tragga profitto economico",
-   "read_on": "2026-11-16",
-   "conditions": [
-    "no economic profit: TheoCorpus stays free (Decision log \"Pricing\")",
-    "the text is taken from vatican.va",
-    "the text is shown verbatim and complete: the article names texts \"con errori o modifiche\" as what the Holy See acts against"
-   ],
-   "word_limit": null,
-   "source_host": "www.vatican.va"
-  }
- },
- {
-  "work": "Ubicumque et Semper",
-  "author": "Pope Benedict XVI",
-  "collection": "papal",
-  "source_path": "papal-documents/ubicumque-et-semper.html",
-  "document_id": null,
-  "edition": "English text published on vatican.va",
-  "translator": null,
-  "first_published": null,
-  "source_url": "https://www.vatican.va/content/benedict-xvi/en/apost_letters/documents/hf_ben-xvi_apl_20100921_ubicumque-et-semper.html",
-  "status": "in-copyright",
-  "rights_holder": "Libreria Editrice Vaticana",
-  "renewal_search": null,
-  "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
-  "checked_by": null,
-  "checked_on": null,
-  "planned_for": "5.4",
-  "excerpt_basis": {
-   "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
-   "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
-   "wording": "i testi originali del Magistero, che ogni privato ha la possibilità di scaricare liberamente dal sito internet della Santa Sede e di diffondere, purché non ne tragga profitto economico",
-   "read_on": "2026-11-16",
-   "conditions": [
-    "no economic profit: TheoCorpus stays free (Decision log \"Pricing\")",
-    "the text is taken from vatican.va",
-    "the text is shown verbatim and complete: the article names texts \"con errori o modifiche\" as what the Holy See acts against"
-   ],
-   "word_limit": null,
-   "source_host": "www.vatican.va"
-  }
- },
- {
   "work": "Sublimis Deus",
   "author": "Pope Paul III",
   "collection": "papal-documents",
@@ -9175,6 +9108,37 @@
   "checked_by": null,
   "checked_on": null,
   "planned_for": null
+ },
+ {
+  "work": "Ubicumque et Semper",
+  "author": "Pope Benedict XVI",
+  "collection": "papal-documents",
+  "source_path": "papal-documents/ubicumque-et-semper.html",
+  "document_id": "8e9c9c76-9be1-5e01-841a-4622c78a304d",
+  "edition": "English text published on vatican.va",
+  "translator": null,
+  "first_published": null,
+  "source_url": "https://www.vatican.va/content/benedict-xvi/en/apost_letters/documents/hf_ben-xvi_apl_20100921_ubicumque-et-semper.html",
+  "status": "in-copyright",
+  "rights_holder": "Libreria Editrice Vaticana",
+  "renewal_search": null,
+  "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "checked_by": null,
+  "checked_on": null,
+  "planned_for": null,
+  "excerpt_basis": {
+   "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
+   "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
+   "wording": "i testi originali del Magistero, che ogni privato ha la possibilità di scaricare liberamente dal sito internet della Santa Sede e di diffondere, purché non ne tragga profitto economico",
+   "read_on": "2026-11-16",
+   "conditions": [
+    "no economic profit: TheoCorpus stays free (Decision log \"Pricing\")",
+    "the text is taken from vatican.va",
+    "the text is shown verbatim and complete: the article names texts \"con errori o modifiche\" as what the Holy See acts against"
+   ],
+   "word_limit": null,
+   "source_host": "www.vatican.va"
+  }
  },
  {
   "work": "A Journey of Hope",

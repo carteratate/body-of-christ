@@ -70,6 +70,17 @@ _UNMANIFESTED_URLS = {
         "https://huggingface.co/datasets/JWBickel/KJV_Pericopes/resolve/main/"
         "PericopeGroupedKJVVerses.json",
     "summa/summa.xml": "https://ccel.org/ccel/a/aquinas/summa.xml",
+    # Universi Dominici Gregis and Normas Nonnullas (5.4), as ingest/universal_law.py
+    # names them.
+    "church-law/universi-dominici-gregis.html":
+        "https://www.vatican.va/content/john-paul-ii/en/apost_constitutions/documents/"
+        "hf_jp-ii_apc_22021996_universi-dominici-gregis.html",
+    "church-law/universi-dominici-gregis-1996.pdf":
+        "https://www.vatican.va/content/dam/john-paul-ii/pdf/apost_constitutions/documents/"
+        "universi-dominici-gregis-19960222_en.pdf",
+    "church-law/normas-nonnullas.html":
+        "https://www.vatican.va/content/benedict-xvi/en/motu_proprio/documents/"
+        "hf_ben-xvi_motu-proprio_20130222_normas-nonnullas.html",
 }
 
 # The printed English editions the Summa's restored units were read from (1.7, R7): OCR
@@ -92,10 +103,12 @@ _DERIVED_INPUTS = {
 
 # Vendored files no registered adapter publishes, with the reason on record.
 _UNREGISTERED_NOTES = {
-    "apostolic-exhortations/a-new-hope-for-lebanon.html": "scheduled for PR 5.4",
-    "papal-documents/ubicumque-et-semper.html": "scheduled for PR 5.4",
+    "apostolic-exhortations/a-new-hope-for-lebanon.html":
+        "the English page, which offers the text only in French and Italian; not added "
+        "(rule E, revised 29 Oct 2026; Carter, 23 Nov 2026, 5.4)",
     "apostolic-exhortations/amoris-laetitia.html":
-        "not published; scheduled for PR 5.4 (Carter, 4 Oct 2026)",
+        "the English page, which only links the PDF; the text is read from "
+        "amoris-laetitia.pdf (5.4)",
     # Chadwick's Stromata III (#399), read through the OCR tool's frozen text.
     **{f"church-fathers/alexandrianchris012826mbp/alexandrianchris012826mbp_{kind}":
        "the scan Stromata III's English is read from, through ocr/texts/"

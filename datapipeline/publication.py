@@ -55,6 +55,8 @@ SOURCE_BUILDS: dict[str, SourceAdapter] = {
     "canon-law": lambda: _build_from("canon_law", "build_documents"),
     "catechism": lambda: _build_from("catechism", "build_document", single=True),
     "church-fathers": lambda: _build_from("church_fathers", "build_all"),
+    # Universal law outside the Code: Universi Dominici Gregis and its history (5.4).
+    "church-law": lambda: _build_from("universal_law", "build_documents"),
     "councils": lambda: _build_from("councils", "build_documents"),
     "encyclicals": lambda: _build_from("encyclicals", "build_documents"),
     "medieval": lambda: _build_from("medieval", "build_documents"),
@@ -112,7 +114,8 @@ SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
     "bible": SOURCE_BUILDS["bible"],
     "catechism": SOURCE_BUILDS["catechism"],
     "church-fathers": _church_fathers,
-    "church-law": lambda: _published_as("church-law", SOURCE_BUILDS["canon-law"]()),
+    "church-law": lambda: _published_as("church-law", [*SOURCE_BUILDS["canon-law"](),
+                                                       *SOURCE_BUILDS["church-law"]()]),
     "councils": SOURCE_BUILDS["councils"],
     "papal": _papal,
     "summa": SOURCE_BUILDS["summa"],

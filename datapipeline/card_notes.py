@@ -141,6 +141,25 @@ for _units in ("ad 2, ad 3", "sc 2"):
 # notes the card and the overview show. An empty tuple drops it: the header already says
 # it, with the author's label and its certainty tag (rule 1).
 FACT_NOTES: dict[str, tuple[Note, ...]] = {
+    # Universi Dominici Gregis and Normas Nonnullas (5.4): how the law came to read as it
+    # does is document-wide (rule 2). The history documents' own caution is their
+    # superseded note, which the card shows with a link to the current text.
+    "The text as amended by Benedict XVI in the motu proprio Normas Nonnullas (22 February "
+    "2013), which changed Nos. 35, 37, 43, 46 § 1, 47 to 50, 51 § 2, 55 § 3, 62, 64, 70 § 2, "
+    "75 and 87. No. 33's limit of 120 Cardinal electors is unchanged: on 30 April 2025 the "
+    "Congregation of Cardinals declared, in a statement published by the Holy See Press "
+    "Office, that Pope Francis had dispensed from it by creating more electors.": (overview(
+        "The text as amended by Benedict XVI in the motu proprio Normas Nonnullas (22 "
+        "February 2013), which changed Nos. 35, 37, 43, 46 § 1, 47 to 50, 51 § 2, 55 § 3, 62, "
+        "64, 70 § 2, 75 and 87. No. 33's limit of 120 Cardinal electors is unchanged: on 30 "
+        "April 2025 the Congregation of Cardinals declared, in a statement published by the "
+        "Holy See Press Office, that Pope Francis had dispensed from it by creating more "
+        "electors."),),
+    "It also amends Benedict XVI's motu proprio De aliquibus mutationibus (11 June 2007), "
+    "which had replaced No. 75; that act is published in Latin only, on vatican.va.": (
+        overview("It also amends Benedict XVI's motu proprio De aliquibus mutationibus (11 "
+                 "June 2007), which had replaced No. 75; that act is published in Latin only, "
+                 "on vatican.va."),),
     # The Code of Canon Law: excerpt-only, so its Library row shows it.
     "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no "
     "English translation. The official Latin is on vatican.va.": (overview(

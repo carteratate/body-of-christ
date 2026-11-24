@@ -11,14 +11,16 @@ reach live at the Phase 4 apply (D7).
 The rules, from the spec and Carter's answers of 13 Nov 2026 (Decision log "Source
 credits for document facts (2.3)"):
 
-- `genre`: a papal document's `metadata["genre"]` (1.3b, `papal_genres.csv`); `catechism`
-  and `code` for the Catechism and the Code; a Church Fathers work's from
+- `genre`: a papal document's `metadata["genre"]` (1.3b, `papal_genres.csv`), and a
+  Church law document's where its adapter sets one (Universi Dominici Gregis and Normas
+  Nonnullas, 5.4); `catechism` and `code` for the Catechism and the Code; a Church Fathers work's from
   `FATHERS_GENRES` (3.2); otherwise none.
 - `form`: how the papal chancery issued a papal document, `bull` or `brief`, from its
   `metadata["form"]` (1.3b, `papal_genres.csv`; issue #330); none where none is recorded,
   and for every other document.
-- `issuer`, `issuer_label` (D11): the pope from `metadata["pope"]`; the council a council
-  document comes from; the Holy See for the Catechism and the Code; otherwise none.
+- `issuer`, `issuer_label` (D11): the pope from `metadata["pope"]`, for a papal document
+  and for a pope's law in Church law (5.4); the council a council document comes from;
+  the Holy See for the Catechism and the Code; otherwise none.
 - `year`, `date_display`: the adapter's, with the corrections below, and the Church
   Fathers' from Quasten's Patrology (`FATHERS_DATES`, 3.2).
 - `source_credit`: the rights row's `credit_line`, exactly (0.2). A document that also
@@ -32,8 +34,9 @@ credits for document facts (2.3)"):
 - `notes`: the adapter's (an extract's omitted paragraphs, 1.3d; the Code's held canons;
   3.3's omitted Latin), or 3.2's (`attributions.DOCUMENTS`). A document given both fails.
 - `attribution_note`: 3.2's (`attributions.DOCUMENTS`).
-- `superseded_by`, `superseded_note`: no rule sets them yet; a value already in the
-  registry is kept (5.4).
+- `superseded_by`, `superseded_note`: no rule sets them; a value already in the
+  registry is kept. 5.4's history documents carry theirs
+  (`scripts/universal_law_registry.py`).
 """
 from __future__ import annotations
 
@@ -281,6 +284,8 @@ def _issuer(document: Document) -> tuple[str | None, str | None]:
     if document.collection == "councils":
         label = meta.get("council") or document.title
         return issuer_slug(label), label
+    if document.collection == "church-law" and meta.get("pope"):
+        return issuer_slug(meta["pope"]), meta["pope"]      # a pope's law (5.4)
     if document.collection in ("catechism", "canon-law", "church-law"):
         return HOLY_SEE
     return None, None
@@ -291,6 +296,8 @@ def _genre(document: Document, work_id: str) -> str | None:
         return FATHERS_GENRES[work_id]
     if document.collection in PAPAL_COLLECTIONS:
         return (document.metadata or {}).get("genre")
+    if document.collection == "church-law" and (document.metadata or {}).get("genre"):
+        return document.metadata["genre"]                     # a pope's law (5.4)
     return {"catechism": "catechism", "canon-law": "code", "church-law": "code"
             }.get(document.collection)
 

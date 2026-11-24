@@ -646,13 +646,18 @@
     {
      "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
      "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
-     "documents": 23
+     "documents": 28
     }
    ],
    "documents": [
     {
      "document_id": "1302988d-7dbc-5bc0-9005-838053111c45",
      "title": "Africae Munus",
+     "collection": "apostolic-exhortations"
+    },
+    {
+     "document_id": "d84a6847-b128-5142-a5f7-3b4923e89417",
+     "title": "Amoris Laetitia",
      "collection": "apostolic-exhortations"
     },
     {
@@ -794,6 +799,21 @@
      "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
      "title": "Code of Canon Law (1983)",
      "collection": "canon-law"
+    },
+    {
+     "document_id": "96723311-6eb4-5b12-8ab1-b7e07b00cb35",
+     "title": "Normas Nonnullas",
+     "collection": "church-law"
+    },
+    {
+     "document_id": "91ea6448-e06b-5e84-92ba-f042b0e81885",
+     "title": "Universi Dominici Gregis (1996 original)",
+     "collection": "church-law"
+    },
+    {
+     "document_id": "ba99edda-440c-599c-9b2c-5e65c2896c0a",
+     "title": "Universi Dominici Gregis (as amended 2013)",
+     "collection": "church-law"
     },
     {
      "document_id": "c1d5382f-c7c7-564d-989a-89775b36fd58",
@@ -1168,6 +1188,11 @@
     {
      "document_id": "083ada7e-352a-50c3-925f-6c51b2258230",
      "title": "Tertio Millennio Adveniente",
+     "collection": "papal-documents"
+    },
+    {
+     "document_id": "8e9c9c76-9be1-5e01-841a-4622c78a304d",
+     "title": "Ubicumque et Semper",
      "collection": "papal-documents"
     }
    ]

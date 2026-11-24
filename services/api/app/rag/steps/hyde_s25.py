@@ -219,12 +219,14 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
         "prose."
     ),
     "canon-law": (
-        "Write one provision of about 50-100 words in the manner of a single canon of the 1983 "
-        "Code of Canon Law. Express the right, duty, condition, procedure, or consequence that "
+        "Write one provision of about 50-100 words in the manner of the Church's universal law, "
+        "such as a canon of the 1983 Code of Canon Law or a numbered norm of an apostolic "
+        "constitution. Express the right, duty, condition, procedure, or consequence that "
         "most directly addresses the question; focus on an exception or limit when the user asks "
         "for one. Keep a named office, sacrament, or legal term when it belongs. For a broad "
         "legal question, connect its main concepts within one rule. Add another clause only if it "
-        "clarifies that rule. Do not invent a canon number, legal effect, or unrelated provision. "
+        "clarifies that rule. Do not invent a canon or norm number, legal effect, or unrelated "
+        "provision. "
         "Where exact details are uncertain, use a general legal formulation without invented "
         "specifics. Return only the provision, without a citation label or heading. A naturally "
         "brief rule may be shorter."
@@ -254,8 +256,9 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
     ),
 }
 
-# The new keys of 5.1b.1. Church law is canon law under a new name, with the same
-# prompt until 5.4 adds the universal laws. Theologians and spiritual writers will hold
+# The new keys of 5.1b.1. Church law is canon law under a new name, with the same prompt,
+# which 5.4 broadened to the universal laws beside the Code (Universi Dominici Gregis).
+# Theologians and spiritual writers will hold
 # writers to the 1930s, so its prompt is the medieval one past the medieval period.
 _COLLECTION_HYDE_PROMPTS["church-law"] = _COLLECTION_HYDE_PROMPTS["canon-law"]
 _COLLECTION_HYDE_PROMPTS["theologians"] = (
