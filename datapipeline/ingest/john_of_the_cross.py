@@ -47,7 +47,6 @@ class Treatise:
     scan: str            # the Internet Archive item
     slug: str            # the source key's last part and the anchors' first
     title: str
-    short: str           # what a reference names
     year: int
     books: int
     chapters: tuple[int, ...]   # chapters in each book, from the volume's contents
@@ -55,8 +54,7 @@ class Treatise:
 
 TREATISES = (
     Treatise("lewis-ascent-of-mount-carmel", "completeworksofs01johnuoft",
-             "ascent-of-mount-carmel", "The Ascent of Mount Carmel", "Ascent of Mount Carmel",
-             1585, 3, (15, 32, 44)),
+             "ascent-of-mount-carmel", "The Ascent of Mount Carmel", 1585, 3, (15, 32, 44)),
 )
 
 _ROMAN = {"I": 1, "V": 5, "X": 10, "L": 50}
@@ -87,8 +85,15 @@ _READ_CALL = re.compile(r"(?<=[.,;:!?’”'])\s?[tf](?=\s|$)")
 _FIGURE_CALL = re.compile(r"(?<=[.,;:!?][’”])\d(?=\s[A-Z])")
 
 
+def _call_mark(m: re.Match) -> str:
+    """A call mark goes; one standing between a space and the next word leaves the space
+    ("him.’ ††‘Be not afraid")."""
+    after = m.string[m.end():m.end() + 1]
+    return " " if m.group()[:1].isspace() and after and not after.isspace() else ""
+
+
 def strip_calls(text: str) -> str:
-    text = _FIGURE_CALL.sub("", _READ_CALL.sub("", _CALL_MARKS.sub("", text)))
+    text = _FIGURE_CALL.sub("", _READ_CALL.sub("", _CALL_MARKS.sub(_call_mark, text)))
     # The page's specks the OCR read as "~" or "_" (Lewis prints neither).
     return re.sub(r"[ ]{2,}", " ", re.sub(r"\s*_+\s*", " ", text.replace("~", " "))).strip()
 
@@ -203,7 +208,7 @@ def build_document(treatise: Treatise, text: dict | None = None) -> Document:
             short = chapter.label.split(". ", 1)[0]
             passage = Passage(
                 content=clean_text(body),
-                reference=piece_reference(f"{treatise.short}, {short}", None, None, k, len(pieces)),
+                reference=piece_reference(f"{treatise.title}, {short}", None, None, k, len(pieces)),
                 anchor=anchor, chapter_key=chapter_key, chapter_label=chapter.label,
                 position=len(passages), unit_label=None,
                 metadata={"pages": chapter.pages})

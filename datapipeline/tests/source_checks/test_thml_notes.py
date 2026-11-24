@@ -50,6 +50,8 @@ def _by_file(built) -> dict:
     for collection in THML:
         for d in built[collection]:
             for p in d.passages:
+                if p.metadata.get("text_source") == "ocr":
+                    continue    # a scan read through the OCR tool (5.6c), not a ThML file
                 out[(collection, p.metadata["source_file"])].append(p)
     return out
 

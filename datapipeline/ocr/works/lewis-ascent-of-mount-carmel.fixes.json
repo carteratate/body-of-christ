@@ -1238,5 +1238,29 @@
   "find": "and thereforé to be",
   "replace": "and therefore to be",
   "why": "A speck read as an accent."
+ },
+ {
+  "passage": "0127",
+  "find": "of it.,If the soul",
+  "replace": "of it. If the soul",
+  "why": "Spacing the OCR lost, or a speck read as a comma, beside a punctuation mark; the page prints \"of it. If the soul\"."
+ },
+ {
+  "passage": "0160",
+  "find": "unto him,‘I brought",
+  "replace": "unto him, ‘I brought",
+  "why": "Spacing the OCR lost, or a speck read as a comma, beside a punctuation mark; the page prints \"unto him, ‘I brought\"."
+ },
+ {
+  "passage": "0266",
+  "find": "‘O God,I give",
+  "replace": "‘O God, I give",
+  "why": "Spacing the OCR lost, or a speck read as a comma, beside a punctuation mark; the page prints \"‘O God, I give\"."
+ },
+ {
+  "passage": "0337",
+  "find": "as these;he opens",
+  "replace": "as these; he opens",
+  "why": "Spacing the OCR lost, or a speck read as a comma, beside a punctuation mark; the page prints \"as these; he opens\"."
  }
 ]

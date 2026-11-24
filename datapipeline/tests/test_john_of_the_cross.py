@@ -18,6 +18,7 @@ ASCENT = J.TREATISES[0]
     ("‘Who will give us flesh to eat?’{ They", "‘Who will give us flesh to eat?’ They"),
     ("the wisdom~of this world", "the wisdom of this world"),
     ("the wind of his love,’+ and again", "the wind of his love,’ and again"),
+    ("descend with him.’ ††‘Be not afraid", "descend with him.’ ‘Be not afraid"),
     ("all that the ___ imagination may", "all that the imagination may"),
 ])
 def test_note_calls_and_specks_come_off(ocr, clean):
@@ -38,7 +39,7 @@ def _text(*paragraphs, continues=()):
             for k, t in enumerate(paragraphs, 1)]
 
 
-SMALL = J.Treatise("w", "scan", "work", "A Work", "Work", 1585, 2, (2, 1))
+SMALL = J.Treatise("w", "scan", "work", "A Work", 1585, 2, (2, 1))
 
 
 def test_chapters_take_their_title_and_run_in_order_within_each_book():
