@@ -145,7 +145,9 @@ NOT_ENGLISH = {("npnf208.xml", "ix.cxxvi"): frozenset({
 _NPNF_EDITOR_BRACKET = re.compile(r"\bA\.\s?V\.|\blxx\b", re.IGNORECASE)
 # The same comparison printed in parentheses, by (file, paragraph id): the span as printed.
 _NPNF_EDITOR_SPANS = {
-    ("npnf208.xml", "vii.vi-p56"): (" (A.V., “of” instead of “through a woman”)",)}
+    ("npnf208.xml", "vii.vi-p56"): (" (A.V., “of” instead of “through a woman”)",),
+    # The translator's source line under Gregory's quotation of Homer (Letter V).
+    ("npnf207.xml", "iv.iii.iv-p6"): ("—Od. viii. 492.",)}
 _NPNF_NUMBER = re.compile(r"^(Chapter|Homily|Letter) ([IVXLC]+)\.$")
 _CANONICA = re.compile(r"^\(?Canonica \w+\.?\)?$")
 # NPNF2-07: Cyril's number lines ("Lecture IV.", "FIRST CATECHETICAL LECTURE"), Gregory's
@@ -161,6 +163,10 @@ _ORATION_FIX = {("npnf207.xml", "iii.xvii"): "XXXI"}
 _READING_CLASSES = frozenset({"c41", "c42", "c43", "c44"})
 # Cyril's own headings inside a lecture ("I. Of God." in Lecture IV), level 2.
 _LECTURE_HEADING_CLASS = "c40"
+# Letters whose "Ep. N." line prints the wrong number: the letter to Gregory of Nyssa on
+# his teaching rhetoric is Gregory's Letter XI, though NPNF2-07 prints "Ep. I." over it
+# (a second "Letter I", beside the first letter to Basil).
+_LETTER_FIX = {("npnf207.xml", "iv.iv.ii.i"): "XI"}
 # Gregory's letters without an address line: the division they stand in names it.
 _LETTER_ADDRESS = {("npnf207.xml", "iv.iii"): "To Basil"}
 # A chapter whose end is the editor's, from this paragraph on: Gifford's appendix to
@@ -619,7 +625,7 @@ class _NpnfEditor(Editor):
         (the audit's fresh edit) drops the same."""
         plain = edit.again
         edit.again = lambda: self._headed(plain(), elem)
-        head = (_HEADS[self.style](self.source_file, elem)
+        head = (_HEADS[self.style](self.source_file, elem, self.parent_map)
                 if elem.get("id") not in _PART_DIVS else _Head(None, "", []))
         for r in edit.removed:
             if r.kind == "letter-title":
@@ -705,7 +711,7 @@ class _Head:
     headings: list = field(default_factory=list)    # (paragraph, level): the work's own
 
 
-def _basil_head(filename, elem) -> _Head:
+def _basil_head(filename, elem, parent_map=None) -> _Head:
     kind, n, title, head = _npnf_head(elem)
     return _Head(f"{kind} {n}", title, head)
 
@@ -718,7 +724,7 @@ def _attr_title(elem) -> str:
     return " ".join((elem.get("title") or "").split()).rstrip(" .")
 
 
-def _lecture_head(filename, elem) -> _Head:
+def _lecture_head(filename, elem, parent_map=None) -> _Head:
     """A lecture's head is everything above its first paragraph of text: the title page
     lines of the series (the Procatechesis, the Mystagogical Lectures), the number line,
     the title, and the Scripture reading Cyril set for it, which stays as an epigraph. His
@@ -742,7 +748,7 @@ def _lecture_head(filename, elem) -> _Head:
     return _Head(number, _attr_title(elem), lines, epigraphs=readings, headings=headings)
 
 
-def _oration_head(filename, elem) -> _Head:
+def _oration_head(filename, elem, parent_map=None) -> _Head:
     """An oration's head runs to its first numbered section ("I.", "1."). Above it, the
     lines up to the number and the title lines under it go to the label; the rest is the
     editor's: his introduction, his dating and his analysis of the oration."""
@@ -767,7 +773,7 @@ def _oration_head(filename, elem) -> _Head:
     return _Head(f"Oration {n}", _attr_title(elem), lines, notes)
 
 
-def _letter207_head(filename, elem) -> _Head:
+def _letter207_head(filename, elem, parent_map=None) -> _Head:
     """A letter's head in NPNF2-07: the division and section heads over the first letter
     of each, the "Ep. N." line (with its address, or after it), and the editor's notes in
     parentheses, which date the letter or say what it answers."""
@@ -791,13 +797,14 @@ def _letter207_head(filename, elem) -> _Head:
         else:
             break
         k += 1
+    number = _LETTER_FIX.get((filename, elem.get("id")), number)
     if number is None:
         raise ValueError(f"{elem.get('id')}: no Ep. line")
     if address is None:
         title = _attr_title(elem)
         parent = elem
         while address is None and parent is not None:
-            parent = _PARENTS.get(id(parent))
+            parent = parent_map.get(parent)
             if parent is None:
                 break
             address = _LETTER_ADDRESS.get((filename, parent.get("id")))
@@ -806,10 +813,6 @@ def _letter207_head(filename, elem) -> _Head:
         if address is None and not re.fullmatch(r"Letter [CLXVI]+", title):
             address = title
     return _Head(f"Letter {number}", address or "", lines, notes)
-
-
-# The parent of each div the letter reader looks up, by id(), set as a volume is read.
-_PARENTS: dict[int, object] = {}
 
 
 def _npnf_head(elem) -> tuple[str, str, str, list]:
@@ -861,13 +864,12 @@ def _letter_part(filename, letter, parent_map):
 
 def _npnf_document(filename, w: NpnfWork, work, parent_map):
     editor = _NpnfEditor(filename, _source_key(filename, work), parent_map, w.skip, w.style)
-    _PARENTS.update({id(e): p for e, p in parent_map.items()})
     groups = dict(w.groups)
     chapters, works = [], []
     group = None
     for _, elem in list(iter_chapters(work, parent_map, editor.skip,
                                       front_matter=lambda title: False)):
-        head = _HEADS[w.style](filename, elem)
+        head = _HEADS[w.style](filename, elem, parent_map)
         title = _clip(head.title)
         # The work's own headings stay in the text, marked (#452): Cyril's reading as an
         # epigraph, his headings inside a lecture at their level.

@@ -766,6 +766,10 @@ def test_gregory_letters_are_numbered_works(npnf207):
     letters = npnf207["iv"]
     titles = {w.work_key: w.title for w in letters.works}
     assert titles["iv.ii.iii"] == "Letter CI"
+    assert titles["iv.iv.ii.i"] == "Letter XI"          # printed "Ep. I."
+    assert len(set(titles.values())) == len(titles)
+    text = "\n".join(p.content for p in letters.passages)
+    assert "Od. viii. 492" not in text
     label = next(p.chapter_label for p in letters.passages if p.chapter_key == "iv.iii.ii")
     assert label == "Letter II · To Basil"
     # The editor's pointers to letters printed above are not built.
