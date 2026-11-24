@@ -13,7 +13,7 @@ const COLLECTION_DESCRIPTIONS: Record<string, string> = {
   councils:
     "The proceedings and documents of the ecumenical councils, the formal gatherings of the world's bishops that define doctrine and address Church affairs. The corpus includes councils from Nicaea (325 AD) through the Second Vatican Council (1962-1965). Council documents are among the most authoritative sources in Catholic theology, defining core beliefs such as the Trinity, the Incarnation, and the nature of the Church.",
   "church-fathers":
-    "Writings of the early Church Fathers from roughly the 1st through 6th centuries, including Clement of Rome, Ignatius of Antioch, Justin Martyr, Irenaeus, Cyprian, Athanasius and Augustine.",
+    "Writings of the early Church Fathers from roughly the 1st through 6th centuries, including Clement of Rome, Ignatius of Antioch, Justin Martyr, Irenaeus, Cyprian, Athanasius and Augustine. The Fathers interpreted Scripture, defended the faith against heresies, and laid the theological foundations the Church still stands on. Essential for understanding how Christian doctrine developed in its earliest centuries.",
   theologians:
     "Theologians and spiritual writers after the age of the Fathers. For now it holds medieval works: Anselm of Canterbury, Bernard of Clairvaux and Thomas à Kempis's Imitation of Christ. A tradition that pairs rigorous inquiry with deep spiritual reflection; soon more writers will join it.",
   "church-law":
