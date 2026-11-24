@@ -61,8 +61,23 @@ jobs:
       - run: pip install --no-deps -e services/api
       - name: Lock files match pyproject.toml
         run: pip install uv==0.13.9 && scripts/lock_python_deps.sh --check api
-      - run: python -m pytest -q
+      # The real-SQL tests (migrations, staging, republish checks, keyword-search SQL)
+      # start their own throwaway clusters, so they need initdb and pg_ctl on PATH.
+      # REQUIRE_LOCAL_POSTGRES makes them fail rather than skip if the tools are missing.
+      - name: PostgreSQL tools
+        run: |
+          bin=$(ls -d /usr/lib/postgresql/*/bin 2>/dev/null | sort -V | tail -1)
+          if [ -z "$bin" ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq --no-install-recommends postgresql
+            bin=$(ls -d /usr/lib/postgresql/*/bin | sort -V | tail -1)
+          fi
+          echo "$bin" >> "$GITHUB_PATH"
+          "$bin/initdb" --version
+      - run: python -m pytest -q -rs -n auto
         working-directory: services/api
+        env:
+          REQUIRE_LOCAL_POSTGRES: "1"
 
   datapipeline:
     runs-on: ubuntu-latest
@@ -84,5 +99,22 @@ jobs:
       - run: pip install --require-hashes -r datapipeline/requirements.lock
       - name: Lock file matches requirements.txt
         run: pip install uv==0.13.9 && scripts/lock_python_deps.sh --check datapipeline
-      - run: python -m pytest -q -m "not smoke"
+      # The real-SQL tests (migrations, staging, republish checks, keyword-search SQL)
+      # start their own throwaway clusters, so they need initdb and pg_ctl on PATH.
+      # REQUIRE_LOCAL_POSTGRES makes them fail rather than skip if the tools are missing.
+      - name: PostgreSQL tools
+        run: |
+          bin=$(ls -d /usr/lib/postgresql/*/bin 2>/dev/null | sort -V | tail -1)
+          if [ -z "$bin" ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq --no-install-recommends postgresql
+            bin=$(ls -d /usr/lib/postgresql/*/bin | sort -V | tail -1)
+          fi
+          echo "$bin" >> "$GITHUB_PATH"
+          "$bin/initdb" --version
+      # -n auto sizes workers by free memory (tests/conftest.py); loadscope builds each
+      # module's fixtures once.
+      - run: python -m pytest -q -rs -m "not smoke" -n auto --dist loadscope
         working-directory: datapipeline
+        env:
+          REQUIRE_LOCAL_POSTGRES: "1"
