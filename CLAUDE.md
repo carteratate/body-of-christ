@@ -47,6 +47,14 @@ docker run --env-file services/api/.env -p 8000:8000 theocorpus-api
 For a publish, a rollback or a store repair, read `datapipeline/README.md` before running
 commands.
 
+CI (`.github/workflows/ci.yml`) runs only the jobs a PR's paths can affect
+(`scripts/ci_changes.sh`): `web` for `apps/web/` and the two outside files its tests read,
+`api` and `datapipeline` for anything but documentation (`docs/` except `docs/adr/`, and
+`*.md`), and `api-image`, which builds `services/api/Dockerfile` without pushing it, for
+`services/api/`. A skipped job reports success. **When a test starts reading a file in another
+area of the repo, add that path to `scripts/ci_changes.sh`**, or CI will skip the test
+for PRs that change only that file. Pushes to `master` always run every job.
+
 ---
 
 ## 1. Fixed Architecture (DO NOT CHANGE)
