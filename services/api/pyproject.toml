@@ -30,8 +30,19 @@ dev = [
     "pytest-asyncio>=0.23",
     "httpx2>=2.13",  # imported directly by tests/test_hyde_steps.py
     "pytest-xdist>=3.6",  # CI runs the suite in parallel (-n auto)
+    "ruff>=0.17",          # CI: ruff check (config in the repo root's ruff.toml)
+    "basedpyright>=1.40",  # CI: type check app/ against the baseline (see below)
 ]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+# Type checking for app/: pyright's default ("standard") rules, through basedpyright
+# because it can baseline. .basedpyright/baseline.json holds the errors that existed
+# when the check was added; CI fails only on new ones. After fixing some, shrink the
+# baseline with `basedpyright --writebaseline` (run in services/api) and commit it.
+[tool.basedpyright]
+include = ["app"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"

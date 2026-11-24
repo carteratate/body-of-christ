@@ -242,7 +242,7 @@ async def test_run_isolates_failures_and_continues(tmp_path, monkeypatch):
     csv_path.write_text("bible,genesis/1/1\nbible,genesis/1/999\n")
     out_path = tmp_path / "review.txt"
 
-    written_to = await run(str(csv_path), str(out_path))
+    await run(str(csv_path), str(out_path))
     content = out_path.read_text()
     assert "no chunk found" in content
     assert "genesis/1/999" in content

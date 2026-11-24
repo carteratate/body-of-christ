@@ -61,6 +61,13 @@ jobs:
       - run: pip install --no-deps -e services/api
       - name: Lock files match pyproject.toml
         run: pip install uv==0.13.9 && scripts/lock_python_deps.sh --check api
+      # Both pinned by requirements-dev.lock. ruff covers all three Python trees
+      # (ruff.toml); basedpyright fails only on type errors not in its baseline.
+      - name: Python lint (ruff)
+        run: ruff check services/api datapipeline scripts
+      - name: Type check app/ (basedpyright, new errors only)
+        run: basedpyright
+        working-directory: services/api
       # The real-SQL tests (migrations, staging, republish checks, keyword-search SQL)
       # start their own throwaway clusters, so they need initdb and pg_ctl on PATH.
       # REQUIRE_LOCAL_POSTGRES makes them fail rather than skip if the tools are missing.

@@ -421,6 +421,12 @@ No LangGraph or agent frameworks. No pgvector for retrieval.
   commit the regenerated `requirements*.lock`. The production image and CI install only
   from the locks, and CI fails when a lock is out of date with its input. The script
   keeps existing pins; `--upgrade-package NAME` moves one on purpose.
+- Python lint is zero errors too: `ruff check services/api datapipeline scripts` (Pyflakes
+  rules, `ruff.toml`). `services/api/app` is type-checked by basedpyright (pyright's
+  standard rules) against `services/api/.basedpyright/baseline.json`, which holds the 153
+  errors that existed when the check was added: CI fails only on new ones. When you fix
+  some, run `basedpyright --writebaseline` in `services/api` and commit the smaller
+  baseline. Both tools come with `requirements-dev.lock`.
 
 ---
 
