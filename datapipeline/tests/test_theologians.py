@@ -1,5 +1,5 @@
-"""5.6b's theologians and spiritual writers (issue #207): Teresa of Avila's Interior Castle
-(Stanbrook, 1921) and Life (Lewis, 1904), from CCEL ThML."""
+"""5.6b's theologians and spiritual writers (issue #207), from CCEL ThML: Teresa of Avila,
+Francis de Sales, Julian of Norwich, Thérèse of Lisieux and Ignatius of Loyola."""
 import os, sys
 os.environ.setdefault("DATABASE_URL", "postgresql://test:test@localhost/test")
 os.environ.setdefault("OPENAI_API_KEY", "sk-test")
@@ -51,13 +51,15 @@ def _labels(doc) -> list[str]:
 def test_the_documents_under_the_collection_key():
     docs = _built()
     assert sorted(docs) == ["Introduction to the Devout Life", "Revelations of Divine Love",
-                            "The Interior Castle", "The Life of St. Teresa of Jesus",
+                            "The Autobiography of St. Ignatius", "The Interior Castle",
+                            "The Life of St. Teresa of Jesus",
+                            "The Spiritual Exercises of St. Ignatius of Loyola",
                             "The Story of a Soul", "Treatise on the Love of God"]
     for d in docs.values():
         assert d.collection == T.COLLECTION
         assert d.author in ("Teresa of Avila", "Francis de Sales", "Julian of Norwich",
-                            "Thérèse of Lisieux")
-        # The source key is the file's path under sources/, so 5.1b.3's rename keeps it.
+                            "Thérèse of Lisieux", "Ignatius of Loyola")
+        # The source key is the file's path under sources/.
         assert "../" + d.metadata["source_key"] == d.metadata["source_file"]
     assert (_castle().year, _life().year) == (1577, 1565)
     assert _castle().translation == "Benedictines of Stanbrook (1921)"
@@ -433,3 +435,89 @@ def test_lines_split_without_a_page_break_stay_apart_unless_the_second_runs_on()
     # A sentence cut with nothing between, its second part in lower case, is one.
     assert "as much devotion as I ought; I have not loved my neighbour" in _text(_devout())
     assert "Our way and our heaven is true love" in _text(_julian())
+
+
+# --------------------------------------------------------------------------- Ignatius
+
+def _exercises():
+    return _built()["The Spiritual Exercises of St. Ignatius of Loyola"]
+
+
+def _autobiography():
+    return _built()["The Autobiography of St. Ignatius"]
+
+
+def _passage(doc, anchor):
+    return next(p for p in doc.passages if p.anchor == anchor)
+
+
+def _heads(p):
+    return [(p.content[m["at"]:m["end"]], m.get("level"), bool(m.get("chapter_title")))
+            for m in p.metadata.get("headings") or []]
+
+
+def test_exercises_are_the_annotations_weeks_methods_mysteries_and_rules():
+    labels = _labels(_exercises())
+    assert labels[:3] == ["Annotations", "Presupposition", "First Week · Principle and Foundation"]
+    assert "Second Week · The Fourth Day. Two Standards" in labels
+    assert "Three Methods of Prayer · First Method. I. The Ten Commandments" in labels
+    assert labels[-1] == "Rules · To Have the True Sentiment"
+    text = _text(_exercises())
+    # Mullan's preface and general note, the approbations, Paul III's brief and Father
+    # Diertins's prayer are the edition's, not Ignatius's.
+    for gone in ("present translation of the Exercises", "No change whatever is made",
+                 "Diertins", "ROUSE up", "Francis de Borgia", "Given at St. Mark"):
+        assert gone not in text
+    assert sum(p.metadata.get("editor_note_count", 0) for p in _exercises().passages) == 41
+    assert (_exercises().year, _exercises().translation) == (1548, "Elder Mullan (1914)")
+
+
+def test_exercises_keep_the_manuscripts_headlines_in_the_text_marked():
+    # A section's heading over its first chapter; a chapter's title, then its subtitle.
+    assert _heads(_passage(_exercises(), "xii.i"))[:2] == [
+        ("FIRST WEEK", 1, False), ("PRINCIPLE AND FOUNDATION", 1, True)]
+    assert _heads(_passage(_exercises(), "xii.v")) == [
+        ("FIRST EXERCISE", 1, True),
+        ("IT IS A MEDITATION WITH THE THREE POWERS ON THE FIRST, THE SECOND AND THE THIRD "
+         "SIN", 2, False)]
+    # One printed heading set over several lines is one heading.
+    assert _heads(_passage(_exercises(), "xiii.ii"))[0][0] == (
+        "THE FIRST DAY AND FIRST CONTEMPLATION IT IS ON THE INCARNATION AND CONTAINS THE "
+        "PREPARATORY PRAYER, THREE PRELUDES, THREE POINTS AND ONE COLLOQUY")
+    # A heading inside a chapter is level 2, in its place.
+    third = _passage(_exercises(), "xiii.iii")
+    assert ("THE THIRD CONTEMPLATION WILL BE A REPETITION OF THE FIRST AND SECOND EXERCISE",
+            2, False) in _heads(third)
+    # The work's title stands over the Presupposition, after the Annotations.
+    assert _passage(_exercises(), "xi").content.startswith(
+        "SPIRITUAL EXERCISES to conquer oneself and regulate one’s life")
+
+
+def test_exercises_read_out_page_references_and_keep_the_examen_chart():
+    text = _text(_exercises())
+    assert not re.search(r"\(p\. \d+\)", text)
+    assert "Twelfth Day. On Palm Sunday." in text
+    assert "INCLUSIVELY\n\nand it contains the Preparatory Prayer, three Preludes" in text
+    assert "and so on.\n\nG\nG\nG\nG\nG\nG" in text
+    assert "Ibidem." in text and "lbidem" not in text
+
+
+def test_autobiography_is_da_camaras_preface_and_the_eight_chapters():
+    doc = _autobiography()
+    labels = _labels(doc)
+    assert labels[0] == "Preface of the Writer"
+    assert labels[1] == ("Chapter I. His Military Life—He Is Wounded at the Siege of "
+                         "Pampeluna—His Cure—Spiritual Reading—The Apparition—The Gift of "
+                         "Chastity")
+    assert labels[-1] == ("Chapter VIII. His Arrival in His Native Land and the Virtues "
+                          "Practised There—His Journey into Spain and Italy")
+    assert len(labels) == 9 and all(len(label) <= 140 for label in labels)
+    text = _text(doc)
+    assert text.startswith("Jesus, Mary. In the year 1553")
+    # O'Conor's preface, caption, chapter summaries and appendix are the editor's.
+    for gone in ("Bollandists", "Preface of Father Louis Gonzalez", "HIS MILITARY LIFE",
+                 "ST. IGNATIUS AND HIS WORK FOR EDUCATION", "kingdom of Navarre"):
+        assert gone not in text
+    assert text.rstrip().endswith("Master Natalis can tell the rest.")
+    assert not any(p.metadata.get("headings") for p in doc.passages)
+    assert doc.notes == T.IGNATIUS_NOTE and doc.year == 1555

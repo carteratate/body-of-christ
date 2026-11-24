@@ -35,7 +35,7 @@ from normalize.caps import smart_title_case
 from ingest.common import _block_text, _build_parent_map
 from ingest.keys import THEOLOGIANS
 from ingest.editorial import PLAIN_CALLERS, ChapterEdit, Editor, Removed
-from ingest.thml_doc import ChapterPlan, _clip, make_doc
+from ingest.thml_doc import LABEL_MAX_CHARS, ChapterPlan, _clip, make_doc
 
 # The source key these works are built under (published as `theologians`).
 COLLECTION = THEOLOGIANS
@@ -48,6 +48,8 @@ ANONYMOUS_1876 = "Anonymous translation (Rivingtons, 1876)"
 # Teresa's headings of the Life's chapters are not Lewis's: he left them out, following
 # Bouix, and Zimmerman's introduction to the 1904 edition prints them before the book.
 # The Counsels and Reminiscences are her words as others set them down.
+IGNATIUS_NOTE = ("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface "
+                 "opens it.")
 THERESE_NOTE = ("Its Counsels and Reminiscences are her sayings as her novices recorded "
                 "them.")
 LIFE_NOTE = ("Teresa's chapter headings, left out of the original translation, follow "
@@ -209,7 +211,9 @@ def _life_headings(arguments) -> dict[str, str]:
 # author's headings (the Life's arguments, which open their chapters through `lead`; a
 # Treatise book's title; the Devout Life's contents), which the build never reads. The
 # checks' extractor (`checks.source_text.thml_units`) reads both so.
-NOT_BODY_CLASSES = {"teresa-castle2.xml": {"Outline": "apparatus"}}
+NOT_BODY_CLASSES = {"teresa-castle2.xml": {"Outline": "apparatus"},
+                    # O'Conor's chapter summaries, which name the labels.
+                    "ignatius-autobiography.xml": {"chapterHead": "apparatus"}}
 HEADING_DIVS = {"teresa-life.xml": frozenset({"v"}),
                 "desales-devout_life.xml": frozenset({"ii"}),
                 # The Treatise's twelve book divs, ii to xiii (`_LOVE_BOOKS`).
@@ -232,7 +236,10 @@ NOT_BODY_PARAGRAPHS = {"teresa-life.xml": {"viii.xli-p58": "apparatus",
                        "therese-autobio.xml": {pid: "apparatus" for pid in (
                            "xxi-p1", "xxiii.i-p1", "xxiii.ii-p1", "xxiii.iv-p1",
                            "xxiii.viii-p1", "xxix.i-p1", "xxix.iii-p1", "xxix.viii-p1",
-                           "xix-p56")}}
+                           "xix-p56")},
+                       # O'Conor's caption over da Câmara's preface ("Preface of Father
+                       # Louis Gonzalez, S.J., to the 'Acts of St. Ignatius,' …").
+                       "ignatius-autobiography.xml": {"iv-p2": "apparatus"}}
 
 
 def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str], dict[str, str]]:
@@ -302,6 +309,7 @@ class _WorkEditor(Editor):
                 marked = marked.replace(printed, without)
             for printed, read in TEXT_FIXES.get((self.source_file, block.get("id")), ()):
                 marked = marked.replace(printed, read)
+            marked = without_page_refs(callers, marked)
             if block.get("class") in self.title_classes:
                 return marked, notes          # a title in capitals throughout stays so
             if self.source_file in _LETTER_FILES and _SALUTATION.match(marked):
@@ -329,7 +337,22 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
               ("therese-autobio.xml", "xxii.v-p1"): (("March 12, 1899.", "March 12, 1889."),),
               # The next paragraph opens with an omission mark, ". . . I must", which
               # cleaning would fold into the date's full stop across the paragraph break.
-              ("therese-autobio.xml", "xxii.v-p2"): ((". . . I must", "… I must"),)}
+              ("therese-autobio.xml", "xxii.v-p2"): ((". . . I must", "… I must"),),
+              # A Mystery's source line, as its neighbours print it ("Ibidem" with an l).
+              ("ignatius-exercises.xml", "xviii.xxxvii-p1"): (("lbidem.", "Ibidem."),)}
+# Mullan's references to pages of his edition ("They sent the Angel … (p. 133)."; "(p.
+# 152); and it contains"), in the files that print them: the edition's, not the text.
+_PAGE_REF = re.compile(r"\s*\(p\. \d+\)(?:;\s*)?")
+_PAGE_REF_FILES = frozenset({"ignatius-exercises.xml"})
+
+
+def without_page_refs(source_file: str, text: str) -> str:
+    """`text` without the edition's page references, for a file that prints them (named
+    as the checks name it, `../theologians/<file>`): "(p. 152); and it" reads "and it",
+    "inclusive (p. 155); and in" reads "inclusive; and in"."""
+    if source_file.removeprefix(f"../{SOURCE_DIR}/") not in _PAGE_REF_FILES:
+        return text
+    return _PAGE_REF.sub(lambda m: "; " if m.start() and ";" in m.group() else "", text)
 # A numbered step run on to the sentence before it with no space ("in the Presence of
 # God.2. Humble yourself", the Devout Life's meditations VII to X): the space restored.
 _GLUED_STEP = re.compile(r"([a-z][.!?”])(\d{1,2}\. [A-Z])")
@@ -572,6 +595,147 @@ def _letters_heading(heads: list[str], title: str | None) -> str:
     return "Letters" + text[i:] if text.upper().startswith("LETTERS") else text
 
 
+# --------------------------------------------------------------------------- Ignatius
+
+# The Spiritual Exercises (Mullan, 1914): the Annotations (ix), the work's own title over
+# its Presupposition (x, xi), the four Weeks (xii to xv), the Contemplation to Gain Love
+# (xvi), the Three Methods of Prayer (xvii), the Mysteries of the Life of Christ (xviii)
+# and the Rules (xix). Left out: the title pages (i, viii), the approbations of the Latin
+# texts and Paul III's brief (ii, iii), Mullan's preface and general note (iv, vi), the
+# contents (v), Father Diertins's prayer (vii), the general index (xx) and CCEL's indexes.
+# The headlines are the Manuscript's (Mullan supplied the few it lacks, his general note
+# says), so each stays in the text, marked: a section's ("FIRST WEEK") over its first
+# chapter and a chapter's own at level 1, one inside a chapter at level 2. The file sets
+# one printed heading over several `<h2>`/`<h3>` lines ("THE FIRST DAY AND FIRST
+# CONTEMPLATION / IT IS ON / THE INCARNATION / …"), so each run of heading lines is one
+# heading; a title line with smaller lines under it ("FIRST EXERCISE" over "IT IS A
+# MEDITATION …") is a title and a level-2 subtitle.
+_EXERCISES = ("ix", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii", "xviii", "xix")
+_EXERCISES_TITLE = "x"                    # the work's title, over the Presupposition
+_HEAD_TAGS = ("h1", "h2", "h3", "h4")
+# The class of the paragraph a run of heading lines becomes; with the file's subtitle
+# paragraphs ("IT IS A MEDITATION ON THE SINS …"), titles printed in capitals.
+_HEAD_CLASS = "heading-run"
+_EXERCISES_TITLES = frozenset({_HEAD_CLASS, "subtitle"})
+# Labels the div titles cut short ("THE SAME FOURTH DAY LET MEDITATION BE MADE ON").
+_EXERCISES_LABELS = {"xiii.v": "The Fourth Day. Two Standards",
+                     "xiii.vi": "The Fourth Day. Three Pairs of Men"}
+# A subtitle paragraph that is no heading: a Mystery's source line ("Ibidem.").
+_EXERCISES_NOT_SUBTITLES = frozenset({"xviii.xxxvii-p1"})
+
+
+def _heading_runs(div) -> list[tuple[Element, int, bool]]:
+    """Replace each run of the div's own heading lines (`<h1>`-`<h4>`, the empty
+    paragraphs between them passed over) with one paragraph of class `_HEAD_CLASS`, and
+    return those paragraphs as (paragraph, level, opens the chapter): a run before any
+    text opens it, level 1; a run after text is level 2. An opening run whose title line
+    (`<h1>`, `<h2>`) has smaller lines under it is split there, the rest a subtitle."""
+    out, seen_text, k = [], False, 0
+    while k < len(div):
+        kid = div[k]
+        if kid.tag not in _HEAD_TAGS:
+            seen_text = seen_text or (kid.tag == "p" and bool(_text(kid)))
+            k += 1
+            continue
+        j = k
+        while j < len(div) and (div[j].tag in _HEAD_TAGS
+                                or div[j].tag == "p" and not _text(div[j])):
+            j += 1
+        run = [h for h in div[k:j] if h.tag in _HEAD_TAGS and _text(h)]
+        groups = [run] if run else []
+        if not seen_text and len(run) > 1 and run[0].tag in ("h1", "h2") \
+                and run[1].tag not in ("h1", "h2"):
+            groups = [run[:1], run[1:]]
+        for h in [h for h in div[k:j] if h.tag in _HEAD_TAGS]:
+            div.remove(h)
+        for n, group in enumerate(groups):
+            para = Element("p", {"id": group[0].get("id"), "class": _HEAD_CLASS})
+            para.text = " ".join(_text(h) for h in group)
+            div.insert(k + n, para)
+            out.append((para, 2 if seen_text or n else 1, not seen_text))
+        k += len(groups) + 1
+    return out
+
+
+def _exercises_chapters(root):
+    out, pending = [], []
+    title = _div(root, _EXERCISES_TITLE)
+    for part_id in _EXERCISES:
+        if part_id == "xi":
+            pending.append((" ".join(_text(h) for h in title
+                                     if h.tag in _HEAD_TAGS and _text(h)), 1))
+        _ignatius_walk(_div(root, part_id), None, None, out, pending)
+    return out
+
+
+def _ignatius_walk(div, book: str | None, prefix: str | None, out: list,
+                   pending: list) -> None:
+    """Add `div` as a chapter if it holds text of its own, then its child divs. A
+    top-level div names its children's book ("First Week"); a div below a book prefixes
+    its children's labels ("First Method. I. The Ten Commandments"). A div holding only
+    headings passes them, as leads, to the first chapter after it."""
+    runs = _heading_runs(div)
+    title = " ".join((div.get("title") or "").split())
+    label = _EXERCISES_LABELS.get(div.get("id")) or (
+        _title(title) if title.isupper() else title)        # "I. The Ten Commandments"
+    if prefix:
+        label = f"{prefix}. {label}"
+    own = [p for p in div if p.tag == "p" and p.get("class") != _HEAD_CLASS and _text(p)]
+    if own:
+        heads = [(p.get("id"), level, opens and level == 1 and _title(_text(p)) == label)
+                 for p, level, opens in runs]
+        heads += [(p.get("id"), 2, False) for p in own if p.get("class") == "subtitle"
+                  and p.get("id") not in _EXERCISES_NOT_SUBTITLES]
+        order = {p.get("id"): n for n, p in enumerate(div) if p.tag == "p"}
+        out.append((book, div, ChapterPlan(
+            label=label, headings=tuple(sorted(heads, key=lambda h: order[h[0]])),
+            lead=tuple(pending))))
+        pending.clear()
+    else:
+        pending.extend((_text(p), level) for p, level, _ in runs)
+    for child in div:
+        if isinstance(child.tag, str) and child.tag.startswith("div"):
+            if book is None:
+                _ignatius_walk(child, label, None, out, pending)
+            else:
+                _ignatius_walk(child, book, label, out, pending)
+
+
+# The Autobiography (O'Conor, 1900): the account Ignatius dictated to Luis Gonçalves da
+# Câmara ("Father Louis Gonzalez"), with da Câmara's own preface (iv, "Preface of the
+# Writer"). Left out: the title page and images (i, ii), O'Conor's preface (iii) and
+# appendix on Jesuit education (xiii), his caption over da Câmara's preface, and CCEL's
+# indexes. The eight chapters and their summaries ("HIS MILITARY LIFE—HE IS WOUNDED …",
+# `chapterHead`) are O'Conor's division of a text that has none, so they are labels only,
+# as are his titles over the first chapter.
+_AUTOBIOGRAPHY = ("v", "vi", "vii", "viii", "ix", "x", "xi", "xii")
+_CHAPTER_NUMBER = re.compile(r"^CHAPTER ([IVXL]+)$")
+# Short words the title case capitalizes inside a summary ("Wounded At the Siege").
+_MINOR_WORDS = re.compile(r"(?<=\s)(?:At|As|Into)(?=\s)")
+
+
+def _autobiography_chapters(root):
+    out = [(None, _div(root, "iv"), ChapterPlan(label="Preface of the Writer"))]
+    for cid in _AUTOBIOGRAPHY:
+        ch = _div(root, cid)
+        number = next((m.group(1) for h in ch if h.tag == "h2"
+                       for m in [_CHAPTER_NUMBER.match(_text(h))] if m), None)
+        summary = next((_text(p) for p in ch if p.get("class") == "chapterHead"), None)
+        if not number or not summary:
+            raise ValueError(f"ignatius-autobiography.xml: chapter {cid!r} has no number "
+                             f"or summary")
+        # As many of the summary's phrases as fit a label, whole (as the Life's label
+        # takes its argument's first sentence).
+        label = f"Chapter {number}."
+        for k, part in enumerate(summary.rstrip(". ").split("—")):
+            phrase = _MINOR_WORDS.sub(lambda m: m.group().lower(), _title(part))
+            longer = label + (" " if k == 0 else "—") + phrase
+            if k and len(longer) > LABEL_MAX_CHARS:
+                break
+            label = longer
+        out.append((None, ch, ChapterPlan(label=label)))
+    return out
+
 # A paragraph the file closes mid-sentence: it ends on a lower-case word, a comma, a
 # semicolon, a dash or the word "I", or the next part starts in lower case. A next part
 # that opens with its section number ("25. The devils") is a paragraph of its own.
@@ -600,7 +764,8 @@ def _rejoin_split_paragraphs(chapters, work: ThmlWork) -> int:
         k = 0
         while k < len(kids):
             first = kids[k]
-            if first.tag != "p" or first.get("id") in skipped:
+            if first.tag != "p" or first.get("id") in skipped \
+                    or first.get("class") == _HEAD_CLASS:
                 k += 1
                 continue
             j = k + 1
@@ -635,8 +800,11 @@ def _rejoin_split_paragraphs(chapters, work: ThmlWork) -> int:
 _VERSE_LINE_CLASSES = ("List7",)
 # Verse lines a file sets as plain paragraphs, by `<p>` id: the Devout Life's closing
 # couplet from St Francis's song (V ch. xviii).
-_VERSE_LINES = {"desales-devout_life.xml": frozenset({"vii.xviii-p11", "vii.xviii-p12"})}
-_VERSE_FILES = frozenset({"desales-love.xml", "desales-devout_life.xml"})
+_VERSE_LINES = {"desales-devout_life.xml": frozenset({"vii.xviii-p11", "vii.xviii-p12"}),
+                # The Particular Examen's chart, a line of "G"s, one for each day.
+                "ignatius-exercises.xml": frozenset(f"xii.ii-p{n}" for n in range(18, 29, 2))}
+_VERSE_FILES = frozenset({"desales-love.xml", "desales-devout_life.xml",
+                          "ignatius-exercises.xml"})
 
 
 def _verse_blocks(chapters, work: ThmlWork) -> None:
@@ -662,8 +830,10 @@ def _verse_blocks(chapters, work: ThmlWork) -> None:
                 lines, run = list(child), [child]
             elif is_line(child):
                 j = k
-                while j < len(kids) and is_line(kids[j]):
-                    j += 1
+                while j < len(kids) and (is_line(kids[j]) or (
+                        kids[j].tag == "p" and not _text(kids[j])
+                        and j + 1 < len(kids) and is_line(kids[j + 1]))):
+                    j += 1                    # an empty paragraph between lines passed over
                 lines = run = kids[k:j]
             else:
                 k += 1
@@ -719,6 +889,16 @@ WORKS: tuple[ThmlWork, ...] = (
              title="The Story of a Soul", author="Thérèse of Lisieux", year=1897,
              translation="T. N. Taylor (1912)", chapters=_therese_chapters, genre="other",
              notes=THERESE_NOTE),
+    ThmlWork(file="ignatius-exercises.xml", url="https://ccel.org/ccel/i/ignatius/exercises.xml",
+             title="The Spiritual Exercises of St. Ignatius of Loyola",
+             author="Ignatius of Loyola", year=1548,
+             translation="Elder Mullan (1914)", chapters=_exercises_chapters,
+             genre="manual", title_classes=_EXERCISES_TITLES),
+    ThmlWork(file="ignatius-autobiography.xml",
+             url="https://ccel.org/ccel/i/ignatius/autobiography.xml",
+             title="The Autobiography of St. Ignatius", author="Ignatius of Loyola", year=1555,
+             translation="J. F. X. O'Conor (1900)", chapters=_autobiography_chapters,
+             genre="other", notes=IGNATIUS_NOTE),
 )
 
 

@@ -155,6 +155,10 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "Its Counsels and Reminiscences are her sayings as her novices recorded them.": (
         overview("Its Counsels and Reminiscences are her sayings as her novices recorded "
                  "them."),),
+    # 5.6b's Autobiography of St. Ignatius (`ingest.theologians.IGNATIUS_NOTE`).
+    "Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens it.": (
+        overview("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens "
+                 "it."),),
     # 3.2's labels.
     # The header names the Church of Smyrna.
     "A letter of the Church of Smyrna on Polycarp's death; its writer, Evarestus, is named "

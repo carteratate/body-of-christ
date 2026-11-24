@@ -146,6 +146,8 @@
   "documents": [
    "0715be7b-c108-55c0-bad8-d989fb8cdd16",
    "4451945f-fec4-5ab0-8d9e-5da62287ed24",
+   "44b734e0-b056-5f8d-92e9-0e98e3509848",
+   "725a33d3-8e0c-5d4b-81e4-7c2dc5aefdf6",
    "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe",
    "96d72c6a-b005-5e96-9f7f-ceca57042078",
    "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2",
@@ -160,6 +162,16 @@
     {
      "text": "5. In speech—do you never boast in any way? Do you never indulge in self-flattery when speaking of yourself?",
      "reason": "numbered question of Part V's examination, ending in a question mark"
+    }
+   ],
+   "44b734e0-b056-5f8d-92e9-0e98e3509848": [
+    {
+     "text": "Prayer. The usual Preparatory Prayer",
+     "reason": "a run-in heading and its sentence, printed without a full stop"
+    },
+    {
+     "text": "St. Matthew writes in the tenth Chapter",
+     "reason": "a Mystery's source line, printed without a full stop"
     }
    ],
    "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe": [

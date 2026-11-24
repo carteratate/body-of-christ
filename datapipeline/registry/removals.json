@@ -44693,6 +44693,25 @@
   "added_on": "2026-11-22"
  },
  {
+  "id": "rm-10607",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "44b734e0-b056-5f8d-92e9-0e98e3509848",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 41
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-23"
+ },
+ {
   "id": "rm-0127",
   "scope": "class",
   "collection": "medieval",

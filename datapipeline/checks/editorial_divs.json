@@ -1899,5 +1899,61 @@
   "div": "xxxii",
   "title": "Selected Poems (Susan L. Emery's translation)",
   "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "ii",
+  "title": "Approbation of the Latin Texts",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "iii",
+  "title": "Paul III, Pope, for a Perpetual Remembrance",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "iv",
+  "title": "Preface",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "vi",
+  "title": "General Note",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "vii",
+  "title": "Prayer of Father Diertins",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "xx",
+  "title": "General Index",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-autobiography.xml",
+  "div": "iii",
+  "title": "Editor's Preface",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-autobiography.xml",
+  "div": "xiii",
+  "title": "Appendix: St. Ignatius and His Work for Education",
+  "item": "5.6b"
  }
 ]

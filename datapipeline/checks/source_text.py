@@ -319,6 +319,7 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                     for printed, without in PLAIN_CALLERS.get((source_file, child.get("id")),
                                                               ()):
                         text = text.replace(printed, without)
+                    text = theologians.without_page_refs(source_file, text)
                     own = "apparatus" if region == "body" and (
                         _paragraph_sha1(text) in removed or div_id in own_text) else region
                     if own == "body" and div_id in heading_divs:
