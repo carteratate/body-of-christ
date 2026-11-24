@@ -10,7 +10,7 @@
       ],
       "reason": "Only to delete the Qdrant collection 5.1b.3's publish replaced, chunks-stromata-iii-2026-11, with publish.py drop-old-collection --close-window-early, under Carter's standing decision (23 Nov 2026): the window closes once its smoke checks pass, which for 5.1b.3 were step 7's acceptance checks (passed 24 Nov 2026, #200). Its stage, apply, rollback and repair entries are removed here.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 494
     },
     {
       "collection": "catechism",
@@ -22,7 +22,7 @@
       ],
       "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 494
     },
     {
       "collection": "church-law",
@@ -34,7 +34,7 @@
       ],
       "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 494
     },
     {
       "collection": "all",
@@ -44,7 +44,7 @@
       ],
       "reason": "Only to delete the Qdrant collection batch 1's publish replaces, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": null
+      "pr": 494
     }
   ]
 }
