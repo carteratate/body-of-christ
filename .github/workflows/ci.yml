@@ -74,7 +74,7 @@ jobs:
           fi
           echo "$bin" >> "$GITHUB_PATH"
           "$bin/initdb" --version
-      - run: python -m pytest -q -n auto
+      - run: python -m pytest -q -rs -n auto
         working-directory: services/api
         env:
           REQUIRE_LOCAL_POSTGRES: "1"
@@ -114,7 +114,7 @@ jobs:
           "$bin/initdb" --version
       # -n auto sizes workers by free memory (tests/conftest.py); loadscope builds each
       # module's fixtures once.
-      - run: python -m pytest -q -m "not smoke" -n auto --dist loadscope
+      - run: python -m pytest -q -rs -m "not smoke" -n auto --dist loadscope
         working-directory: datapipeline
         env:
           REQUIRE_LOCAL_POSTGRES: "1"
