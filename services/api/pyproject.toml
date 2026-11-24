@@ -32,6 +32,7 @@ dev = [
     "pytest-xdist>=3.6",  # CI runs the suite in parallel (-n auto)
     "ruff>=0.17",          # CI: ruff check (config in the repo root's ruff.toml)
     "basedpyright>=1.40",  # CI: type check app/ against the baseline (see below)
+    "pip-audit>=2.10",     # CI: known vulnerabilities in the lock files
 ]
 
 [tool.pytest.ini_options]

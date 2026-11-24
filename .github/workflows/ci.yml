@@ -34,6 +34,17 @@ jobs:
       - run: npm run lint
       - run: npx tsc --noEmit
       - run: npx vitest run
+      # Blocks only on a critical advisory in a production dependency, which is what
+      # reaches users; it passes today. Everything else (high, and all dev dependencies)
+      # is counted in the job summary without blocking, and Dependabot alerts track it.
+      - name: npm audit (blocks on critical, production dependencies)
+        run: npm audit --omit=dev --audit-level=critical
+      - name: npm audit summary (all dependencies, does not block)
+        if: ${{ !cancelled() }}
+        run: |
+          npm audit --json | jq -r '.metadata.vulnerabilities
+            | "npm audit, all dependencies: \(.critical) critical, \(.high) high, \(.moderate) moderate, \(.low) low"' \
+            | tee -a "$GITHUB_STEP_SUMMARY"
 
   api:
     runs-on: ubuntu-latest
@@ -85,6 +96,15 @@ jobs:
         working-directory: services/api
         env:
           REQUIRE_LOCAL_POSTGRES: "1"
+      # Known vulnerabilities in what the API image and the datapipeline install. Any
+      # finding blocks: upgrade it (scripts/lock_python_deps.sh --upgrade-package NAME),
+      # or, if it cannot apply to us, add `--ignore-vuln ID` to both lines with a comment
+      # saying why. After the tests, so a new advisory does not hide their results.
+      - name: pip-audit (lock files)
+        if: ${{ !cancelled() }}
+        run: |
+          pip-audit -r services/api/requirements.lock --require-hashes --disable-pip --progress-spinner off
+          pip-audit -r datapipeline/requirements.lock --require-hashes --disable-pip --progress-spinner off
 
   datapipeline:
     runs-on: ubuntu-latest
