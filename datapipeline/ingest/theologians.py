@@ -239,7 +239,11 @@ NOT_BODY_PARAGRAPHS = {"teresa-life.xml": {"viii.xli-p58": "apparatus",
                            "xix-p56")},
                        # O'Conor's caption over da Câmara's preface ("Preface of Father
                        # Louis Gonzalez, S.J., to the 'Acts of St. Ignatius,' …").
-                       "ignatius-autobiography.xml": {"iv-p2": "apparatus"}}
+                       "ignatius-autobiography.xml": {"iv-p2": "apparatus"},
+                       # Mullan's cross-reference in the Annotations, only his page numbers
+                       # ("Consolation and desolation are spoken of on p. 170; the
+                       # Additions on p. 22.").
+                       "ignatius-exercises.xml": {"ix-p23": "apparatus"}}
 
 
 def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str], dict[str, str]]:
@@ -340,19 +344,27 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
               ("therese-autobio.xml", "xxii.v-p2"): ((". . . I must", "… I must"),),
               # A Mystery's source line, as its neighbours print it ("Ibidem" with an l).
               ("ignatius-exercises.xml", "xviii.xxxvii-p1"): (("lbidem.", "Ibidem."),)}
-# Mullan's references to pages of his edition ("They sent the Angel … (p. 133)."; "(p.
-# 152); and it contains"), in the files that print them: the edition's, not the text.
-_PAGE_REF = re.compile(r"\s*\(p\. \d+\)(?:;\s*)?")
+# Mullan's references to pages of his edition, in the files that print them: the
+# edition's, not the text. In brackets ("They sent the Angel … (p. 133)."; "(P. 154)";
+# "(p. 152); and it contains"), or after a comma ("the Particular Examen, p. 21, and";
+# "Sins, pp. 37, 38; then"; "etc., p. 125. Let him").
+_PAGE_REF = re.compile(r"\s*\([Pp]\. \d+\)(?:;\s*)?")
+_PAGE_REF_AFTER_COMMA = re.compile(r",\s*pp?\. \d+(?:,\s*\d+)*(?=[.,;])")
 _PAGE_REF_FILES = frozenset({"ignatius-exercises.xml"})
 
 
 def without_page_refs(source_file: str, text: str) -> str:
     """`text` without the edition's page references, for a file that prints them (named
     as the checks name it, `../theologians/<file>`): "(p. 152); and it" reads "and it",
-    "inclusive (p. 155); and in" reads "inclusive; and in"."""
+    "inclusive (p. 155); and in" reads "inclusive; and in", "Examen, p. 21, and" reads
+    "Examen, and", "etc., p. 125. Let" reads "etc. Let"."""
     if source_file.removeprefix(f"../{SOURCE_DIR}/") not in _PAGE_REF_FILES:
         return text
-    return _PAGE_REF.sub(lambda m: "; " if m.start() and ";" in m.group() else "", text)
+    text = _PAGE_REF.sub(lambda m: "; " if m.start() and ";" in m.group() else "", text)
+    text = _PAGE_REF_AFTER_COMMA.sub("", text)
+    return text.replace("etc..", "etc.")
+
+
 # A numbered step run on to the sentence before it with no space ("in the Presence of
 # God.2. Humble yourself", the Devout Life's meditations VII to X): the space restored.
 _GLUED_STEP = re.compile(r"([a-z][.!?”])(\d{1,2}\. [A-Z])")
@@ -619,7 +631,9 @@ _HEAD_CLASS = "heading-run"
 _EXERCISES_TITLES = frozenset({_HEAD_CLASS, "subtitle"})
 # Labels the div titles cut short ("THE SAME FOURTH DAY LET MEDITATION BE MADE ON").
 _EXERCISES_LABELS = {"xiii.v": "The Fourth Day. Two Standards",
-                     "xiii.vi": "The Fourth Day. Three Pairs of Men"}
+                     "xiii.vi": "The Fourth Day. Three Pairs of Men",
+                     # The Ninth Apparition is printed inside the Eighth's div.
+                     "xviii.xlv": "Of the Eighth and Ninth Apparitions"}
 # A subtitle paragraph that is no heading: a Mystery's source line ("Ibidem.").
 _EXERCISES_NOT_SUBTITLES = frozenset({"xviii.xxxvii-p1"})
 
@@ -653,7 +667,7 @@ def _heading_runs(div) -> list[tuple[Element, int, bool]]:
             para.text = " ".join(_text(h) for h in group)
             div.insert(k + n, para)
             out.append((para, 2 if seen_text or n else 1, not seen_text))
-        k += len(groups) + 1
+        k += len(groups)
     return out
 
 
@@ -677,7 +691,8 @@ def _ignatius_walk(div, book: str | None, prefix: str | None, out: list,
     runs = _heading_runs(div)
     title = " ".join((div.get("title") or "").split())
     label = _EXERCISES_LABELS.get(div.get("id")) or (
-        _title(title) if title.isupper() else title)        # "I. The Ten Commandments"
+        _MINOR_WORDS.sub(lambda m: m.group().lower(), _title(title)) if title.isupper()
+        else title)                                         # "I. The Ten Commandments"
     if prefix:
         label = f"{prefix}. {label}"
     own = [p for p in div if p.tag == "p" and p.get("class") != _HEAD_CLASS and _text(p)]

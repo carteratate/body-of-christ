@@ -462,6 +462,9 @@ def test_exercises_are_the_annotations_weeks_methods_mysteries_and_rules():
     assert "Second Week · The Fourth Day. Two Standards" in labels
     assert "Three Methods of Prayer · First Method. I. The Ten Commandments" in labels
     assert labels[-1] == "Rules · To Have the True Sentiment"
+    assert "The Mysteries of the Life of Christ Our Lord · Of the Supper at Bethany" in labels
+    assert ("The Mysteries of the Life of Christ Our Lord · Of the Eighth and Ninth "
+            "Apparitions") in labels
     text = _text(_exercises())
     # Mullan's preface and general note, the approbations, Paul III's brief and Father
     # Diertins's prayer are the edition's, not Ignatius's.
@@ -495,7 +498,10 @@ def test_exercises_keep_the_manuscripts_headlines_in_the_text_marked():
 
 def test_exercises_read_out_page_references_and_keep_the_examen_chart():
     text = _text(_exercises())
-    assert not re.search(r"\(p\. \d+\)", text)
+    assert not re.search(r"\b[Pp]p?\.\s*\d", text)
+    assert "the Particular Examen, and then the General Examen" in text
+    assert "the Deadly Sins, etc. Let him be recommended" in text
+    assert "Consolation and desolation are spoken of" not in text
     assert "Twelfth Day. On Palm Sunday." in text
     assert "INCLUSIVELY\n\nand it contains the Preparatory Prayer, three Preludes" in text
     assert "and so on.\n\nG\nG\nG\nG\nG\nG" in text
