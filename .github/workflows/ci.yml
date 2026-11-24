@@ -17,7 +17,33 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Which jobs a PR needs (scripts/ci_changes.sh). A job skipped by its `if:` reports
+  # success, so the master ruleset, which requires web, api and datapipeline, still
+  # lets the PR merge. Pushes to master run everything, and so does every job if this
+  # one fails, so a broken filter cannot skip the tests.
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      web: ${{ steps.areas.outputs.web }}
+      tests: ${{ steps.areas.outputs.tests }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2  # the PR's merge commit and the base it merges into
+      - id: areas
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            git diff --name-only HEAD^1 HEAD | scripts/ci_changes.sh | tee -a "$GITHUB_OUTPUT"
+          else
+            printf 'web=true\ntests=true\n' | tee -a "$GITHUB_OUTPUT"
+          fi
+
   web:
+    needs: changes
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.web == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -30,7 +56,16 @@ jobs:
           node-version: 24  # the Vercel project's Node major
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
-      - run: npm ci
+      # node_modules itself, not only npm's download cache: unpacking it was half the
+      # job (npm ci, 55 s median). Keyed on the manifest, the lock and the runner, so any
+      # dependency change misses the cache and runs npm ci.
+      - uses: actions/cache@v6
+        id: node-modules
+        with:
+          path: apps/web/node_modules
+          key: node-modules-${{ runner.os }}-${{ runner.arch }}-node24-${{ hashFiles('apps/web/package.json', 'apps/web/package-lock.json') }}
+      - if: steps.node-modules.outputs.cache-hit != 'true'
+        run: npm ci
       - run: npm run lint
       - run: npx tsc --noEmit
       - run: npx vitest run
@@ -47,6 +82,8 @@ jobs:
             | tee -a "$GITHUB_STEP_SUMMARY"
 
   api:
+    needs: changes
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.tests == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -109,6 +146,8 @@ jobs:
           pip-audit -r datapipeline/requirements.lock --require-hashes --disable-pip --progress-spinner off
 
   datapipeline:
+    needs: changes
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.tests == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
