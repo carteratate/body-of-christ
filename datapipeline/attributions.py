@@ -336,7 +336,8 @@ WORKS.update({(_BASIL_LETTERS, div): labels for div, labels in BASIL_LETTER_LABE
 
 # NPNF2-07 (5.6a, #205). Both are Doctors; the volume prints only their own works. The
 # Mystagogical Lectures' authorship is disputed (Quasten, Patrología II, pp. 404-407: one
-# manuscript gives them to Cyril's successor John, the evidence decides nothing); the
+# manuscript gives them to Cyril's successor John and three to Cyril and John; the evidence
+# decides nothing); the
 # Catechism cites them as Cyril's ("St. Cyril of Jerusalem, Catech. myst."), so rule H
 # credits him and the certainty says the rest.
 R1_NPNF207 = f"{R1}, 5.6a addendum (Cyril and Gregory of Nazianzus)"
