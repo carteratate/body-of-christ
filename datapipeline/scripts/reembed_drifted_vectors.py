@@ -204,8 +204,8 @@ async def main(collections: list[str], categories: frozenset[str],
                                              apply, batch_size)
                 except Exception as exc:
                     print(f"    ✗ FAILED: {exc}")
-                    print(f"      Re-run to resume — drift is recomputed from both "
-                          f"stores, so points already rewritten fall out of scope.")
+                    print("      Re-run to resume — drift is recomputed from both "
+                          "stores, so points already rewritten fall out of scope.")
                     exit_code = 1
         finally:
             await client.close()

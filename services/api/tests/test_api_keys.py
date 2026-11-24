@@ -1,7 +1,6 @@
 """Tests for API key assignment and semaphore management."""
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from app.rag.api_keys import get_client, get_key_for, get_semaphore, init_api_keys
 

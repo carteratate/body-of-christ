@@ -6,7 +6,8 @@ production has them before 0037 (from services/api/tests/test_corpus_facts_migra
 without the unused pgvector columns), the user tables that reference passages and
 documents, and migrations 0037, 0038, 0040, 0041, 0042, 0043, 0044 and 0046 applied. Each test gets
 its own copy (`CREATE DATABASE ... TEMPLATE`). Skips when initdb, pg_ctl or psql is
-missing, or when running as root.
+missing, or when running as root; CI sets REQUIRE_LOCAL_POSTGRES, which makes those
+failures instead.
 """
 from __future__ import annotations
 
@@ -120,11 +121,19 @@ class CorpusCluster:
         return await asyncpg.connect(host=str(self.socket), user="postgres", database=database)
 
 
+def postgres_unavailable(reason: str) -> None:
+    """Skips the test, or fails it where REQUIRE_LOCAL_POSTGRES is set (CI), so a runner
+    without PostgreSQL cannot quietly skip the real-SQL tests."""
+    if os.environ.get("REQUIRE_LOCAL_POSTGRES"):
+        pytest.fail(f"{reason}, and REQUIRE_LOCAL_POSTGRES is set", pytrace=False)
+    pytest.skip(reason)
+
+
 def start() -> tuple[CorpusCluster, callable]:
     if os.geteuid() == 0:
-        pytest.skip("initdb cannot run as root")
+        postgres_unavailable("initdb cannot run as root")
     if not all(shutil.which(command) for command in ("initdb", "pg_ctl", "psql")):
-        pytest.skip("local PostgreSQL tools are unavailable")
+        postgres_unavailable("local PostgreSQL tools are unavailable")
     short_tmp = "/private/tmp" if Path("/private/tmp").is_dir() else "/tmp"
     directory = tempfile.mkdtemp(prefix="tc-stage-", dir=short_tmp)
     root = Path(directory)
