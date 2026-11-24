@@ -107,7 +107,8 @@ _EVALUATE_SYSTEM = (
     '6. "church-fathers" — Works from the Ante-Nicene and Nicene/Post-Nicene '
     "Fathers series (CCEL editions). Includes major works by Augustine "
     "(Confessions, City of God, On the Holy Trinity), Athanasius (On the "
-    "Incarnation), and other patristic authors from the ANF/NPNF volumes. "
+    "Incarnation), and other patristic authors from the ANF/NPNF volumes, "
+    "with Boethius (Consolation of Philosophy). "
     "Dense with Scripture quotation and theological interpretation.\n"
     "STRONGEST FOR: early Church interpretation of Scripture, patristic "
     "theology of the Trinity and Incarnation, development of doctrine in the "
@@ -117,7 +118,7 @@ _EVALUATE_SYSTEM = (
     '7. "theologians" — Theology & Spirituality: theologians and spiritual '
     "writers after the age of the Fathers. For now it holds medieval works from "
     "the CCEL collection. Includes authors such as Anselm (Proslogion, Cur Deus Homo, "
-    "Monologion), Boethius (Consolation of Philosophy), Bernard of Clairvaux, "
+    "Monologion), Bernard of Clairvaux, "
     "and Thomas à Kempis (Imitation of Christ). Ranges from rigorous "
     "philosophical theology (ontological argument, divine attributes) to "
     "affective devotional writing (love of God, prayer, spiritual life).\n"
