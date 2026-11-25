@@ -285,7 +285,8 @@ BASIL_LETTER_LABELS = {
                  "attribution_note": _NYSSA, "basis": f"{QUASTEN_BASIL}; {FEDWICK}"},
     "ix.cxc": {"author": "Gregory of Nyssa", "certainty": "disputed",
                "attribution_note": _NYSSA, "basis": f"{QUASTEN_BASIL}; {FEDWICK}"},
-    # Gregory of Nazianzus: Letters 47, 167 and 169 to 171 (166 and 321 print no text).
+    # Gregory of Nazianzus: Letters 47 and 169 to 171 (166 and 321 print no text; 167, his
+    # Letter 66, is retired as a duplicate of his own copy in NPNF2-07).
     "ix.xlviii": {"author": "Gregory of Nazianzus", "certainty": "disputed",
                   "attribution_note": "Transmitted among Basil's letters, but written about "
                                       "him; the Benedictine editors give it to Gregory of "
@@ -294,7 +295,7 @@ BASIL_LETTER_LABELS = {
                            "NPNF2-08's note on Letter 47"},
     **{div: {"author": "Gregory of Nazianzus", "certainty": "disputed",
              "attribution_note": _NAZIANZUS, "basis": FEDWICK}
-       for div in ("ix.clxviii", "ix.clxx", "ix.clxxi", "ix.clxxii")},
+       for div in ("ix.clxx", "ix.clxxi", "ix.clxxii")},
     # Basil's own letters to Libanius: Quasten counts 335 to 346 authentic, Fedwick lists
     # these among the Dubia (342 among the Spuria). Limit 2 passes them as a Doctor's.
     **{div: {"author": "Basil", "certainty": "disputed",
