@@ -1,10 +1,13 @@
 """A throwaway local PostgreSQL cluster for tests that must run real SQL.
 
 Skips the calling test when initdb/pg_ctl/psql are unavailable or when running as
-root, so the suite still passes on machines without a local PostgreSQL install.
+root, so the suite still passes on machines without a local PostgreSQL install. CI sets
+REQUIRE_LOCAL_POSTGRES, which turns those skips into failures.
 """
 
+import atexit
 import contextlib
+import functools
 import os
 import shutil
 import subprocess
@@ -90,21 +93,43 @@ class Cluster:
             assert result.returncode == 0, result.stderr
 
 
+def postgres_unavailable(reason: str) -> None:
+    """Skips the test, or fails it where REQUIRE_LOCAL_POSTGRES is set (CI), so a runner
+    without PostgreSQL cannot quietly skip the real-SQL tests."""
+    if os.environ.get("REQUIRE_LOCAL_POSTGRES"):
+        pytest.fail(f"{reason}, and REQUIRE_LOCAL_POSTGRES is set", pytrace=False)
+    pytest.skip(reason)
+
+
+def _short_tmp() -> str:
+    # macOS limits Unix socket paths, so pytest's nested temp path is too long.
+    return "/private/tmp" if Path("/private/tmp").is_dir() else "/tmp"
+
+
+@functools.cache
+def _initdb_template() -> Path:
+    """One initdb per test process; each cluster starts from a copy of it. initdb is
+    about 0.6 s and the copy about 0.1 s, and the API suite starts ~270 clusters."""
+    directory = Path(tempfile.mkdtemp(prefix="tc-initdb-", dir=_short_tmp()))
+    atexit.register(shutil.rmtree, directory, ignore_errors=True)
+    data = directory / "data"
+    _run(["initdb", "-D", str(data), "-U", "postgres", "-A", "trust", "--no-instructions"])
+    return data
+
+
 @contextlib.contextmanager
 def local_cluster(prefix: str) -> Iterator[Cluster]:
     if os.geteuid() == 0:
-        pytest.skip("initdb cannot run as root")
+        postgres_unavailable("initdb cannot run as root")
     if not all(shutil.which(command) for command in ("initdb", "pg_ctl", "psql")):
-        pytest.skip("local PostgreSQL tools are unavailable")
+        postgres_unavailable("local PostgreSQL tools are unavailable")
 
-    # macOS limits Unix socket paths, so pytest's nested temp path is too long.
-    short_tmp = "/private/tmp" if Path("/private/tmp").is_dir() else "/tmp"
-    with tempfile.TemporaryDirectory(prefix=prefix, dir=short_tmp) as directory:
+    with tempfile.TemporaryDirectory(prefix=prefix, dir=_short_tmp()) as directory:
         root = Path(directory)
         data = root / "data"
         socket = root / "socket"
         socket.mkdir()
-        _run(["initdb", "-D", str(data), "-U", "postgres", "-A", "trust", "--no-instructions"])
+        shutil.copytree(_initdb_template(), data)  # keeps the 0700 mode PostgreSQL requires
         _run(["pg_ctl", "-D", str(data), "-o",
               f"-c listen_addresses='' -c unix_socket_directories='{socket}' -c fsync=off",
               "-l", str(root / "server.log"), "-w", "start"])

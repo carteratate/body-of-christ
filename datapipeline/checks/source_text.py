@@ -49,6 +49,8 @@ REGIONS = ("body", "note", "toc", "heading", "apparatus", "withheld", "excluded"
 
 
 PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
+# The file the Catechism of the Catholic Church is measured on (#279).
+CCC_FILE = "us-edition/ccc-us.json"
 
 
 class SourceUnit(NamedTuple):
@@ -959,6 +961,48 @@ def ccc_us_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     return units
 
 
+# The Compendium's references line under each question ("27-30 44-45"), and a footnote
+# of its introduction ("[1] John Paul II, …").
+_COMPENDIUM_NUMBERS = re.compile(r"^[\d\s,;\-–]+$")
+_COMPENDIUM_NOTE = re.compile(r"^\[\d+\]")
+
+
+def compendium_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
+    """vatican.va's Compendium of the Catechism (5.5). One unit per paragraph or list item
+    of the page's `#corpo`: the language bar and contents before the motu proprio's
+    heading are contents, centred lines headings, the introduction's "[n]" footnotes
+    notes, and the line of CCC paragraph numbers under each question apparatus (the
+    adapter keeps it in metadata). Everything else is body, the motu proprio,
+    introduction, appendix and the texts between sections included, so what the adapter
+    leaves out shows as uncovered."""
+    source_file = source_file or os.path.basename(path)
+    with open(path, "rb") as f:
+        soup = BeautifulSoup(f.read().decode("latin-1"), "html.parser")
+    units = []
+    contents = True
+    for el in soup.find(id="corpo").find_all(["p", "li"]):
+        if el.name == "p" and el.find_parent("li") is not None:
+            continue
+        for br in el.find_all("br"):
+            br.replace_with(" ")
+        text = " ".join(el.get_text("").split())
+        if not text:
+            continue
+        contents = contents and text != "MOTU PROPRIO"
+        if contents:
+            region = "toc"
+        elif el.get("align") == "center":
+            region = "heading"
+        elif _COMPENDIUM_NOTE.match(text):
+            region = "note"
+        elif _COMPENDIUM_NUMBERS.match(text):
+            region = "apparatus"
+        else:
+            region = "body"
+        units.append(SourceUnit(source_file, None, text, region))
+    return units
+
+
 # --------------------------------------------------------------------------- files
 
 # Collections whose files are listed in sources/<collection>/manifest.json, by format.
@@ -1006,8 +1050,9 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
         return sorted(os.path.relpath(p, base)
                       for p in glob(os.path.join(base, "eng-web-c_usfm", "*.usfm")))
     if collection == "catechism":
-        # The words come from the US edition (#279); ccc.json supplies only structure.
-        return ["us-edition/ccc-us.json"]
+        # The CCC's words come from the US edition (#279); ccc.json supplies only
+        # structure. The Compendium is vatican.va's page (5.5).
+        return [CCC_FILE, "compendium-ccc.html"]
     if collection == "summa":
         return ["summa.xml"]
     raise ValueError(f"unknown collection {collection!r}")
@@ -1019,6 +1064,8 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
         return summa_units(path, source_file)
     if source_file.endswith(".xml"):
         return thml_units(path, source_file)
+    if collection == "catechism" and source_file.endswith(".html"):
+        return compendium_units(path, source_file)
     if source_file.endswith(".html"):
         return html_units(path, source_file, papal=collection in PAPAL_COLLECTIONS,
                           canon_law=collection == "canon-law",

@@ -1,17 +1,12 @@
 """Resolve a submitted search into one validated execution plan."""
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass
 from typing import Iterable, Mapping
 
 from app.config import settings
 from app.rag.collection_scope import CollectionScope
-from app.rag.constants import (
-    GENRES_BY_COLLECTION, ISSUERS_BY_COLLECTION, LEGACY_COLLECTIONS, VALID_COLLECTIONS,
-)
-
-logger = logging.getLogger(__name__)
+from app.rag.constants import GENRES_BY_COLLECTION, ISSUERS_BY_COLLECTION, VALID_COLLECTIONS
 
 ALLOWED_QUOTAS: frozenset[int] = frozenset({3, 4, 5, 10})
 FOCUSED_QUOTA = 10
@@ -174,24 +169,9 @@ def resolve_search_plan(
             f"Quota must be one of {sorted(ALLOWED_QUOTAS)}.",
         )
 
-    known = tuple(dict.fromkeys(
+    normalized = tuple(dict.fromkeys(
         collection for collection in collections if collection in VALID_COLLECTIONS
     ))
-    # An old key beside the new key it maps to adds nothing the new key does not read,
-    # so it is dropped rather than searched twice (5.1b.1). Every old key received is
-    # logged, so Railway shows when old clients stop sending them (5.1b.4 waits on it).
-    normalized = tuple(
-        collection for collection in known
-        if collection not in LEGACY_COLLECTIONS
-        or LEGACY_COLLECTIONS[collection].canonical not in known
-    )
-    for collection in known:
-        if collection in LEGACY_COLLECTIONS:
-            logger.info(
-                "search plan: legacy collection key %s", collection,
-                extra={"legacy_collection_key": collection,
-                       "legacy_key_dropped": collection not in normalized},
-            )
     focused = quota == FOCUSED_QUOTA
     if focused and len(normalized) != 1:
         raise SearchPlanError(

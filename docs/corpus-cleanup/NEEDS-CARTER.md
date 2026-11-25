@@ -113,7 +113,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.1a** [Phase 5]. Approve creating a Qdrant index, only if the check finds one missing.
   Not needed (2026-11-21): the read-only check found keyword indexes on `genre` and `issuer` in `chunks-republish-2026-10`, the target of `chunks_live`.
 - **5.1b.3** [Phase 5]. Approve the migration, the lock-file PR, the apply and index switch, the script that rewrites collection names in saved preferences and searches, and the API restart.
-- **5.1b.4** [Phase 5]. Approve the migration that removes the old collection names.
+- **5.1b.4** [Phase 5]. Approve the migration that removes the old collection names (0048), once the count in its PR reads zero.
 - **5.3a, 5.3b, 5.4, 5.5, 5.6a, 5.6b, 5.6c** [Phase 5]. For every addition, approve its lock-file PR and its apply, and for 5.3a also its migration and the PR that makes the Roman Curia collection visible.
 
 ---
@@ -451,6 +451,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.1b.2** [Phase 5]. Approve the new collection colors and the interim About and Discover wording.
   Answered 2026-11-22: keep the old colours (gold, red, grey); rename "Theologians and spiritual writers" to "Theology & Spirituality" (key unchanged); About and Discover wording approved, with the landing line saying "the Summa" and the Theology & Spirituality entry saying "soon more writers will join".
 - **5.1b.4** [Phase 5]. Keep a five-line translation of old collection names in the browser so guests' saved drafts do not reset, or delete it too. The spec keeps it.
+  Answered 2026-11-23: keep it. And the merge gate is the read-only count of rows still using an old key reading zero, after 5.1b.3's user-row script and acceptance checks; no 14-day wait on the `legacy_collection_key` log line.
 - **5.2, 5.6a** [Phase 5]. Choose between a paid Qdrant tier and reordering the additions once a publish's projected Qdrant peak passes 3.4 GB of the Free cluster's 4 GiB disk (5.2 step 5). Supabase Pro already covers the database.
 - **5.2** [Phase 5]. LEV texts from vatican.va have a basis (Decision log "LEV texts from vatican.va", 29 Oct 2026). Still open: whether to ask the LEV rights office (diritti.lev@spc.va) to confirm the use before any LEV document opens in the full reader; and the Pontifical Biblical Commission and social-doctrine Compendium rows, blocked until confirmed. The papalencyclicals.net translations have no basis and are listed for a decision.
   Answered 2026-10-29 (in part): no permission request has been sent. Carter will ask once everything is working, so nothing yet constrains the full-reader step.
@@ -468,6 +469,9 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.4** [Phase 5]. Amoris Laetitia's English exists on vatican.va only as a PDF; the vendored HTML has no text. Recommended answer: vendor the PDF and extract its text (R6).
   Answered 2026-10-05: recommendation accepted: vendor the English PDF and extract its text in 5.4.
 - **5.4** [Phase 5]. Confirm that Universi Dominici Gregis (the law on electing a pope) goes in Church law, as the plan's collection table says.
+- **5.5** [Phase 5, before the Compendium can open in the full reader]. Found by the Compendium PR (21 Nov 2026). The Compendium's vatican.va page holds more than its 598 questions: Benedict XVI's motu proprio approving it, Cardinal Ratzinger's introduction, an appendix of common prayers and formulas of doctrine, and texts printed between sections (the Apostles' and Nicene Creeds, the list of the seven sacraments, the Ten Commandments from Exodus, Deuteronomy and a catechetical formula, the Lord's Prayer, and a saying of Augustine before question 2). Many also print a Latin version, which rule E keeps out either way. The build takes only the questions with their answers, as the spec asks. Add the English of any of the rest? Recommended answer: not now, since the document stays excerpt-only and search is better served by the questions; decide before it opens in the full reader, where the LEV basis asks for the text shown complete.
+- **5.5** [Phase 5]. Found while building the Roman Catechism (22 Nov 2026). Its text is about 187,000 words, so a correction pass costs about $5 against the $2 per-work ceiling; the scan's word-position file and page map, and Fordham's page for checking, need vendoring; and the spec strips McHugh and Callan's notes, while rule G keeps scripture references from translators' notes. Raise the ceiling, vendor the files, and strip every note?
+  Answered 2026-11-22: raise this work's ceiling to $6; vendor all three files to `_incoming/catechism/` and lock them; strip all the notes, scripture references included (Decision log "Roman Catechism through the OCR tool (5.5)").
 - **5.6b and 5.6c** [Phase 5]. Choose Rickaby's abridged Summa contra Gentiles or the complete English Dominican edition.
   Answered 2026-11-16: the English Dominican translation, books 1 to 3 (Decision log "Summa contra Gentiles edition (5.6c)").
 - **5.6c** [Phase 5]. The English Dominican Summa contra Gentiles has open scans of books 1 to 3 only; book 4 (1929) has none. Choose the edition knowing that gap, or supply a scan of book 4 from a printing of 1930 or earlier. No recommendation (R6).

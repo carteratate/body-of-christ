@@ -246,8 +246,8 @@ async def main(collections: list[str], apply: bool, batch_size: int) -> int:
                     await backfill_collection(client, conn, collection, apply, batch_size)
                 except Exception as exc:
                     print(f"    ✗ FAILED: {exc}")
-                    print(f"      Re-run to resume — missing ids are recomputed from "
-                          f"both stores, so written points are skipped.")
+                    print("      Re-run to resume — missing ids are recomputed from "
+                          "both stores, so written points are skipped.")
                     exit_code = 1
         finally:
             await client.close()

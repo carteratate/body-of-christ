@@ -171,13 +171,12 @@ def test_check_ids_are_unique_and_every_check_says_what_it_proves():
 
 
 def test_every_collection_answers_an_ordinary_and_a_reference_question():
-    from app.rag.constants import LEGACY_COLLECTIONS, VALID_COLLECTIONS
+    from app.rag.constants import VALID_COLLECTIONS
 
-    # The values stored today: the new keys of 5.1b.1 hold no rows until 5.1b.3, which
-    # moves these checks to them.
-    renamed = {legacy.canonical for legacy in LEGACY_COLLECTIONS.values()}
-    stored = set(VALID_COLLECTIONS) - renamed
-    assert set(rc.ORDINARY) == stored == set(rc.REFERENCES)
+    stored = set(VALID_COLLECTIONS)
+    assert set(rc.ORDINARY) == set(rc.REFERENCES)
+    assert {c for c, _ in rc.ORDINARY.values()} == stored
+    assert {c for c, _, _ in rc.REFERENCES.values()} == stored
     answers = {c.collections[0] for c in SEARCHES if isinstance(c, rc.SearchCheck)
                and isinstance(c.expect, rc.Answers)}
     vector = {c.collections[0] for c in SEARCHES if isinstance(c, rc.SearchCheck)
@@ -190,9 +189,12 @@ def test_searches_name_valid_collections_and_allowed_quotas():
 
     for check in SEARCHES:
         if isinstance(check, rc.SearchCheck):
-            resolve_search_plan(check.collections, check.quota)
+            plan = resolve_search_plan(check.collections, check.quota)
+            assert plan.collections == tuple(check.collections), check.id
         else:
-            assert check.collection in rc.ORDINARY
+            from app.rag.constants import VALID_COLLECTIONS
+
+            assert check.collection in VALID_COLLECTIONS, check.id
 
 
 def test_3_2_labels_are_the_registered_ones():
@@ -352,7 +354,7 @@ def test_answers_fails_on_an_error_outcome_and_on_no_result_from_its_collection(
 
 def test_some_within_looks_only_at_the_first_results():
     target = rc.Match(anchor="can/1055")
-    run = rc.SearchRun("q", ("canon-law",), [OTHER, hit_for(target)])
+    run = rc.SearchRun("q", ("church-law",), [OTHER, hit_for(target)])
     assert rc.Some(target, within=2)(run, REGISTRY).ok
     assert not rc.Some(target, within=1)(run, REGISTRY).ok
 
@@ -652,8 +654,8 @@ async def test_a_failing_search_or_query_is_an_error_not_a_crash():
 
 async def test_keyword_checks_read_their_hits_in_order():
     check = next(c for c in rc.CHECKS if c.id == "2.2c.keyword-canon-1055")
-    first = rc.Hit("c1055", rc.CANON_LAW, "canon-law", anchor="can/1055")
-    second = rc.Hit("c382", rc.CANON_LAW, "canon-law", anchor="can/382")
+    first = rc.Hit("c1055", rc.CANON_LAW, "church-law", anchor="can/1055")
+    second = rc.Hit("c382", rc.CANON_LAW, "church-law", anchor="can/382")
     [ok] = await rc.run_checks([check], _context(keyword_ids=["c1055", "c382"],
                                                   hits={"c1055": first, "c382": second}))
     [wrong] = await rc.run_checks([check], _context(keyword_ids=["c382", "c1055"],
@@ -736,10 +738,11 @@ def migrated():
         cluster.sql(PRODUCTION_SCHEMA)
         cluster.migrate(*EARLIER, "0042_corpus_facts_retirement_staging.sql",
                         "0043_validate_corpus_facts.sql", "0044_document_form.sql",
-                        "0045_search_vector_markers_and_reference.sql")
+                        "0045_search_vector_markers_and_reference.sql",
+                        "0046_collection_keys.sql", "0048_drop_legacy_collection_keys.sql")
         cluster.sql(f"""
             INSERT INTO documents (id, collection, title, metadata) VALUES
-              ('{rc.CANON_LAW}', 'canon-law', 'Code of Canon Law (1983)',
+              ('{rc.CANON_LAW}', 'church-law', 'Code of Canon Law (1983)',
                '{{"official_latin_urls": {{"can/295": "https://www.vatican.va/x"}}}}'),
               ('{rc.SUMMA}', 'summa', 'Summa Theologiae', '{{}}');
             INSERT INTO chunks (document_id, position, anchor, reference, content, metadata)
@@ -796,7 +799,7 @@ async def test_keyword_hydration_reads_a_passage_back(migrated):
         await conn.close()
     [hit] = hits.values()
     assert (hit.anchor, hit.collection, hit.searchable, hit.retired) == (
-        "can/1055", "canon-law", True, False)
+        "can/1055", "church-law", True, False)
 
 
 async def test_deuterocanonical_sql_counts_a_missing_citation_as_miscited(migrated):
