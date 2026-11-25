@@ -51,7 +51,7 @@ describe("ReaderChrome", () => {
     const onBrowseSections = vi.fn();
     render(
       <ReaderChrome
-        document={{ id: "doc-1", title: "Catechism of the Catholic Church", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
+        document={{ id: "doc-1", title: "Catechism", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
         toc={[{ chapter_key: "chapter-1", chapter_label: "Chapter 1" }]}
         currentChapterKey="chapter-1"
         backLabel="Back to Library"
