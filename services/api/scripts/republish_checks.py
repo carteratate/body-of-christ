@@ -1254,16 +1254,16 @@ CHECKS: list[Check] = [
                   "3.3", (STROMATA, INSTRUCTOR, DIVINE_INSTITUTES, WORKMANSHIP_OF_GOD)),
     SqlCheck(
         id="3.3.omission-notes", items="3.3",
-        proves="The four Fathers works that lose Latin passages carry the omission note.",
+        proves="The three Fathers works that still lose Latin passages carry the omission "
+               "note. The Stromata's went when #399 restored Book III in Chadwick's English.",
         sql="""
             SELECT id::text AS key,
                    (notes ILIKE '%no public-domain English translation exists%')::int AS n
             FROM documents WHERE id = ANY($1::uuid[]) AND retired_at IS NULL
         """,
-        params=([STROMATA, INSTRUCTOR, DIVINE_INSTITUTES, WORKMANSHIP_OF_GOD],),
-        expect=CountsBy({STROMATA: 1, INSTRUCTOR: 1, DIVINE_INSTITUTES: 1,
-                         WORKMANSHIP_OF_GOD: 1},
-                        names={STROMATA: "Stromata", INSTRUCTOR: "Instructor",
+        params=([INSTRUCTOR, DIVINE_INSTITUTES, WORKMANSHIP_OF_GOD],),
+        expect=CountsBy({INSTRUCTOR: 1, DIVINE_INSTITUTES: 1, WORKMANSHIP_OF_GOD: 1},
+                        names={INSTRUCTOR: "Instructor",
                                DIVINE_INSTITUTES: "Divine Institutes",
                                WORKMANSHIP_OF_GOD: "Workmanship of God"}),
     ),
@@ -1496,7 +1496,7 @@ CHECKS: list[Check] = [
                           text_source="ocr")),
     ),
     SqlCheck(
-        id="2.4f.scanned-label-counts", items="2.4f, 1.2e, 1.3d",
+        id="2.4f.scanned-label-counts", items="2.4f, 1.2e, 1.3d, #399",
         proves="Scanned text is labelled in every collection that holds it.",
         sql=f"""
             SELECT d.collection AS key, count(*) AS n
@@ -1504,8 +1504,10 @@ CHECKS: list[Check] = [
             WHERE c.metadata->>'text_source' = 'ocr' AND {VISIBLE}
             GROUP BY d.collection
         """,
+        # Church Fathers: Stromata III in Chadwick's English, from page images (#399).
         expect=CountsBy({}, at_least={"councils": 300, "encyclicals": 400,
-                                      "apostolic-exhortations": 150, "papal-documents": 1}),
+                                      "apostolic-exhortations": 150, "papal-documents": 1,
+                                      "church-fathers": 33}),
     ),
 
     # ---- the other items since the spec was written -------------------------------------

@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.models.search import SearchFilters, SearchRequest
-from app.rag.constants import VALID_COLLECTIONS
+from app.rag.constants import CANONICAL_COLLECTIONS, LEGACY_COLLECTIONS, VALID_COLLECTIONS
 from app.routes.search import _resolve_search_plan, router
 
 USER_ID = "00000000-0000-0000-0000-000000000001"
@@ -71,7 +71,11 @@ async def test_resolve_search_plan_accepts_all_valid():
         quota=3,
     )
     result = await _resolve_search_plan(body)
-    assert set(result.collections) == set(VALID_COLLECTIONS)
+    # An old key beside its new key is dropped (5.1b.1), so every key leaves the new ones.
+    assert set(result.collections) == set(CANONICAL_COLLECTIONS)
+    body.filters.collections = sorted(LEGACY_COLLECTIONS)
+    result = await _resolve_search_plan(body)
+    assert set(result.collections) == set(LEGACY_COLLECTIONS)
 
 
 def test_focused_search_rejects_multiple_collections_before_rate_limit():
@@ -526,7 +530,9 @@ def test_restore_without_0042_is_unchanged():
 
     sql = pool.fetch.await_args_list[0].args[0]
     assert "retired_at" not in sql and "corpus_" not in sql
-    assert pool.fetch.await_count == 1  # no resolution or facts queries
+    # No resolution or facts queries; the headings lookup (issue #445) is best-effort.
+    assert [c for c in pool.fetch.await_args_list
+            if "metadata->'headings'" not in c.args[0]] == pool.fetch.await_args_list[:1]
     assert response.status_code == 200
     body = response.json()
     result = body["results"][0]
@@ -548,6 +554,7 @@ def test_restore_without_0042_is_unchanged():
             },
             "reranker_score": 0.5, "explanation": "Relevant", "context": None,
             "footnotes": [],
+            "headings": [],
         }],
         "restore_status": "complete", "expected_result_count": 1,
         "delivery_outcome": None, "outcome": None, "collection_outcomes": None,

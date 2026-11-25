@@ -1,4 +1,3 @@
-import pytest
 from app.rag.compare.overlap import run as compute_overlap
 from app.rag.steps.types import RankedChunk, PipelineResult, StepTiming
 

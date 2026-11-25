@@ -460,12 +460,121 @@ async def test_point_count_check_includes_copied_collections(world, monkeypatch)
         await world.runner().stage(STAGE)
 
 
-async def test_renamed_collection_old_points_are_not_copied(world):
-    """5.1b.3: a collection renamed by this publish counts as staged under its old key,
-    so its old points are never copied."""
-    result = await world.runner().stage(replace(STAGE, renames={"medieval": "summa"}))
-    assert result.copied == {}
-    assert (await world.qdrant.count("chunks-test-release")).count == 5
+async def test_a_renamed_collection_stages_its_old_key_live_rows(world):
+    """5.1b.3: staging `theologians` reads the live rows filed under `medieval`, its old
+    key, by ID: nothing is retired, the documents stage under the new key, no point is
+    copied under the old one, and every other collection is copied as it is stored."""
+    from qdrant_client.models import FieldCondition, Filter, MatchValue
+
+    renamed = {"theologians": lambda: [replace(d, collection="theologians") for d in world.build],
+               "summa": lambda: []}
+    live_summa = (await world.qdrant.count("chunks", count_filter=Filter(must=[
+        FieldCondition(key="collection", match=MatchValue(value="summa"))]))).count
+    result = await world.runner(source_adapters=renamed).stage(
+        StageRequest(release="test-release", collections=("theologians",)))
+
+    assert result.tombstones == 0 and result.redirects == {}
+    assert {r["collection"] for r in await world.fetch(
+        "SELECT collection FROM staging.documents")} == {"theologians"}
+    assert result.copied == {"summa": live_summa}
+    old_key = Filter(must=[FieldCondition(key="collection", match=MatchValue(value="medieval"))])
+    assert (await world.qdrant.count("chunks-test-release", count_filter=old_key)).count == 0
+    staged = sum(len(d.passages) for d in world.build)
+    assert (await world.qdrant.count("chunks-test-release")).count == staged + live_summa
+
+
+async def test_restaging_a_renamed_collection_clears_its_old_key_points(world):
+    """A release whose Qdrant collection holds the renamed collection's points under the
+    old key (copied by an earlier stage of the release that did not cover it) has them
+    cleared when the new key is staged, so the point counts agree and none is left."""
+    import uuid
+
+    from qdrant_client.models import FieldCondition, Filter, MatchValue, PointStruct
+
+    renamed = {"theologians": lambda: [replace(d, collection="theologians") for d in world.build],
+               "summa": lambda: []}
+    request = StageRequest(release="test-release", collections=("theologians",))
+    await world.runner(source_adapters=renamed).stage(request)
+    [live] = (await world.qdrant.scroll("chunks", limit=1, with_vectors=True, scroll_filter=Filter(
+        must=[FieldCondition(key="collection", match=MatchValue(value="medieval"))])))[0]
+    await world.qdrant.upsert("chunks-test-release", points=[PointStruct(
+        id=str(uuid.uuid4()), vector=live.vector, payload=live.payload)], wait=True)
+    await world.runner(source_adapters=renamed).stage(request)
+    old_key = Filter(must=[FieldCondition(key="collection", match=MatchValue(value="medieval"))])
+    assert (await world.qdrant.count("chunks-test-release", count_filter=old_key)).count == 0
+
+
+async def test_a_release_staged_under_an_old_key_is_not_copied_over(world):
+    """A release staged under `medieval` (before 5.1b.3 merged) keeps its staged points
+    when the adapters also know `theologians`: the old key is staged, so it is not
+    copied from live as part of the unstaged new key."""
+    adapters = {"medieval": lambda: world.build, "theologians": lambda: [],
+                "summa": lambda: []}
+    result = await world.runner(source_adapters=adapters).stage(STAGE)
+    assert "medieval" not in result.copied
+
+
+async def test_boethius_moves_only_when_both_collections_stage(world, monkeypatch):
+    """Before 5.1b.3's apply, a Fathers-only stage leaves him where live has him (his
+    points copied as stored), a stage of `theologians` alone refuses, and a stage of
+    both moves him."""
+    import publication
+
+    monkeypatch.setattr(publication, "BOETHIUS_DOCUMENT_ID", DOC_B)
+    adapters = {"church-fathers": lambda: [replace(_doc(world, DOC_B), collection="church-fathers")],
+                "theologians": lambda: [replace(_doc(world, DOC_A), collection="theologians")],
+                "summa": lambda: []}
+    fathers = await world.runner(source_adapters=adapters).stage(
+        StageRequest(release="fathers-only", collections=("church-fathers",)))
+    assert fathers.documents == 0 and fathers.tombstones == 0
+    assert "medieval" in fathers.copied
+    conn = await world.connect()
+    try:
+        await conn.execute("UPDATE corpus_publishes SET discarded_at = now()")
+        await reader_writer.clear_staged_collections(conn, ["church-fathers", "medieval",
+                                                            "theologians", "summa"])
+    finally:
+        await conn.close()
+    with pytest.raises(StageRefused, match="stage theologians with church-fathers"):
+        await world.runner(source_adapters=adapters).stage(
+            StageRequest(release="theologians-only", collections=("theologians",)))
+    both = await world.runner(source_adapters=adapters).stage(
+        StageRequest(release="both", collections=("church-fathers", "theologians")))
+    assert both.tombstones == 0
+    assert {r["id"]: r["collection"] for r in await world.fetch(
+        "SELECT id::text, collection FROM staging.documents")} == {
+        DOC_B: "church-fathers", DOC_A: "theologians"}
+
+
+async def test_restaging_the_fathers_keeps_a_release_s_boethius_move(world, monkeypatch):
+    """A release that staged both keys keeps moving him when only `church-fathers` is
+    restaged: its earlier collections count."""
+    import publication
+
+    monkeypatch.setattr(publication, "BOETHIUS_DOCUMENT_ID", DOC_B)
+    adapters = {"church-fathers": lambda: [replace(_doc(world, DOC_B), collection="church-fathers")],
+                "theologians": lambda: [replace(_doc(world, DOC_A), collection="theologians")],
+                "summa": lambda: []}
+    runner = world.runner(source_adapters=adapters)
+    await runner.stage(StageRequest(release="both", collections=("church-fathers", "theologians")))
+    again = await runner.stage(StageRequest(release="both", collections=("church-fathers",)))
+    assert again.documents == 1
+    with pytest.raises(StageRefused, match="stage theologians with church-fathers"):
+        await runner.stage(StageRequest(release="both", collections=("theologians",)))
+    assert {r["id"]: r["collection"] for r in await world.fetch(
+        "SELECT id::text, collection FROM staging.documents")} == {
+        DOC_B: "church-fathers", DOC_A: "theologians"}
+
+
+async def test_stage_refuses_a_document_moving_from_a_collection_it_does_not_cover(world):
+    """A build may not take a live document from a collection the stage leaves alone
+    (5.1b.3's Boethius: stage `church-fathers` with `theologians` until it is applied)."""
+    moved = {"summa": lambda: [replace(d, collection="summa") for d in world.build],
+             "medieval": lambda: []}
+    with pytest.raises(StageRefused, match="stage theologians with it|stage medieval with it"):
+        await world.runner(source_adapters=moved).stage(
+            StageRequest(release="test-release", collections=("summa",)))
+    assert not await world.fetch("SELECT 1 FROM corpus_publishes")
 
 
 async def test_stage_refuses_without_the_live_alias(world):
@@ -736,9 +845,9 @@ def test_stage_asks_the_lock_for_its_step(tmp_path, monkeypatch, capsys):
     _remote(monkeypatch)
     lock = tmp_path / "PUBLISH_LOCK.json"
     lock.write_text(json.dumps({"reason": "test", "approved_applies": [
-        {"collection": "medieval", "release": "test-release", "steps": ["apply"]}]}))
+        {"collection": "theologians", "release": "test-release", "steps": ["apply"]}]}))
     with pytest.raises(SystemExit) as raised:
-        publish.main(["stage", "--collection", "medieval", "--release", "test-release"],
+        publish.main(["stage", "--collection", "theologians", "--release", "test-release"],
                      lock_path=lock)
     assert raised.value.code == 2
     assert "step 'stage'" in capsys.readouterr().err
@@ -814,4 +923,14 @@ def test_release_names_follow_the_publish_id_rule(capsys):
         publish.build_parser().parse_args(["status", "--release", "Bad_Name"])
     args = publish.build_parser().parse_args(["stage", "--collection", "all",
                                               "--release", "2026-11-republish"])
-    assert args.collection == "all"
+    assert args.collection == ["all"]
+
+
+def test_stage_takes_collections_a_document_moves_between_in_one_call():
+    """5.1b.3: Boethius moves from `theologians` to `church-fathers`, so both stage at once."""
+    import publish
+
+    args = publish.build_parser().parse_args([
+        "stage", "--collection", "church-fathers", "--collection", "theologians",
+        "--release", "collection-keys"])
+    assert args.collection == ["church-fathers", "theologians"]

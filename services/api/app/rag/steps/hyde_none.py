@@ -6,5 +6,6 @@ async def run(
     query: str,
     collections: list[str],
     cost_tracker: CostTracker,
+    scopes: object = None,
 ) -> dict[str, list[list[float]]]:
     return {}

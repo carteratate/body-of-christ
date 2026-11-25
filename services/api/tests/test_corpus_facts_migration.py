@@ -491,7 +491,7 @@ def test_staging_has_the_full_text_index_and_generated_column(migrated):
 def test_staging_writes_reach_no_user_table(migrated):
     # No foreign keys: a staged chunk of a document only staging holds is fine, and
     # deleting staged rows cascades nowhere.
-    migrated(f"""
+    migrated("""
         INSERT INTO staging.chunks (document_id, position) VALUES (gen_random_uuid(), 0);
         DELETE FROM staging.chunks;
     """)

@@ -44,7 +44,8 @@ import card_notes
 import identity
 from model import Document
 
-PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
+# The papal collection under its key since 5.1b.3, and the old keys it replaces.
+PAPAL_COLLECTIONS = ("papal", "encyclicals", "apostolic-exhortations", "papal-documents")
 HOLY_SEE = ("holy-see", "Holy See")
 VATICAN_CREDIT = "© Dicastery for Communication – Libreria Editrice Vaticana"
 
@@ -60,6 +61,10 @@ DATE_DISPLAY = {"summa": "1265 to 1274"}
 # One credit naming every edition a document holds (Carter's answer 5A). Each starts
 # with the main row's credit line, which `test_document_facts` checks.
 COMBINED_CREDITS = {
+    # Stromata III, which ANF left in Latin, in Chadwick's English (#399; Carter, 21 Nov
+    # 2026).
+    "church-fathers/second-century/vi.iv":
+        "Sourced via CCEL.org; Book III translated by Henry Chadwick (1954)",
     "councils/ecum-03-council-of-ephesus":
         "Sourced via CCEL.org; Nestorius's second letter to Cyril translated by James "
         "Chrystal (1895)",
@@ -276,7 +281,7 @@ def _issuer(document: Document) -> tuple[str | None, str | None]:
     if document.collection == "councils":
         label = meta.get("council") or document.title
         return issuer_slug(label), label
-    if document.collection in ("catechism", "canon-law"):
+    if document.collection in ("catechism", "canon-law", "church-law"):
         return HOLY_SEE
     return None, None
 
@@ -286,7 +291,8 @@ def _genre(document: Document, work_id: str) -> str | None:
         return FATHERS_GENRES[work_id]
     if document.collection in PAPAL_COLLECTIONS:
         return (document.metadata or {}).get("genre")
-    return {"catechism": "catechism", "canon-law": "code"}.get(document.collection)
+    return {"catechism": "catechism", "canon-law": "code", "church-law": "code"
+            }.get(document.collection)
 
 
 def _form(document: Document) -> str | None:

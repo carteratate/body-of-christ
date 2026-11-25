@@ -69,6 +69,11 @@ class Settings:
         "encyclicals": (250, 250),   # small numbered units benefit from neighbor context
         "councils": (250, 250),
         "canon-law": (300, 300),     # short canons: wider neighbor window
+        # 5.1b.3's keys, for documents added under them. Registered documents take their
+        # source's line (`collection_keys.source_of`), so the rename embeds nothing.
+        "papal": (250, 250),
+        "church-law": (300, 300),
+        "theologians": (200, 200),
     })
 
     # --- Enrichment (3-pass: Opus generation, Sonnet classification + annotation) ---

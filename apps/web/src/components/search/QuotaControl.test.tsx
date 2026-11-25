@@ -63,22 +63,13 @@ describe("QuotaControl", () => {
     expect(ten.className).toContain("text-brand-contrast-dark");
   });
 
-  it("uses the light contrast token for the dark apostolic-exhortations fill", () => {
-    render(<QuotaControl value={10} onChange={vi.fn()} focusedCollection="apostolic-exhortations" />);
-
-    expect(screen.getByRole("button", { name: "10 passages per source" }).className)
-      .toContain("text-brand-contrast-light");
-  });
-
-  it("adds a subtle numeral-only contrast lift for selected Papal Documents", () => {
-    const view = render(<QuotaControl value={10} onChange={vi.fn()} focusedCollection="papal-documents" />);
-    const ten = screen.getByRole("button", { name: "10 passages per source" });
-
-    expect(ten.className).toContain("themeSensitiveNumeral");
-    expect(ten.querySelector("span")?.className).toContain("papalNumeral");
-
-    view.rerender(<QuotaControl value={5} onChange={vi.fn()} focusedCollection="papal-documents" />);
-    expect(ten.querySelector("span")?.className).not.toContain("papalNumeral");
+  it("gives Church law's red the theme-sensitive numeral, under its old key too", () => {
+    for (const key of ["church-law", "canon-law"]) {
+      const view = render(<QuotaControl value={10} onChange={vi.fn()} focusedCollection={key} />);
+      expect(screen.getByRole("button", { name: "10 passages per source" }).className)
+        .toContain("themeSensitiveNumeral");
+      view.unmount();
+    }
   });
 
   it("keeps the numeral above 4.5:1 in both themes and both fill states", () => {
@@ -92,11 +83,8 @@ describe("QuotaControl", () => {
         const unselected = mix(rgb(collection.hex), theme.surface, 0.3);
         expect(contrast(unselected, theme.primary), `${collection.key} unselected`).toBeGreaterThanOrEqual(4.5);
 
-        let selected = mix(rgb(collection.hex), theme.surface, 0.85);
-        if (collection.key === "papal-documents") selected = mix(rgb("#ffffff"), selected, 0.03);
-        const themeSensitive = collection.key === "canon-law" || collection.key === "papal-documents";
-        const useLightNumeral = collection.key === "apostolic-exhortations"
-          || (themeSensitive && theme.label === "dark");
+        const selected = mix(rgb(collection.hex), theme.surface, 0.85);
+        const useLightNumeral = collection.key === "church-law" && theme.label === "dark";
         const numeral = useLightNumeral ? rgb("#ffffff") : rgb("#000000");
         expect(contrast(selected, numeral), `${collection.key} selected`).toBeGreaterThanOrEqual(4.5);
       }

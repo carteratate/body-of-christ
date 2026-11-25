@@ -171,14 +171,18 @@ def test_check_ids_are_unique_and_every_check_says_what_it_proves():
 
 
 def test_every_collection_answers_an_ordinary_and_a_reference_question():
-    from app.rag.constants import VALID_COLLECTIONS
+    from app.rag.constants import LEGACY_COLLECTIONS, VALID_COLLECTIONS
 
-    assert set(rc.ORDINARY) == set(VALID_COLLECTIONS) == set(rc.REFERENCES)
+    # The values stored today: the new keys of 5.1b.1 hold no rows until 5.1b.3, which
+    # moves these checks to them.
+    renamed = {legacy.canonical for legacy in LEGACY_COLLECTIONS.values()}
+    stored = set(VALID_COLLECTIONS) - renamed
+    assert set(rc.ORDINARY) == stored == set(rc.REFERENCES)
     answers = {c.collections[0] for c in SEARCHES if isinstance(c, rc.SearchCheck)
                and isinstance(c.expect, rc.Answers)}
     vector = {c.collections[0] for c in SEARCHES if isinstance(c, rc.SearchCheck)
               and any(isinstance(p, rc.ViaVector) for p in parts(c.expect))}
-    assert answers == vector == set(VALID_COLLECTIONS)
+    assert answers == vector == stored
 
 
 def test_searches_name_valid_collections_and_allowed_quotas():

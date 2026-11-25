@@ -816,3 +816,43 @@ def test_a_held_documents_removal_outranks_its_redirects_at_stage():
     assert out.problems == [] and out.redirects == []
     assert sorted(t["id"] for t in out.tombstones) == sorted(
         ["a", target["passage_id"], w["document_id"]])
+
+
+def _moved_passage_stage(live_anchor_redirects=()):
+    """A passage an earlier publish moved from document A (anchor `a/1`) to B (`b/1`):
+    live in B, its registry row in B with the live anchor it had in A."""
+    from datetime import datetime, timezone
+
+    import retirements
+
+    a, b = work(source_key="church-fathers/vol.xml#a"), work(source_key="church-fathers/vol.xml#b")
+    moved = row(b["document_id"], "b/1", live_anchor="a/1")
+    reg = valid_registry(works=[a, b], passages=[moved])
+    live = [retirements.LivePassage(moved["passage_id"], b["document_id"], COLLECTION, "b/1",
+                                    "ii", "II", "ref", 0, "B", "An Author")]
+    staged = [document([passage("b/1", id=moved["passage_id"])], document_id=b["document_id"])]
+    out = retirements.compute(live, [retirements.LiveDocument(b["document_id"], COLLECTION,
+                                                              "B", "An Author")],
+                              staged, reg, release="r", at=datetime.now(timezone.utc),
+                              live_anchor_redirects=live_anchor_redirects)
+    return a, b, [r for r in out.redirects if r["entity"] == "anchor"]
+
+
+def test_a_restage_keeps_a_moved_passages_old_document():
+    """#439: the publish that moved the passage wrote the redirect from A; a later stage
+    reads the passage in B, and must keep A as the old document, not write `a/1` under B."""
+    import retirements
+
+    a, b, _ = _moved_passage_stage()
+    a, b, redirects = _moved_passage_stage(
+        [retirements.LiveAnchorRedirect(a["document_id"], "a/1", b["document_id"])])
+    assert [(r["old_document_id"], r["old_anchor"], r["new_document_id"], r["new_anchor"])
+            for r in redirects] == [(a["document_id"], "a/1", b["document_id"], "b/1")]
+
+
+def test_without_a_live_redirect_the_old_document_is_the_live_one():
+    """With no live redirect to follow, the old document stays the one the passage is live
+    in, as before #439 (the first publish of a move reads the passage in its old document)."""
+    _, b, redirects = _moved_passage_stage()
+    assert [(r["old_document_id"], r["old_anchor"]) for r in redirects] == [
+        (b["document_id"], "a/1")]

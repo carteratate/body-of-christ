@@ -46,7 +46,7 @@ if DATAPIPELINE not in sys.path:
 
 import registry  # noqa: E402
 from ingest import editorial, editorial_keep  # noqa: E402
-from publication import build  # noqa: E402
+from publication import SOURCE_BUILDS, build  # noqa: E402
 
 ITEM = "1.8a"
 COLLECTION = "church-fathers"
@@ -573,7 +573,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     reg = registry.current()
     with editorial.recording() as log:
-        documents = build(COLLECTION)
+        documents = build(COLLECTION, source_adapters=SOURCE_BUILDS)
     entries, found, problems = generate(reg, documents, log, live_text(args.snapshot),
                                         args.today)
     if problems:

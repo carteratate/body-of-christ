@@ -66,10 +66,59 @@ describe("SourcesPage Continue Reading", () => {
     view.rerender(<SourcesPage />);
 
     await screen.findByText("User B document 0");
-    expect(screen.getAllByRole("link", { name: /User B document/ })).toHaveLength(3);
-    expect(screen.queryByText("User B document 3")).toBeNull();
+    expect(screen.getAllByRole("link", { name: /User B document/ })).toHaveLength(2);
+    expect(screen.queryByText("User B document 2")).toBeNull();
     expect(screen.queryByText("Your recent reading places couldn't be loaded.")).toBeNull();
-    await waitFor(() => expect(state.listReadingProgress).toHaveBeenCalledWith("user-b", 3, expect.any(AbortSignal)));
+    await waitFor(() => expect(state.listReadingProgress).toHaveBeenCalledWith("user-b", 6, expect.any(AbortSignal)));
+  });
+});
+
+describe("SourcesPage Continue Reading, show more", () => {
+  function places(count: number) {
+    return Array.from({ length: count }, (_, index) => ({
+      document_id: `doc-${index}`,
+      chapter_key: `chapter-${index}`,
+      chapter_label: `Chapter ${index}`,
+      anchor: null,
+      // Most recent first, as the API orders them.
+      updated_at: `2026-08-0${9 - index}T12:00:00Z`,
+      collection: "bible",
+      document_title: `Place ${index}`,
+      author: null,
+    }));
+  }
+  const shownPlaces = () => screen.queryAllByRole("link", { name: /Place \d/ }).map((a) => a.textContent?.match(/Place \d/)?.[0]);
+
+  it("shows the 2 most recent places at first, expands to the rest, and collapses again", async () => {
+    state.listReadingProgress.mockResolvedValue(places(6));
+    render(<SourcesPage />);
+
+    await screen.findByText("Place 0");
+    expect(state.listReadingProgress).toHaveBeenCalledWith("user-a", 6, expect.any(AbortSignal));
+    expect(shownPlaces()).toEqual(["Place 0", "Place 1"]);
+    const toggle = screen.getByRole("button", { name: "Show more" });
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    const list = document.getElementById(toggle.getAttribute("aria-controls")!);
+    expect(list?.contains(screen.getByRole("link", { name: /Place 0/ }))).toBe(true);
+
+    fireEvent.click(toggle);
+    expect(shownPlaces()).toEqual(["Place 0", "Place 1", "Place 2", "Place 3", "Place 4", "Place 5"]);
+    expect(toggle.textContent).toBe("Show less");
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(toggle);
+    expect(shownPlaces()).toEqual(["Place 0", "Place 1"]);
+    expect(toggle.textContent).toBe("Show more");
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it.each([1, 2])("shows no button with %i place(s)", async (count) => {
+    state.listReadingProgress.mockResolvedValue(places(count));
+    render(<SourcesPage />);
+
+    await screen.findByText("Place 0");
+    expect(shownPlaces()).toHaveLength(count);
+    expect(screen.queryByRole("button", { name: /Show (more|less)/ })).toBeNull();
   });
 });
 
@@ -211,11 +260,34 @@ describe("SourcesPage Collection drop-down (issue #392)", () => {
   });
 
   it("shows a generic collection's section with its bubble and counts, and nothing else", async () => {
-    await choose("encyclicals");
+    // Rerum Novarum is stored under the old key `encyclicals` (5.1b.2).
+    await choose("papal");
 
     expect(screen.getByText("1 document · 10 passages")).toBeTruthy();
     expect(screen.getByRole("link", { name: /Rerum Novarum/ })).toBeTruthy();
     expect(screen.getAllByRole("link")).toHaveLength(1);
+  });
+
+  it("lists the three old papal collections as one section, by date (5.1b.2)", async () => {
+    state.sources = [
+      doc("ag", "apostolic-exhortations", "Amoris Laetitia", { author: "Pope Francis", year: 2016 }),
+      doc("rn", "encyclicals", "Rerum Novarum", { author: "Pope Leo XIII", year: 1891 }),
+      doc("us", "papal-documents", "Unam Sanctam", { author: "Pope Boniface VIII", year: 1302 }),
+      doc("ls", "encyclicals", "Laudato Si'", { author: "Pope Francis", year: 2015 }),
+      doc("code", "canon-law", "Code of Canon Law", { year: 1983 }),
+    ];
+    render(<SourcesPage />);
+    const select = await screen.findByRole("combobox");
+    expect([...select.querySelectorAll("option")].map((o) => o.textContent)).toEqual([
+      "All collections", "Bible", "Catechism", "Summa Theologica", "Papal documents", "Councils",
+      "Church Fathers", "Theology & Spirituality", "Church law",
+    ]);
+    expect(screen.getByText("4 documents · 40 passages")).toBeTruthy();
+    const section = screen.getByText("4 documents · 40 passages").closest("section")!;
+    expect([...section.querySelectorAll("a")].map((a) => a.textContent?.match(/Unam Sanctam|Rerum Novarum|Laudato Si'|Amoris Laetitia/)?.[0]))
+      .toEqual(["Unam Sanctam", "Rerum Novarum", "Laudato Si'", "Amoris Laetitia"]);
+    // The Code, stored under `canon-law`, heads its own Church law section.
+    expect(screen.getAllByText("Church law").some((el) => el.closest("section"))).toBe(true);
   });
 
   it("renders the same section as the full page, and returns to it on All collections", async () => {

@@ -5,9 +5,14 @@ import asyncio
 import logging
 from typing import Mapping
 
+from qdrant_client.http.exceptions import UnexpectedResponse
+
 from app.config import settings
-from app.rag.collection_scope import CollectionScope
-from app.rag.qdrant_client import get_qdrant_client, read_collection, searchable_indexed
+from app.rag.collection_scope import CollectionScope, reads
+from app.rag.qdrant_client import (
+    forget_searchable_index, genre_indexed, get_qdrant_client, read_collection,
+    searchable_indexed,
+)
 from app.rag.steps import degradation
 from app.rag.steps.types import RetrievalPath
 
@@ -15,6 +20,8 @@ logger = logging.getLogger(__name__)
 
 _MAX_COSINE_DISTANCE = 0.50
 _QDRANT_SCORE_THRESHOLD = 1.0 - _MAX_COSINE_DISTANCE
+# Strict mode's refusal of a filter on an unindexed `genre`, as the JSON body escapes it.
+_MISSING_GENRE_INDEX = b'Index required but not found for \\"genre\\"'
 
 
 async def _search_vector(
@@ -39,14 +46,33 @@ async def _search_vector(
         [FieldCondition(key="searchable", match=MatchValue(value=False))]
         if await searchable_indexed() else None
     )
-    response = await client.query_points(
-        collection_name=read_collection(),
-        query=vec,
-        query_filter=scope.to_qdrant_filter(must_not),
-        limit=limit,
-        with_payload=True,
-        score_threshold=_QDRANT_SCORE_THRESHOLD,
-    )
+    async def _query(by_genre: bool):
+        return await client.query_points(
+            collection_name=read_collection(),
+            query=vec,
+            query_filter=scope.to_qdrant_filter(must_not, genre_indexed=by_genre),
+            limit=limit,
+            with_payload=True,
+            score_threshold=_QDRANT_SCORE_THRESHOLD,
+        )
+
+    # An old papal key reads the new value's genres only where `genre` is indexed
+    # (5.1b.1). The answer is cached for five minutes, so after a rollback points the
+    # alias at a collection without the index, strict mode refuses the genre filter
+    # until the cache expires. That refusal (400, naming `genre`) forgets the cache and
+    # runs today's filter, which is all a collection without the index can match. Any
+    # other failure takes the usual path: dropping the branch would hide new values.
+    by_genre = reads(collection).part is not None and await genre_indexed()
+    try:
+        response = await _query(by_genre)
+    except UnexpectedResponse as exc:
+        if not (by_genre and exc.status_code == 400
+                and _MISSING_GENRE_INDEX in (exc.content or b"")):
+            raise
+        logger.warning("retrieve_vector: %s genre filter refused (%s); retrying without it",
+                       collection, exc.__class__.__name__)
+        forget_searchable_index()
+        response = await _query(False)
     results: list[dict] = []
     for r in response.points:
         payload = r.payload or {}
@@ -63,7 +89,9 @@ async def _search_vector(
             "id": str(r.id),
             "content": payload["content"],
             "reference": payload.get("reference"),
-            "collection": payload["collection"],
+            # The key searched, not the stored value (5.1b.1), so results come back in
+            # the vocabulary the request used.
+            "collection": collection,
             "document_id": payload["document_id"],
             "document_title": payload["document_title"],
             "author": payload.get("author"),

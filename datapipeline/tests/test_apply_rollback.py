@@ -16,7 +16,7 @@ from model import Work
 from publication import StageRequest
 from release.staged import staged_content_sha256
 from tests import pg_corpus
-from tests.stage_world import DOC_A, DOC_B, DOC_S, LIVE, World, contents_tree, passage, pid
+from tests.stage_world import DOC_A, DOC_B, LIVE, World, contents_tree, passage, pid
 from writers import apply as A
 
 RELEASE = "test-release"
@@ -58,9 +58,9 @@ async def _sql(world, sql, *args):
         await conn.close()
 
 
-async def _stage(world, request=STAGE):
+async def _stage(world, request=STAGE, **runner):
     """Stage, then record a report hash as a passing report would."""
-    await world.runner().stage(request)
+    await world.runner(**runner).stage(request)
     conn = await world.connect()
     try:
         content = await staged_content_sha256(conn)
@@ -362,6 +362,97 @@ async def test_reappearing_id_is_unretired_and_loses_its_tombstone(world):
     assert not await world.fetch("SELECT 1 FROM corpus_tombstones")
 
 
+async def test_a_tombstoned_id_whose_redirect_opens_is_redirected_and_rollback_restores(world):
+    """A passage retired with a tombstone (3.3's merged Stromata piece) whose registry
+    redirect opens later (#399): the next stage redirects its ID, the apply drops its
+    notice, and rolling that publish back brings the notice back."""
+    _retire_a4(world)
+    await _stage(world)
+    await _apply(world)
+    await _cleanup(world)
+    old, into = pid(DOC_A, "a/4"), pid(DOC_A, "a/3")
+    world.registry.removals[-1]["closed_by"] = "#399"
+    world.registry.removals[-1]["closed_on"] = "2026-11-21"
+    world.registry.redirects.append(
+        {"document_id": DOC_A, "old_passage_id": old, "old_anchor": "a/4",
+         "new_passage_id": into, "new_anchor": "a/3", "kind": "merged"})
+    next(r for r in world.registry.passages if r["passage_id"] == old)["status"] = "redirected"
+    world.registry.__post_init__()
+    await _stage(world, StageRequest(release="release-two", collections=("medieval",)))
+    await _apply(world, "release-two")
+    assert not await world.fetch("SELECT 1 FROM corpus_tombstones")
+    [r] = await world.fetch("SELECT old_id::text, new_id::text FROM corpus_redirects "
+                            "WHERE entity = 'passage'")
+    assert r == {"old_id": old, "new_id": into}
+    await _rollback(world, "release-two")
+    assert not await world.fetch("SELECT 1 FROM corpus_redirects WHERE entity = 'passage'")
+    [t] = await world.fetch("SELECT id::text, publish_id FROM corpus_tombstones")
+    assert t == {"id": old, "publish_id": RELEASE}
+
+
+async def test_rollback_puts_a_returning_retired_passage_back_as_it_was(world):
+    """Retired passages a publish brings back under new anchors and text (Stromata III,
+    #399) are retired again by its rollback with their old anchors, text and positions,
+    and their tombstones; a passage the publish added, which the rollback retires, takes
+    none of those positions."""
+    a = _doc(world, DOC_A)
+    returning = ("a/3", "a/4")
+    for k, anchor in enumerate(returning, 921):
+        world.registry.removals.append(_removal(
+            id=f"rm-0{k}", scope="passage", document_id=DOC_A, anchor=anchor,
+            passage_id=pid(DOC_A, anchor), reason="debris", tombstone="Removed."))
+    kept = a.passages
+    a.passages = kept[:2]
+    await _stage(world)
+    await _apply(world)
+    await _cleanup(world)
+    ids = [pid(DOC_A, x) for x in returning]
+    query = ("SELECT id::text, anchor, content, position, retired_at FROM chunks "
+             "WHERE id = ANY($1::uuid[]) ORDER BY id")
+    before = await world.fetch(query, ids)
+    for e in world.registry.removals[-2:]:
+        e["closed_by"], e["closed_on"] = "#399", "2026-11-21"
+    for r in world.registry.passages:
+        if r["passage_id"] in ids:
+            r["anchor"], r["status"] = r["anchor"] + "n", "active"
+    world.registry.__post_init__()
+    # The new passage comes first, so the rollback retires it first.
+    a.passages = kept[:2] + [passage("a/5", "c2", "A new passage.", 2)] + [
+        replace(p, anchor=p.anchor + "n", content="In English now.", position=p.position + 1)
+        for p in kept[2:]]
+    await _stage(world, StageRequest(release="release-two", collections=("medieval",)))
+    await _apply(world, "release-two")
+    await _rollback(world, "release-two")
+    assert await world.fetch(query, ids) == before
+    tombs = {r["id"]: r["publish_id"] for r in await world.fetch(
+        "SELECT id::text, publish_id FROM corpus_tombstones")}
+    assert tombs == {**{i: RELEASE for i in ids}, pid(DOC_A, "a/5"): "release-two"}
+
+
+async def test_a_tombstoned_chapter_that_comes_back_elsewhere_redirects(world):
+    """A chapter every live passage of which was tombstoned (Stromata III) gets its
+    chapter redirect when its passages come back under another chapter key (#399)."""
+    a = _doc(world, DOC_A)
+    for k, anchor in enumerate(("a/3", "a/4"), 911):
+        world.registry.removals.append(_removal(
+            id=f"rm-0{k}", scope="passage", document_id=DOC_A, anchor=anchor,
+            passage_id=pid(DOC_A, anchor), reason="debris", tombstone="Removed."))
+    kept = a.passages
+    a.passages = kept[:2]
+    await _stage(world)
+    await _apply(world)
+    await _cleanup(world)
+    for e in world.registry.removals[-2:]:
+        e["closed_by"], e["closed_on"] = "#399", "2026-11-21"
+    world.registry.__post_init__()
+    a.passages = kept[:2] + [replace(p, chapter_key="c2-new", chapter_label="C2-NEW")
+                             for p in kept[2:]]
+    await _stage(world, StageRequest(release="release-two", collections=("medieval",)))
+    rows = await world.fetch("SELECT old_anchor, new_anchor FROM staging.corpus_redirects "
+                             "WHERE entity = 'chapter'")
+    assert rows == [{"old_anchor": "c2", "new_anchor": "c2-new"}]
+
+
 async def test_passage_moved_between_documents_keeps_its_id(world):
     await _user_rows(world, pid(DOC_A, "a/4"))
     a, b = _doc(world, DOC_A), _doc(world, DOC_B)
@@ -382,7 +473,7 @@ async def test_passage_moved_between_documents_keeps_its_id(world):
 async def test_a_piece_whose_text_moved_hands_its_anchor_on(world):
     """1.10b: the anchor takes a new ID and the old ID redirects; the retired row keeps
     its anchor with a suffix, so the unique key on (document_id, anchor) holds."""
-    a = _doc(world, DOC_A)
+    _doc(world, DOC_A)
     old = pid(DOC_A, "a/3")
     new = pid(DOC_A, "a/3#moved")
     world.registry.redirects.append(
@@ -462,6 +553,30 @@ async def test_rollback_apply_restores_rows_alias_and_outline(world):
     # Staging holds the snapshot again, so it must be cleaned up before the next stage.
     [p] = await world.fetch("SELECT rolled_back_at IS NOT NULL AS r, cleaned_up_at FROM corpus_publishes")
     assert p == {"r": True, "cleaned_up_at": None}
+
+
+async def test_a_renamed_collection_is_renamed_in_place_and_rolled_back(world):
+    """5.1b.3: publishing `theologians` over live rows filed under `medieval` changes
+    `documents.collection` in place by ID, retires nothing and keeps every passage; the
+    rollback files them under `medieval` again."""
+    renamed = {"theologians": lambda: [replace(d, collection="theologians") for d in world.build],
+               "summa": lambda: []}
+    live_ids = {r["id"] for r in await world.fetch(
+        "SELECT id::text FROM chunks WHERE retired_at IS NULL")}
+    await _stage(world, StageRequest(release=RELEASE, collections=("theologians",)),
+                 source_adapters=renamed)
+    await _apply(world)
+    await _switch(world)
+    assert {r["id"]: r["collection"] for r in await world.fetch(
+        "SELECT id::text, collection FROM documents WHERE id = ANY($1::uuid[])",
+        [DOC_A, DOC_B])} == {DOC_A: "theologians", DOC_B: "theologians"}
+    assert {r["id"] for r in await world.fetch(
+        "SELECT id::text FROM chunks WHERE retired_at IS NULL")} == live_ids
+    assert not await world.fetch("SELECT 1 FROM corpus_tombstones")
+    await _cleanup(world)
+    await _rollback(world)
+    assert {r["collection"] for r in await world.fetch(
+        "SELECT collection FROM documents WHERE id = ANY($1::uuid[])", [DOC_A, DOC_B])} == {"medieval"}
 
 
 async def test_concurrent_applies_keep_the_before_snapshot(world):
@@ -892,6 +1007,43 @@ async def test_retire_only_and_its_rollback(world):
     assert a_["n"] == 4
 
 
+async def test_retire_only_finds_a_removal_through_the_rename(world):
+    """5.1b.3: the removal entry names the source (`medieval`) and live files the document
+    under it until the apply; asked for `theologians`, the new key, it still retires it."""
+    world.registry.removals.append(_removal(
+        id="rm-0921", scope="document", document_id=DOC_B,
+        reason="translation-in-preparation", tombstone="Being replaced."))
+    conn = await world.connect()
+    try:
+        done = await A.retire_only(conn, world.qdrant, "incarnation-withdraw", "theologians",
+                                   alias="chunks_live", registry=world.registry,
+                                   root=world.snapshots)
+    finally:
+        await conn.close()
+    assert done["documents"] == 1
+    [d] = await world.fetch("SELECT retired_at IS NOT NULL AS retired FROM documents "
+                            "WHERE id = $1::uuid", DOC_B)
+    assert d["retired"] is True
+
+
+async def test_retire_only_finds_a_moved_documents_removal_by_its_id(world):
+    """Boethius's removal entry would name his source (`medieval`) while live files him
+    under `church-fathers`: asked for `church-fathers`, it finds him by document."""
+    await world.fetch("UPDATE documents SET collection = 'church-fathers' WHERE id = $1::uuid",
+                      DOC_B)
+    world.registry.removals.append(_removal(
+        id="rm-0922", scope="document", document_id=DOC_B,
+        reason="translation-in-preparation", tombstone="Being replaced."))
+    conn = await world.connect()
+    try:
+        done = await A.retire_only(conn, world.qdrant, "incarnation-withdraw", "church-fathers",
+                                   alias="chunks_live", registry=world.registry,
+                                   root=world.snapshots)
+    finally:
+        await conn.close()
+    assert done["documents"] == 1
+
+
 async def test_retire_only_leaves_an_unsearchable_point_unsearchable(world):
     """A point already marked not searchable is neither flipped nor recorded, so the
     rollback does not make it searchable."""
@@ -965,3 +1117,21 @@ async def test_retire_only_needs_its_collection(world):
     args = publish.build_parser().parse_args(["apply", "--retire-only", "--release", "x-1"])
     with pytest.raises(ValueError, match="--retire-only needs --collection"):
         await publish.apply(args)
+
+
+async def test_snapshot_redirects_can_use_the_staged_index(world):
+    """The before-snapshot's redirect query can look staged anchor and chapter redirects up
+    by staging's partial index. Without it each live redirect scanned all of staging, and
+    card-notes-2026-11's first apply hit the statement timeout (22 Nov 2026). Sequential
+    scans are switched off so the plan shows whether the index is usable at all, which the
+    planner decides by the query's shape, not the table's size."""
+    await _stage(world)
+    conn = await world.connect()
+    try:
+        async with conn.transaction():
+            await conn.execute("SET LOCAL enable_seqscan = off")
+            plan = "\n".join(r[0] for r in await conn.fetch("EXPLAIN " + A.SNAPSHOT_REDIRECTS_SQL))
+    finally:
+        await conn.close()
+    # The partial index `LIKE ... INCLUDING ALL` copies into staging (0043).
+    assert "Scan on corpus_redirects_entity_old_document_id_old_anchor_idx" in plan, plan
