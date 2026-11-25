@@ -1594,9 +1594,12 @@
      "collection": "apostolic-exhortations"
     },
     {
-     "document_id": "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",
-     "title": "Catechism of the Council of Trent",
-     "collection": "catechism"
+     "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
+     "title": "The Stromata, or Miscellanies",
+     "collection": "church-fathers",
+     "texts": [
+      "Book III, On Marriage, chapters 1 to 18 (Stählin's sections 1 to 110; pp. 40–92), which the Ante-Nicene Fathers left in Latin"
+     ]
     },
     {
      "document_id": "706adce0-8af2-5a30-877b-82e701601a53",

@@ -97,6 +97,7 @@ class WorkConfig:
     edge_strip_words: bool = False
     note_opens: tuple[str, ...] = ()   # the line opening each page's notes, where the measure misses
     note_start: str | None = None   # a work's own note marker, beside the usual ones
+    side_notes: bool = False   # words outside the text block are the editor's side notes
     units: str | None = None     # ocr/units.py; None groups paragraphs into passages
     unit_count: int | None = None   # how many units the work prints
     unit_series: tuple[int, ...] | None = None   # units per series, where it prints several

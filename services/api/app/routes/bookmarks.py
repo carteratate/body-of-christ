@@ -1,14 +1,15 @@
+import asyncio
 import logging
 import time
 import uuid
 from collections import defaultdict
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 
 from app import corpus_lifecycle, corpus_schema
 from app.db import get_pool
 from app.footnotes import fetch_footnotes, has_footnotes
+from app.headings import fetch_headings
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.rag.steps import document_facts
@@ -184,13 +185,19 @@ async def list_bookmarks(
         logger.error("list_bookmarks query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
-    notes = await fetch_footnotes(pool, [
-        (str(row["chunk_id"]), row["content"]) for row in shown.values()
-        if has_footnotes(row["collection"], row["document_title"])
-    ])
-    facts, _ = await document_facts.fetch_best_effort(pool, [
-        str(row["chunk_id"]) for row in shown.values()
-    ])
+    # Notes, headings (issue #445) and facts, each best-effort and bounded, read together.
+    notes, marks, (facts, _) = await asyncio.gather(
+        fetch_footnotes(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+            if has_footnotes(row["collection"], row["document_title"])
+        ]),
+        fetch_headings(pool, [
+            (str(row["chunk_id"]), row["content"]) for row in shown.values()
+        ]),
+        document_facts.fetch_best_effort(pool, [
+            str(row["chunk_id"]) for row in shown.values()
+        ]),
+    )
 
     def chunk(row, display) -> BookmarkChunk:
         source_row = display if display is not None else row
@@ -203,6 +210,7 @@ async def list_bookmarks(
             # A removed passage shows no text (Carter, 9 Nov 2026).
             content=display["content"] if display is not None else "",
             footnotes=notes.get(str(display["chunk_id"]), []) if display is not None else [],
+            headings=marks.get(str(display["chunk_id"]), []) if display is not None else [],
             source=BookmarkSource(**{
                 "collection": source_row["collection"],
                 "document_title": source_row["document_title"],

@@ -6,10 +6,9 @@ import asyncpg
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app import card_notes, corpus_lifecycle, corpus_schema, held_texts
+from app import card_notes, corpus_lifecycle, corpus_schema, headings, held_texts
 from app.auth.verify import verify_supabase_jwt
 from app.db import POOL_ACQUIRE_TIMEOUT_SECONDS, get_pool
-from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.corpus_lifecycle import CorpusLifecycleError
 from app.corpus_schema import CorpusSchema
@@ -574,11 +573,16 @@ async def get_document_reader(
         logger.error("get_document_reader query failed (%s)", exc.__class__.__name__)
         raise HTTPException(status_code=503, detail="Service temporarily unavailable") from exc
 
+    # Headings marked inside the passages (issue #445): best-effort, bounded on its own.
+    marks = await headings.fetch_headings(
+        pool, [(str(r["id"]), r["content"]) for r in passage_rows])
     passages = [
         ReaderPassage(
             id=str(r["id"]), anchor=r["anchor"], chapter_key=r["chapter_key"],
             chapter_label=r["chapter_label"], unit_label=r["unit_label"],
             reference=r["reference"], content=r["content"],
+            # Headings marked inside the passage (issue #445).
+            headings=marks.get(str(r["id"]), []),
             **({key: r[key] for key in ("language", "note", "work_key", "passage_author",
                                         "voice", "superseded_by")}
                if "language" in r.keys() else {}),

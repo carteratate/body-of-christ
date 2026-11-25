@@ -189,8 +189,8 @@ def freeze(snapshot: str, frozen_on: str) -> tuple[registry.WorkRegistry, dict, 
     previous = registry.activate(registry.WorkRegistry())
     try:
         checks_report.placeholder_credentials()
-        collections = tuple(checks_report.SOURCE_ADAPTERS)
-        build = {c: checks_report.SOURCE_ADAPTERS[c]() for c in collections}
+        collections = tuple(checks_report.SOURCE_BUILDS)
+        build = {c: checks_report.SOURCE_BUILDS[c]() for c in collections}
     finally:
         registry.activate(previous)
     live_documents = health_cli.load_snapshot(snapshot, collections)

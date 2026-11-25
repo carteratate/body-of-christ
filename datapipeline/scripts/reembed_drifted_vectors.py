@@ -204,8 +204,8 @@ async def main(collections: list[str], categories: frozenset[str],
                                              apply, batch_size)
                 except Exception as exc:
                     print(f"    ✗ FAILED: {exc}")
-                    print(f"      Re-run to resume — drift is recomputed from both "
-                          f"stores, so points already rewritten fall out of scope.")
+                    print("      Re-run to resume — drift is recomputed from both "
+                          "stores, so points already rewritten fall out of scope.")
                     exit_code = 1
         finally:
             await client.close()
@@ -254,6 +254,8 @@ if __name__ == "__main__":
                     help="release named by the PUBLISH_LOCK.json entry that approves --apply")
     args = ap.parse_args()
 
+    # Live payloads keep the old keys until 5.1b.3's publish (`collection_keys`).
+    from collection_keys import RENAMES  # noqa: E402
     from publication import SOURCE_ADAPTERS  # noqa: E402
 
     try:
@@ -261,7 +263,7 @@ if __name__ == "__main__":
             args.collection,
             args.categories,
             args.batch_size,
-            set(SOURCE_ADAPTERS),
+            set(SOURCE_ADAPTERS) | set(RENAMES),
         )
     except ArgError as exc:
         ap.error(str(exc))

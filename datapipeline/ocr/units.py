@@ -665,10 +665,139 @@ def _with_catechism_text(para):
     return replace(para, text=strip_stray_quotes(strip_catechism_calls(para.text)))
 
 
+class ChadwickSections:
+    """Clement's *Stromata* III in Henry Chadwick's translation (*Alexandrian Christianity*,
+    1954, pp. 40–92; #399), one unit per Stählin section, `ch03/s012`, as the print
+    numbers them: "12. If Plato himself …". The adapter rejoins the sections and cuts
+    them where ANF's passages begin (`ingest/stromata_chadwick.py`).
+
+    - The heading lines above chapter I ("On Marriage", "Miscellanies, Book III", "THE
+      TEXT") go, and each "CHAPTER N" heading, which only says where a chapter starts;
+    - the sections are found in order, 1 to `unit_count`, each number where a paragraph
+      opens or after a sentence's end, so a section that opens inside a paragraph (15)
+      is found too. The OCR splits a number ("1 06.", "6 1 .") or reads its digits as
+      letters ("i." for 1, "no." for 110); all 110 must be found, in order;
+    - the number itself goes: it is Stählin's reference, not Clement's text;
+    - so do the note calls, which the OCR reads as a number standing alone after a
+      word ("necessity." 1 And"), sometimes with a mark ("5 *");
+    - a verse line, or a line the clean-up opened as a paragraph though the one before
+      does not end a sentence, continues the paragraph before it."""
+    name = "chadwick"
+    SECTIONS = 110
+
+    _TITLE = re.compile(r"^(On Marriage|Miscellanies, Book III|THE TEXT)$")
+    _CHAPTER = re.compile(r"^CHAPTER ([IVXL]+)\b\s*")
+    _ENDS = re.compile(r"[.?!:;\"”’'*)]\W*(\d{1,2}\W*)?$")
+    _DIGIT = {"0": "[0oO]", "1": "[1Iil]", "5": "[5S]"}
+    # A note call: a number standing alone after a word or a stop, with any mark the OCR
+    # read beside it; or glued to a closing quotation mark ('ofGod."83').
+    _CALL = re.compile(r"(?<=[\w.,;:!?\"”’')\]*])(?:\s?/)?\s+\d{1,2}(?:\s?\*)?(?=\s|$)"
+                       r"|(?<=[\"”’])\d{1,2}(?=\s|$)")
+
+    def _number(self, n: int) -> str:
+        digits = r"\s?".join(self._DIGIT.get(d, d) for d in str(n))
+        return rf"(?:{digits}|no)" if n == 110 else digits
+
+    def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
+              closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
+        from ocr.work import PASSAGE_WORDS, group_passages
+
+        if series or closes or bounds:
+            raise ValueError("chadwick units take no series, closes or bounds")
+        start = next((k for k, p in enumerate(paragraphs) if self._CHAPTER.match(p.text)), None)
+        if start is None or any(not self._TITLE.match(p.text.strip()) for p in paragraphs[:start]):
+            raise ValueError("chadwick: the text does not open with its title lines and CHAPTER I")
+        body, chapters = self._body(paragraphs[start:])
+        units: list[Unit] = []
+        n, at = 1, (0, 0)
+        cuts = []
+        while True:
+            found = self._find(body, n, at)
+            if found is None:
+                break
+            cuts.append((n, found))
+            at, n = (found[0], found[1] + 1), n + 1
+        if not cuts or cuts[0][1] != (0, 0):
+            raise ValueError("chadwick: section 1 does not open the text")
+        if len(cuts) != self.SECTIONS:
+            raise ValueError(f"chadwick: sections 1 to {len(cuts)} found, Book III has "
+                             f"{self.SECTIONS}; section {len(cuts) + 1} is not where expected")
+        for k, (n, (para, off)) in enumerate(cuts):
+            end = cuts[k + 1][1] if k + 1 < len(cuts) else (len(body), 0)
+            section = self._section(body, (para, off), end)
+            chapter = max(c for c, at_para in chapters if at_para <= para)
+            groups = group_passages(section, PASSAGE_WORDS)
+            uid = f"ch{chapter:02d}/s{n:03d}"
+            units.extend(Unit(uid if len(groups) == 1 else f"{uid}-{j:02d}", g)
+                         for j, g in enumerate(groups, 1))
+        return units
+
+    def _body(self, paragraphs: list) -> tuple[list, list[tuple[int, int]]]:
+        """The paragraphs without the chapter headings, verse lines joined to the line
+        before, and (chapter, first paragraph) for each chapter."""
+        body, chapters = [], []
+        for para in paragraphs:
+            m = self._CHAPTER.match(para.text)
+            if m:
+                chapters.append((_roman(m.group(1)), len(body)))
+                rest = para.text[m.end():].strip()
+                if not rest:
+                    continue
+                para = replace(para, text=rest, continues=False)
+            elif body and (not self._ENDS.search(body[-1].text) or para.text[:1].islower()):
+                para = replace(para, continues=True)
+            body.append(para)
+        numbers = [c for c, _ in chapters]
+        if numbers != list(range(1, len(numbers) + 1)):
+            raise ValueError(f"chadwick: chapters out of order: {numbers}")
+        return body, chapters
+
+    def _find(self, body: list, n: int, at: tuple[int, int]) -> tuple[int, int] | None:
+        """Where section `n` opens, at or after `at`: its number opening a paragraph, or
+        after a sentence's end (and any note call there)."""
+        pattern = re.compile(rf"(?:^|(?<=[.?!:\"”’'*)])\s+(?:\S{{1,3}}\s+)?)"
+                             rf"(?={self._number(n)}\s?[.,]{{1,2}}\s)")
+        for k in range(at[0], len(body)):
+            text = body[k].text
+            for m in pattern.finditer(text, at[1] if k == at[0] else 0):
+                pos = m.end()
+                return k, pos
+        return None
+
+    def _section(self, body: list, start: tuple[int, int], end: tuple[int, int]) -> list:
+        """The section's paragraphs from `start` to `end`, its number and note calls
+        taken out."""
+        (p0, o0), (p1, o1) = start, end
+        out = []
+        for k in range(p0, p1 + 1 if o1 else p1):
+            para = body[k]
+            text = para.text[o0 if k == p0 else 0:o1 if k == p1 else None]
+            if k == p0:
+                text = re.sub(rf"^{self._number_any()}\s?[.,]{{1,2}}\s+", "", text)
+                para = replace(para, continues=False)
+            text = re.sub(r" {2,}", " ", self._CALL.sub("", text)).strip()
+            if text:
+                out.append(replace(para, text=text))
+        return out
+
+    def _number_any(self) -> str:
+        return r"(?:[0-9IilOoS](?:\s?[0-9IilOoS]){0,2}|no)"
+
+
+def _roman(numeral: str) -> int:
+    values = {"I": 1, "V": 5, "X": 10, "L": 50}
+    total = 0
+    for k, ch in enumerate(numeral):
+        v = values[ch]
+        total += -v if k + 1 < len(numeral) and values[numeral[k + 1]] > v else v
+    return total
+
+
 UNITS: dict[str, Units] = {SchroederCanons.name: SchroederCanons(), Bounded.name: Bounded(),
                            Headed.name: Headed(), DeferrariExtracts.name: DeferrariExtracts(),
                            ChrystalLetter.name: ChrystalLetter(),
-                           RomanCatechism.name: RomanCatechism()}
+                           RomanCatechism.name: RomanCatechism(),
+                           ChadwickSections.name: ChadwickSections()}
 
 
 def get_units(name: str) -> Units:

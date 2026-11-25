@@ -87,7 +87,8 @@ class Removal:
     leaf: int
     page: str | None
     kind: str        # running_head | page_number | signature | catchword | speck |
-                     # margin_number | note_call (`pdf.py`) | rule | watermark | edge_strip
+                     # margin_number | note_call (`pdf.py`) | rule | watermark | edge_strip |
+                     # side_note
     text: str
 
 
@@ -567,6 +568,47 @@ def strip_edge(page: Page, fraction: float,
     return kept, removed
 
 
+# A page needs this many lines of six words or more for its text block to be measured;
+# with fewer (a title page, a page of verse) its side notes stay for the fixes.
+SIDE_NOTE_FULL_LINES = 3
+
+
+def strip_side_notes(page: Page) -> tuple[list[Line], list[Removal]]:
+    """The page's lines without the words standing wholly outside its text block: the
+    notes an editor set in the outer margin beside the text ("Example of Samson", Lewis's
+    John of the Cross, 5.6c) and running heads set there ("CHAP. VI."). The block's edges
+    are the medians of its full lines' ends. A margin word the OCR read into a body line
+    goes from it; a line left with no words goes."""
+    full = [ln for ln in page.lines if len(ln.edges) >= 6]
+    if len(full) < SIDE_NOTE_FULL_LINES:
+        return page.lines, []
+    slack = MARGIN_SLACK * page.width
+    left = statistics.median(ln.x0 for ln in full) - slack
+    right = statistics.median(ln.x1 for ln in full) + slack
+    kept: list[Line] = []
+    removed: list[Removal] = []
+    for ln in page.lines:
+        words = ln.text.split(" ")
+        if len(words) != len(ln.edges):
+            if ln.x1 < left or ln.x0 > right:
+                removed.append(Removal(page.leaf, page.number, "side_note", ln.text))
+            else:
+                kept.append(ln)
+            continue
+        outside = [k for k, (x0, x1) in enumerate(ln.edges) if x1 < left or x0 > right]
+        if not outside:
+            kept.append(ln)
+            continue
+        removed.append(Removal(page.leaf, page.number, "side_note",
+                               " ".join(words[k] for k in outside)))
+        rest = [k for k in range(len(words)) if k not in outside]
+        if rest:
+            kept.append(replace(ln, text=" ".join(words[k] for k in rest),
+                                x0=ln.edges[rest[0]][0], x1=ln.edges[rest[-1]][1],
+                                edges=tuple(ln.edges[k] for k in rest)))
+    return kept, removed
+
+
 def clean_work(workdir, sources=None, force: bool = False,
                passage_words: int | None = None) -> CleanResult:
     """Read the work's pages, clean them, and write its passages and clean-up log.
@@ -612,6 +654,10 @@ def clean_work(workdir, sources=None, force: bool = False,
     if config.edge_strip:
         for page in pages:
             page.lines, removed = strip_edge(page, config.edge_strip, config.edge_strip_words)
+            strips += removed
+    if config.side_notes:
+        for page in pages:
+            page.lines, removed = strip_side_notes(page)
             strips += removed
     result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
                          config.max_paragraph_words, config.margin_numbers,

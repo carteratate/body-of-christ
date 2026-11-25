@@ -12,6 +12,10 @@ DEFAULT_COLLECTIONS = ["bible", "catechism", "church-fathers", "papal", "church-
 StandardQuota = Literal[3, 4, 5]
 PreferenceQuota = Literal[3, 4, 5, 10]
 Theme = Literal["dark", "light"]
+# How search result cards are drawn (0047): "tint" on the collection colour, "plain"
+# like a saved passage.
+ResultCardStyle = Literal["tint", "plain"]
+DEFAULT_RESULT_CARD_STYLE: ResultCardStyle = "tint"
 VALID_TRANSLATIONS = {"CPDV", "douay-rheims"}
 
 
@@ -48,6 +52,10 @@ class PreferenceValues(BaseModel):
 
 
 class PreferencesResponse(PreferenceValues):
+    # An account setting, not a guest draft's. None when the database has no 0047 column
+    # yet: the client keeps its own choice.
+    result_card_style: Optional[ResultCardStyle] = None
+
     @classmethod
     def from_stored(cls, row: Mapping[str, Any]) -> "PreferencesResponse":
         """Preferences as stored, tolerating collection keys this API does not know
@@ -73,6 +81,7 @@ class PreferencesResponse(PreferenceValues):
             default_quota=quota,
             last_standard_quota=row["last_standard_quota"],
             theme=row["theme"],
+            result_card_style=row.get("result_card_style"),
         )
 
 
@@ -86,6 +95,7 @@ class PreferencesUpdate(BaseModel):
     default_quota: Optional[PreferenceQuota] = None
     last_standard_quota: Optional[StandardQuota] = None
     theme: Optional[Theme] = None
+    result_card_style: Optional[ResultCardStyle] = None
 
     @field_validator("preferred_translation")
     @classmethod

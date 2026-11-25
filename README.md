@@ -224,7 +224,7 @@ Source provenance for each collection is documented in `datapipeline/SOURCES.md`
 ```bash
 cd services/api
 python3 -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+pip install --require-hashes -r requirements-dev.lock && pip install --no-deps -e .
 cp ../../.env.example .env      # the template lives at the repo root
 uvicorn app.main:app --reload   # → http://localhost:8000
 ```

@@ -3,40 +3,48 @@
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
   "approved_applies": [
     {
-      "collection": "councils",
-      "release": "held-texts-2026-11",
+      "collection": "all",
+      "release": "collection-keys-2026-11",
       "steps": [
-        "stage",
-        "apply",
-        "rollback"
+        "apply"
       ],
-      "reason": "4.3's publish (#394, PR #417, tests #424): held texts in their place in the reader and the Library, as documents.metadata.held_texts. Staged from this PR's merge commit, which holds 4.3's data after 4.4's publish. The three collections whose documents hold texts are staged; the others are copied. Its report must show held_texts changes only: no passage, ID, payload or embedding change. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
+      "reason": "Only to delete the Qdrant collection 5.1b.3's publish replaced, chunks-stromata-iii-2026-11, with publish.py drop-old-collection --close-window-early, under Carter's standing decision (23 Nov 2026): the window closes once its smoke checks pass, which for 5.1b.3 were step 7's acceptance checks (passed 24 Nov 2026, #200). Its stage, apply, rollback and repair entries are removed here.",
       "approved_by": "Carter",
-      "pr": 449
+      "pr": 494
     },
     {
-      "collection": "encyclicals",
-      "release": "held-texts-2026-11",
+      "collection": "catechism",
+      "release": "batch-1-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "4.3's publish (#394, PR #417, tests #424): held texts in their place in the reader and the Library, as documents.metadata.held_texts. Staged from this PR's merge commit, which holds 4.3's data after 4.4's publish. The three collections whose documents hold texts are staged; the others are copied. Its report must show held_texts changes only: no passage, ID, payload or embedding change. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
+      "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 449
+      "pr": 494
     },
     {
-      "collection": "papal-documents",
-      "release": "held-texts-2026-11",
+      "collection": "church-law",
+      "release": "batch-1-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "4.3's publish (#394, PR #417, tests #424): held texts in their place in the reader and the Library, as documents.metadata.held_texts. Staged from this PR's merge commit, which holds 4.3's data after 4.4's publish. The three collections whose documents hold texts are staged; the others are copied. Its report must show held_texts changes only: no passage, ID, payload or embedding change. Each live step still needs Carter's own approval at the time it runs. A later reviewed PR removes the entry when its rollback window closes.",
+      "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 449
+      "pr": 494
+    },
+    {
+      "collection": "all",
+      "release": "batch-1-2026-11",
+      "steps": [
+        "apply"
+      ],
+      "reason": "Only to delete the Qdrant collection batch 1's publish replaces, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "approved_by": "Carter",
+      "pr": 494
     }
   ]
 }

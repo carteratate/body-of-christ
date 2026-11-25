@@ -22,7 +22,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import os
 import sys
 from datetime import date
 from pathlib import Path
@@ -96,6 +95,10 @@ _UNREGISTERED_NOTES = {
     "papal-documents/ubicumque-et-semper.html": "scheduled for PR 5.4",
     "apostolic-exhortations/amoris-laetitia.html":
         "not published; scheduled for PR 5.4 (Carter, 4 Oct 2026)",
+    # Chadwick's Stromata III (#399), read through the OCR tool's frozen text.
+    **{f"church-fathers/alexandrianchris012826mbp/alexandrianchris012826mbp_{kind}":
+       "the scan Stromata III's English is read from, through ocr/texts/"
+       "chadwick-stromata-3.json (#399)" for kind in ("djvu.xml", "djvu.txt")},
 }
 # The Roman Catechism (5.5), read through the OCR tool's frozen text; Fordham's
 # transcription only checks that OCR (the gate's baseline; Carter, 22 Nov 2026).
@@ -133,9 +136,9 @@ def _printing_inputs() -> dict[str, str]:
 
 def registered_collections() -> list[str]:
     sys.path.insert(0, str(DATAPIPELINE))
-    from publication import SOURCE_ADAPTERS
+    from publication import SOURCE_BUILDS
 
-    return sorted(SOURCE_ADAPTERS)
+    return sorted(SOURCE_BUILDS)
 
 
 def _sha256(path: Path) -> tuple[str, int]:
