@@ -3,9 +3,10 @@
 The publish that carries 5.1b.3 writes the new keys into `documents.collection` and the
 Qdrant payload. Until it is applied, live rows carry the old keys, so a stage, a release
 report or an apply that covers a new key also reads the live rows filed under each old
-key that becomes it, and reads them as the new key (`canonical`). The API's mirror is
-`LEGACY_COLLECTIONS` in `services/api/app/rag/constants.py`, which also knows which
-genres each old papal key reads; here only the key matters.
+key that becomes it, and reads them as the new key (`canonical`). The web's mirror,
+kept for keys a browser still holds, is `LEGACY_COLLECTIONS` in
+`apps/web/src/lib/collections.ts`, which also knows which genres each old papal key
+read; here only the key matters. (The API's was removed in 5.1b.4.)
 
 The work registry keeps the old keys: `works.json` and `passages/<key>.jsonl` file each
 frozen ID under the collection it was frozen in (2.1), and adapters look IDs up there,

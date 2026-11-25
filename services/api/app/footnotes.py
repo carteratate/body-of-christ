@@ -30,7 +30,7 @@ _TIMEOUT_SECONDS = 2.0
 
 
 # Collections whose translators' notes give scripture references (1.10b).
-_SCRIPTURE_NOTE_COLLECTIONS = frozenset({"church-fathers", "medieval", "theologians"})
+_SCRIPTURE_NOTE_COLLECTIONS = frozenset({"church-fathers", "theologians"})
 
 
 def has_footnotes(collection: str | None, document_title: str | None) -> bool:
