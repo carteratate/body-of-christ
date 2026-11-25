@@ -32,10 +32,17 @@ describe("AboutPage", () => {
       "Irenaeus",
       "Bernard of Clairvaux",
       "Thomas à Kempis",
-      "Boethius",
       "church councils",
     ]) {
       expect(text).toContain(present);
     }
+  });
+
+  it("lists the Fathers without Boethius, who stays in the collection", () => {
+    const { container } = render(<AboutPage />);
+    expect(container.textContent).toContain(
+      "Writings of the early Church Fathers from roughly the 1st through 6th centuries, including Clement of Rome, Ignatius of Antioch, Justin Martyr, Irenaeus, Cyprian, Athanasius and Augustine. The Fathers interpreted Scripture, defended the faith against heresies, and laid the theological foundations the Church still stands on. Essential for understanding how Christian doctrine developed in its earliest centuries.",
+    );
+    expect(container.textContent).not.toContain("Boethius");
   });
 });
