@@ -119,9 +119,9 @@ def test_llm_pool_trims_to_global_cap():
 
 def test_llm_pool_guarantees_a_floor_per_contributing_collection():
     """A strong collection must not crowd a weaker one out of the pool entirely."""
-    counts = {"bible": 60, "canon-law": 2}
+    counts = {"bible": 60, "church-law": 2}
     allocation = budget.llm_pool(counts)
-    assert allocation["canon-law"] >= min(settings.llm_pool_floor_per_col, 2)
+    assert allocation["church-law"] >= min(settings.llm_pool_floor_per_col, 2)
     assert sum(allocation.values()) <= settings.llm_pool_global_cap
 
 

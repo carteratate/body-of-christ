@@ -19,7 +19,7 @@ URL = "https://www.papalencyclicals.net/leo13/l13liber.htm"
 USER = AuthUser(user_id="u", email=None)
 
 
-def _doc_row(access, metadata=None, collection="encyclicals"):
+def _doc_row(access, metadata=None, collection="papal"):
     return {"id": DOC, "collection": collection, "title": "Libertas", "author": "Pope Leo XIII",
             "year": 1888, "translation": None,
             "metadata": {"url": URL} if metadata is None else metadata,
@@ -105,9 +105,9 @@ def test_an_unrelated_missing_column_is_not_swallowed():
 
 def test_the_catechism_and_canon_law_link_to_the_official_edition():
     assert reader_access.source_url("catechism", None).startswith("https://www.usccb.org/")
-    assert reader_access.source_url("canon-law", {}).startswith("https://www.vatican.va/")
+    assert reader_access.source_url("church-law", {}).startswith("https://www.vatican.va/")
     assert reader_access.source_url("church-fathers", {}) is None
-    assert reader_access.source_url("encyclicals", {"url": "javascript:alert(1)"}) is None
+    assert reader_access.source_url("papal", {"url": "javascript:alert(1)"}) is None
 
 
 def test_each_rights_holder_gets_its_credit_line():
@@ -124,20 +124,20 @@ def test_each_rights_holder_gets_its_credit_line():
     assert reader_access.source_credit(
         "catechism", "https://www.vatican.va/x.html", "Compendium of the Catechism") == \
         reader_access.VATICAN_CREDIT
-    assert reader_access.source_credit("encyclicals", "https://www.vatican.va/x.html") == \
+    assert reader_access.source_credit("papal", "https://www.vatican.va/x.html") == \
         reader_access.VATICAN_CREDIT
-    assert reader_access.source_credit("encyclicals", "http://www.vatican.va/x.html") == \
+    assert reader_access.source_credit("papal", "http://www.vatican.va/x.html") == \
         reader_access.VATICAN_CREDIT
     # No credit is invented for sources whose rights holder isn't known.
     assert reader_access.source_credit("councils", "https://www.papalencyclicals.net/x") is None
-    assert reader_access.source_credit("encyclicals", "https://evil.example/vatican.va") is None
+    assert reader_access.source_credit("papal", "https://evil.example/vatican.va") is None
     assert reader_access.source_credit("church-fathers", None) is None
 
 
 def test_a_full_document_carries_no_credit():
     pool = AsyncMock()
     pool.fetch.return_value = [
-        {"id": uuid.UUID(DOC), "collection": "encyclicals", "metadata": {"url": URL},
+        {"id": uuid.UUID(DOC), "collection": "papal", "metadata": {"url": URL},
          "reader_access": "full"},
     ]
     access = asyncio.run(reader_access.document_access(pool, [DOC]))
@@ -164,7 +164,7 @@ def test_document_access_maps_each_id_and_tolerates_a_missing_column():
 
 
 def _source(doc_id, title):
-    return {"id": doc_id, "collection": "encyclicals", "title": title, "author": None,
+    return {"id": doc_id, "collection": "papal", "title": title, "author": None,
             "year": None, "translation": None, "metadata": {"url": URL}, "chunk_count": 3}
 
 
@@ -212,10 +212,10 @@ async def test_search_chunk_events_carry_reader_access():
     from app.rag.steps.types import RankedChunk
 
     chunk = RankedChunk(chunk_id="00000000-0000-0000-0000-000000000001", content="x",
-                        reference="Libertas 1", collection="encyclicals", document_id=DOC,
+                        reference="Libertas 1", collection="papal", document_id=DOC,
                         document_title="Libertas", author="Pope Leo XIII", reranker_score=0.9)
     result = MagicMock(chunks=[chunk], outcome="success", total_cost=0.0, context={},
-                       collection_outcomes={"encyclicals": "results"}, delivery_outcome=None)
+                       collection_outcomes={"papal": "results"}, delivery_outcome=None)
 
     async def no_explanation(*args, **kwargs):
         return
@@ -226,8 +226,8 @@ async def test_search_chunk_events_carry_reader_access():
          patch("app.rag.pipeline.document_access", _excerpt_for(DOC)), \
          patch("app.rag.pipeline.stream_explanation", no_explanation):
         events = [e async for e in run_search_pipeline(
-            query="liberty", collections=["encyclicals"], translation="CPDV", quota=3,
-            user_id=None, search_plan=resolve_search_plan(["encyclicals"], 3))]
+            query="liberty", collections=["papal"], translation="CPDV", quota=3,
+            user_id=None, search_plan=resolve_search_plan(["papal"], 3))]
 
     [event] = [e for e in events if e["type"] == "chunk"]
     assert event["source"]["reader_access"] == "excerpt"
@@ -270,7 +270,7 @@ def test_bookmarks_carry_reader_access():
         "created_at": datetime(2026, 10, 16, tzinfo=timezone.utc), "note": None,
         "content": "Liberty, the highest of natural endowments...", "reference": "Libertas 1",
         "anchor": "a1", "chapter_key": "c1", "unit_label": None, "document_id": DOC,
-        "collection": "encyclicals", "document_title": "Libertas", "author": "Pope Leo XIII",
+        "collection": "papal", "document_title": "Libertas", "author": "Pope Leo XIII",
     }]
     with patch("app.routes.bookmarks.get_pool", return_value=pool), \
          patch("app.routes.bookmarks.document_access", _excerpt_for(DOC)):
@@ -321,7 +321,7 @@ def test_reading_progress_without_migration_0041_lists_everything():
 
     row = {"document_id": DOC, "chapter_key": "c1", "chapter_label": "C1", "anchor": None,
            "updated_at": datetime(2026, 10, 16, tzinfo=timezone.utc),
-           "collection": "encyclicals", "document_title": "T", "author": None}
+           "collection": "papal", "document_title": "T", "author": None}
     pool = AsyncMock()
     pool.fetch.side_effect = [
         asyncpg.UndefinedColumnError("column d.reader_access does not exist"), [row]]

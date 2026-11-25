@@ -17,7 +17,7 @@ describe("collection keys after 5.1b", () => {
     expect([...ALL_COLLECTION_KEYS].sort()).toEqual(api.sort());
   });
 
-  it("maps each old key to its new collection, as the API does", () => {
+  it("maps each old key a browser may hold to its new collection", () => {
     expect(Object.fromEntries(Object.entries(LEGACY_COLLECTIONS).map(([k, v]) => [k, v.key]))).toEqual({
       encyclicals: "papal", "apostolic-exhortations": "papal", "papal-documents": "papal",
       "canon-law": "church-law", medieval: "theologians",
