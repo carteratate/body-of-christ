@@ -321,7 +321,7 @@ def test_explain_omits_a_label_the_reference_already_contains():
         with patch.object(explain, "_client", _FakeClient()):
             async for _ in explain.stream(
                 "The Christian faithful are bound...", "Code of Canon Law, Can. 33",
-                "canon-law", "what does canon 33 require", unit_label="Can. 33",
+                "church-law", "what does canon 33 require", unit_label="Can. 33",
             ):
                 pass
 
@@ -335,7 +335,7 @@ def test_cohere_document_omits_a_redundant_role():
 
     candidate = ChunkCandidate(
         chunk_id="c1", content="The Christian faithful...",
-        reference="Code of Canon Law, Can. 33", collection="canon-law",
+        reference="Code of Canon Law, Can. 33", collection="church-law",
         document_id="d1", document_title="Code of Canon Law",
         author=None, rrf_score=0.9, unit_label="Can. 33",
     )

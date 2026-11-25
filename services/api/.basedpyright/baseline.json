@@ -148,56 +148,6 @@
                 }
             }
         ],
-        "./app/rag/collection_scope.py": [
-            {
-                "code": "reportOperatorIssue",
-                "range": {
-                    "startColumn": 21,
-                    "endColumn": 55,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 70,
-                    "endColumn": 91,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 19,
-                    "endColumn": 89,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 54,
-                    "endColumn": 63,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 74,
-                    "endColumn": 87,
-                    "lineCount": 1
-                }
-            },
-            {
-                "code": "reportArgumentType",
-                "range": {
-                    "startColumn": 28,
-                    "endColumn": 49,
-                    "lineCount": 1
-                }
-            }
-        ],
         "./app/rag/compare/judge.py": [
             {
                 "code": "reportArgumentType",
@@ -563,14 +513,6 @@
             }
         ],
         "./app/rag/steps/hyde_s25.py": [
-            {
-                "code": "reportOperatorIssue",
-                "range": {
-                    "startColumn": 24,
-                    "endColumn": 58,
-                    "lineCount": 1
-                }
-            },
             {
                 "code": "reportAttributeAccessIssue",
                 "range": {
