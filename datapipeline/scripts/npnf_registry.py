@@ -68,6 +68,11 @@ _LIBANIUS = ("Rule A: a letter of Libanius, the pagan sophist, to Basil; its aut
 RETIRED_IDS = frozenset(f"rm-{n}" for n in range(11522, 11532))
 T_DUPLICATE = ("Removed because this letter is Gregory of Nazianzus's Letter 66, which "
                "TheoCorpus gives in his own Select Letters.")
+T_EUTYCHES = ("Removed because the Church condemned Eutyches by name, and TheoCorpus leaves "
+              "out every work of an author it has condemned by name.")
+CONSTANTINOPLE_II = {"issuer": "Second Council of Constantinople", "date": "0553-06-02",
+                     "act": "anathema 11", "citation": "https://www.newadvent.org/fathers/3812.htm"}
+R1_LEO_GREGORY = R1_ADDENDUM.replace("(Basil)", "(Leo and Gregory the Great)")
 # The letters 5.6a takes out, by div: (reason, detail, tombstone, Church act).
 EXCLUDED = {
     # NPNF2-07: Cyril and Gregory of Nazianzus are Doctors, and the volume prints no
@@ -93,6 +98,15 @@ EXCLUDED = {
                        "Jackson's translation is retired (Carter, 24 Nov 2026).",
                        T_DUPLICATE, None),
     },
+    # NPNF2-12: Eutyches's letter to Leo (Letter XXI). The other letters to Leo are by
+    # writers in communion when they wrote (R1, 5.6a addendum (Leo and Gregory the Great)).
+    "npnf212.xml": {
+        "ii.iv.xxi": ("rule-a",
+                      "Rule A, limit 1: a letter of Eutyches, condemned by name, Second "
+                      f"Council of Constantinople (553), anathema 11 ({R1_LEO_GREGORY}).",
+                      T_EUTYCHES, CONSTANTINOPLE_II),
+    },
+    "npnf213.xml": {},
 }
 
 # Each document's rule A record (works.json `rule_a`), by works.json work_id. Basil is a
@@ -106,7 +120,22 @@ _BASIL_RULE_A = {
     "church_acts": [], "decision": "include"}
 _DOCTOR_207 = ("{} is a Doctor of the Church: limit 2 passes his works whatever their date "
                f"({R1_ADDENDUM.replace('(Basil)', '(Cyril and Gregory of Nazianzus)')}).")
+_DOCTOR_RULE_A = {"applies": True, "communion_start": None, "communion_end": None,
+                  "work_date": None, "chronology_source": None, "church_acts": [],
+                  "decision": "include"}
+_DOCTOR_212 = ("{} is a Doctor of the Church: limit 2 passes his works whatever their date "
+               f"({R1_LEO_GREGORY})")
 RULE_A = {
+    "church-fathers/npnf212/ii.iv": {
+        **_DOCTOR_RULE_A,
+        "decision_basis": _DOCTOR_212.format("Leo the Great") + ". The letters to him are by "
+                          "writers in communion when they wrote, apart from Eutyches's, which "
+                          "has a removal entry."},
+    "church-fathers/npnf212/ii.v": {**_DOCTOR_RULE_A,
+                                    "decision_basis": _DOCTOR_212.format("Leo the Great") + "."},
+    **{key: {**_DOCTOR_RULE_A, "decision_basis": _DOCTOR_212.format("Gregory the Great") + "."}
+       for key in ("church-fathers/npnf212/iii.iv", "church-fathers/npnf212/iii.v",
+                   "church-fathers/npnf213/ii")},
     "church-fathers/npnf207/ii": {
         "applies": True, "communion_start": None, "communion_end": None,
         "work_date": "0347-01-01", "chronology_source": f"{QUASTEN}, pp. 404-407",
@@ -138,6 +167,71 @@ RULE_A = {
 # it). Read from the notes `ingest.editorial.judgments` flags; the rest of what it flags is
 # not about authorship (a doubtful plant, a doubtful identification of a man).
 JUDGMENTS = {
+    "church-fathers/npnf212/ii.iv": [
+        ("ii.iv.xvii-p1", "This letter is suspected by Quesnel as being, if not "
+                          "spurious, at least the production of some later Leo than our"
+                          " own: but he would seem to have hardly sufficient ground for"
+                          " his conjecture and the document is interesting as showing "
+                          "the existence of Church endowments at the time, and alas! of"
+                          " their m",
+         "genuine", False),
+        ("ii.iv.xxi-p2", "This Letter (XXI.) bears the stamp of genuineness upon it, "
+                         "though the Gk.",
+         "genuine", False),
+    ],
+    "church-fathers/npnf212/ii.v": [
+        ("ii.v.xviii-p24", "Both Quesnel and the Ballerinii condemn this passage "
+                           "inclosed in brackets as spurious.",
+         "spurious", False),
+        ("ii.v.xxxiii-p4", "The epithet sanctus is of doubtful genuineness here.",
+         "dubious", False),
+        ("ii.v.xxxvi-p8", "The words in brackets are of doubtful genuineness, and seem "
+                          "in themselves a mediæval imitation of Leo’s style.",
+         "dubious", False),
+        ("ii.v.xxxvi-p8", "The epithet spoils the argument, and is probably an "
+                          "interpolation.",
+         "dubious", False),
+        ("ii.v.xxxvi-p19", "8: the words in brackets are of doubtful authority.",
+         "dubious", False),
+        ("ii.v.xlvi-p20", "consider as genuine as the one given by the other mss., and "
+                          "translated above: in which case they are probably right in "
+                          "inferring that Leo used the Sermon more than once, and wrote"
+                          " these two endings for two different occasions.",
+         "genuine", False),
+    ],
+    "church-fathers/npnf213/ii": [
+        ("ii.v.xxx-p2", "The genuineness of this letter is considered doubtful.",
+         "dubious", False),
+        ("ii.v.xxx-p2", "It may have been a forgery founded on Epistle CXXII.",
+         "dubious", False),
+        ("ii.vii.xxx-p2", "Bede’s copy may be regarded as the most authentic, having "
+                          "been brought to him from Rome by Nothelm, a.d.",
+         "genuine", False),
+        ("ii.vii.xxx-p2", "However, he does not give the Preface, which has internal "
+                          "evidence of authenticity.",
+         "genuine", False),
+        ("ii.vii.xxx-p2", "Internal evidence, as well as historic probability, supports"
+                          " the superior genuineness of Bede’s copy (Cf.",
+         "genuine", False),
+        ("ii.ix.vii-p4", "The genuineness, or at any rate the freedom from "
+                         "interpolation, of all these three Epistles is disputed.",
+         "dubious", False),
+        ("ii.ix.vii-p4", "The Benedictine Editors of Gregory’s works defend their "
+                         "authenticity.",
+         "dubious", False),
+        ("ii.x.viii-p3", "The genuineness of this epistle is, to say the least, open to"
+                         " grave suspicion.",
+         "spurious", False),
+        ("ii.x.viii-p3", "Spur.) rejects it as spurious.",
+         "spurious", False),
+        ("ii.x.viii-p3", "Nor is it difficult to understand why such a letter may have "
+                         "been forged.",
+         "spurious", False),
+        ("ii.x.viii-p3", "Such a letter, too, if forged, would be likely to attempt an "
+                         "imitation of Gregory’s style, and to bring in (as this does) "
+                         "extracts from his previous writings.",
+         "spurious", False),
+    ],
     "church-fathers/npnf207/ii": [
         ("ii.iv-p93", "It is doubtful whether this caution proceeded from Cyril himself when "
                       "issuing a written copy of his Lectures, or from some later editor.",

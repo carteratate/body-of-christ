@@ -666,6 +666,692 @@
  },
  {
   "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.ii",
+  "title": "To Septimus, Bishop of Altinum.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.iii",
+  "title": "From Paschasinus, Bishop of Lilybæum.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.v",
+  "title": "To the Metropolitan Bishops of Illyricum.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.viii",
+  "title": "The Ordinance of Valentinian III. concerning the Manichæans.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xi",
+  "title": "An Ordinance of Valentinianus III.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xiii",
+  "title": "To the Metropolitan Bishops in the Provinces of Illyricum.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xxv",
+  "title": "From Peter Chrysologus, Bishop of Ravenna, to Eutyches, the Presbyter.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xxxvi",
+  "title": "To Flavian, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xli",
+  "title": "To Ravennius, Bishop of Arles.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xlvi",
+  "title": "From Hilary, then Deacon (afterwards Bishop of Rome) to Pulcheria Augusta.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xlvii",
+  "title": "To Anastasius, Bishop of Thessalonica.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xlviii",
+  "title": "To Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xlix",
+  "title": "To Flavian, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.l",
+  "title": "To the people of Constantinople, by the hand of Epiphanius and Dionysius, Notary of the Church of Rome.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.li",
+  "title": "To Faustus and other Presbyters and Archimandrites in Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.liii",
+  "title": "A Fragment of a Letter from Anatolius, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.liv",
+  "title": "To Theodosius Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lvii",
+  "title": "To Pulcheria Augusta.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lviii",
+  "title": "To Martinus and Faustus, Presbyters.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lix",
+  "title": "A Series of Letters.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lx",
+  "title": "From the Bishops of the Province of Arles.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxv",
+  "title": "To Pulcheria Augusta.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxvi",
+  "title": "To the Archimandrites of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxvii",
+  "title": "To Faustus, One of the Archimandrites at Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxviii",
+  "title": "From Valentinian and Marcian.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxix",
+  "title": "To Martinus, Another of the Archimandrites at Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxx",
+  "title": "To Faustus and Martinus Together.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxi",
+  "title": "From Marcianus Augustus to Leo.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxii",
+  "title": "From Pulcheria Augusta to Leo.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxiii",
+  "title": "Leo's Answer to Marcianus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxvi",
+  "title": "To Bishop Julian.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxviii",
+  "title": "To the Same Marcian.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxix",
+  "title": "To Pulcheria Augusta.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxxi",
+  "title": "To Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxxii",
+  "title": "To Anatolius, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxxiv",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxxv",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxxvi",
+  "title": "To Anatolius, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxxvii",
+  "title": "To Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.lxxxix",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xci",
+  "title": "To Ravennius, Bishop of Arles.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xcii",
+  "title": "From Eusebius, Bishop of Milan, to Leo.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xciv",
+  "title": "From Ravennus and Other Gallic Bishops.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xcv",
+  "title": "From the Emperor Marcian.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xcvii",
+  "title": "To the Gallic Bishops.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.xcviii",
+  "title": "To the Gallic Bishops.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cii",
+  "title": "To Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cv",
+  "title": "From Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cvi",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cvii",
+  "title": "To Pulcheria Augusta.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cix",
+  "title": "To the Bishops Assembled in Synod at Chalcedon.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cx",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxi",
+  "title": "To Pulcheria Augusta.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxiii",
+  "title": "To the Same Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxvi",
+  "title": "The former to Marcian Augustus, and the other to Julian the Bishop.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxix",
+  "title": "To Julian, the Bishop, by Count Rodanus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxx",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxi",
+  "title": "To Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxii",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxiv",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxv",
+  "title": "To Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxvi",
+  "title": "From Anatolius, Bishop of Constantinople, to Leo.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxvii",
+  "title": "From Proterius, Bishop of Alexandria, to Leo.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxviii",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxix",
+  "title": "To Anatolius.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxx",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxxi",
+  "title": "To the same, and on the same day.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxxii",
+  "title": "To the Bishops of Gaul and Spain.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxxiv",
+  "title": "To Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxxv",
+  "title": "To the Same.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxxvi",
+  "title": "To Marcian Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxxvii",
+  "title": "To Anatolius, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxxviii",
+  "title": "To Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxxxix",
+  "title": "To Leo Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxl",
+  "title": "To Anatolius, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxli",
+  "title": "To Julian, Bishop of Cos, and Aetius, the Presbyter.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxlii",
+  "title": "To Leo Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxliii",
+  "title": "To Basil, Bishop of Antioch.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxliv",
+  "title": "To Euxitheus, Bishop of Thessalonica (and Others).",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxlv",
+  "title": "To Anatolius, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxlvi",
+  "title": "To Julian, Bishop of Cos.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxlvii",
+  "title": "To Aetius, Presbyter of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxlviii",
+  "title": "To the Egyptian Bishops.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cxlix",
+  "title": "To Anatolius, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cli",
+  "title": "To Anatolius, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.cliv",
+  "title": "See Letter CLVIII.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.clv",
+  "title": "To the Presbyters, Deacons and Clergy of the Church of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.clvii",
+  "title": "To Anatolius, Bishop of Constantinople. By Patritius the Deacon the Deacon.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.clxii",
+  "title": "To all the Bishops of Campania, Samnium and Picenum.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.clxiv",
+  "title": "To Gennadius, Bishop of Constantinople.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.clxvi",
+  "title": "To the Presbyters and Deacons of the Church of Alexandria.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "ii.iv.clxvii",
+  "title": "To Certain Egyptian Bishops.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
+  "div": "iii.iv.i",
+  "title": "Preface.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf213.xml",
+  "div": "ii.i",
+  "title": "Title Page.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf213.xml",
+  "div": "ii.ii",
+  "title": "General Literature of Gregory's Life and Times.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf213.xml",
+  "div": "ii.iii",
+  "title": "Regula Pastoralis (Notes).",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf213.xml",
+  "div": "ii.iv",
+  "title": "Registrum Epistolarum (Notes).",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf213.xml",
+  "div": "ii.ix.vii",
+  "title": "To Lupo, Abbot.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
   "file": "on-the-holy-trinity.xml",
   "div": "ii",
   "title": "Preface",

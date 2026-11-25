@@ -353,6 +353,40 @@ WORKS[("church-fathers/npnf207/ii", "ii.xxiii")] = {
     "basis": f"Quasten, Patrología II (BAC 1978), pp. 404-407; CCC, footnotes citing "
              f"\"Catech. myst.\"; {R1_NPNF207}"}
 
+# ---------------------------------------------------------- 5.6a: Leo and Gregory the Great
+
+# NPNF2-12 and NPNF2-13 (5.6a, #205). Both are Doctors. The letters to them that their
+# collections keep are credited to their senders in the build (`_NPNF_SENDERS`); Barmby's
+# notes judge four of Gregory's Register doubtful or spurious, labelled here.
+R1_LEO_GREGORY = f"{R1}, 5.6a addendum (Leo and Gregory the Great)"
+for _work_id, _clavis in (("church-fathers/npnf212/ii.iv", "CPL 1656"),
+                          ("church-fathers/npnf212/ii.v", "CPL 1657"),
+                          ("church-fathers/npnf212/iii.iv", "CPL 1712"),
+                          ("church-fathers/npnf212/iii.v", "CPL 1714"),
+                          ("church-fathers/npnf213/ii", "CPL 1714")):
+    DOCUMENTS[_work_id] = {"certainty": "genuine", "clavis": _clavis, "basis": R1_LEO_GREGORY}
+_BARMBY = "Barmby, NPNF2-13, note to the letter"
+_AUTUN = ("Its genuineness, or at least its freedom from later additions, is disputed; the "
+          "Benedictine editors defend it.")
+WORKS.update({
+    # Book IX, 61: Recared's letter, which may be a forgery built on Gregory's to him (IX, 122).
+    ("church-fathers/npnf213/ii", "ii.v.xxx"): {
+        "author": "Recared", "certainty": "disputed",
+        "attribution_note": "Its genuineness is doubted: it may be a forgery based on "
+                            "Gregory's letter to Recared.",
+        "basis": _BARMBY},
+    # Book XIII, 8 and 9: privileges for Queen Brunhild's foundations at Autun.
+    **{("church-fathers/npnf213/ii", div): {
+        "author": "Gregory the Great", "certainty": "disputed", "attribution_note": _AUTUN,
+        "basis": f"{_BARMBY} (Book XIII, 10, on all three)"}
+       for div in ("ii.ix.v", "ii.ix.vi")},
+    # Book XIV, 17: the reply to Felix of Messana, which Jaffé lists among the spurious.
+    ("church-fathers/npnf213/ii", "ii.x.viii"): {
+        "author": "Pseudo-Gregory the Great", "certainty": "pseudonymous",
+        "attribution_note": "Not by Gregory: an imitation of his style, judged spurious.",
+        "basis": f"{_BARMBY}; Jaffé, Regesta Pontificum Romanorum, spuria"},
+})
+
 # The Creed of Nicaea Letter 125 quotes in Greek is cut under rule E
 # (`ingest.church_fathers.NOT_ENGLISH`).
 _CREED_NOTE = ("The Creed of Nicaea, which this letter quotes in full, is omitted: the "

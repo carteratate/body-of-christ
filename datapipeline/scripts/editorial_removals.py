@@ -54,7 +54,8 @@ COLLECTION = "church-fathers"
 # rule G's editor (the Confessions has none), 1.8d's Robertson's On the Incarnation in
 # NPNF2-04, 1.8a's every other.
 NPNF_FILES = frozenset({"city-of-god.xml", "on-the-holy-trinity.xml"})
-ITEM_FILES = {"npnf204.xml": "1.8d", "npnf207.xml": "5.6a", "npnf208.xml": "5.6a"}
+ITEM_FILES = {"npnf204.xml": "1.8d", "npnf207.xml": "5.6a", "npnf208.xml": "5.6a",
+              "npnf212.xml": "5.6a", "npnf213.xml": "5.6a"}
 ITEMS = ("1.8a", "1.8b", "1.8d", "5.6a")
 REASON = "rule-g-editorial"
 TOMBSTONE = ("This passage was an editor's note and was removed because TheoCorpus shows "
@@ -94,6 +95,11 @@ EXCERPT = 120
 # Sentences the judgment scan flags that were read and are not about who wrote a work
 # (sha1 of the sentence -> why). Filled from the review of the flagged list.
 NOT_JUDGMENTS: dict[str, str] = {
+    "172ad2f05720": "forgiving",
+    "6fc2bd910f27": "forgiveness",
+    "a95e90edd239": "forgiveness",
+    "efd6b3b75815": "forgiveness",
+    "c5836e27cff3": "forgetting",
     "015f2991ff63": "a letter's Argument: a faction is blamed",
     "0c03db0441f3": "an Octavius Argument: things are doubtful",
     "ced306be9204": "an Octavius Argument: doubtful matters",
