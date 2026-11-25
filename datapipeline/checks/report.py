@@ -220,7 +220,7 @@ def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
 
 def ccc_documents(documents: list[Document]) -> list[Document]:
     """The Catechism of the Catholic Church among a catechism build's documents: the
-    paragraph checks are its, not the Compendium's (5.5)."""
+    paragraph checks are its, not the Compendium's or the Roman Catechism's (5.5)."""
     return [d for d in documents if (d.metadata or {}).get("source_key") == "catechism"]
 
 

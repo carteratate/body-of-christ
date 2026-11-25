@@ -4453,6 +4453,48 @@
   "card_translator": "The Vatican's English translation"
  },
  {
+  "work_id": "catechism/roman-catechism",
+  "document_id": "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",
+  "collection": "catechism",
+  "source_key": "catechism/roman-catechism",
+  "title": "Catechism of the Council of Trent",
+  "author": null,
+  "frozen_on": "2026-11-22",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": [],
+  "genre": "catechism",
+  "form": null,
+  "issuer": "holy-see",
+  "issuer_label": "Holy See",
+  "year": 1566,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by John A. McHugh and Charles J. Callan (1923)",
+  "attribution_note": null,
+  "notes": "Catechism of the Council of Trent, a historical catechism; for current teaching see the Catechism of the Catholic Church",
+  "superseded_by": null,
+  "superseded_note": null,
+  "card_translator": "Translated by John A. McHugh and Charles J. Callan (1923)"
+ },
+ {
   "work_id": "church-fathers/apostolic-fathers/ii.ii",
   "document_id": "125d6898-c285-5a8a-b89b-83b88964db1a",
   "collection": "church-fathers",

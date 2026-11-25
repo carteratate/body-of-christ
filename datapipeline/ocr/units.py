@@ -472,6 +472,199 @@ class DeferrariExtracts(Headed):
         return _with_text(para, text)
 
 
+class RomanCatechism:
+    """McHugh and Callan's Catechism of the Council of Trent (1923; 5.5). The Catechism
+    prints no headings of its own (its first editions had none); the translators set a
+    heading over every section, which the adapter turns into labels (rule G). The
+    paragraphs, headings included, are grouped into passages of about `PASSAGE_WORDS`, as
+    a work without units is, except that a passage never ends with a heading: a heading
+    goes on with the text under it. The person's check sees the headings as printed, and
+    the adapter finds the sections by them (`roman_catechism_heading`).
+
+    Left out: the title lines before "INTRODUCTORY", the translators' notes the clean-up
+    leaves in the body (a lettered note, "a The term …", or a run of references,
+    "Heb. xiii. 9. * Matt. xvi. 18."), and specks read as words ("Ir", "J"). The note
+    calls the OCR reads as marks, letters or digits come off the text
+    (`strip_catechism_calls`)."""
+    name = "roman-catechism"
+
+    def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
+              closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
+        from ocr.work import PASSAGE_WORDS
+
+        if series or closes or bounds:
+            raise ValueError(f"{self.name} units take no series, closes or bounds")
+        start = next((k for k, p in enumerate(paragraphs) if p.text.strip() == "INTRODUCTORY"),
+                     None)
+        if start is None:
+            raise ValueError("no INTRODUCTORY heading")
+        kept = [p for p in paragraphs[start:]
+                if not (catechism_note(p.text) or _speck(p.text))]
+        paras = [p if roman_catechism_heading(p.text) else _with_catechism_text(p)
+                 for p in _joined_headings(kept)]
+        paras = [p for p in paras if p.text.strip()]
+        groups: list[list] = []
+        current: list = []
+        count = 0
+        for para in paras:
+            heading = roman_catechism_heading(para.text) and not para.continues
+            if current and count >= PASSAGE_WORDS and heading:
+                groups.append(current)
+                current, count = [], 0
+            elif current and count + len(para.text.split()) > PASSAGE_WORDS and not heading \
+                    and not roman_catechism_heading(current[-1].text):
+                groups.append(current)
+                current, count = [], 0
+            current.append(para)
+            count += len(para.text.split())
+        if current:
+            groups.append(current)
+        return [Unit(f"{n:04d}", g) for n, g in enumerate(groups, 1)]
+
+
+# A translators' note left in the body: a lettered one ("a The term", "b On the
+# institution"), or a run of references ("Heb. xiii. 9. * Matt. xvi. 18.").
+_LETTERED_NOTE = re.compile(r"^\W{0,2}[a-h]\s?(?:[A-Z][a-z]|On\b|Qn\b|In\b)")
+_REFERENCE = re.compile(r"\b(?:[IVXLCivxlc]{1,8}\.|\d+[,;.:]|cf\.|[Ii]bid|Sess\.|Summa|Theol|"
+                        r"Serm\.|Epist\.|lib\.|c\.|n\.|De\s[A-Z]|[A-Z][a-z]{0,5}\.)")
+
+
+def catechism_note(text: str) -> bool:
+    """Whether a body paragraph is a translators' note the clean-up left in the text."""
+    words = text.split()
+    if not words:
+        return False
+    if _LETTERED_NOTE.match(text):
+        return True
+    return len(words) < 60 and len(_REFERENCE.findall(text)) / len(words) > 0.35
+
+
+def _speck(text: str) -> bool:
+    """A paragraph with no word of three letters or more: a speck read as letters."""
+    return not re.search(r"[A-Za-z]{3}", text)
+
+
+_CAPS_FUNCTION = {"OF", "THE", "AND", "TO", "IN", "BY", "FOR", "OR", "A", "AN", "ON", "WITH",
+                  "FROM", "AT", "AS", "IS", "ARE", "BE", "NOT", "THAN", "ITS", "HIS"}
+_STRUCTURAL = re.compile(r"^(?:PART|ARTICLE|CHAPTER)\s+[IVXL1]+\b|^[A-Z]+ (?:PETITION|COMMANDMENT)$")
+
+
+def _caps(text: str) -> bool:
+    letters = [c for c in text if c.isalpha()]
+    return bool(letters) and sum(c.isupper() for c in letters) / len(letters) >= 0.6
+
+
+def roman_catechism_heading(text: str) -> bool:
+    """Whether a paragraph is one of the translators' headings: short, not closed as a
+    sentence (a colon may end one, "Extent of this Power:"), and set in capitals, in title
+    case, or as a quoted phrase of the Creed or the Lord's Prayer ("“Our Father”")."""
+    if text.strip().endswith(".") and not _caps(text):
+        return False      # a sentence ("Amen."); a heading in capitals may end with a stop
+    text = text.strip(" .")
+    words = text.split()
+    if not words or len(words) > 18 or re.search(r"[a-z][.,]$|,$", text):
+        return False
+    if _caps(text) or (text[:1] in "“\"" and text[-1:] in "”\"’"):
+        return True
+    if text.endswith(";") or len(words) > 12 or not words[0][:1].isupper():
+        return False
+    # Title case, short words left small ("Names of this Sacrament", "The Rites and
+    # ceremonies of the Mass", "Dispositions with which this Petition should be Offered").
+    if not words[-1][:1].isupper():
+        return False
+    return (sum(w[:1].isupper() for w in words) / len(words) >= 0.4
+            or all(w[:1].isupper() or w.lower() in _SMALL_WORDS for w in words))
+
+
+# Words a title-case heading leaves small.
+_SMALL_WORDS = frozenset(
+    "of the and to in by for or a an on with from at as is are be not than its his this that "
+    "which these those should into our we us it were who whom what how why their them may "
+    "can must has have was".split())
+
+
+# A heading in capitals the OCR ran into the paragraph under it ("IT WAS NOT A SACRAMENT
+# How much the Sacrament ..."), or whose first line it ran onto the end of the paragraph
+# above ("... created us? GOD IS CALLED “FATHER” BECAUSE HE ADOPTS CHRISTIANS").
+_CAPS_WORD = r"[A-Z“”\"‘’'][A-Z“”\"‘’',:;-]*"
+_RUN_IN_HEADING = re.compile(rf"^((?:{_CAPS_WORD} ){{2,}}{_CAPS_WORD}[:.]?) (?=[A-Z][a-z])")
+_RUN_ON_HEADING = re.compile(rf"(?<=[.?!:”’)] )((?:{_CAPS_WORD} ){{2,}}{_CAPS_WORD})$")
+
+
+def _letters(text: str) -> int:
+    return len(re.sub(r"[^A-Z]", "", text))
+
+
+def _split_run_in(paragraphs: list) -> list:
+    out: list = []
+    for para in paragraphs:
+        m = _RUN_IN_HEADING.match(para.text)
+        if m and _letters(m.group(1)) >= 10:
+            out.append(replace(para, text=m.group(1)))
+            para = replace(para, text=para.text[m.end():], continues=False)
+        m = _RUN_ON_HEADING.search(para.text)
+        if m and _letters(m.group(1)) >= 12:
+            out.append(replace(para, text=para.text[:m.start()].rstrip()))
+            para = replace(para, text=m.group(1), continues=False)
+        out.append(para)
+    return out
+
+
+def _joined_headings(paragraphs: list) -> list:
+    """`paragraphs` with a heading the clean-up set over two lines put back together: a
+    quoted heading not yet closed, or a heading in capitals whose first line filled the
+    measure or breaks off at a word that cannot end it ("… OF THE", "FOR-"), followed by
+    one in capitals that is not a Part, Article, commandment or petition."""
+    out: list = []
+    for para in _split_run_in(paragraphs):
+        prev = out[-1] if out else None
+        if prev is not None and roman_catechism_heading(prev.text) and roman_catechism_heading(para.text):
+            t, nxt = prev.text.strip(), para.text.strip()
+            open_quote = t.count("“") > t.count("”")
+            quoted = t[:1] in "“\"" and t.endswith(("”", "\""))
+            unfinished = not quoted and (len(t) >= 40 or t.endswith(("-", ":"))
+                                         or t.split()[-1].rstrip(",.") in _CAPS_FUNCTION)
+            caps_run = (unfinished and _caps(t) and _caps(nxt) and not _STRUCTURAL.match(t)
+                        and not _STRUCTURAL.match(nxt) and nxt[:1] not in "“\"")
+            if open_quote or caps_run:
+                joined = f"{t[:-1]}{nxt}" if t.endswith("-") else f"{t} {nxt}"
+                out[-1] = replace(prev, text=joined, raw=prev.raw + "\n" + para.raw,
+                                  leaves=sorted(set(prev.leaves) | set(para.leaves)))
+                continue
+        out.append(para)
+    return out
+
+
+# Note calls as this scan reads them: marks glued to a word or standing alone ("hearing,®",
+# "prophets,>", "world3*", "™"), a question mark or digits after a stop ("Spirit.?",
+# "eyes.2", "Christ.22,"), digits after a word ("church24"), and a mark before a word
+# ("»On", "_bFor").
+_CALL_MARKS = "*®°>%»«™©¢@#+|_~=§"
+_LONE_CALL = re.compile(r"(?<!\S)[" + re.escape(_CALL_MARKS) + r"?\d’'”\"]*[" + re.escape(_CALL_MARKS)
+                        + r"][" + re.escape(_CALL_MARKS) + r"?\d’'”\"]*(?!\S)")
+_GLUED_CALL = re.compile(r"(?<=[A-Za-z.,;:!?”’)])\d{0,2}[" + re.escape(_CALL_MARKS) + r"][" + re.escape(_CALL_MARKS)
+                         + r"?\d]*(?=[\s,;:.”’]|$)")
+_STOP_CALL = re.compile(r"(?<=[a-z][.,;:!])(?:\?+\d*|\d{1,2})(?=[\s,;:”’]|$)")
+_WORD_DIGITS = re.compile(r"(?<=[a-z]{2})\d{1,2}(?=[\s,;:.”’]|$)")
+_LEADING_CALL = re.compile(r"(?<!\S)[" + re.escape(_CALL_MARKS) + r"]+[a-h]?(?=[A-Z])")
+
+
+def strip_catechism_calls(text: str) -> str:
+    """The text without the note calls this scan's OCR reads as marks, digits or a
+    question mark after a stop. A closing quotation mark after a stop where no quotation
+    is open is a call too (`strip_note_calls`)."""
+    text = _LEADING_CALL.sub("", text)
+    text = _GLUED_CALL.sub("", text)
+    text = _LONE_CALL.sub("", text)
+    text = _STOP_CALL.sub("", text)
+    text = _WORD_DIGITS.sub("", text)
+    return re.sub(r" {2,}", " ", strip_note_calls(text)).strip()
+
+
+def _with_catechism_text(para):
+    return replace(para, text=strip_stray_quotes(strip_catechism_calls(para.text)))
+
+
 class ChadwickSections:
     """Clement's *Stromata* III in Henry Chadwick's translation (*Alexandrian Christianity*,
     1954, pp. 40–92; #399), one unit per Stählin section, `ch03/s012`, as the print
@@ -603,6 +796,7 @@ def _roman(numeral: str) -> int:
 UNITS: dict[str, Units] = {SchroederCanons.name: SchroederCanons(), Bounded.name: Bounded(),
                            Headed.name: Headed(), DeferrariExtracts.name: DeferrariExtracts(),
                            ChrystalLetter.name: ChrystalLetter(),
+                           RomanCatechism.name: RomanCatechism(),
                            ChadwickSections.name: ChadwickSections()}
 
 
