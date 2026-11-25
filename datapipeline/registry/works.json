@@ -4411,6 +4411,48 @@
   "card_translator": ""
  },
  {
+  "work_id": "catechism/compendium",
+  "document_id": "800373b1-d6c8-5a26-8910-8d1485b224c2",
+  "collection": "catechism",
+  "source_key": "catechism/compendium",
+  "title": "Compendium of the Catechism of the Catholic Church",
+  "author": null,
+  "frozen_on": "2026-11-21",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": [],
+  "genre": "compendium",
+  "form": null,
+  "issuer": "holy-see",
+  "issuer_label": "Holy See",
+  "year": 2005,
+  "date_display": null,
+  "translation": "Vatican English",
+  "source_credit": "© Dicastery for Communication – Libreria Editrice Vaticana",
+  "attribution_note": null,
+  "notes": null,
+  "superseded_by": null,
+  "superseded_note": null,
+  "card_translator": "The Vatican's English translation"
+ },
+ {
   "work_id": "catechism/roman-catechism",
   "document_id": "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",
   "collection": "catechism",

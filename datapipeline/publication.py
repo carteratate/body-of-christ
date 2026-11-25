@@ -53,8 +53,10 @@ SOURCE_BUILDS: dict[str, SourceAdapter] = {
     ),
     "bible": lambda: _build_from("bible", "build_documents"),
     "canon-law": lambda: _build_from("canon_law", "build_documents"),
-    # The Catechism of the Catholic Church, then the Roman Catechism (5.5).
+    # The Catechism of the Catholic Church, then the Compendium and the Roman Catechism (5.5).
     "catechism": lambda: (_build_from("catechism", "build_document", single=True)
+                          + _build_from("catechism_compendium", "build_document",
+                                        single=True)
                           + _build_from("roman_catechism", "build_document", single=True)),
     "church-fathers": lambda: _build_from("church_fathers", "build_all"),
     "councils": lambda: _build_from("councils", "build_documents"),

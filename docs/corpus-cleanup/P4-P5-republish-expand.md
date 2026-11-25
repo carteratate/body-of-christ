@@ -1122,7 +1122,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Source files (decided by Carter, 5 Oct 2026):** Its approved R6 downloads are vendored in `datapipeline/sources/_incoming/`, under the path R6's "Vendored as" column gives (`_incoming/<path>`), where no adapter reads them. This PR moves each file it ingests, unchanged, to `sources/<path>` and runs `python3 scripts/source_lock.py --write`; the hash stays the same and the lock keeps the file's download date and URL. Its `rights_inventory.json` row already names `<path>` as `source_path`. Files: `catechism/compendium-ccc.html`, `catechism/catechismofcounc0000jose/catechismofcounc0000jose_djvu.txt`. Its 1 page-image file (PDF) is approved per work later and is vendored to `_incoming/` the same way.
 - **Goal:** Short question-and-answer entries from the Compendium of the Catechism (2005) linked to the full Catechism's paragraphs, and the Roman Catechism of the Council of Trent (McHugh and Callan, 1923) as a historical catechism, both in the Catechism collection.
 - **Current state:**
-  - The Catechism collection is one document, `document_id("catechism")` (`datapipeline/ingest/catechism.py:256`).
+  - The Catechism collection is one document, `document_id("catechism")` (`datapipeline/ingest/catechism.py:803`).
   - The Compendium is on vatican.va (`corpus-expansion-candidates.md`, gap 6), and the rights review covered it (Decision log).
   - McHugh and Callan was published 1923 (US, Wagner), so it is public domain in the US. A clean typed text is unverified; the scan-only memo did not cover it.
   - R6 (5 Oct 2026): of four open IA scans catalogued 1923, only `catechismofcounc0000jose` is the 1923 printing ("Copyright, 1923"); the others are printings of the 1934 "second revised edition" (no renewal found for it either). Fordham's clean text (`mod/romancat.asp`) is an "Unknown etext" whose printing is not stated, with Halsall's non-commercial notice.
@@ -1131,7 +1131,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   1. Compendium. New adapter `ingest/catechism_compendium.py`.
      - One passage per question with its answer, anchor the question number.
      - Keep the CCC paragraph references as a structured field so the reader can link to them. They are not part of passage text.
-     - Credit "Text: Libreria Editrice Vaticana".
+     - Credit: its rights row's line, "© Dicastery for Communication – Libreria Editrice Vaticana" (5.2's row; 2.3 sets `source_credit` from it).
      - Genre `compendium` (D5).
   2. Roman Catechism. R6 first looks for a clean typed 1923 text and confirms the edition against a scan.
      - If one exists, write an adapter over it.
@@ -1141,13 +1141,20 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   3. HyDE. Leave the CCC prompt, but add a retrieval follow-up to test whether the Compendium's short Q&A form is found; do not tune here.
   4. Each work publishes `catechism` through 2.2w (stage, release report, one-transaction apply with the outline refresh, `chunks_live` switch) under a named apply in the lock file, never the delete-based prune. The existing CCC document must show every passage as `same` in the release report.
 - **Acceptance checks:**
-  - Compendium has 598 questions (count from the source; confirm at build) and each answer is one passage.
+  - Compendium has 598 questions (count from the source; confirmed at build, 21 Nov 2026) and each answer is one passage.
   - Focused search on Catechism still returns 10 when asked (per-chapter cap, CLAUDE.md §18).
   - For the Roman Catechism, the 1.2f gate report if OCR was used.
   - Release report shows zero retirements in the CCC.
 - **Production safety:** Additions to a released collection, visible together in one apply. Rollback within the window is 2.2w's `rollback` command, which also points `chunks_live` back; later, a 2.2w apply that retires the added documents.
 - **Fordham's Roman Catechism (decided by Carter, 5 Oct 2026, NEEDS-CARTER 1.2e and 5.5):** used only to check the OCR of the 1923 scan, never as the text, because of its non-commercial notice.
-- **Needs Carter:** Approve each lock-file PR and each 2.2w apply. Answered while building the Roman Catechism: NEEDS-CARTER 5.5 (22 Nov 2026; the correction ceiling, the vendored files and the notes), recorded in the Decision log.
+- **Needs Carter:** Approve each lock-file PR and each 2.2w apply. Whether the Compendium's other parts join it: the motu proprio, the introduction, the appendix of prayers and formulas, and the texts printed between sections (the Apostles' and Nicene Creeds, the list of the seven sacraments, the Decalogue from Exodus and Deuteronomy with the catechetical formula, the Lord's Prayer, and Augustine's saying before question 2), several of which also print a Latin version that rule E keeps out. The Compendium PR builds the 598 questions only; the coverage check counts the rest as uncovered under a known-defect entry. Answered while building the Roman Catechism: NEEDS-CARTER 5.5 (22 Nov 2026; the correction ceiling, the vendored files and the notes), recorded in the Decision log.
+- **As built (Compendium PR, 21 Nov 2026):**
+  - `ingest/catechism_compendium.py`, registered after `catechism.py` in the `catechism` adapter, so the collection builds two documents. Document `800373b1-d6c8-5a26-8910-8d1485b224c2` (source key `catechism/compendium`, registered by `scripts/compendium_registry.py`), title "Compendium of the Catechism of the Catholic Church", no author, year 2005, excerpt-only (`in-copyright`, vatican.va basis).
+  - A passage is the question as printed ("12. Why does man have a desire for God?"), its answer (list items each on a line), and the saints' sayings printed after it. Anchor `q/<n>`, reference "Compendium of the Catechism, Q. <n>", unit label "Q. <n>", no `§` anywhere, so the CCC's paragraph checks cannot count it. The CCC numbers are `metadata.ccc_references`, a list of `[first, last]` ranges. Question 39's line misprints "2112-213"; the build reads "212-213", as vatican.va's Italian and French pages print (`REFERENCE_FIXES`).
+  - Chapters follow the page's headings: Part, Section, Chapter and up to two levels below (92 chapters). No contents tree yet (the document is excerpt-only, so `/toc` would refuse it).
+  - Coverage reads the page through its own extractor (`checks/source_text.compendium_units`): 84.64% of its body text, everything uncovered being the parts listed under Needs Carter.
+  - Release report against a stand-in snapshot of master's own catechism build (no snapshot of live after the republish exists, and each export needs Carter's approval): 788 CCC passages `same`, 598 `new`, nothing else. The live comparison is the publish's own `publish.py report`.
+  - vatican.va text fragments (2.4e) checked from the build: 588 of 598 found; 10 keep the plain link (`source_link_misses.json`, `from_build`), among them questions printed alike (Q310 and Q319), since the check now takes a tie between two places as unresolved.
 - **As built (Roman Catechism PR, 22 Nov 2026):**
   - Edition confirmed on the scan: "Copyright, 1923, by Joseph F. Wagner, New York", imprimatur of 3 January 1923 (`catechismofcounc0000jose`). No clean typed 1923 text passed R6, so the text came through 1.2f's tool (Decision log "Roman Catechism through the OCR tool (5.5)": a $6.00 correction ceiling, the scan's `_djvu.xml` and page map and Fordham's page vendored and locked, every note left out, scripture references included).
   - OCR work `mchugh-callan-roman-catechism`, pp. 1–590 (the translators' introduction, sermon programme, appendices and index are outside them). Its own `roman-catechism` units (`ocr/units.py`) strip the note calls, drop leaked notes and specks, and keep the translators' headings in the text so the check sees them; `note_start` (new in `ocr/work.py`) adds this book's note markers (a lettered note, a call read as a quotation mark, a reference with a lost call). XML leaf = page + 65, given as `leaf_pages` because the page map leaves out pp. 1–2.
