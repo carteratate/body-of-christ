@@ -335,7 +335,7 @@ async def test_multi_document_collection_still_caps_on_title():
     chunks = [
         _chunk(f"dddd-0000-0000-0000-00000000{i:04d}", "enc_doc", "Rerum Novarum",
                0.9 - i * 0.01, position=i * 100,
-               collection="encyclicals", chapter_key=f"rerum-novarum/sec-{i}")
+               collection="papal", chapter_key=f"rerum-novarum/sec-{i}")
         for i in range(4)
     ]
 
@@ -363,7 +363,7 @@ def test_source_key_cannot_collide_across_kinds():
     chaptered = _chunk("e1", "d", "Summa Theologiae", 0.9,
                        collection="summa", chapter_key="x")
     titled = _chunk("e2", "d", "Summa Theologiae/x", 0.9,
-                    collection="encyclicals", chapter_key=None)
+                    collection="papal", chapter_key=None)
 
     assert source_key(chaptered, _CHAPTER_KEYED_COLLECTIONS) != source_key(
         titled, _CHAPTER_KEYED_COLLECTIONS
@@ -439,11 +439,11 @@ async def test_two_documents_sharing_a_chapter_key_are_distinct_sources():
     """
     chunks = [
         _chunk("1111-0000-0000-0000-000000000001", "doc_1983", "Code of Canon Law (1983)",
-               0.9, position=100, collection="canon-law", chapter_key="canon-law/ch3"),
+               0.9, position=100, collection="church-law", chapter_key="canon-law/ch3"),
         _chunk("1111-0000-0000-0000-000000000002", "doc_1983", "Code of Canon Law (1983)",
-               0.8, position=200, collection="canon-law", chapter_key="canon-law/ch3"),
+               0.8, position=200, collection="church-law", chapter_key="canon-law/ch3"),
         _chunk("1111-0000-0000-0000-000000000003", "doc_1917", "Code of Canon Law (1917)",
-               0.7, position=300, collection="canon-law", chapter_key="canon-law/ch3"),
+               0.7, position=300, collection="church-law", chapter_key="canon-law/ch3"),
     ]
 
     mock_client = AsyncMock()
@@ -492,9 +492,9 @@ async def test_shared_title_across_collections_does_not_invert_degradation():
             _chunk("3333-0000-0000-0000-000000000001", "d1", "Shared Title", 0.90,
                    position=100, collection="summa", chapter_key="b"),
             _chunk("3333-0000-0000-0000-000000000002", "d2", "Shared Title", 0.80,
-                   position=200, collection="canon-law", chapter_key=canon_chapter_key),
+                   position=200, collection="church-law", chapter_key=canon_chapter_key),
             _chunk("3333-0000-0000-0000-000000000003", "d2", "Shared Title", 0.70,
-                   position=300, collection="canon-law", chapter_key=canon_chapter_key),
+                   position=300, collection="church-law", chapter_key=canon_chapter_key),
         ]
 
     mock_client = AsyncMock()
@@ -667,7 +667,7 @@ async def test_focused_flag_does_not_widen_other_title_keyed_collections():
     """Only the configured focused set changes grain; encyclicals stay per title."""
     chunks = [
         _chunk(f"enc-{i}", "enc-doc", "Rerum Novarum", 0.99 - i * 0.01,
-               position=i * 100, collection="encyclicals", chapter_key=f"section-{i}")
+               position=i * 100, collection="papal", chapter_key=f"section-{i}")
         for i in range(6)
     ]
 

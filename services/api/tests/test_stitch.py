@@ -111,7 +111,7 @@ def test_a_sed_contra_needs_nothing():
 def test_non_summa_passages_are_never_stitched():
     """unit_label elsewhere is a locator ("Can. 33"), naming position not argument role."""
     assert stitch.attachment_relation(
-        _chunk(unit_label="Can. 33", collection="canon-law")) is None
+        _chunk(unit_label="Can. 33", collection="church-law")) is None
     assert stitch.attachment_relation(
         _chunk(unit_label="Objection 1", collection="councils")) is None
     assert stitch.attachment_relation(_chunk(unit_label=None)) is None
@@ -851,7 +851,7 @@ def test_restore_applies_the_same_role_rules_as_the_live_path():
     assert stitch.attachment_relation(
         _as_chunk(_restore_row(unit_label="On the contrary"))) is None
     assert stitch.attachment_relation(
-        _as_chunk(_restore_row(unit_label="Can. 33", collection="canon-law"))) is None
+        _as_chunk(_restore_row(unit_label="Can. 33", collection="church-law"))) is None
 
 
 def test_the_restore_shim_carries_the_fields_stitching_depends_on():

@@ -41,7 +41,7 @@ from tests.test_corpus_facts_migration import (
 
 pytestmark = pytest.mark.real_corpus_schema
 
-COLLECTION = "papal-documents"
+COLLECTION = "papal"
 # One document each, so dedup's per-source cap keeps all three.
 DOC_V = "00000000-0000-0000-0000-00000000b001"
 DOC_K = "00000000-0000-0000-0000-00000000b002"
@@ -78,7 +78,8 @@ QUERY = "does the just man sin in every good work"
 def cluster():
     with local_cluster("tc-rejected-voice-") as running:
         running.sql(PRODUCTION_SCHEMA)
-        running.migrate(*EARLIER, SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name)
+        running.migrate(*EARLIER, SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name,
+                        "0046_collection_keys.sql", "0048_drop_legacy_collection_keys.sql")
         running.sql(SEED)
         yield running
 

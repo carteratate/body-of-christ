@@ -223,7 +223,7 @@ def test_saved_searches_and_bookmarks_read_text_labels_from_the_facts_row():
 
     fields = _passage_facts(_row(text_source="ocr", text_status="unofficial_english",
                                  official_latin_url=LATIN)).source_fields()
-    base = {"collection": "canon-law", "document_title": "Code", "document_id": DOC}
+    base = {"collection": "church-law", "document_title": "Code", "document_id": DOC}
     for model in (ChunkSource, BookmarkSource):
         parsed = model(**base, **fields)
         assert (parsed.text_source, parsed.text_status, parsed.official_latin_url) == (

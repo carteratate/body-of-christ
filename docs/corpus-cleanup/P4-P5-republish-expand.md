@@ -958,6 +958,15 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
 - **Production safety:** Stored data no longer has old keys (5.1b.3 check). An old tab still open would send an old key, which `resolve_search_plan` drops, returning 400 only if nothing valid remains. The log check shows this traffic is gone. Rollback is a revert plus re-widening the constraint (additive).
 - **Needs Carter:** Approve applying the migration. Decide on the web legacy map (step 5).
 - **Out of scope:** Renaming source directories under `datapipeline/sources/`.
+- **Built (23 Nov 2026), not merged.** Decisions and corrections:
+  - Gate (Carter): no 14-day log wait. The PR merges and 0048 applies once 5.1b.3's user-row script (step 5) and acceptance checks (step 7) are done and the read-only count in the PR reads zero for documents (live and retired), preferences, searches, guest trials and the Qdrant payload.
+  - 5.1b.3's rollback window: `publish.py rollback` would write the old keys back to `documents` (refused once 0048 is applied) and point `chunks_live` at a Qdrant collection carrying them (which this API would not search). So until that window closes, rolling 5.1b.3 back means reverting this PR and re-widening the constraint first (re-run 0046's statements). A retired row the publish does not rewrite keeps its old key and would also fail 0048; the count's first line includes retired rows, so it shows any.
+  - Web legacy map kept (Carter): `LEGACY_COLLECTIONS`, `canonicalCollectionKey` and `canonicalSearchFilters` stay in `apps/web/src/lib/`, for keys a browser holds.
+  - Eight keys, not nine: the count in "Goal" predates the papal merge.
+  - `constants.py` drops `LEGACY_COLLECTIONS`; `VALID_COLLECTIONS` is `CANONICAL_COLLECTIONS`. The transition code 5.1b.1 added is reverted to its form before 5.1b.1 (`collection_scope.py`, `retrieve_fts.py`, `retrieve_vector.py`, `qdrant_client.py`, `search_plan.py`, `steps/rrf.py`), and a restored search's passages carry their stored key again (`routes/search.py`). There is no `scope_for`; its role was `collection_scope.reads`.
+  - The papal HyDE kinds are keyed by kind (`_PAPAL_KINDS`: encyclical, apostolic exhortation, other), with the old prompts and lengths unchanged byte for byte; the medieval prompt and the `canon-law` entries go.
+  - Also removed: `card_notes._BADGE_KINDS` (no badge names a kind now), the old keys in `corpus_lifecycle`, `footnotes`, `reader_access` and `dedup`, and `republish_checks.py`'s old keys (Papal documents asks one ordinary and one reference question per kind).
+  - Migration `0048_drop_legacy_collection_keys.sql`, with its `-- non-additive:` reason; tested on a local database, including the refusal while an old key remains.
 
 ### 5.0. Decide how Denzinger is handled
 

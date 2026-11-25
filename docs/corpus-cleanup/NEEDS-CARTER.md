@@ -113,7 +113,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.1a** [Phase 5]. Approve creating a Qdrant index, only if the check finds one missing.
   Not needed (2026-11-21): the read-only check found keyword indexes on `genre` and `issuer` in `chunks-republish-2026-10`, the target of `chunks_live`.
 - **5.1b.3** [Phase 5]. Approve the migration, the lock-file PR, the apply and index switch, the script that rewrites collection names in saved preferences and searches, and the API restart.
-- **5.1b.4** [Phase 5]. Approve the migration that removes the old collection names.
+- **5.1b.4** [Phase 5]. Approve the migration that removes the old collection names (0048), once the count in its PR reads zero.
 - **5.3a, 5.3b, 5.4, 5.5, 5.6a, 5.6b, 5.6c** [Phase 5]. For every addition, approve its lock-file PR and its apply, and for 5.3a also its migration and the PR that makes the Roman Curia collection visible.
 
 ---
@@ -451,6 +451,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
 - **5.1b.2** [Phase 5]. Approve the new collection colors and the interim About and Discover wording.
   Answered 2026-11-22: keep the old colours (gold, red, grey); rename "Theologians and spiritual writers" to "Theology & Spirituality" (key unchanged); About and Discover wording approved, with the landing line saying "the Summa" and the Theology & Spirituality entry saying "soon more writers will join".
 - **5.1b.4** [Phase 5]. Keep a five-line translation of old collection names in the browser so guests' saved drafts do not reset, or delete it too. The spec keeps it.
+  Answered 2026-11-23: keep it. And the merge gate is the read-only count of rows still using an old key reading zero, after 5.1b.3's user-row script and acceptance checks; no 14-day wait on the `legacy_collection_key` log line.
 - **5.2, 5.6a** [Phase 5]. Choose between a paid Qdrant tier and reordering the additions once a publish's projected Qdrant peak passes 3.4 GB of the Free cluster's 4 GiB disk (5.2 step 5). Supabase Pro already covers the database.
 - **5.2** [Phase 5]. LEV texts from vatican.va have a basis (Decision log "LEV texts from vatican.va", 29 Oct 2026). Still open: whether to ask the LEV rights office (diritti.lev@spc.va) to confirm the use before any LEV document opens in the full reader; and the Pontifical Biblical Commission and social-doctrine Compendium rows, blocked until confirmed. The papalencyclicals.net translations have no basis and are listed for a decision.
   Answered 2026-10-29 (in part): no permission request has been sent. Carter will ask once everything is working, so nothing yet constrains the full-reader step.

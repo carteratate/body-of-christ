@@ -56,11 +56,11 @@ class _StubClient:
 @pytest.mark.asyncio
 async def test_one_call_per_collection():
     stub = _StubClient()
-    candidates = {c: [_cand(i, c) for i in range(5)] for c in ("bible", "summa", "canon-law")}
+    candidates = {c: [_cand(i, c) for i in range(5)] for c in ("bible", "summa", "church-law")}
     with patch.object(rerank_cohere, "_client", stub):
         out = await rerank_cohere.run_per_collection(candidates, "q", 4, CostTracker())
     assert len(stub.calls) == 3
-    assert set(out) == {"bible", "summa", "canon-law"}
+    assert set(out) == {"bible", "summa", "church-law"}
 
 
 @pytest.mark.asyncio
@@ -99,7 +99,7 @@ async def test_billed_search_units_are_summed_across_collections():
     """A flat per-call charge would report 10 per-collection calls as costing the same
     as one global call."""
     stub = _StubClient(units=2)
-    candidates = {c: [_cand(0, c)] for c in ("bible", "summa", "canon-law")}
+    candidates = {c: [_cand(0, c)] for c in ("bible", "summa", "church-law")}
     tracker = CostTracker()
     with patch.object(rerank_cohere, "_client", stub):
         await rerank_cohere.run_per_collection(candidates, "q", 4, tracker)
