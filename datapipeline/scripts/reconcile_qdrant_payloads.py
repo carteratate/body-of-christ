@@ -214,8 +214,8 @@ async def main(collections: list[str], fields: tuple[str, ...],
                     written = await _apply(client, report, batch_size)
                 except Exception as exc:
                     print(f"    ✗ WRITE FAILED after retries: {exc}")
-                    print(f"      Re-run to resume — the diff is recomputed from scratch, "
-                          f"so already-written points are skipped.")
+                    print("      Re-run to resume — the diff is recomputed from scratch, "
+                          "so already-written points are skipped.")
                     exit_code = 1
                     continue
                 print(f"    wrote {written} point(s)")
@@ -319,15 +319,16 @@ if __name__ == "__main__":
                     help="release named by the PUBLISH_LOCK.json entry that approves --apply")
     args = ap.parse_args()
 
-    # SOURCE_ADAPTERS is the datapipeline's canonical collection registry, mirroring
-    # services/api's VALID_COLLECTIONS. Import it here so importing this module for
-    # its helpers does not pull in publication dependencies.
+    # The collections a Qdrant payload can carry: the published ones, and the old keys
+    # live payloads keep until 5.1b.3's publish (`collection_keys`). Imported here so
+    # importing this module for its helpers does not pull in publication dependencies.
+    from collection_keys import RENAMES  # noqa: E402
     from publication import SOURCE_ADAPTERS  # noqa: E402
 
     try:
         names, fields = resolve_args(
             args.fields, args.collection, args.apply,
-            args.allow_content_sync, args.batch_size, set(SOURCE_ADAPTERS),
+            args.allow_content_sync, args.batch_size, set(SOURCE_ADAPTERS) | set(RENAMES),
         )
     except ArgError as exc:
         ap.error(str(exc))

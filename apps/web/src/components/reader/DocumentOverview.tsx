@@ -13,7 +13,7 @@ import type { Tombstone } from "@/lib/corpus-lifecycle";
 import { SourceCredit } from "@/components/common/SourceLink";
 import { OverviewNotes } from "@/components/common/PassageFacts";
 import { parseOverviewNotes } from "@/lib/card-notes";
-import { getCollectionMeta } from "@/lib/collections";
+import { canonicalCollectionKey, getCollectionMeta } from "@/lib/collections";
 import { LIFT } from "@/lib/lift";
 import { hasReaderReturnMarker, isReaderReturnKey, movedReaderHref, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
@@ -44,7 +44,7 @@ function sectionLanguage(collection: string): { singular: string; plural: string
   if (collection === "bible") return { singular: "chapter", plural: "chapters", prompt: "Choose a chapter" };
   if (collection === "catechism") return { singular: "paragraph range", plural: "paragraph ranges", prompt: "Choose a paragraph range" };
   if (collection === "summa") return { singular: "article", plural: "articles", prompt: "Choose an article" };
-  if (collection === "canon-law") return { singular: "section", plural: "sections", prompt: "Choose a book or section" };
+  if (canonicalCollectionKey(collection) === "church-law") return { singular: "section", plural: "sections", prompt: "Choose a book or section" };
   return { singular: "section", plural: "sections", prompt: "Choose a section" };
 }
 
@@ -177,7 +177,9 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
     return placeHeldTexts(chapters, held)
       .filter((item) => matchesEntry(item, query, documentInfo?.collection ?? ""));
   }, [chapters, contents, documentInfo?.collection, held, query]);
-  const visibleChapters = matchingChapters.slice(0, visibleLimit);
+  // A Bible book shows every chapter at once: its grid is small boxes, and the
+  // longest book (Psalms, 150) still fits. Other documents load in batches.
+  const visibleChapters = documentInfo?.collection === "bible" ? matchingChapters : matchingChapters.slice(0, visibleLimit);
 
   function openChapter(chapterKey: string, anchor?: string | null) {
     const next = new URLSearchParams({ from: origin, chapter: chapterKey });
@@ -420,7 +422,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                     ))}
                   </div>
                 )}
-                {visibleLimit < matchingChapters.length && (
+                {visibleChapters.length < matchingChapters.length && (
                   <div className="mt-4 flex flex-col items-center gap-2">
                     <p className="text-xs text-brand-muted">Showing {visibleChapters.length.toLocaleString()} of {matchingChapters.length.toLocaleString()} {entryPlural}</p>
                     <button type="button" onClick={() => setVisibleLimit((limit) => limit + SECTION_BATCH_SIZE)} className="min-h-11 rounded-md border border-brand-accent px-4 text-sm font-medium text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">

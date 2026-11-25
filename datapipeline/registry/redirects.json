@@ -5575,6 +5575,16 @@
  },
  {
   "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
+  "old_passage_id": "6ecf68f1-eb0d-5976-9b43-8fe77b7edd50",
+  "old_anchor": "vi.iv.iii/from-p67-2",
+  "new_passage_id": "99a8b81e-1bc6-5caa-83a7-48fdd117ed06",
+  "new_anchor": "vi.iv.iii/from-p67",
+  "kind": "merged",
+  "reason": "its opening unit no longer opens a piece",
+  "added_by": "#399"
+ },
+ {
+  "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
   "old_passage_id": "ded468c3-786a-5266-a868-d77b784fca55",
   "old_anchor": "vi.iv.iv.v/from-p47",
   "new_passage_id": "e46619e2-c5a3-5879-8488-a4019d2d7d3c",

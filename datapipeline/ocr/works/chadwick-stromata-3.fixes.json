@@ -1,0 +1,272 @@
+[
+ {
+  "passage": "ch01/s002",
+  "find": "words: \" Abstain,",
+  "replace": "words: \"Abstain,",
+  "why": "p. 41: the print reads “Abstain, with no space after the quotation mark"
+ },
+ {
+  "passage": "ch02/s009",
+  "find": "saying c Thou shalt not covet'",
+  "replace": "saying 'Thou shalt not covet'",
+  "why": "p. 44: the OCR read the opening quotation mark as “c”"
+ },
+ {
+  "passage": "ch02/s009",
+  "find": "words c thy neighbour's wife'",
+  "replace": "words 'thy neighbour's wife'",
+  "why": "p. 44: the OCR read the opening quotation mark as “c”"
+ },
+ {
+  "passage": "ch02/s010",
+  "find": "(\" on repletion",
+  "replace": "(\"on repletion",
+  "why": "p. 45: no space after the quotation mark"
+ },
+ {
+  "passage": "ch03/s014",
+  "find": "I wept and wailed.\n\nAnd further",
+  "replace": "I wept and wailed.\"\n\nAnd further",
+  "why": "p. 47: the print reads wailed.” ; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch03/s023",
+  "find": "\" Of what is mortal",
+  "replace": "\"Of what is mortal",
+  "why": "p. 51: no space after the quotation mark"
+ },
+ {
+  "passage": "ch03/s023",
+  "find": "happy without end.\"\"",
+  "replace": "happy without end.\"",
+  "why": "p. 51: one closing quotation mark, then a note number"
+ },
+ {
+  "passage": "ch04/s027",
+  "find": "that asks you She,",
+  "replace": "that asks you.'\" She,",
+  "why": "p. 52: the print reads asks you.’”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch04/s030",
+  "find": "talk? \" Everyone",
+  "replace": "talk? \"Everyone",
+  "why": "p. 54: no space after the quotation mark"
+ },
+ {
+  "passage": "ch04/s035",
+  "find": "JT o them",
+  "replace": "To them",
+  "why": "p. 55: the print reads “To”"
+ },
+ {
+  "passage": "ch04/s035",
+  "find": "recognize t>y their",
+  "replace": "recognize by their",
+  "why": "p. 55: the print reads “by”"
+ },
+ {
+  "passage": "ch04/s039",
+  "find": "with your words, says Malachi",
+  "replace": "with your words,\" says Malachi",
+  "why": "p. 58: the print reads words,”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch05/s043",
+  "find": "loved. \" You are",
+  "replace": "loved. \"You are",
+  "why": "p. 60: no space after the quotation mark"
+ },
+ {
+  "passage": "ch06/s045",
+  "find": "nature.. For",
+  "replace": "nature. For",
+  "why": "p. 61: one full stop, and a speck"
+ },
+ {
+  "passage": "ch06/s046",
+  "find": "fulfil it.\" 27. \"To fulfil\"",
+  "replace": "fulfil it.\" \"To fulfil\"",
+  "why": "p. 61: note call 27 (Matt. 5:17), read with a full stop"
+ },
+ {
+  "passage": "ch06/s050",
+  "find": "Aristotle of Gyrene",
+  "replace": "Aristotle of Cyrene",
+  "why": "p. 63: the print reads “Cyrene”"
+ },
+ {
+  "passage": "ch06/s051",
+  "find": "in Gyrene.",
+  "replace": "in Cyrene.",
+  "why": "p. 64: the print reads “Cyrene”"
+ },
+ {
+  "passage": "ch06/s053",
+  "find": "food and drink, not indeed",
+  "replace": "food and drink,\" not indeed",
+  "why": "p. 65: the print reads drink,”"
+ },
+ {
+  "passage": "ch06/s054",
+  "find": "immoral \"communion is to",
+  "replace": "immoral \"communion\" is to",
+  "why": "p. 65: the print reads “communion”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch06/s056",
+  "find": "ever.\" ^ For",
+  "replace": "ever.\" For",
+  "why": "p. 66: a note call, read as “^”"
+ },
+ {
+  "passage": "ch06/s056",
+  "find": "you have prepared?",
+  "replace": "you have prepared?\"",
+  "why": "p. 66: the print reads prepared?”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch07/s057",
+  "find": "at alli^ Our",
+  "replace": "at all. Our",
+  "why": "p. 66: the print reads “at all.”, with a note call"
+ },
+ {
+  "passage": "ch07/s057",
+  "find": "J us t as",
+  "replace": "Just as",
+  "why": "p. 67: the print reads “Just”"
+ },
+ {
+  "passage": "ch07/s057",
+  "find": "philosophers^ Where",
+  "replace": "philosophers. Where",
+  "why": "p. 67: the print reads “philosophers.”"
+ },
+ {
+  "passage": "ch07/s057",
+  "find": "there^is",
+  "replace": "there is",
+  "why": "p. 67: the print reads “there is”"
+ },
+ {
+  "passage": "ch07/s058",
+  "find": "fulfil its desires. We are",
+  "replace": "fulfil its desires.\" We are",
+  "why": "p. 67: the print reads desires.”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch07/s060",
+  "find": "Indian History* They",
+  "replace": "Indian History. They",
+  "why": "p. 68: the print reads “History.”, with a note call"
+ },
+ {
+  "passage": "ch08/s061",
+  "find": "God forbid. '",
+  "replace": "God forbid.\"",
+  "why": "p. 69: the print reads “God forbid.”"
+ },
+ {
+  "passage": "ch08/s061",
+  "find": "under grace and others",
+  "replace": "under grace,\" and others",
+  "why": "p. 68: the print reads grace,”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch09/s064",
+  "find": "says: \" Until when shall men die? '",
+  "replace": "says: \"Until when shall men die?\"",
+  "why": "p. 70: the print reads “Until when shall men die?”"
+ },
+ {
+  "passage": "ch09/s064",
+  "find": "answer \"As long as women bear children/'",
+  "replace": "answer—\"As long as women bear children,\"",
+  "why": "p. 70: the print reads answer—“As long as women bear children,”"
+ },
+ {
+  "passage": "ch10/s069",
+  "find": "the greatest honour.\" With",
+  "replace": "the greatest honour. With",
+  "why": "p. 72: a note call read as a quotation mark; the print has none"
+ },
+ {
+  "passage": "ch11/s076",
+  "find": "no good thing yet let",
+  "replace": "no good thing,\" yet let",
+  "why": "p. 75: the print reads thing,”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch12/s081",
+  "find": "Saviour:* \"While",
+  "replace": "Saviour: \"While",
+  "why": "p. 77: a note call, read as “*”"
+ },
+ {
+  "passage": "ch12/s081",
+  "find": "'agreement/ but",
+  "replace": "'agreement,' but",
+  "why": "p. 77: the print reads ‘agreement,’"
+ },
+ {
+  "passage": "ch12/s081",
+  "find": "and the devil. This he says",
+  "replace": "and the devil.\" This he says",
+  "why": "p. 78: the print reads devil.”; the OCR read the closing quotation mark as “55”, taken as a note call"
+ },
+ {
+  "passage": "ch12/s083",
+  "find": "nature 5S the",
+  "replace": "nature the",
+  "why": "p. 79: a note call, read as “5S”"
+ },
+ {
+  "passage": "ch12/s083",
+  "find": "law^by",
+  "replace": "law by",
+  "why": "p. 79: the print reads “law by”"
+ },
+ {
+  "passage": "ch12/s083",
+  "find": "bear fruit unto God. '",
+  "replace": "bear fruit unto God.\"",
+  "why": "p. 79: the print reads God.”"
+ },
+ {
+  "passage": "ch12/s084",
+  "find": "good/' We",
+  "replace": "good.\" We",
+  "why": "p. 79: the print reads “good.”"
+ },
+ {
+  "passage": "ch12/s084",
+  "find": "manifest.'* But",
+  "replace": "manifest.\" But",
+  "why": "p. 79: the print reads “manifest.”, with a note call"
+ },
+ {
+  "passage": "ch13/s091",
+  "find": "unfruitful tree using",
+  "replace": "unfruitful tree,' using",
+  "why": "p. 83: the print reads tree,’; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch14/s095",
+  "find": "look for the Saviour.\"",
+  "replace": "look for the Saviour.'\"",
+  "why": "p. 85: the print reads Saviour.’” (the quotation inside Julius Cassianus's)"
+ },
+ {
+  "passage": "ch18/s109",
+  "find": "And we who used",
+  "replace": "And we,\" who used",
+  "why": "p. 92: the print reads And we,”; the OCR read the closing quotation mark and its note number as one call, and the clean-up took both"
+ },
+ {
+  "passage": "ch18/s109",
+  "find": "'For the rest, brethren",
+  "replace": "\"For the rest, brethren",
+  "why": "p. 92: the print reads “For, an opening double quotation mark"
+ }
+]

@@ -25,7 +25,7 @@ if DATAPIPELINE not in sys.path:
 
 import registry  # noqa: E402
 from checks.report import placeholder_credentials  # noqa: E402
-from publication import build  # noqa: E402
+from publication import SOURCE_BUILDS, build  # noqa: E402
 from registry import rejected_voice as rv  # noqa: E402
 
 
@@ -68,7 +68,7 @@ def main(argv: list[str] | None = None) -> int:
     wanted: dict[tuple[str, str], str] = {}
     documents = {}
     for collection in sorted({r.collection for r in ranges}):
-        built = build(collection, registry=reg)
+        built = build(collection, source_adapters=SOURCE_BUILDS, registry=reg)
         documents.update({d.id: d for d in built})
         wanted.update(rv.labels(built, [r for r in ranges if r.collection == collection]))
     rows, changed = updated_rows(reg.passages, wanted, {r.document_id for r in ranges})

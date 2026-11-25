@@ -1,7 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Literal, Optional
 
 from app.models.corpus import DocumentFacts, OverviewNote, RedirectedFrom, WorkInfo
+from app.models.search import PassageHeading
 
 
 class DocumentResponse(BaseModel):
@@ -74,6 +75,8 @@ class ReaderPassage(BaseModel):
     # Set only on a history passage (rule F): the ID of the current passage that
     # replaced it. Shown as earlier text beside that passage, never in the flow.
     superseded_by: Optional[str] = None
+    # The headings marked inside the passage (issue #445); [] for an unmarked passage.
+    headings: list[PassageHeading] = Field(default_factory=list)
 
 
 class ReaderChapter(BaseModel):

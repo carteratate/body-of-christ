@@ -41,7 +41,6 @@ import re
 import sys
 from collections import Counter
 from dataclasses import dataclass, field
-from typing import Iterator
 
 # Add datapipeline root to path so shared builder modules are importable.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

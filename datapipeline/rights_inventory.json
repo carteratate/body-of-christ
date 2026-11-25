@@ -3472,7 +3472,28 @@
   "credit_line": "Sourced via CCEL.org",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": null
+  "planned_for": null,
+  "also_from": [
+   {
+    "texts": "Book III, On Marriage, chapters 1 to 18 (Stählin's sections 1 to 110; pp. 40–92), which the Ante-Nicene Fathers left in Latin",
+    "edition": "Alexandrian Christianity: Selected Translations of Clement and Origen, with introductions and notes by John Ernest Leonard Oulton and Henry Chadwick, The Library of Christian Classics, vol. II (Philadelphia: The Westminster Press; London: S.C.M. Press, 1954; published simultaneously in Great Britain and the United States; Library of Congress Catalog Card Number 54-10257; printed in the United States of America); Book III translated by Henry Chadwick from O. Stählin's text (Berlin Corpus, 1906); scan of the Westminster Press printing, Universal Digital Library",
+    "translator": "Henry Chadwick",
+    "first_published": 1954,
+    "source_path": "church-fathers/alexandrianchris012826mbp/",
+    "source_url": "https://archive.org/details/alexandrianchris012826mbp",
+    "status": "pd-us-non-renewal",
+    "renewal_search": {
+     "date": "2026-11-15",
+     "where": "Catalog of Copyright Entries, 3rd series, vol. 8, part 1, Books, January–June and July–December 1954 (archive.org catalogofcopyrig381lib and catalogofcopyrig381libr, full text); renewal records 1980–1984 as transcribed by NYPL (github.com/NYPL/cce-renewals), which cover the 28th-year renewal window for a 1954 work. The Stanford Copyright Renewal Database refuses automated access and was not searched.",
+     "query": "'Oulton', 'Chadwick', 'Alexandrian Christianity', 'Clement and Origen', 'Library of Christian Classics', 'christian classics' and the Clemens Alexandrinus heading",
+     "result": "no registration in 1954 and no renewal found. The only Clement entry in 1954 is another work (Wood, Christ the Educator, A133425). Control: the renewal files list Westminster Press renewals of its own 1952–1956 books (for example RE122673). The US printing's title page and its verso carry no copyright notice.",
+     "searched_by": "Claude"
+    },
+    "credit_line": "Translated by Henry Chadwick (1954)",
+    "checked_by": "Carter",
+    "checked_on": "2026-11-16"
+   }
+  ]
  },
  {
   "work": "Theophilus to Autolycus",

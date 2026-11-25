@@ -42,6 +42,12 @@ _PREFIXED_THRESHOLDS = {
     "medieval": 0.931,
     "church-fathers": 0.923,
     "catechism": 0.919,
+    # A result carries the key it was searched under (5.1b.1). The new keys take their
+    # old collections' lines; `papal` takes the line two of its three old keys share.
+    # 5.1b.3 measures the merged collection when it rewrites the stored values.
+    "papal": 0.930,
+    "church-law": 0.912,
+    "theologians": 0.931,
 }
 
 
@@ -91,7 +97,7 @@ _PER_SOURCE_CAP = 2
 # pagination — and ingest already writes chapter_key=make_anchor(book_slug, chapter)
 # on every verse chunk.
 _CHAPTER_KEYED_COLLECTIONS: frozenset[str] = frozenset({
-    "summa", "catechism", "canon-law", "bible",
+    "summa", "catechism", "canon-law", "church-law", "bible",
 })
 
 # Collections that use the chapter grain in FOCUSED search only. Church Fathers holds

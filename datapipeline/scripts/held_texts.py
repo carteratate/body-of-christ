@@ -209,11 +209,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--today", default=date.today().isoformat())
     args = parser.parse_args(argv)
 
-    from publication import build
+    from publication import SOURCE_BUILDS, build
 
     reg = registry.current()
     collections = sorted({e["collection"] for e in reg.removals if registry.is_held_removal(e)})
-    documents = [d for c in collections for d in build(c, registry=reg, held_coverage=False)]
+    # Removal entries name sources (5.1b.3), so each builds through its source.
+    documents = [d for c in collections for d in build(c, source_adapters=SOURCE_BUILDS,
+                                                         registry=reg, held_coverage=False)]
     proposals = draft(reg, documents, args.today)
     try:
         f = open(args.out, "x", encoding="utf-8")

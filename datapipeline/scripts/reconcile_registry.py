@@ -6,7 +6,7 @@
                                            [--kept-reason TEXT | --kept-reasons FILE]]
                                           [--today YYYY-MM-DD] [--dry-run]
 
-Builds each named collection through SOURCE_ADAPTERS and runs `registry.reconcile` on it:
+Builds each named collection through SOURCE_BUILDS and runs `registry.reconcile` on it:
 a built anchor with no row gets a new row, a piece whose opening unit no longer opens a
 piece gets a `merged` redirect to the piece that now holds it, and a redirected piece
 that is built again is reclaimed (`added_by` and `closed_by` name `--item`).
@@ -49,7 +49,7 @@ if DATAPIPELINE not in sys.path:
 
 import registry  # noqa: E402
 from checks import health as health_cli  # noqa: E402
-from publication import SOURCE_ADAPTERS  # noqa: E402
+from publication import SOURCE_BUILDS  # noqa: E402
 from identity import unit_anchor  # noqa: E402
 from release import remap as R  # noqa: E402
 
@@ -145,7 +145,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--item", required=True, help="the item making the change, e.g. 1.10b")
     parser.add_argument("--collection", required=True, action="append",
-                        choices=sorted(SOURCE_ADAPTERS))
+                        choices=sorted(SOURCE_BUILDS))
     parser.add_argument("--snapshot", help="settle ambiguous pieces by their live text")
     reason = parser.add_mutually_exclusive_group()
     reason.add_argument("--kept-reason",
@@ -157,7 +157,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     reg = registry.load_registry()
-    documents = [d for c in args.collection for d in SOURCE_ADAPTERS[c]()]
+    documents = [d for c in args.collection for d in SOURCE_BUILDS[c]()]
     settle = moved = None
     live: dict[str, str] = {}
     if args.snapshot:

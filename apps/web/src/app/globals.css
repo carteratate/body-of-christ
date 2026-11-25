@@ -53,6 +53,10 @@
   --color-collection-summa:                  #55cc88;
   --color-collection-medieval:               #90a0a8;
   --color-collection-councils:               #60d4c8;
+  /* 5.1b: each takes an old collection's colour; the old tokens go in 5.1b.4. */
+  --color-collection-papal:                  #e8c040;
+  --color-collection-church-law:             #e84040;
+  --color-collection-theologians:            #90a0a8;
 }
 
 html {

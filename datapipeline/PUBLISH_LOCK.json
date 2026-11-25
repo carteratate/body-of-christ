@@ -4,15 +4,47 @@
   "approved_applies": [
     {
       "collection": "all",
-      "release": "republish-2026-10",
+      "release": "collection-keys-2026-11",
+      "steps": [
+        "apply"
+      ],
+      "reason": "Only to delete the Qdrant collection 5.1b.3's publish replaced, chunks-stromata-iii-2026-11, with publish.py drop-old-collection --close-window-early, under Carter's standing decision (23 Nov 2026): the window closes once its smoke checks pass, which for 5.1b.3 were step 7's acceptance checks (passed 24 Nov 2026, #200). Its stage, apply, rollback and repair entries are removed here.",
+      "approved_by": "Carter",
+      "pr": 494
+    },
+    {
+      "collection": "catechism",
+      "release": "batch-1-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "The Phase 4 republish of every collection (#189, runbook 4.1b in docs/corpus-cleanup/P4-P5-republish-expand.md), built from this PR's merge commit. Each live step still needs Carter's own approval at the time it runs. The entry stays until the 14-day rollback window closes, and a later reviewed PR removes it.",
+      "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 406
+      "pr": 494
+    },
+    {
+      "collection": "church-law",
+      "release": "batch-1-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "approved_by": "Carter",
+      "pr": 494
+    },
+    {
+      "collection": "all",
+      "release": "batch-1-2026-11",
+      "steps": [
+        "apply"
+      ],
+      "reason": "Only to delete the Qdrant collection batch 1's publish replaces, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "approved_by": "Carter",
+      "pr": 494
     }
   ]
 }

@@ -8,7 +8,8 @@
      anchors), so nothing collides on the unique keys;
   3. upsert passages by ID: changed text keeps its ID (D1), new IDs insert, a staged ID
      that was retired is un-retired and loses its tombstone, a reclaimed ID loses its
-     redirect, and a passage moved between documents keeps its ID;
+     redirect, a retired ID the publish redirects loses its tombstone, and a passage
+     moved between documents keeps its ID;
   4. retire the live passages staging lacks: `retired_at` set and moved below every
      retired position of the document, never deleted (D3);
   5. write the staged tombstones and redirects;
@@ -33,6 +34,7 @@ from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Protocol
 
+import collection_keys
 import reader_access
 import registry as reg
 import retirements
@@ -104,6 +106,24 @@ SNAPSHOT_TABLES = {
 }
 REDIRECT_ROW = ("entity", "old_id", "old_document_id", "old_anchor", "new_id",
                 "new_document_id", "new_anchor", "kind", "publish_id", "created_at")
+# The live redirects an apply replaces (step 5's DELETE), for the before-snapshot. The
+# repeated `s.entity IN ('anchor', 'chapter')` lets the planner use staging's partial index
+# on (entity, old_document_id, old_anchor): without it every live row scanned all of
+# staging, which with 44,891 live and 36,677 staged redirects outran the 2-minute statement
+# timeout (card-notes-2026-11's first apply, 22 Nov 2026).
+SNAPSHOT_REDIRECTS_SQL = f"""
+    SELECT {', '.join(REDIRECT_ROW)} FROM public.corpus_redirects t
+    WHERE (t.entity = 'passage' AND t.old_id IN (
+             SELECT id FROM staging.chunks
+             UNION SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))
+       OR (t.entity IN ('anchor', 'chapter') AND EXISTS (
+             SELECT 1 FROM staging.corpus_redirects s
+             WHERE s.entity IN ('anchor', 'chapter') AND s.entity = t.entity
+               AND s.old_document_id = t.old_document_id
+               AND s.old_anchor = t.old_anchor))
+       OR (t.entity = 'document' AND t.old_id IN (
+             SELECT id FROM staging.documents
+             UNION SELECT old_id FROM staging.corpus_redirects WHERE entity = 'document'))"""
 
 
 def _document_scope(collections: list[str] | None, document_ids: list[str] | None) -> str:
@@ -129,22 +149,19 @@ async def read_snapshot_rows(conn, collections: list[str] | None = None,
         out[table] = [dict(r) for r in await conn.fetch(
             _rows_sql(table, SNAPSHOT_TABLES[table], f"t.document_id IN ({documents})"), arg)]
     out["corpus_tombstones"], out["corpus_redirects"] = [], []
+    out["retired_chunks"] = []
     if staged:
+        # Retired passages the publish brings back: the apply overwrites them, and a
+        # rollback puts them back retired as they were (old anchor and text, #399).
+        out["retired_chunks"] = [dict(r) for r in await conn.fetch(
+            _rows_sql("chunks", rw.CHUNK_COLUMNS + ("retired_at",),
+                      "t.retired_at IS NOT NULL AND t.id IN (SELECT id FROM staging.chunks)"))]
         out["corpus_tombstones"] = [dict(r) for r in await conn.fetch(
             f"""SELECT {', '.join(rw.TOMBSTONE_COLUMNS)} FROM public.corpus_tombstones t
-                WHERE t.id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)""")]
-        out["corpus_redirects"] = [dict(r) for r in await conn.fetch(
-            f"""SELECT {', '.join(REDIRECT_ROW)} FROM public.corpus_redirects t
-                WHERE (t.entity = 'passage' AND t.old_id IN (
-                         SELECT id FROM staging.chunks
-                         UNION SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))
-                   OR (t.entity IN ('anchor', 'chapter') AND EXISTS (
-                         SELECT 1 FROM staging.corpus_redirects s WHERE s.entity = t.entity
-                           AND s.old_document_id = t.old_document_id
-                           AND s.old_anchor = t.old_anchor))
-                   OR (t.entity = 'document' AND t.old_id IN (
-                         SELECT id FROM staging.documents
-                         UNION SELECT old_id FROM staging.corpus_redirects WHERE entity = 'document'))""")]
+                WHERE t.id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)
+                   OR (t.entity = 'passage' AND t.id IN (
+                         SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))""")]
+        out["corpus_redirects"] = [dict(r) for r in await conn.fetch(SNAPSHOT_REDIRECTS_SQL)]
     return out
 
 
@@ -214,10 +231,12 @@ def _set(columns: tuple[str, ...], skip: tuple[str, ...] = ("id",)) -> str:
 
 
 async def _core(conn, scope_documents: list[str], *, release: str,
-                rollback: bool = False) -> CoreResult:
+                rollback: bool = False, reserved: list[dict] = ()) -> CoreResult:
     """Steps 1 to 4 and the contents trees, from the staging tables. `scope_documents`
     are the live documents considered: any of them staging lacks is retired, and so is
-    any of their live passages staging lacks."""
+    any of their live passages staging lacks. `reserved` are retired rows a rollback
+    puts back after this (`_restore_retired`): what this retires goes below their
+    positions too."""
     staged_documents = [str(r["id"]) for r in await conn.fetch("SELECT id FROM staging.documents")]
     retire_documents = [d for d in scope_documents if d not in set(staged_documents)]
     touched = sorted(set(staged_documents) | set(scope_documents))
@@ -279,10 +298,13 @@ async def _core(conn, scope_documents: list[str], *, release: str,
             SELECT {chunk_cols} FROM staging.chunks
             ON CONFLICT (id) DO UPDATE SET {_set(rw.CHUNK_COLUMNS)}, retired_at = NULL""")
     if not rollback:
-        # A live passage never also shows a removal notice or resolves as moved.
+        # A live passage never also shows a removal notice or resolves as moved, and a
+        # retired one the publish redirects (#399) no longer shows its notice.
         await conn.execute(
             """DELETE FROM public.corpus_tombstones
-               WHERE id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)""")
+               WHERE id IN (SELECT id FROM staging.chunks UNION SELECT id FROM staging.documents)
+                  OR (entity = 'passage' AND id IN (
+                        SELECT old_id FROM staging.corpus_redirects WHERE entity = 'passage'))""")
         await conn.execute(
             """DELETE FROM public.corpus_redirects
                WHERE (entity = 'passage' AND old_id IN (SELECT id FROM staging.chunks))
@@ -303,7 +325,9 @@ async def _core(conn, scope_documents: list[str], *, release: str,
             SELECT d AS document_id,
                    LEAST($2::int, coalesce((SELECT min(position) - 1 FROM public.chunks
                                             WHERE document_id = d AND retired_at IS NOT NULL),
-                                           $2::int)) AS base
+                                           $2::int),
+                         coalesce((SELECT min(x.p) - 1 FROM unnest($4::uuid[], $5::int[])
+                                   AS x(doc, p) WHERE x.doc = d), $2::int)) AS base
             FROM unnest($1::uuid[]) AS d)
         UPDATE public.chunks c
         SET retired_at = now(), position = b.base - (r.rn - 1)::int,
@@ -316,7 +340,8 @@ async def _core(conn, scope_documents: list[str], *, release: str,
         FROM r JOIN b USING (document_id)
         WHERE c.id = r.id
         RETURNING c.id
-        """, touched, RETIRED_BASE, release)
+        """, touched, RETIRED_BASE, release, [r["document_id"] for r in reserved],
+        [r["position"] for r in reserved])
     leftover = await conn.fetchval(
         """SELECT count(*) FROM public.chunks
            WHERE document_id = ANY($1::uuid[]) AND anchor LIKE '~%'""", touched)
@@ -400,7 +425,9 @@ async def apply(conn, release: str, *, remap: UserDataRemap | None = None,
         await lock_publishes(conn)
         row = await conn.fetchrow("SELECT * FROM corpus_publishes WHERE id = $1", release)
         _check_applicable(row, release)
-        collections = list(row["collections"])
+        # Live rows still filed under an old key of a staged collection are part of it
+        # (5.1b.3): snapshotted for the rollback, and renamed in place by ID below.
+        collections = collection_keys.live_keys(row["collections"])
         # The before-snapshot is read here, under the publish lock and before any write, so
         # a concurrent apply of the same release cannot overwrite it with applied rows. The
         # publish is unapplied, so an earlier refused attempt's snapshot is safe to replace.
@@ -570,6 +597,17 @@ async def _reinsert(conn, rows: dict[str, list[dict]]) -> None:
             *[r[c] for c in REDIRECT_ROW])
 
 
+async def _restore_retired(conn, rows: dict[str, list[dict]]) -> None:
+    """Put the retired passages the forward apply brought back as they were, retired."""
+    cols = rw.CHUNK_COLUMNS[1:] + ("retired_at",)
+    casts = {"document_id": "::uuid", "metadata": "::jsonb", "superseded_by": "::uuid",
+             "retired_at": "::text::timestamptz"}
+    sets = ", ".join(f"{c} = ${k}{casts.get(c, '')}" for k, c in enumerate(cols, 2))
+    for r in rows.get("retired_chunks", []):
+        await conn.execute(f"UPDATE public.chunks SET {sets} WHERE id = $1::uuid",
+                           r["id"], *[r[c] for c in cols])
+
+
 async def _rolled_back_tombstones(conn, release: str, documents: list[str],
                                   passages: list[str]) -> None:
     await conn.execute(
@@ -675,14 +713,16 @@ async def _rollback(conn, qdrant, release: str, *, alias: str,
                                "discard it first")
         await _load_snapshot_into_staging(conn, rows)
         scope = ([d["id"] for d in rows["documents"]] if retire_only
-                 else await _live_documents(conn, list(row["collections"])))
-        core = await _core(conn, scope, release=release, rollback=True)
+                 else await _live_documents(conn, collection_keys.live_keys(row["collections"])))
+        core = await _core(conn, scope, release=release, rollback=True,
+                           reserved=rows.get("retired_chunks", []))
         ledger = RemapLedger()
         if remap is not None:
             ledger = await remap.reverse(conn, release)
         await conn.execute("DELETE FROM public.corpus_redirects WHERE publish_id = $1", release)
         await conn.execute("DELETE FROM public.corpus_tombstones WHERE publish_id = $1", release)
         await _reinsert(conn, rows)
+        await _restore_retired(conn, rows)
         # Rows the publish inserted get a rolled-back tombstone. A row it un-retired is
         # retired again under the tombstone or redirect it had before, put back above.
         restored = {str(t["id"]) for t in rows.get("corpus_tombstones", [])} | {
@@ -773,12 +813,17 @@ async def retire_only(conn, qdrant, release: str, collection: str, *, alias: str
     from writers.qdrant import alias_target
 
     registry = registry or reg.current()
+    # Removal entries name the document's source, which need not be the collection it
+    # is filed under (5.1b.3: Boethius's source is `medieval`, his collection
+    # `church-fathers`), so entries are found by document and the live document's
+    # stored key scopes the retirement.
+    published = collection_keys.canonical(collection)
     entries = {e["document_id"]: e for e in reg.open_removals(registry)
-               if e.get("scope") == "document" and e.get("collection") == collection}
+               if e.get("scope") == "document"}
     live = await conn.fetch(
         """SELECT id::text AS id, title, author FROM public.documents
-           WHERE collection = $1 AND retired_at IS NULL AND id = ANY($2::uuid[])""",
-        collection, list(entries))
+           WHERE collection = ANY($1::text[]) AND retired_at IS NULL AND id = ANY($2::uuid[])""",
+        collection_keys.live_keys([published]), list(entries))
     if not live:
         raise ApplyRefused(f"REFUSING: no live document of '{collection}' has an open "
                            "document removal entry")

@@ -8,6 +8,7 @@ import { trackBookmarkDeleted, trackDocumentOpened } from "@/lib/analytics";
 import { getCollectionMeta } from "@/lib/collections";
 import { stripVerseMarkers } from "@/lib/verse-markers";
 import { contentWithMarkers, footnotesCopyText, parseFootnotes } from "@/lib/footnotes";
+import { parseHeadings } from "@/lib/passage-headings";
 import { readerHref } from "@/lib/readerNavigation";
 import { excerptSourceCredit, excerptSourceUrl, isExcerptOnly } from "@/lib/reader-access";
 import { useReaderReturnKey } from "@/lib/useReaderReturnKey";
@@ -61,6 +62,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
 
   const { content, source } = bookmark.chunk;
   const footnotes = parseFootnotes(bookmark.chunk.footnotes, content);
+  const headings = parseHeadings(bookmark.chunk.headings, content);
   const { collection, document_title, reference } = source;
   const collectionMeta = getCollectionMeta(collection);
   const borderColor = collectionMeta?.color ?? "var(--color-brand-accent)";
@@ -105,7 +107,8 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
     const body = footnotes.length ? contentWithMarkers(content, footnotes) : stripVerseMarkers(content);
     const attributed = copiedAttribution ? `${displayReference} (${copiedAttribution})` : displayReference;
     const cited = rejected ? `${attributed} [${rejected}]` : attributed;
-    const text = `${body} — ${cited} (${collection})${notes}${credited}`;
+    // The collection's name, as on the card; a bookmark can carry an old key (5.1b.2).
+    const text = `${body} — ${cited} (${collectionMeta?.label ?? collection})${notes}${credited}`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text)
         .then(() => showToast("Copied"))
@@ -233,7 +236,7 @@ export function BookmarkCard({ bookmark, token, onRemove, onNoteUpdated, showToa
       ) : (
         <>
           {bookmark.status === "moved" && <MovedNote kind={bookmark.redirect?.kind} />}
-          <RejectedVoice label={rejected}><PassageText content={content} footnotes={footnotes} /></RejectedVoice>
+          <RejectedVoice label={rejected}><PassageText content={content} footnotes={footnotes} headings={headings} /></RejectedVoice>
           <PassageNotes footnotes={footnotes} />
           <PassageFacts
             facts={source.facts}

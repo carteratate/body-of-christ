@@ -13,21 +13,28 @@ Source adapters build domain objects; they do not write to either store directly
 ## Source data
 
 Source files are required before publication. Provenance and acquisition instructions
-for all ten collections live in [`SOURCES.md`](SOURCES.md). The adapters registered in
-`publication.py` are:
+for all ten sources live in [`SOURCES.md`](SOURCES.md). `publication.py` registers each
+source's adapter in `SOURCE_BUILDS`, and the eight collections a publish writes in
+`SOURCE_ADAPTERS` (corpus cleanup 5.1b.3, `collection_keys.py`):
 
-| Collection | Source adapter |
-|---|---|
-| `apostolic-exhortations` | `ingest/apostolic_exhortations.py` |
-| `bible` | `ingest/bible.py` |
-| `canon-law` | `ingest/canon_law.py` |
-| `catechism` | `ingest/catechism.py`, then `ingest/catechism_compendium.py` (the Compendium) |
-| `church-fathers` | `ingest/church_fathers.py` |
-| `councils` | `ingest/councils.py` |
-| `encyclicals` | `ingest/encyclicals.py` |
-| `medieval` | `ingest/medieval.py` |
-| `papal-documents` | `ingest/papal_documents.py` |
-| `summa` | `ingest/summa.py` |
+| Collection (published) | Sources (`sources/<key>/`) | Source adapter |
+|---|---|---|
+| `bible` | `bible` | `ingest/bible.py` |
+| `catechism` | `catechism` | `ingest/catechism.py`, then `ingest/catechism_compendium.py` (the Compendium) |
+| `church-fathers` | `church-fathers`, and Boethius from `medieval` | `ingest/church_fathers.py`, `ingest/medieval.py` |
+| `church-law` | `canon-law` | `ingest/canon_law.py` |
+| `councils` | `councils` | `ingest/councils.py` |
+| `papal` | `encyclicals`, `apostolic-exhortations`, `papal-documents` | `ingest/encyclicals.py`, `ingest/apostolic_exhortations.py`, `ingest/papal_documents.py` |
+| `summa` | `summa` | `ingest/summa.py` |
+| `theologians` | `medieval` (all but Boethius) | `ingest/medieval.py` |
+
+A source keeps its old name: the work registry files each frozen ID under it, the checks
+(0.1a to 0.1c) and their known defects are keyed by it, and the embedding overlap follows
+it, so the rename moves no ID and changes no vector. Until 5.1b.3's publish is applied,
+live rows carry the old keys; a stage, report or apply of a new key also covers the live
+rows under each old key that becomes it (`collection_keys.live_keys`). Boethius moves only
+in a stage of both `church-fathers` and `theologians`; a Fathers-only stage before then
+leaves him where he is (`publication.place_boethius`).
 
 Vendored adapters read local files under `sources/<collection>/`; they do not fetch
 from source websites during publication. Acquire missing vendored sources separately:
@@ -43,10 +50,15 @@ The three papal adapters build an older document from its public-domain printing
 ## Setup
 
 ```bash
-pip install -r requirements.txt
+pip install --require-hashes -r requirements.lock
 cp .env.example .env
 # Fill in the Supabase, Qdrant, and OpenAI values.
 ```
+
+`requirements.txt` lists what the pipeline needs; `requirements.lock` pins the exact
+versions (with hashes) that CI tests. After editing `requirements.txt`, run
+`scripts/lock_python_deps.sh datapipeline` from the repo root (needs `pip install uv`)
+and commit both files. CI fails when the lock is out of date.
 
 ## Publish one collection
 

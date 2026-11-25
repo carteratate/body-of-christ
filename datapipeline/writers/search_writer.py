@@ -22,6 +22,7 @@ from dataclasses import dataclass, field
 import openai
 from qdrant_client.models import PointStruct
 
+import collection_keys
 from config import settings
 from model import Document, Passage
 from registry import resolve_passage_id
@@ -81,7 +82,8 @@ def embedding_prefix(doc: Document, p: Passage) -> str:
 
 def embedding_inputs(doc: Document) -> list[str]:
     """The exact text embedded for each passage of `doc`, in order."""
-    k_prev, k_next = settings.overlap_for(doc.collection)
+    # By source, so the 5.1b.3 rename changes no embedding input and no vector.
+    k_prev, k_next = settings.overlap_for(collection_keys.source_of(doc.id, doc.collection))
     return [build_embedding_input(doc.passages, i, k_prev, k_next, embedding_prefix(doc, p))
             for i, p in enumerate(doc.passages)]
 

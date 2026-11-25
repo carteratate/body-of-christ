@@ -9,9 +9,22 @@ from app.rag.outcomes import CollectionOutcome, PersistedSearchOutcome
 SearchQuota = Literal[3, 4, 5, 10]
 
 
+class ScopeSelection(BaseModel):
+    """What to search inside one collection (5.1a). An absent list is every value."""
+    genres: Optional[list[str]] = Field(default=None, max_length=50)
+    issuers: Optional[list[str]] = Field(default=None, max_length=100)
+
+
 class SearchFilters(BaseModel):
     collections: list[str]
     translation: str = "CPDV"
+    # Per collection; absent is the whole of every collection.
+    scopes: Optional[dict[str, ScopeSelection]] = None
+
+    def scope_filters(self) -> dict[str, dict] | None:
+        if not self.scopes:
+            return None
+        return {col: sel.model_dump() for col, sel in self.scopes.items()}
 
 
 class SearchRequest(BaseModel):
@@ -99,6 +112,20 @@ class Footnote(BaseModel):
     at: int
 
 
+class PassageHeading(BaseModel):
+    """A heading or epigraph inside a passage's text (issue #445): the character offsets
+    of its paragraph in `content`, its role, its level (1 to 3, headings only), and
+    whether it is a level label printed before its title (`pairs_next`) or repeats its
+    chapter label (`chapter_title`). See app/headings.py."""
+
+    at: int
+    end: int
+    role: Literal["heading", "epigraph"]
+    level: Optional[Literal[1, 2, 3]] = None
+    pairs_next: bool = False
+    chapter_title: bool = False
+
+
 class ChunkResult(BaseModel):
     chunk_id: str
     content: str
@@ -109,6 +136,8 @@ class ChunkResult(BaseModel):
     context: Optional[AttachedContext] = None
     # The passage's footnotes (issue #279); [] for every passage without them.
     footnotes: list[Footnote] = Field(default_factory=list)
+    # The headings marked inside the passage (issue #445); [] for an unmarked passage.
+    headings: list[PassageHeading] = Field(default_factory=list)
     # A saved result whose passage left the corpus (2.4a). "removed": `tombstone` says
     # why and `content` is empty. "moved": `redirect` says where, and `content` and
     # `source` are the passage it moved to.

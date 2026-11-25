@@ -27,6 +27,14 @@ _RULES = {"rule-a": "A", "rule-b": "B", "rule-c": "C", "rule-g-editorial": "G",
 
 
 @dataclass(frozen=True)
+class LiveAnchorRedirect:
+    """An anchor redirect already live: its old place and the document it points into."""
+    old_document_id: str
+    old_anchor: str
+    new_document_id: str
+
+
+@dataclass(frozen=True)
 class LivePassage:
     id: str
     document_id: str
@@ -95,9 +103,14 @@ def _redirect(entity: str, *, old_id=None, old_document_id, old_anchor=None, new
 
 def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument],
             staged: list[Document], registry: reg.WorkRegistry, *, release: str,
-            at: datetime) -> Retirements:
+            at: datetime, live_anchor_redirects: list[LiveAnchorRedirect] = (),
+            tombstoned: list[LivePassage] = ()) -> Retirements:
     """Tombstones, redirects and problems for one stage. `staged` is every staged
-    document of the staged collections, with `Passage.id` set."""
+    document of the staged collections, with `Passage.id` set; `live_anchor_redirects`
+    are the anchor redirects already live (see `anchor_redirects`). `tombstoned` are the
+    retired live passages of those collections that show a tombstone: one whose
+    registry redirect has opened since (a merged piece whose text came back in English,
+    #399) gets its passage redirect, and the apply drops the tombstone."""
     out = Retirements()
     staged_by_id = {p.id: (d, p) for d in staged for p in d.passages}
     staged_documents = {d.id: d for d in staged}
@@ -134,6 +147,22 @@ def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument]
                                 "build does not emit it, and no removal entry or "
                                 "supersedes explains it")
 
+    def passage_redirect(p: LivePassage, declared: list[dict]) -> None:
+        targets = [r["new_passage_id"] for r in declared]
+        missing = [t for t in targets if t not in staged_by_id]
+        kinds = {r["kind"] for r in declared}
+        if missing or len(kinds) != 1:
+            out.problems.append(f"passage {p.id}: redirect {sorted(kinds)} to "
+                                f"{missing or targets} does not name staged passages "
+                                "of one kind")
+            return
+        d, q = staged_by_id[primary_target(targets, p.document_id, staged_by_id)]
+        out.redirects.append(_redirect("passage", old_id=p.id,
+                                       old_document_id=p.document_id,
+                                       old_anchor=p.anchor, new_id=q.id,
+                                       new_document_id=d.id, new_anchor=q.anchor,
+                                       kind=kinds.pop(), release=release))
+
     # Passages the build no longer emits.
     for p in live_passages:
         if p.id in staged_by_id:
@@ -144,20 +173,7 @@ def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument]
         # is held, its removal explains every passage it had.
         declared = None if p.document_id in removed_documents else redirects.get(p.id)
         if declared:
-            targets = [r["new_passage_id"] for r in declared]
-            missing = [t for t in targets if t not in staged_by_id]
-            kinds = {r["kind"] for r in declared}
-            if missing or len(kinds) != 1:
-                out.problems.append(f"passage {p.id}: redirect {sorted(kinds)} to "
-                                    f"{missing or targets} does not name staged passages "
-                                    "of one kind")
-                continue
-            d, q = staged_by_id[primary_target(targets, p.document_id, staged_by_id)]
-            out.redirects.append(_redirect("passage", old_id=p.id,
-                                           old_document_id=p.document_id,
-                                           old_anchor=p.anchor, new_id=q.id,
-                                           new_document_id=d.id, new_anchor=q.anchor,
-                                           kind=kinds.pop(), release=release))
+            passage_redirect(p, declared)
             continue
         entry = by_id.get(p.id) or by_anchor.get((p.document_id, p.anchor)) \
             or removed_documents.get(p.document_id)
@@ -172,8 +188,21 @@ def compute(live_passages: list[LivePassage], live_documents: list[LiveDocument]
                             f"anchor {p.anchor!r}) is live, the build does not emit it, and "
                             "no redirect or removal entry explains it")
 
-    out.redirects += anchor_redirects(live_passages, staged, registry, release)
-    out.redirects += chapter_redirects(live_passages, staged, redirects, release)
+    # Retired passages with a tombstone whose redirect has opened since; one the build
+    # emits again is un-retired by the apply instead. Both come back, so both show where
+    # their old chapter went (Stromata III's live chapter was all tombstoned, #399).
+    returning = []
+    for p in tombstoned:
+        declared = None if p.document_id in removed_documents else redirects.get(p.id)
+        if p.id in staged_by_id:
+            returning.append(p)
+        elif declared:
+            passage_redirect(p, declared)
+            returning.append(p)
+
+    out.redirects += anchor_redirects(live_passages, staged, registry, release,
+                                      live_anchor_redirects)
+    out.redirects += chapter_redirects(live_passages + returning, staged, redirects, release)
     return out
 
 
@@ -186,13 +215,25 @@ def primary_target(targets: list[str], old_document: str,
 
 
 def anchor_redirects(live_passages: list[LivePassage], staged: list[Document],
-                     registry: reg.WorkRegistry, release: str) -> list[dict]:
+                     registry: reg.WorkRegistry, release: str,
+                     live_anchor_redirects: list[LiveAnchorRedirect] = ()) -> list[dict]:
     """One `anchor` redirect per passage-registry row of the staged documents whose
     anchor or document changed since it was live. A redirected row points at its open
     passage redirect's new anchor, never its own (a piece name the build no longer
     emits, or `<anchor>#moved-<item>`). An old anchor a staged passage of the same
-    document still carries resolves directly and gets none."""
+    document still carries resolves directly and gets none.
+
+    The old document is the one the passage is live in, unless a live anchor redirect
+    already sends this old anchor into the passage's document from another one: then the
+    passage moved document in an earlier publish, its current document never held the
+    anchor, and the live redirect's old document is kept (#439; the republish's moved
+    Augustine passages gave 623 such rows at 4.4's stage)."""
     live = {p.id: p for p in live_passages}
+    moved_from: dict[tuple[str, str], list[str]] = {}
+    for r in live_anchor_redirects:
+        if r.old_document_id != r.new_document_id:
+            moved_from.setdefault((r.old_anchor, r.new_document_id), []).append(
+                r.old_document_id)
     staged_by_id = {p.id: (d, p) for d in staged for p in d.passages}
     carried = {(d.id, p.anchor) for d in staged for p in d.passages}
     staged_documents = {d.id for d in staged}
@@ -217,6 +258,9 @@ def anchor_redirects(live_passages: list[LivePassage], staged: list[Document],
         if target_id not in staged_by_id:
             continue
         d, q = staged_by_id[target_id]
+        earlier = moved_from.get((row["live_anchor"], d.id))
+        if earlier and old_document == d.id:
+            old_document = min(earlier)
         key = (old_document, row["live_anchor"])
         if key == (d.id, q.anchor) or key in carried or key in seen:
             continue

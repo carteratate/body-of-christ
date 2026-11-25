@@ -91,7 +91,8 @@ async def test_rrf_gets_the_same_lists_and_the_keyword_call_is_unchanged():
         await runner.run(CONFIG, "grace", ["bible"], quota=4)
 
     k, top_n = runner._pool_sizes(CONFIG, 4)
-    fts.assert_awaited_once_with("grace", ["bible"], 4, None, k=k, mode="min_match")
+    fts.assert_awaited_once_with("grace", ["bible"], 4, None, k=k, mode="min_match",
+                                 scopes=None)
     [call] = rrf.call_args_list
     assert call.args == (VECTOR, KEYWORD, 4)
     assert call.kwargs == {"top_n": top_n, "k": CONFIG.retrieval.rrf_k}

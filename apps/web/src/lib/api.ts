@@ -10,7 +10,9 @@ import {
 } from "./search-stream";
 import { excerptSourceUrl, READER_RESTRICTED_CODE, type ReaderAccess } from "./reader-access";
 import type { Footnote } from "./footnotes";
+import type { ScopeSelection } from "./collection-scopes";
 import type { DocumentFacts, WorkInfo } from "./attribution";
+import type { ResultCardStyle } from "./result-card-style";
 import {
   parseRedirect,
   parseTombstone,
@@ -43,6 +45,8 @@ const API_URL = "";
 export interface SearchFilters {
   collections: string[];
   translation?: string;
+  /** Per collection, the genres and issuers searched (5.1a); absent is everything. */
+  scopes?: Record<string, ScopeSelection>;
 }
 
 function reportSearchHttpFailure(status: number, callbacks: SearchStreamCallbacks): void {
@@ -140,6 +144,8 @@ export interface ReaderPassage {
   official_latin_url?: string | null;
   /** Set only on a history passage: the ID of the current passage that replaced it. */
   superseded_by?: string | null;
+  /** Headings marked inside the passage (issue #445); checked by `parseHeadings`. */
+  headings?: unknown;
 }
 
 export interface ReaderChapter {
@@ -230,6 +236,8 @@ export interface BookmarkChunkInfo {
   };
   /** See ChunkResult.footnotes (issue #279). */
   footnotes?: Footnote[];
+  /** See ChunkResult.headings (issue #445); checked by `parseHeadings` where shown. */
+  headings?: unknown;
 }
 
 export interface Bookmark {
@@ -252,6 +260,9 @@ export interface Preferences {
   default_quota: number;
   last_standard_quota: 3 | 4 | 5;
   theme: "dark" | "light";
+  /** Null or absent when the API cannot store it yet (0047 unapplied, or an older API):
+   *  this browser's own choice stands (lib/result-card-style.ts). */
+  result_card_style?: ResultCardStyle | null;
 }
 
 export type SearchPreferenceDraft = Pick<
