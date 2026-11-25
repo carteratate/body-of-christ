@@ -43,7 +43,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from collection_keys import RENAMES  # noqa: E402
 
 # Old papal key → (the only genres it read | None, the genres it did not read | None),
-# as the API's LEGACY_COLLECTIONS and the web's mirror say.
+# as the web's LEGACY_COLLECTIONS says (the API's, which matched it, went in 5.1b.4).
 PAPAL_SUBSETS: dict[str, tuple[frozenset[str] | None, frozenset[str] | None]] = {
     "encyclicals": (frozenset({"encyclical"}), None),
     "apostolic-exhortations": (frozenset({"apostolic-exhortation"}), None),

@@ -878,41 +878,45 @@ def kept_check(id: str, items: str, proves: str, documents: dict[str, int]) -> S
 # an explanation can use them while presenting the position as the author's own.
 REJECTED_WORDS = r"condemn|reject|refut|objection|error|heres"
 
-ORDINARY = {
-    "bible": "What does Scripture say about caring for widows and orphans?",
-    "catechism": "What is prayer, and why should Christians pray?",
-    "church-fathers": "How did the early Christians understand baptism?",
-    "councils": "What have the councils taught about the Holy Spirit?",
-    "encyclicals": "What do the popes teach about the rights of workers?",
-    "apostolic-exhortations": "What do the popes say about family life?",
-    "papal-documents": "What have the popes written about suffering?",
-    "canon-law": "What does canon law require before a marriage can be celebrated?",
-    "summa": "Is it ever lawful to tell a lie?",
-    "medieval": "How should a Christian love God?",
+# An ordinary question per collection, keyed by the check's name: Papal documents asks
+# one for each kind of papal document it merged (5.1b).
+ORDINARY: dict[str, tuple[str, str]] = {
+    "bible": ("bible", "What does Scripture say about caring for widows and orphans?"),
+    "catechism": ("catechism", "What is prayer, and why should Christians pray?"),
+    "church-fathers": ("church-fathers", "How did the early Christians understand baptism?"),
+    "councils": ("councils", "What have the councils taught about the Holy Spirit?"),
+    "papal.encyclical": ("papal", "What do the popes teach about the rights of workers?"),
+    "papal.exhortation": ("papal", "What do the popes say about family life?"),
+    "papal.other": ("papal", "What have the popes written about suffering?"),
+    "church-law": ("church-law",
+                   "What does canon law require before a marriage can be celebrated?"),
+    "summa": ("summa", "Is it ever lawful to tell a lie?"),
+    "theologians": ("theologians", "How should a Christian love God?"),
 }
 
 # A reference-style question per collection, and the passage it names.
-REFERENCES: dict[str, tuple[str, Match]] = {
-    "bible": ("Psalm 23", Match(reference=r"^Psalms 23:")),
-    "catechism": ("CCC 1471", Match(document=CATECHISM, anchor="ccc/1471")),
-    "canon-law": ("canon 1055", Match(document=CANON_LAW, anchor="can/1055")),
-    "summa": ("Summa Theologiae I, question 2, article 3",
+REFERENCES: dict[str, tuple[str, str, Match]] = {
+    "bible": ("bible", "Psalm 23", Match(reference=r"^Psalms 23:")),
+    "catechism": ("catechism", "CCC 1471", Match(document=CATECHISM, anchor="ccc/1471")),
+    "church-law": ("church-law", "canon 1055", Match(document=CANON_LAW, anchor="can/1055")),
+    "summa": ("summa", "Summa Theologiae I, question 2, article 3",
               Match(document=SUMMA, anchor="summa/FP_Q2_A3")),
-    "councils": ("Lumen Gentium 25", Match(document=LUMEN_GENTIUM, anchor="lumen-gentium/25")),
-    "encyclicals": ("Rerum Novarum 20",
-                    Match(document=RERUM_NOVARUM, anchor="rerum-novarum/20")),
-    "apostolic-exhortations": (
-        "Familiaris Consortio 11",
+    "councils": ("councils", "Lumen Gentium 25",
+                 Match(document=LUMEN_GENTIUM, anchor="lumen-gentium/25")),
+    "papal.encyclical": ("papal", "Rerum Novarum 20",
+                         Match(document=RERUM_NOVARUM, anchor="rerum-novarum/20")),
+    "papal.exhortation": (
+        "papal", "Familiaris Consortio 11",
         Match(document=FAMILIARIS_CONSORTIO, anchor="familiaris-consortio/11"),
     ),
-    "papal-documents": (
-        "Ordinatio Sacerdotalis 4",
+    "papal.other": (
+        "papal", "Ordinatio Sacerdotalis 4",
         Match(document=ORDINATIO_SACERDOTALIS, anchor="ordinatio-sacerdotalis/4"),
     ),
-    "church-fathers": ("Augustine, Confessions, Book X, chapter 27",
+    "church-fathers": ("church-fathers", "Augustine, Confessions, Book X, chapter 27",
                        Match(document=CONFESSIONS, anchor="xi.xxvii")),
-    "medieval": ("Anselm, Proslogium, chapter 2",
-                 Match(document=PROSLOGIUM, anchor="iii.iii")),
+    "theologians": ("theologians", "Anselm, Proslogium, chapter 2",
+                    Match(document=PROSLOGIUM, anchor="iii.iii")),
 }
 
 SEARCH_VECTOR_EXPRESSION = r"""
@@ -986,7 +990,7 @@ CHECKS: list[Check] = [
         proves="\"Canon 112\" returns canon 112 first, on its own card (not glued to the "
                "next canon), labelled as an unofficial English translation.",
         question="canon 112",
-        collections=("canon-law",),
+        collections=("church-law",),
         expect=all_of(
             First(Match(document=CANON_LAW, anchor="can/112",
                         text_status="unofficial_english")),
@@ -1080,7 +1084,7 @@ CHECKS: list[Check] = [
     KeywordCheck(
         id="2.2c.keyword-canon-1055", items="2.2c, C-16",
         proves="Keyword search finds a canon by its citation.",
-        question="canon 1055", collection="canon-law",
+        question="canon 1055", collection="church-law",
         expect=First(Match(document=CANON_LAW, anchor="can/1055")),
     ),
     KeywordCheck(
@@ -1279,7 +1283,7 @@ CHECKS: list[Check] = [
         proves="A question on Pius VI and revolutionary France returns no Italian text.",
         question="What did Pope Pius VI write about the Church in France during the "
                  "Revolution?",
-        collections=("encyclicals",),
+        collections=("papal",),
         expect=NoneOf(Match(document=UBI_LUTETIAM, what="a passage of Ubi Lutetiam")),
     ),
 
@@ -1293,7 +1297,7 @@ CHECKS: list[Check] = [
         proves="A question a held document answered (Benedict XIV on church music) "
                "returns none of the held text.",
         question="What did Pope Benedict XIV write about music and singing in churches?",
-        collections=("encyclicals",),
+        collections=("papal",),
         expect=NoneOf(Removed("1.3d", reason="awaiting-permission",
                               what="held papal text")),
     ),
@@ -1302,14 +1306,14 @@ CHECKS: list[Check] = [
         proves="Ineffabilis Deus is the 1855 printing, labelled as text from a scanned "
                "edition.",
         question="How did Pius IX define the Immaculate Conception of Mary?",
-        collections=("encyclicals",),
+        collections=("papal",),
         expect=Some(Match(document=INEFFABILIS_DEUS, text_source="ocr")),
     ),
     SearchCheck(
         id="1.3d.mirari-vos", items="1.3d",
         proves="Mirari Vos, rebuilt from its 1833 printing, is found.",
         question="What did Gregory XVI teach about indifferentism and liberty of conscience?",
-        collections=("encyclicals",),
+        collections=("papal",),
         expect=Some(Match(document=MIRARI_VOS)),
     ),
     SqlCheck(
@@ -1361,7 +1365,7 @@ CHECKS: list[Check] = [
         id="1.5b.search-personal-prelatures", items="1.5b",
         proves="A question on personal prelatures returns no canon 295 or 296 text.",
         question="What does canon law say about personal prelatures?",
-        collections=("canon-law",),
+        collections=("church-law",),
         expect=NoneOf(Removed("1.5b", what="a canon 1.5b withholds")),
     ),
 
@@ -1418,7 +1422,7 @@ CHECKS: list[Check] = [
         proves="Luther's condemned proposition is found with its label, and its "
                "explanation says Leo X condemned it.",
         question="Does the just man sin in every good work?",
-        collections=("papal-documents",),
+        collections=("papal",),
         expect=all_of(
             Some(Match(document=EXSURGE_DOMINE, anchor="exsurge-domine/31", voice="rejected",
                        label=r"^Condemned proposition 31 of Martin Luther")),
@@ -1455,7 +1459,7 @@ CHECKS: list[Check] = [
         proves="The Syllabus's propositions are found labelled as condemned.",
         question="Did Pius IX condemn the view that a person may choose any religion "
                  "they judge true by reason?",
-        collections=("encyclicals",),
+        collections=("papal",),
         expect=Some(Match(document=SYLLABUS, voice="rejected",
                           label=r"^Condemned proposition \d+ \(condemned by Pius IX")),
     ),
@@ -1505,8 +1509,8 @@ CHECKS: list[Check] = [
             GROUP BY d.collection
         """,
         # Church Fathers: Stromata III in Chadwick's English, from page images (#399).
-        expect=CountsBy({}, at_least={"councils": 300, "encyclicals": 400,
-                                      "apostolic-exhortations": 150, "papal-documents": 1,
+        # Papal documents: the encyclicals' 400, the exhortations' 150 and one other.
+        expect=CountsBy({}, at_least={"councils": 300, "papal": 551,
                                       "church-fathers": 33}),
     ),
 
@@ -1771,16 +1775,16 @@ CHECKS: list[Check] = [
 
 # Every collection answers an ordinary question, and a reference-style question
 # through vector search too.
-for _collection, _question in ORDINARY.items():
+for _name, (_collection, _question) in ORDINARY.items():
     CHECKS.append(SearchCheck(
-        id=f"4.2.answers.{_collection}", items="4.2",
+        id=f"4.2.answers.{_name}", items="4.2",
         proves=f"An ordinary question about {_collection} gets results.",
         question=_question, collections=(_collection,),
         expect=Answers(_collection),
     ))
-for _collection, (_question, _match) in REFERENCES.items():
+for _name, (_collection, _question, _match) in REFERENCES.items():
     CHECKS.append(SearchCheck(
-        id=f"4.2.reference.{_collection}", items="4.2, C-16",
+        id=f"4.2.reference.{_name}", items="4.2, C-16",
         proves=f"A citation-style question about {_collection} finds the passage it "
                f"names, through vector search as well as the final results.",
         question=_question, collections=(_collection,),

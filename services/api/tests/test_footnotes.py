@@ -57,8 +57,8 @@ def test_footnotes_are_looked_up_for_the_catechism_and_the_thml_collections():
     assert not has_footnotes("summa", CATECHISM_TITLE)
     # The Fathers' and medieval translators' scripture references (1.10b).
     assert has_footnotes("church-fathers", "Against Heresies")
-    assert has_footnotes("medieval", "The Imitation of Christ")
-    assert not has_footnotes("encyclicals", "Rerum Novarum")
+    assert has_footnotes("theologians", "The Imitation of Christ")
+    assert not has_footnotes("papal", "Rerum Novarum")
 
 
 @pytest.mark.asyncio
