@@ -2,7 +2,7 @@
  "measured_on": {
   "apostolic-exhortations": "feat/1.3d-7-haerent-animo-menti-nostrae aee69b1",
   "bible": "feat/1.4a-bible-every-verse 66c7561",
-  "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
+  "canon-law": "feat/400-canon-868-ore 024d6ee",
   "catechism": "worktree-bridge-cse_01MzvQVhQofyfUudPetZQnd3 7ae3d38",
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
@@ -673,8 +673,8 @@
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann834-878_en.html": {
-   "body_chars": 18733,
-   "covered_chars": 18733,
+   "body_chars": 19132,
+   "covered_chars": 19132,
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann879-958_en.html": {
@@ -2532,8 +2532,8 @@
   "aa889573-50b2-5a1d-9264-f309583c0c1b": {
    "collection": "canon-law",
    "source_file": "cic_lib1-cann1-6_en.html",
-   "body_chars": 729760,
-   "covered_chars": 728544,
+   "body_chars": 730159,
+   "covered_chars": 728943,
    "pct": 99.83
   },
   "aab26640-78db-55d5-a667-17defe433306": {
