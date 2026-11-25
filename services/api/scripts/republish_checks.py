@@ -1332,7 +1332,7 @@ CHECKS: list[Check] = [
     # ---- 1.5b: canon law ------------------------------------------------------------
     SqlCheck(
         id="1.5b.unofficial-english", items="1.5b, 2.4f",
-        proves="The nine canons in L'Osservatore Romano's English carry the unofficial-"
+        proves="The ten canons in L'Osservatore Romano's English carry the unofficial-"
                "English label and a link to the Latin.",
         sql=f"""
             SELECT count(*) AS labelled FROM chunks c JOIN documents d ON d.id = c.document_id
@@ -1341,12 +1341,12 @@ CHECKS: list[Check] = [
               AND c.metadata->>'text_status' = 'unofficial_english'
               AND c.metadata->>'official_latin_url' LIKE 'https://www.vatican.va/%'
         """,
-        params=(CANON_LAW, ["can/111", "can/112", "can/535", "can/1108", "can/1109",
-                            "can/1111", "can/1112", "can/1116", "can/1127"]),
-        expect=Row({"labelled": 9}),
+        params=(CANON_LAW, ["can/111", "can/112", "can/535", "can/868", "can/1108",
+                            "can/1109", "can/1111", "can/1112", "can/1116", "can/1127"]),
+        expect=Row({"labelled": 10}),
     ),
     removal_check("1.5b.retired-canons", "1.5b",
-                  "Canons 295, 296, 579, 695, 700 and 868, whose current text has no "
+                  "Canons 295, 296, 579, 695 and 700, whose current text has no "
                   "English, are not shown.",
                   "1.5b"),
     SqlCheck(
@@ -1358,9 +1358,8 @@ CHECKS: list[Check] = [
                    jsonb_object_keys(d.metadata->'official_latin_urls') AS k
             WHERE d.id = $1 AND k = ANY($2::text[])
         """,
-        params=(CANON_LAW, ["can/295", "can/296", "can/579", "can/695", "can/700",
-                            "can/868"]),
-        expect=Row({"links": 6}),
+        params=(CANON_LAW, ["can/295", "can/296", "can/579", "can/695", "can/700"]),
+        expect=Row({"links": 5}),
     ),
     SearchCheck(
         id="1.5b.search-personal-prelatures", items="1.5b",

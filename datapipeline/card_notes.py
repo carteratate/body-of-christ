@@ -147,9 +147,9 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
         "authority", "A historical catechism; for current teaching see the Catechism of the "
                      "Catholic Church."),),
     # The Code of Canon Law: excerpt-only, so its Library row shows it.
-    "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no "
+    "Canons 295, 296, 579, 695 and 700 are not shown: their current text has no "
     "English translation. The official Latin is on vatican.va.": (overview(
-        "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no "
+        "Canons 295, 296, 579, 695 and 700 are not shown: their current text has no "
         "English translation. The official Latin is on vatican.va.", "incomplete"),),
     # 3.2's labels.
     # The header names the Church of Smyrna.
