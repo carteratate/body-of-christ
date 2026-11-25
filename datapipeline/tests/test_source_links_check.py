@@ -74,6 +74,15 @@ def test_a_repeat_counts_as_found_only_when_the_passage_is_the_first(tmp_path):
     assert data["counts"]["found"] == 3
 
 
+def test_a_repeat_whose_places_tie_keeps_the_plain_url():
+    """Two blocks holding only the same question (the Compendium's Q310 and Q319, 5.5):
+    nothing tells them apart, so neither is taken for the passage's place."""
+    question = "what are the effects of this sacrament?"
+    assert not SL.first_is_passage([question, question], question[:30],
+                                   "319. What are the effects of this sacrament?\n\nThe grace")
+    assert SL.first_is_passage([question], question[:30], "310. " + question)
+
+
 def test_the_check_uses_the_api_rule():
     # Loaded by path from services/api/app, so the two cannot drift apart.
     assert SL.source_links.__file__.endswith("services/api/app/source_links.py")
