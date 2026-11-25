@@ -209,6 +209,11 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
         "authorship", "Transmitted among Basil's letters, but written about him; the "
                       "Benedictine editors give it to Gregory's father, written in his son's "
                       "hand."),),
+    # The header names Evagrius (rule 1), so the card says the rest.
+    "Scholars now give this letter to Evagrius Ponticus, whose teachings the Second Council "
+    "of Nicaea condemned.": (caution(
+        "authorship", "Long read as Basil's; scholars now give it to this writer, whose "
+                      "teachings the Second Council of Nicaea condemned."),),
     "A later addition to Basil's letter to Ambrose.": (
         caution("authorship", "A later addition to Basil's letter to Ambrose."),),
     "Not by Basil. The Second Council of Nicaea (787) quoted it as his.": (

@@ -619,10 +619,26 @@ def test_basil_rule_a_letters_are_not_built(fathers):
     built = {p.chapter_key.split("/")[0] for p in letters.passages}
     assert not built & set(EXCLUDED["npnf208.xml"])
     assert {"ix.ii", "ix.iii", "ix.ccclv"} <= built     # Letters 1, 2; 360 under rule D
+    # Letter 8 stays, labelled Evagrius's (Carter, 24 Nov 2026); Letter 167 is Gregory of
+    # Nazianzus's Letter 66, kept in his own letters only.
+    assert "ix.ix" in built and "ix.clxviii" not in built
     # Basil is a Doctor: limit 2 keeps his own letters to Libanius; Libanius's leave.
     assert "ix.cccxxx" in built and "ix.cccxxxi" not in built
     # The reader lists only the letters the document holds.
     assert {w.work_key for w in letters.works} == {p.work_key for p in letters.passages}
+
+
+def test_basil_letter_8_is_credited_to_evagrius_and_its_ids_are_retired():
+    import json
+    from scripts.npnf_registry import RETIRED_IDS
+    reg = registry.current()
+    assert not {e["id"] for e in reg.removals} & RETIRED_IDS
+    entry = next(w for w in json.load(open(os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "registry", "works.json")))
+        if w["work_id"] == "church-fathers/npnf208/ix")
+    work = next(x for x in entry["works"] if x["work_key"] == "ix.ix")
+    assert work["author"] == "Evagrius Ponticus"
+    assert "Second Council of Nicaea" in work["attribution_note"]
 
 
 def test_basil_letter_from_antipater_is_credited_to_him(basil):
@@ -675,7 +691,8 @@ def test_basil_rule_a_removals_cover_every_excluded_passage(basil):
     for p in letters.passages:
         if p.chapter_key.split("/")[0] in EXCLUDED["npnf208.xml"]:
             pid = reg.row_by_anchor[(letters.id, p.anchor)]["passage_id"]
-            assert entries[pid]["reason"] == "rule-a", p.anchor
+            assert entries[pid]["reason"] == EXCLUDED["npnf208.xml"][
+                p.chapter_key.split("/")[0]][0], p.anchor
             assert 11501 <= int(entries[pid]["id"].split("-")[1]) <= 11999
 
 

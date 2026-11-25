@@ -13,8 +13,9 @@ For each document `ingest.church_fathers.NPNF_WORKS` builds:
   facts, as 5.2 wrote it;
 - adds passage rows for its passages (`registry.reconcile`, item 5.6a);
 - writes, in place of the entries 5.6a wrote before, numbered from rm-11501 (5.6a's block):
-  - rule A: a `passage` entry for each passage of the letters `EXCLUDED` lists, with the
-    detail and tombstone given there (never shown: the letters were never published);
+  - a `passage` entry for each passage of the letters `EXCLUDED` lists (rule A, or a
+    duplicate of a letter built elsewhere), with the reason, detail and tombstone given
+    there (never shown: the letters were never published); `RETIRED_IDS` are never given;
   - rule G, through `scripts/editorial_removals.py` (`item="5.6a"`): a `span` entry for
     each bracketed comparison with the English Bibles cut from the text, and a `class`
     entry counting each document's head lines (number and title lines the label carries);
@@ -56,34 +57,38 @@ NOTE_DETAIL = ("Translator and editor footnotes (ThML <note>) printed inline in 
 R1_ADDENDUM = "docs/research/R1-rule-a-dating.md, 5.6a addendum (Basil)"
 QUASTEN = "Quasten, Patrología II (BAC 1978)"
 
-# Rule A, limit 1: Evagrius is condemned by name in the Second Council of Nicaea's
-# definition ("the mythical speculations of Origen, Evagrius and Didymus").
-NICAEA_II = {"issuer": "Second Council of Nicaea", "date": "0787-10-13",
-             "act": "definition of faith", "effect": "condemn",
-             "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"}
-T_EVAGRIUS = ("Removed because Evagrius Ponticus wrote this letter, which came down among "
-              "Basil's, and the Church condemned Evagrius by name.")
 T_NOT_CHRISTIAN = "Removed because its author was not a Christian."
 T_JULIAN = ("Removed because this letter is in the name of the emperor Julian, who had "
             "abandoned the faith.")
 _LIBANIUS = ("Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a "
              "Christian (Quasten, p. 245: \"un pagano declarado\").")
-# The letters rule A takes out, by div in NPNF2-08: (detail, tombstone, Church act).
+# Letter 8 ("To the Caesareans"), now given to Evagrius Ponticus, stays under Carter's
+# decision of 24 Nov 2026 (Decision log "Basil's Letter 8 (5.6a)"), labelled as his. The
+# removal IDs it had, rm-11522 to rm-11531, are retired, never given again.
+RETIRED_IDS = frozenset(f"rm-{n}" for n in range(11522, 11532))
+T_DUPLICATE = ("Removed because this letter is Gregory of Nazianzus's Letter 66, which "
+               "TheoCorpus gives in his own Select Letters.")
+# The letters 5.6a takes out, by div: (reason, detail, tombstone, Church act).
 EXCLUDED = {
     "npnf208.xml": {
-        "ix.ix": ("Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus "
-                  f"(Bousset, Melcher; {QUASTEN}, p. 247; Fedwick 1981, Spuria), condemned by "
-                  "name by the Second Council of Nicaea (787), confirming the fifth council.",
-                  T_EVAGRIUS, NICAEA_II),
-        **{div: ("Rule A: a letter in the name of the emperor Julian, who had abandoned the "
+        **{div: ("rule-a",
+                 "Rule A: a letter in the name of the emperor Julian, who had abandoned the "
                  "faith, by the testimony of the Fathers; Quasten calls the correspondence "
                  f"spurious ({QUASTEN}, p. 248), and errors fall toward exclusion (R1).",
                  T_JULIAN, None)
            for div in ("ix.xl", "ix.xli")},
-        **{div: (_LIBANIUS, T_NOT_CHRISTIAN, None)
+        **{div: ("rule-a", _LIBANIUS, T_NOT_CHRISTIAN, None)
            for div in ("ix.cccxxxi", "ix.cccxxxiii", "ix.cccxxxv", "ix.cccxxxvi",
                        "ix.cccxxxviii", "ix.cccxl", "ix.cccxli", "ix.cccxlii", "ix.cccxliv",
                        "ix.cccxlvii", "ix.cccxlix", "ix.cccl", "ix.ccclii", "ix.cccliii")},
+        # Letter 167 is Gregory of Nazianzus's Letter 66 (Fedwick), which NPNF2-07 prints in
+        # his Select Letters (iv.iv.iii.v): one copy only, Gregory's (Carter, 24 Nov 2026).
+        "ix.clxviii": ("duplicate",
+                       "Basil's Letter 167 is Gregory of Nazianzus's Letter 66 to Eusebius of "
+                       "Samosata, given from his own Select Letters (NPNF2-07, Browne and "
+                       "Swallow, document Select Letters, letter iv.iv.iii.v); this copy in "
+                       "Jackson's translation is retired (Carter, 24 Nov 2026).",
+                       T_DUPLICATE, None),
     },
 }
 
@@ -106,9 +111,11 @@ RULE_A = {
                                                       f"238-239) ({R1_ADDENDUM})."},
     "church-fathers/npnf208/ix": {**_BASIL_RULE_A, "work_date": None,
                                   "decision_basis": f"{_DOCTOR}. The letters by "
-                                                    "others rule A takes out (Evagrius's Letter "
-                                                    "8, Julian's and Libanius's) have removal "
-                                                    f"entries ({R1_ADDENDUM})."},
+                                                    "others rule A takes out (Julian's and "
+                                                    "Libanius's) have removal entries; "
+                                                    "Evagrius's Letter 8 stays by Carter's "
+                                                    "decision of 24 Nov 2026 "
+                                                    f"({R1_ADDENDUM})."},
 }
 
 # The translator's authenticity judgments in his notes (rule G: judgments first), by
@@ -214,10 +221,10 @@ def rule_a_entries(reg: registry.WorkRegistry, documents, today: str) -> list[di
             div = p.chapter_key.split("/")[0]
             if div not in excluded:
                 continue
-            detail, tombstone, act = excluded[div]
+            reason, detail, tombstone, act = excluded[div]
             row = reg.row_by_anchor[(d.id, p.anchor)]
             out.append(_entry(scope="passage", document_id=d.id, anchor=row["live_anchor"],
-                              passage_id=row["passage_id"], reason="rule-a", detail=detail,
+                              passage_id=row["passage_id"], reason=reason, detail=detail,
                               tombstone=tombstone, church_act=act, added_on=today))
     built = {p.chapter_key.split("/")[0] for d in documents for p in d.passages}
     missing = {div for f in EXCLUDED.values() for div in f} - built
@@ -282,9 +289,27 @@ def plan(reg: registry.WorkRegistry, today: str):
     entries = ([e for e in entries if not (e["scope"] == "class" and
                                            (e.get("span") or {}).get("rule") == NOTE_RULE)]
                + rule_a_entries(base, documents, today) + note_entries(documents, today))
+    base = registry.WorkRegistry(base.works, base.passages, base.redirects,
+                                 [e for e in base.removals if e["id"] not in RETIRED_IDS],
+                                 base.kept_text, held_texts=base.held_texts)
     staged, unreviewed = er.plan(base, entries, found, item=ITEM, id_block=IDS)
+    if staged is not None and {e["id"] for e in staged.removals} & RETIRED_IDS:
+        raise ValueError("a retired removal ID was given again")
     if staged is None:
         return None, entries, [], [f"unreviewed judgment: {u}" for u in unreviewed]
+    # A count (a `class` entry) is the same entry when only its count changes: it keeps
+    # its ID.
+    counts = {(e["document_id"], e["span"]["rule"]): e["id"] for e in reg.removals
+              if e.get("added_by") == ITEM and e["scope"] == "class"}
+    for e in staged.removals:
+        if e.get("added_by") == ITEM and e["scope"] == "class":
+            e["id"] = counts.get((e["document_id"], e["span"]["rule"]), e["id"])
+    # An entry that keeps its ID keeps the date it was first added, so a rerun changes
+    # only what it adds or closes.
+    first_added = {e["id"]: e["added_on"] for e in reg.removals if e.get("added_by") == ITEM}
+    for e in staged.removals:
+        if e.get("added_by") == ITEM and e["id"] in first_added:
+            e["added_on"] = first_added[e["id"]]
     staged = lifted(reg, staged, today)
     judgments(staged.works)
     problems += registry.validate(staged)
@@ -295,18 +320,22 @@ def lifted(before: registry.WorkRegistry, staged: registry.WorkRegistry,
            today: str) -> registry.WorkRegistry:
     """`staged` with each of 5.6a's earlier passage entries that this run no longer writes
     (an exclusion lifted, a letter back) kept, closed, as the record of the removal, and
-    the passage rows nothing retires any more active again, under their frozen IDs."""
+    the passage rows nothing retires any more active again, under their frozen IDs. An
+    entry under `RETIRED_IDS` is dropped, its rows active again."""
     written = {e["id"] for e in staged.removals}
     mine = [e for e in before.removals if e.get("added_by") == ITEM
             and e["scope"] == "passage" and e["id"] not in written]
     # Entries closed on an earlier run stay as they were; those this run drops close now.
     closed = [e if e.get("closed_by") else {**e, "closed_by": ITEM, "closed_on": today}
               for e in mine]
-    removals = sorted(staged.removals + closed, key=lambda e: (
-        e["collection"], e["document_id"], e.get("anchor") or ""))
+    # An entry under a retired ID is taken out, not kept closed: it never reached a
+    # publish, and Carter withdrew it (Letter 8, 24 Nov 2026).
+    removals = sorted(staged.removals + [e for e in closed if e["id"] not in RETIRED_IDS],
+                      key=lambda e: (e["collection"], e["document_id"], e.get("anchor") or ""))
     explained = {e["passage_id"] for e in removals
                  if e["scope"] == "passage" and not e.get("closed_by")}
-    back = {e["passage_id"] for e in closed if e["closed_on"] == today} - explained
+    back = {e["passage_id"] for e in closed
+            if e["closed_on"] == today or e["id"] in RETIRED_IDS} - explained
     rows = [{**r, "status": "active"} if r["passage_id"] in back else r
             for r in staged.passages]
     return registry.WorkRegistry(staged.works, rows, staged.redirects, removals,

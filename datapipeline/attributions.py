@@ -265,6 +265,14 @@ _NAZIANZUS = ("Transmitted among Basil's letters; Fedwick (1981) assigns it to G
               "Nazianzus.")
 # By the letter's div in NPNF2-08 (Letter N is not div N: the volume skips and merges some).
 BASIL_LETTER_LABELS = {
+    # Letter 8, to the Caesareans: Evagrius Ponticus's (Bousset, Melcher; Quasten; Fedwick,
+    # Spuria). It stays, labelled as his, by Carter's decision of 24 Nov 2026 (Decision log
+    # "Basil's Letter 8 (5.6a)"), though rule A, limit 1 would leave it out.
+    "ix.ix": {"author": "Evagrius Ponticus", "certainty": "disputed",
+              "attribution_note": "Scholars now give this letter to Evagrius Ponticus, whose "
+                                  "teachings the Second Council of Nicaea condemned.",
+              "basis": f"{QUASTEN_BASIL} (Bousset, Melcher); {FEDWICK}; Decision log, "
+                       "Basil's Letter 8 (5.6a)"},
     # Gregory of Nyssa: Letters 10, 16, 38 and 189.
     "ix.xi": {"author": "Gregory of Nyssa", "certainty": "disputed",
               "attribution_note": _NYSSA,

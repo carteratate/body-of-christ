@@ -12144,7 +12144,7 @@
   "church_act": null,
   "span": {
    "rule": "common._p_text_without_notes",
-   "count": 996
+   "count": 1088
   },
   "judgment": null,
   "added_by": "5.6a",
@@ -12375,6 +12375,22 @@
   "added_on": "2026-11-23"
  },
  {
+  "id": "rm-11551",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.clxviii",
+  "passage_id": "48169f5d-50f1-5acf-8d0b-61e4bd488089",
+  "reason": "duplicate",
+  "detail": "Basil's Letter 167 is Gregory of Nazianzus's Letter 66 to Eusebius of Samosata, given from his own Select Letters (NPNF2-07, Browne and Swallow, document Select Letters, letter iv.iv.iii.v); this copy in Jackson's translation is retired (Carter, 24 Nov 2026).",
+  "tombstone": "Removed because this letter is Gregory of Nazianzus's Letter 66, which TheoCorpus gives in his own Select Letters.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
   "id": "rm-11511",
   "scope": "span",
   "collection": "church-fathers",
@@ -12522,226 +12538,6 @@
    "rule": "ingest.church_fathers.NOT_ENGLISH",
    "sha1": "143dd979110a5557598a3cde26f6bb0823b886f5"
   },
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11522",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix",
-  "passage_id": "528f13ab-1794-5c90-b253-debdeb6008cc",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11531",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix/from-p110",
-  "passage_id": "2d55827d-3646-5929-a619-f539a4bdc81a",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11524",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix/from-p13",
-  "passage_id": "c8f0fe8a-e440-5404-8ce7-e5b52acc0724",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11525",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix/from-p35",
-  "passage_id": "6d4a53a1-90ca-5615-8330-563163fe6a57",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11526",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix/from-p47",
-  "passage_id": "fe2156da-c7e6-5f7a-b911-631211055f5c",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11527",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix/from-p53",
-  "passage_id": "c95b57d5-18cd-5ad5-b44f-fc144d4f8b15",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11528",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix/from-p65",
-  "passage_id": "36cf0ef0-bf0f-5d16-8c16-8311134a22e6",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11523",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix/from-p7",
-  "passage_id": "1f6588a5-1571-50f6-a3e3-ba289b5823fa",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11529",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix/from-p79",
-  "passage_id": "21ac339a-7a73-5d6f-a742-f8d581444eab",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
-  "judgment": null,
-  "added_by": "5.6a",
-  "added_on": "2026-11-23"
- },
- {
-  "id": "rm-11530",
-  "scope": "passage",
-  "collection": "church-fathers",
-  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
-  "anchor": "ix.ix/from-p88",
-  "passage_id": "64ae2b8a-1376-52f3-a04e-066f2cdafcbe",
-  "reason": "rule-a",
-  "detail": "Rule A, limit 1: Letter 8, to the Caesareans, is by Evagrius Ponticus (Bousset, Melcher; Quasten, Patrología II (BAC 1978), p. 247; Fedwick 1981, Spuria), condemned by name by the Second Council of Nicaea (787), confirming the fifth council.",
-  "tombstone": "Removed because Evagrius Ponticus wrote this letter, which came down among Basil's, and the Church condemned Evagrius by name.",
-  "church_act": {
-   "issuer": "Second Council of Nicaea",
-   "date": "0787-10-13",
-   "act": "definition of faith",
-   "effect": "condemn",
-   "citation": "https://www.papalencyclicals.net/councils/ecum07.htm"
-  },
-  "span": null,
   "judgment": null,
   "added_by": "5.6a",
   "added_on": "2026-11-23"

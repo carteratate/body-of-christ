@@ -6230,7 +6230,7 @@
    "chronology_source": "Quasten, Patrología II (BAC 1978), pp. 224-249 (Quasten's vol. III in English)",
    "church_acts": [],
    "decision": "include",
-   "decision_basis": "Basil is a Doctor of the Church: limit 2 passes his works whatever their date. The letters by others rule A takes out (Evagrius's Letter 8, Julian's and Libanius's) have removal entries (docs/research/R1-rule-a-dating.md, 5.6a addendum (Basil))."
+   "decision_basis": "Basil is a Doctor of the Church: limit 2 passes his works whatever their date. The letters by others rule A takes out (Julian's and Libanius's) have removal entries; Evagrius's Letter 8 stays by Carter's decision of 24 Nov 2026 (docs/research/R1-rule-a-dating.md, 5.6a addendum (Basil))."
   },
   "attribution": {
    "credited_as": null,
@@ -6420,14 +6420,15 @@
     "work_key": "ix.ix",
     "ordinal": 8,
     "title": "Letter VIII",
-    "author": null,
-    "certainty": null,
-    "attribution_note": null,
+    "author": "Evagrius Ponticus",
+    "certainty": "disputed",
+    "attribution_note": "Scholars now give this letter to Evagrius Ponticus, whose teachings the Second Council of Nicaea condemned.",
     "notes": null,
     "date_display": null,
     "year": null,
     "genre": null,
-    "clavis_ref": null
+    "clavis_ref": null,
+    "basis": "Quasten, Patrología II (BAC 1978), pp. 244-249 (Bousset, Melcher); Fedwick (1981), The Works of Basil of Caesarea, Spuria; Decision log, Basil's Letter 8 (5.6a)"
    },
    {
     "work_key": "ix.x",
@@ -8485,15 +8486,14 @@
     "work_key": "ix.clxviii",
     "ordinal": 166,
     "title": "Letter CLXVII",
-    "author": "Gregory of Nazianzus",
-    "certainty": "disputed",
-    "attribution_note": "Transmitted among Basil's letters; Fedwick (1981) assigns it to Gregory of Nazianzus.",
+    "author": null,
+    "certainty": null,
+    "attribution_note": null,
     "notes": null,
     "date_display": null,
     "year": null,
     "genre": null,
-    "clavis_ref": null,
-    "basis": "Fedwick (1981), The Works of Basil of Caesarea, Spuria"
+    "clavis_ref": null
    },
    {
     "work_key": "ix.clxix",
