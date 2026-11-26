@@ -3,48 +3,50 @@
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
   "approved_applies": [
     {
-      "collection": "all",
-      "release": "collection-keys-2026-11",
-      "steps": [
-        "apply"
-      ],
-      "reason": "Only to delete the Qdrant collection 5.1b.3's publish replaced, chunks-stromata-iii-2026-11, with publish.py drop-old-collection --close-window-early, under Carter's standing decision (23 Nov 2026): the window closes once its smoke checks pass, which for 5.1b.3 were step 7's acceptance checks (passed 24 Nov 2026, #200). Its stage, apply, rollback and repair entries are removed here.",
-      "approved_by": "Carter",
-      "pr": 494
-    },
-    {
       "collection": "catechism",
-      "release": "batch-1-2026-11",
+      "release": "batch-2-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "reason": "Batch 2 (Carter, 23 Nov 2026): #454 heading marks in the Catechism and Vatican II, #458 Exsurge Domine's censure and #459 Inter Cunctas, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 494
+      "pr": null
     },
     {
-      "collection": "church-law",
-      "release": "batch-1-2026-11",
+      "collection": "councils",
+      "release": "batch-2-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "reason": "Batch 2 (Carter, 23 Nov 2026): #454 heading marks in the Catechism and Vatican II, #458 Exsurge Domine's censure and #459 Inter Cunctas, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 494
+      "pr": null
+    },
+    {
+      "collection": "papal",
+      "release": "batch-2-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "Batch 2 (Carter, 23 Nov 2026): #454 heading marks in the Catechism and Vatican II, #458 Exsurge Domine's censure and #459 Inter Cunctas, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "approved_by": "Carter",
+      "pr": null
     },
     {
       "collection": "all",
-      "release": "batch-1-2026-11",
+      "release": "batch-2-2026-11",
       "steps": [
         "apply"
       ],
-      "reason": "Only to delete the Qdrant collection batch 1's publish replaces, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "reason": "Only to delete the Qdrant collection batch 2's publish replaces, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 2 (Carter, 23 Nov 2026): #454 heading marks in the Catechism and Vatican II, #458 Exsurge Domine's censure and #459 Inter Cunctas, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 494
+      "pr": null
     }
   ]
 }
