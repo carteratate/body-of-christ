@@ -400,7 +400,6 @@ def test_letter_sender():
     leo[1].passage_author = "Ceretius"          # the greeting names three
     assert content.letter_senders("church-fathers", [leo_letters]) == {
         "attribution.letter_sender:church-fathers/doc-1": ["g1"]}
-    leo[1].passage_author = "Ceretius, Salonius and Veranus"
     leo[1].passage_author = None                # credited to Leo, as it would be by default
     assert content.letter_senders("church-fathers", [leo_letters]) == {
         "attribution.letter_sender:church-fathers/doc-1": ["g1"]}

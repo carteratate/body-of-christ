@@ -984,7 +984,7 @@ _REGISTER_BOOKS = {("npnf212.xml", "iii.v.i"): "I"}
 # The headings of the Book of Answers (Book XI, 64): Augustine of Canterbury's questions
 # and requests, and the answers and grant that follow each ("Augustine's first question",
 # "Answer of the blessed pope Gregory."), level 2.
-_AUGUSTINE_QUESTION = re.compile(r"^(?:Augustine[’']s \w+ (?:question|request)|Answer of "
+_AUGUSTINE_QUESTION = re.compile(r"^(?:Augustine[’']s (?:\w+ )?(?:question|request)|Answer of "
                                  r"(?:Saint|the blessed) [Pp]ope Gregory|Answer of Saint "
                                  r"Gregory|The grant of Gregory)\b")
 # A manuscript's title line over a letter ("Here begins the epistle of the blessed
