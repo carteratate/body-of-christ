@@ -833,6 +833,8 @@ def test_leo_editors_summaries_are_cut(leo_gregory):
     assert "Those who renounce heresy and schism" not in by_letter["ii.iv.xviii"]
     assert "To Caesar Theodosius" in by_letter["ii.iv.xxix"]
     assert "(Leo, the bishop, to Nicaetas" in by_letter["ii.iv.cliii"]
+    # Letter CIV's "(To Marcian Augustus, about…)" is Feltoe's summary, cut.
+    assert by_letter["ii.iv.xcix"].lstrip().startswith("By the great bounty of God")
     # Rusticus's questions stay, marked as headings (Letter CLXVII).
     rusticus = [p for p in letters.passages if p.chapter_key == "ii.iv.clxi"]
     marks = [p.content[m["at"]:m["end"]] for p in rusticus
@@ -864,6 +866,11 @@ def test_register_letters_carry_their_book(leo_gregory):
     text = "\n".join(p.content for p in first.passages)
     assert "Indiction IX., Being the First Year" not in text          # the Book's dating line
     assert "Gregory to Justinus, Praetor of Sicily." in text           # his salutation, kept
+    # Register II, 41's second version, from other manuscripts, is a part of its own.
+    other = [p for p in first.passages if p.chapter_key == "iii.v.ii.xxii/version"]
+    assert other and other[0].content.startswith("Gregory to Castorius, Bishop of Ariminum.")
+    assert other[0].chapter_label == "Book II, Letter XLI · To Castorius, Bishop: Second version"
+    assert "[In place of the epistle" not in text
     for note in ("[In Colbert. and Paul. diac.", "[Here follows an account",
                  "[The beginning of this epistle is the same"):
         assert note not in text, note                                    # Barmby's brackets

@@ -15295,8 +15295,21 @@
     "clavis_ref": null
    },
    {
-    "work_key": "iii.v.ii.xxiii",
+    "work_key": "iii.v.ii.xxii/version",
     "ordinal": 75,
+    "title": "Book II, Letter XLI, Second version",
+    "author": "Gregory the Great",
+    "certainty": null,
+    "attribution_note": null,
+    "notes": null,
+    "date_display": null,
+    "year": null,
+    "genre": null,
+    "clavis_ref": null
+   },
+   {
+    "work_key": "iii.v.ii.xxiii",
+    "ordinal": 76,
     "title": "Book II, Letter XLII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15309,7 +15322,7 @@
    },
    {
     "work_key": "iii.v.ii.xxiv",
-    "ordinal": 76,
+    "ordinal": 77,
     "title": "Book II, Letter XLVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15322,7 +15335,7 @@
    },
    {
     "work_key": "iii.v.ii.xxv",
-    "ordinal": 77,
+    "ordinal": 78,
     "title": "Book II, Letter XLVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15335,7 +15348,7 @@
    },
    {
     "work_key": "iii.v.ii.xxvi",
-    "ordinal": 78,
+    "ordinal": 79,
     "title": "Book II, Letter XLVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15348,7 +15361,7 @@
    },
    {
     "work_key": "iii.v.ii.xxvii",
-    "ordinal": 79,
+    "ordinal": 80,
     "title": "Book II, Letter XLIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15361,7 +15374,7 @@
    },
    {
     "work_key": "iii.v.ii.xxviii",
-    "ordinal": 80,
+    "ordinal": 81,
     "title": "Book II, Letter LI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15374,7 +15387,7 @@
    },
    {
     "work_key": "iii.v.ii.xxix",
-    "ordinal": 81,
+    "ordinal": 82,
     "title": "Book II, Letter LII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15387,7 +15400,7 @@
    },
    {
     "work_key": "iii.v.ii.xxx",
-    "ordinal": 82,
+    "ordinal": 83,
     "title": "Book II, Letter LIV",
     "author": "Licinianus of Cartagena",
     "certainty": null,
@@ -15400,7 +15413,7 @@
    },
    {
     "work_key": "iii.v.iii.i",
-    "ordinal": 83,
+    "ordinal": 84,
     "title": "Book III, Letter I",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15413,7 +15426,7 @@
    },
    {
     "work_key": "iii.v.iii.ii",
-    "ordinal": 84,
+    "ordinal": 85,
     "title": "Book III, Letter II",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15426,7 +15439,7 @@
    },
    {
     "work_key": "iii.v.iii.iii",
-    "ordinal": 85,
+    "ordinal": 86,
     "title": "Book III, Letter III",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15439,7 +15452,7 @@
    },
    {
     "work_key": "iii.v.iii.iv",
-    "ordinal": 86,
+    "ordinal": 87,
     "title": "Book III, Letter V",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15452,7 +15465,7 @@
    },
    {
     "work_key": "iii.v.iii.v",
-    "ordinal": 87,
+    "ordinal": 88,
     "title": "Book III, Letter VI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15465,7 +15478,7 @@
    },
    {
     "work_key": "iii.v.iii.vi",
-    "ordinal": 88,
+    "ordinal": 89,
     "title": "Book III, Letter VII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15478,7 +15491,7 @@
    },
    {
     "work_key": "iii.v.iii.vii",
-    "ordinal": 89,
+    "ordinal": 90,
     "title": "Book III, Letter VIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15491,7 +15504,7 @@
    },
    {
     "work_key": "iii.v.iii.viii",
-    "ordinal": 90,
+    "ordinal": 91,
     "title": "Book III, Letter IX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15504,7 +15517,7 @@
    },
    {
     "work_key": "iii.v.iii.ix",
-    "ordinal": 91,
+    "ordinal": 92,
     "title": "Book III, Letter X",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15517,7 +15530,7 @@
    },
    {
     "work_key": "iii.v.iii.x",
-    "ordinal": 92,
+    "ordinal": 93,
     "title": "Book III, Letter XII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15530,7 +15543,7 @@
    },
    {
     "work_key": "iii.v.iii.xi",
-    "ordinal": 93,
+    "ordinal": 94,
     "title": "Book III, Letter XV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15543,7 +15556,7 @@
    },
    {
     "work_key": "iii.v.iii.xii",
-    "ordinal": 94,
+    "ordinal": 95,
     "title": "Book III, Letter XXII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15556,7 +15569,7 @@
    },
    {
     "work_key": "iii.v.iii.xiii",
-    "ordinal": 95,
+    "ordinal": 96,
     "title": "Book III, Letter XXIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15569,7 +15582,7 @@
    },
    {
     "work_key": "iii.v.iii.xiv",
-    "ordinal": 96,
+    "ordinal": 97,
     "title": "Book III, Letter XXX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15582,7 +15595,7 @@
    },
    {
     "work_key": "iii.v.iii.xv",
-    "ordinal": 97,
+    "ordinal": 98,
     "title": "Book III, Letter XXXI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15595,7 +15608,7 @@
    },
    {
     "work_key": "iii.v.iii.xvi",
-    "ordinal": 98,
+    "ordinal": 99,
     "title": "Book III, Letter XXXII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15608,7 +15621,7 @@
    },
    {
     "work_key": "iii.v.iii.xvii",
-    "ordinal": 99,
+    "ordinal": 100,
     "title": "Book III, Letter XXXIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15621,7 +15634,7 @@
    },
    {
     "work_key": "iii.v.iii.xviii",
-    "ordinal": 100,
+    "ordinal": 101,
     "title": "Book III, Letter XXXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15634,7 +15647,7 @@
    },
    {
     "work_key": "iii.v.iii.xix",
-    "ordinal": 101,
+    "ordinal": 102,
     "title": "Book III, Letter XXXVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15647,7 +15660,7 @@
    },
    {
     "work_key": "iii.v.iii.xx",
-    "ordinal": 102,
+    "ordinal": 103,
     "title": "Book III, Letter XXXVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15660,7 +15673,7 @@
    },
    {
     "work_key": "iii.v.iii.xxi",
-    "ordinal": 103,
+    "ordinal": 104,
     "title": "Book III, Letter XLV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15673,7 +15686,7 @@
    },
    {
     "work_key": "iii.v.iii.xxii",
-    "ordinal": 104,
+    "ordinal": 105,
     "title": "Book III, Letter XLVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15686,7 +15699,7 @@
    },
    {
     "work_key": "iii.v.iii.xxiii",
-    "ordinal": 105,
+    "ordinal": 106,
     "title": "Book III, Letter XLVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15699,7 +15712,7 @@
    },
    {
     "work_key": "iii.v.iii.xxiv",
-    "ordinal": 106,
+    "ordinal": 107,
     "title": "Book III, Letter XLVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15712,7 +15725,7 @@
    },
    {
     "work_key": "iii.v.iii.xxv",
-    "ordinal": 107,
+    "ordinal": 108,
     "title": "Book III, Letter XLIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15725,7 +15738,7 @@
    },
    {
     "work_key": "iii.v.iii.xxvi",
-    "ordinal": 108,
+    "ordinal": 109,
     "title": "Book III, Letter LI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15738,7 +15751,7 @@
    },
    {
     "work_key": "iii.v.iii.xxvii",
-    "ordinal": 109,
+    "ordinal": 110,
     "title": "Book III, Letter LIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15751,7 +15764,7 @@
    },
    {
     "work_key": "iii.v.iii.xxviii",
-    "ordinal": 110,
+    "ordinal": 111,
     "title": "Book III, Letter LVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15764,7 +15777,7 @@
    },
    {
     "work_key": "iii.v.iii.xxix",
-    "ordinal": 111,
+    "ordinal": 112,
     "title": "Book III, Letter LVII",
     "author": "John of Ravenna",
     "certainty": null,
@@ -15777,7 +15790,7 @@
    },
    {
     "work_key": "iii.v.iii.xxx",
-    "ordinal": 112,
+    "ordinal": 113,
     "title": "Book III, Letter LIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15790,7 +15803,7 @@
    },
    {
     "work_key": "iii.v.iii.xxxi",
-    "ordinal": 113,
+    "ordinal": 114,
     "title": "Book III, Letter LX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15803,7 +15816,7 @@
    },
    {
     "work_key": "iii.v.iii.xxxii",
-    "ordinal": 114,
+    "ordinal": 115,
     "title": "Book III, Letter LXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15816,7 +15829,7 @@
    },
    {
     "work_key": "iii.v.iii.xxxiii",
-    "ordinal": 115,
+    "ordinal": 116,
     "title": "Book III, Letter LXVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15829,7 +15842,7 @@
    },
    {
     "work_key": "iii.v.iii.xxxiv",
-    "ordinal": 116,
+    "ordinal": 117,
     "title": "Book III, Letter LXVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15842,7 +15855,7 @@
    },
    {
     "work_key": "iii.v.iv.i",
-    "ordinal": 117,
+    "ordinal": 118,
     "title": "Book IV, Letter I",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15855,7 +15868,7 @@
    },
    {
     "work_key": "iii.v.iv.ii",
-    "ordinal": 118,
+    "ordinal": 119,
     "title": "Book IV, Letter II",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15868,7 +15881,7 @@
    },
    {
     "work_key": "iii.v.iv.iii",
-    "ordinal": 119,
+    "ordinal": 120,
     "title": "Book IV, Letter III",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15881,7 +15894,7 @@
    },
    {
     "work_key": "iii.v.iv.iv",
-    "ordinal": 120,
+    "ordinal": 121,
     "title": "Book IV, Letter IV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15894,7 +15907,7 @@
    },
    {
     "work_key": "iii.v.iv.v",
-    "ordinal": 121,
+    "ordinal": 122,
     "title": "Book IV, Letter V",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15907,7 +15920,7 @@
    },
    {
     "work_key": "iii.v.iv.vi",
-    "ordinal": 122,
+    "ordinal": 123,
     "title": "Book IV, Letter VI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15920,7 +15933,7 @@
    },
    {
     "work_key": "iii.v.iv.vii",
-    "ordinal": 123,
+    "ordinal": 124,
     "title": "Book IV, Letter VII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15933,7 +15946,7 @@
    },
    {
     "work_key": "iii.v.iv.viii",
-    "ordinal": 124,
+    "ordinal": 125,
     "title": "Book IV, Letter VIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15946,7 +15959,7 @@
    },
    {
     "work_key": "iii.v.iv.ix",
-    "ordinal": 125,
+    "ordinal": 126,
     "title": "Book IV, Letter IX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15959,7 +15972,7 @@
    },
    {
     "work_key": "iii.v.iv.x",
-    "ordinal": 126,
+    "ordinal": 127,
     "title": "Book IV, Letter X",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15972,7 +15985,7 @@
    },
    {
     "work_key": "iii.v.iv.xi",
-    "ordinal": 127,
+    "ordinal": 128,
     "title": "Book IV, Letter XI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15985,7 +15998,7 @@
    },
    {
     "work_key": "iii.v.iv.xii",
-    "ordinal": 128,
+    "ordinal": 129,
     "title": "Book IV, Letter XV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -15998,7 +16011,7 @@
    },
    {
     "work_key": "iii.v.iv.xiii",
-    "ordinal": 129,
+    "ordinal": 130,
     "title": "Book IV, Letter XVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16011,7 +16024,7 @@
    },
    {
     "work_key": "iii.v.iv.xiv",
-    "ordinal": 130,
+    "ordinal": 131,
     "title": "Book IV, Letter XX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16024,7 +16037,7 @@
    },
    {
     "work_key": "iii.v.iv.xv",
-    "ordinal": 131,
+    "ordinal": 132,
     "title": "Book IV, Letter XXI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16037,7 +16050,7 @@
    },
    {
     "work_key": "iii.v.iv.xvi",
-    "ordinal": 132,
+    "ordinal": 133,
     "title": "Book IV, Letter XXIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16050,7 +16063,7 @@
    },
    {
     "work_key": "iii.v.iv.xvii",
-    "ordinal": 133,
+    "ordinal": 134,
     "title": "Book IV, Letter XXIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16063,7 +16076,7 @@
    },
    {
     "work_key": "iii.v.iv.xviii",
-    "ordinal": 134,
+    "ordinal": 135,
     "title": "Book IV, Letter XXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16076,7 +16089,7 @@
    },
    {
     "work_key": "iii.v.iv.xix",
-    "ordinal": 135,
+    "ordinal": 136,
     "title": "Book IV, Letter XXVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16089,7 +16102,7 @@
    },
    {
     "work_key": "iii.v.iv.xx",
-    "ordinal": 136,
+    "ordinal": 137,
     "title": "Book IV, Letter XXVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16102,7 +16115,7 @@
    },
    {
     "work_key": "iii.v.iv.xxi",
-    "ordinal": 137,
+    "ordinal": 138,
     "title": "Book IV, Letter XXIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16115,7 +16128,7 @@
    },
    {
     "work_key": "iii.v.iv.xxii",
-    "ordinal": 138,
+    "ordinal": 139,
     "title": "Book IV, Letter XXX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16128,7 +16141,7 @@
    },
    {
     "work_key": "iii.v.iv.xxiii",
-    "ordinal": 139,
+    "ordinal": 140,
     "title": "Book IV, Letter XXXI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16141,7 +16154,7 @@
    },
    {
     "work_key": "iii.v.iv.xxiv",
-    "ordinal": 140,
+    "ordinal": 141,
     "title": "Book IV, Letter XXXII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16154,7 +16167,7 @@
    },
    {
     "work_key": "iii.v.iv.xxv",
-    "ordinal": 141,
+    "ordinal": 142,
     "title": "Book IV, Letter XXXIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16167,7 +16180,7 @@
    },
    {
     "work_key": "iii.v.iv.xxvi",
-    "ordinal": 142,
+    "ordinal": 143,
     "title": "Book IV, Letter XXXIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16180,7 +16193,7 @@
    },
    {
     "work_key": "iii.v.iv.xxvii",
-    "ordinal": 143,
+    "ordinal": 144,
     "title": "Book IV, Letter XXXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16193,7 +16206,7 @@
    },
    {
     "work_key": "iii.v.iv.xxviii",
-    "ordinal": 144,
+    "ordinal": 145,
     "title": "Book IV, Letter XXXVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16206,7 +16219,7 @@
    },
    {
     "work_key": "iii.v.iv.xxix",
-    "ordinal": 145,
+    "ordinal": 146,
     "title": "Book IV, Letter XXXVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16219,7 +16232,7 @@
    },
    {
     "work_key": "iii.v.iv.xxx",
-    "ordinal": 146,
+    "ordinal": 147,
     "title": "Book IV, Letter XXXIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16232,7 +16245,7 @@
    },
    {
     "work_key": "iii.v.iv.xxxi",
-    "ordinal": 147,
+    "ordinal": 148,
     "title": "Book IV, Letter XLVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16245,7 +16258,7 @@
    },
    {
     "work_key": "iii.v.iv.xxxii",
-    "ordinal": 148,
+    "ordinal": 149,
     "title": "Book IV, Letter XLVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16258,7 +16271,7 @@
    },
    {
     "work_key": "iii.v.v.i",
-    "ordinal": 149,
+    "ordinal": 150,
     "title": "Book V, Letter II",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16271,7 +16284,7 @@
    },
    {
     "work_key": "iii.v.v.ii",
-    "ordinal": 150,
+    "ordinal": 151,
     "title": "Book V, Letter IV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16284,7 +16297,7 @@
    },
    {
     "work_key": "iii.v.v.iii",
-    "ordinal": 151,
+    "ordinal": 152,
     "title": "Book V, Letter V",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16297,7 +16310,7 @@
    },
    {
     "work_key": "iii.v.v.iv",
-    "ordinal": 152,
+    "ordinal": 153,
     "title": "Book V, Letter VIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16310,7 +16323,7 @@
    },
    {
     "work_key": "iii.v.v.v",
-    "ordinal": 153,
+    "ordinal": 154,
     "title": "Book V, Letter XI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16323,7 +16336,7 @@
    },
    {
     "work_key": "iii.v.v.vi",
-    "ordinal": 154,
+    "ordinal": 155,
     "title": "Book V, Letter XV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16336,7 +16349,7 @@
    },
    {
     "work_key": "iii.v.v.vii",
-    "ordinal": 155,
+    "ordinal": 156,
     "title": "Book V, Letter XVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16349,7 +16362,7 @@
    },
    {
     "work_key": "iii.v.v.viii",
-    "ordinal": 156,
+    "ordinal": 157,
     "title": "Book V, Letter XVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16362,7 +16375,7 @@
    },
    {
     "work_key": "iii.v.v.ix",
-    "ordinal": 157,
+    "ordinal": 158,
     "title": "Book V, Letter XIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16375,7 +16388,7 @@
    },
    {
     "work_key": "iii.v.v.x",
-    "ordinal": 158,
+    "ordinal": 159,
     "title": "Book V, Letter XX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16388,7 +16401,7 @@
    },
    {
     "work_key": "iii.v.v.xi",
-    "ordinal": 159,
+    "ordinal": 160,
     "title": "Book V, Letter XXI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16401,7 +16414,7 @@
    },
    {
     "work_key": "iii.v.v.xii",
-    "ordinal": 160,
+    "ordinal": 161,
     "title": "Book V, Letter XXIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16414,7 +16427,7 @@
    },
    {
     "work_key": "iii.v.v.xiii",
-    "ordinal": 161,
+    "ordinal": 162,
     "title": "Book V, Letter XXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16427,7 +16440,7 @@
    },
    {
     "work_key": "iii.v.v.xiv",
-    "ordinal": 162,
+    "ordinal": 163,
     "title": "Book V, Letter XXVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16440,7 +16453,7 @@
    },
    {
     "work_key": "iii.v.v.xv",
-    "ordinal": 163,
+    "ordinal": 164,
     "title": "Book V, Letter XXIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16453,7 +16466,7 @@
    },
    {
     "work_key": "iii.v.v.xvi",
-    "ordinal": 164,
+    "ordinal": 165,
     "title": "Book V, Letter XXX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16466,7 +16479,7 @@
    },
    {
     "work_key": "iii.v.v.xvii",
-    "ordinal": 165,
+    "ordinal": 166,
     "title": "Book V, Letter XXXVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16479,7 +16492,7 @@
    },
    {
     "work_key": "iii.v.v.xviii",
-    "ordinal": 166,
+    "ordinal": 167,
     "title": "Book V, Letter XXXIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16492,7 +16505,7 @@
    },
    {
     "work_key": "iii.v.v.xix",
-    "ordinal": 167,
+    "ordinal": 168,
     "title": "Book V, Letter XL",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16505,7 +16518,7 @@
    },
    {
     "work_key": "iii.v.v.xx",
-    "ordinal": 168,
+    "ordinal": 169,
     "title": "Book V, Letter XLI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16518,7 +16531,7 @@
    },
    {
     "work_key": "iii.v.v.xxi",
-    "ordinal": 169,
+    "ordinal": 170,
     "title": "Book V, Letter XLII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16531,7 +16544,7 @@
    },
    {
     "work_key": "iii.v.v.xxii",
-    "ordinal": 170,
+    "ordinal": 171,
     "title": "Book V, Letter XLIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16544,7 +16557,7 @@
    },
    {
     "work_key": "iii.v.v.xxiii",
-    "ordinal": 171,
+    "ordinal": 172,
     "title": "Book V, Letter XLVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16557,7 +16570,7 @@
    },
    {
     "work_key": "iii.v.v.xxiv",
-    "ordinal": 172,
+    "ordinal": 173,
     "title": "Book V, Letter XLIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16570,7 +16583,7 @@
    },
    {
     "work_key": "iii.v.v.xxv",
-    "ordinal": 173,
+    "ordinal": 174,
     "title": "Book V, Letter LII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16583,7 +16596,7 @@
    },
    {
     "work_key": "iii.v.v.xxvi",
-    "ordinal": 174,
+    "ordinal": 175,
     "title": "Book V, Letter LIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16596,7 +16609,7 @@
    },
    {
     "work_key": "iii.v.v.xxvii",
-    "ordinal": 175,
+    "ordinal": 176,
     "title": "Book V, Letter LIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16609,7 +16622,7 @@
    },
    {
     "work_key": "iii.v.v.xxviii",
-    "ordinal": 176,
+    "ordinal": 177,
     "title": "Book V, Letter LV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16622,7 +16635,7 @@
    },
    {
     "work_key": "iii.v.v.xxix",
-    "ordinal": 177,
+    "ordinal": 178,
     "title": "Book V, Letter LVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16635,7 +16648,7 @@
    },
    {
     "work_key": "iii.v.v.xxx",
-    "ordinal": 178,
+    "ordinal": 179,
     "title": "Book V, Letter LVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16648,7 +16661,7 @@
    },
    {
     "work_key": "iii.v.v.xxxi",
-    "ordinal": 179,
+    "ordinal": 180,
     "title": "Book V, Letter LVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16661,7 +16674,7 @@
    },
    {
     "work_key": "iii.v.vi.i",
-    "ordinal": 180,
+    "ordinal": 181,
     "title": "Book VI, Letter I",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16674,7 +16687,7 @@
    },
    {
     "work_key": "iii.v.vi.ii",
-    "ordinal": 181,
+    "ordinal": 182,
     "title": "Book VI, Letter II",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16687,7 +16700,7 @@
    },
    {
     "work_key": "iii.v.vi.iii",
-    "ordinal": 182,
+    "ordinal": 183,
     "title": "Book VI, Letter III",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16700,7 +16713,7 @@
    },
    {
     "work_key": "iii.v.vi.iv",
-    "ordinal": 183,
+    "ordinal": 184,
     "title": "Book VI, Letter V",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16713,7 +16726,7 @@
    },
    {
     "work_key": "iii.v.vi.v",
-    "ordinal": 184,
+    "ordinal": 185,
     "title": "Book VI, Letter VI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16726,7 +16739,7 @@
    },
    {
     "work_key": "iii.v.vi.vi",
-    "ordinal": 185,
+    "ordinal": 186,
     "title": "Book VI, Letter VII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16739,7 +16752,7 @@
    },
    {
     "work_key": "iii.v.vi.vii",
-    "ordinal": 186,
+    "ordinal": 187,
     "title": "Book VI, Letter VIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16752,7 +16765,7 @@
    },
    {
     "work_key": "iii.v.vi.viii",
-    "ordinal": 187,
+    "ordinal": 188,
     "title": "Book VI, Letter IX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16765,7 +16778,7 @@
    },
    {
     "work_key": "iii.v.vi.ix",
-    "ordinal": 188,
+    "ordinal": 189,
     "title": "Book VI, Letter XII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16778,7 +16791,7 @@
    },
    {
     "work_key": "iii.v.vi.x",
-    "ordinal": 189,
+    "ordinal": 190,
     "title": "Book VI, Letter XIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16791,7 +16804,7 @@
    },
    {
     "work_key": "iii.v.vi.xi",
-    "ordinal": 190,
+    "ordinal": 191,
     "title": "Book VI, Letter XV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16804,7 +16817,7 @@
    },
    {
     "work_key": "iii.v.vi.xii",
-    "ordinal": 191,
+    "ordinal": 192,
     "title": "Book VI, Letter XVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16817,7 +16830,7 @@
    },
    {
     "work_key": "iii.v.vi.xiii",
-    "ordinal": 192,
+    "ordinal": 193,
     "title": "Book VI, Letter XVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16830,7 +16843,7 @@
    },
    {
     "work_key": "iii.v.vi.xiv",
-    "ordinal": 193,
+    "ordinal": 194,
     "title": "Book VI, Letter XVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16843,7 +16856,7 @@
    },
    {
     "work_key": "iii.v.vi.xv",
-    "ordinal": 194,
+    "ordinal": 195,
     "title": "Book VI, Letter XXII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16856,7 +16869,7 @@
    },
    {
     "work_key": "iii.v.vi.xvi",
-    "ordinal": 195,
+    "ordinal": 196,
     "title": "Book VI, Letter XXIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16869,7 +16882,7 @@
    },
    {
     "work_key": "iii.v.vi.xvii",
-    "ordinal": 196,
+    "ordinal": 197,
     "title": "Book VI, Letter XXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16882,7 +16895,7 @@
    },
    {
     "work_key": "iii.v.vi.xviii",
-    "ordinal": 197,
+    "ordinal": 198,
     "title": "Book VI, Letter XXVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16895,7 +16908,7 @@
    },
    {
     "work_key": "iii.v.vi.xix",
-    "ordinal": 198,
+    "ordinal": 199,
     "title": "Book VI, Letter XXVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16908,7 +16921,7 @@
    },
    {
     "work_key": "iii.v.vi.xx",
-    "ordinal": 199,
+    "ordinal": 200,
     "title": "Book VI, Letter XXIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16921,7 +16934,7 @@
    },
    {
     "work_key": "iii.v.vi.xxi",
-    "ordinal": 200,
+    "ordinal": 201,
     "title": "Book VI, Letter XXX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16934,7 +16947,7 @@
    },
    {
     "work_key": "iii.v.vi.xxii",
-    "ordinal": 201,
+    "ordinal": 202,
     "title": "Book VI, Letter XXXII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16947,7 +16960,7 @@
    },
    {
     "work_key": "iii.v.vi.xxiii",
-    "ordinal": 202,
+    "ordinal": 203,
     "title": "Book VI, Letter XXXIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16960,7 +16973,7 @@
    },
    {
     "work_key": "iii.v.vi.xxiv",
-    "ordinal": 203,
+    "ordinal": 204,
     "title": "Book VI, Letter XXXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16973,7 +16986,7 @@
    },
    {
     "work_key": "iii.v.vi.xxv",
-    "ordinal": 204,
+    "ordinal": 205,
     "title": "Book VI, Letter XXXVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16986,7 +16999,7 @@
    },
    {
     "work_key": "iii.v.vi.xxvi",
-    "ordinal": 205,
+    "ordinal": 206,
     "title": "Book VI, Letter XLIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -16999,7 +17012,7 @@
    },
    {
     "work_key": "iii.v.vi.xxvii",
-    "ordinal": 206,
+    "ordinal": 207,
     "title": "Book VI, Letter XLIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17012,7 +17025,7 @@
    },
    {
     "work_key": "iii.v.vi.xxviii",
-    "ordinal": 207,
+    "ordinal": 208,
     "title": "Book VI, Letter XLVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17025,7 +17038,7 @@
    },
    {
     "work_key": "iii.v.vi.xxix",
-    "ordinal": 208,
+    "ordinal": 209,
     "title": "Book VI, Letter XLVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17038,7 +17051,7 @@
    },
    {
     "work_key": "iii.v.vi.xxx",
-    "ordinal": 209,
+    "ordinal": 210,
     "title": "Book VI, Letter XLIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17051,7 +17064,7 @@
    },
    {
     "work_key": "iii.v.vi.xxxi",
-    "ordinal": 210,
+    "ordinal": 211,
     "title": "Book VI, Letter L",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17064,7 +17077,7 @@
    },
    {
     "work_key": "iii.v.vi.xxxii",
-    "ordinal": 211,
+    "ordinal": 212,
     "title": "Book VI, Letter LI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17077,7 +17090,7 @@
    },
    {
     "work_key": "iii.v.vi.xxxiii",
-    "ordinal": 212,
+    "ordinal": 213,
     "title": "Book VI, Letter LII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17090,7 +17103,7 @@
    },
    {
     "work_key": "iii.v.vi.xxxiv",
-    "ordinal": 213,
+    "ordinal": 214,
     "title": "Book VI, Letter LIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17103,7 +17116,7 @@
    },
    {
     "work_key": "iii.v.vi.xxxv",
-    "ordinal": 214,
+    "ordinal": 215,
     "title": "Book VI, Letter LIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17116,7 +17129,7 @@
    },
    {
     "work_key": "iii.v.vi.xxxvi",
-    "ordinal": 215,
+    "ordinal": 216,
     "title": "Book VI, Letter LV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17129,7 +17142,7 @@
    },
    {
     "work_key": "iii.v.vi.xxxvii",
-    "ordinal": 216,
+    "ordinal": 217,
     "title": "Book VI, Letter LVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17142,7 +17155,7 @@
    },
    {
     "work_key": "iii.v.vi.xxxviii",
-    "ordinal": 217,
+    "ordinal": 218,
     "title": "Book VI, Letter LVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17155,7 +17168,7 @@
    },
    {
     "work_key": "iii.v.vi.xxxix",
-    "ordinal": 218,
+    "ordinal": 219,
     "title": "Book VI, Letter LVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17168,7 +17181,7 @@
    },
    {
     "work_key": "iii.v.vi.xl",
-    "ordinal": 219,
+    "ordinal": 220,
     "title": "Book VI, Letter LIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17181,7 +17194,7 @@
    },
    {
     "work_key": "iii.v.vi.xli",
-    "ordinal": 220,
+    "ordinal": 221,
     "title": "Book VI, Letter LX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17194,7 +17207,7 @@
    },
    {
     "work_key": "iii.v.vi.xlii",
-    "ordinal": 221,
+    "ordinal": 222,
     "title": "Book VI, Letter LXI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17207,7 +17220,7 @@
    },
    {
     "work_key": "iii.v.vi.xliii",
-    "ordinal": 222,
+    "ordinal": 223,
     "title": "Book VI, Letter LXIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17220,7 +17233,7 @@
    },
    {
     "work_key": "iii.v.vi.xliv",
-    "ordinal": 223,
+    "ordinal": 224,
     "title": "Book VI, Letter LXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17233,7 +17246,7 @@
    },
    {
     "work_key": "iii.v.vi.xlv",
-    "ordinal": 224,
+    "ordinal": 225,
     "title": "Book VI, Letter LXVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17246,7 +17259,7 @@
    },
    {
     "work_key": "iii.v.vii.i",
-    "ordinal": 225,
+    "ordinal": 226,
     "title": "Book VII, Letter II",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17259,7 +17272,7 @@
    },
    {
     "work_key": "iii.v.vii.ii",
-    "ordinal": 226,
+    "ordinal": 227,
     "title": "Book VII, Letter IV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17272,7 +17285,7 @@
    },
    {
     "work_key": "iii.v.vii.iii",
-    "ordinal": 227,
+    "ordinal": 228,
     "title": "Book VII, Letter V",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17285,7 +17298,7 @@
    },
    {
     "work_key": "iii.v.vii.iv",
-    "ordinal": 228,
+    "ordinal": 229,
     "title": "Book VII, Letter VI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17298,7 +17311,7 @@
    },
    {
     "work_key": "iii.v.vii.v",
-    "ordinal": 229,
+    "ordinal": 230,
     "title": "Book VII, Letter VII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17311,7 +17324,7 @@
    },
    {
     "work_key": "iii.v.vii.vi",
-    "ordinal": 230,
+    "ordinal": 231,
     "title": "Book VII, Letter XI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17324,7 +17337,7 @@
    },
    {
     "work_key": "iii.v.vii.vii",
-    "ordinal": 231,
+    "ordinal": 232,
     "title": "Book VII, Letter XII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17337,7 +17350,7 @@
    },
    {
     "work_key": "iii.v.vii.viii",
-    "ordinal": 232,
+    "ordinal": 233,
     "title": "Book VII, Letter XIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17350,7 +17363,7 @@
    },
    {
     "work_key": "iii.v.vii.ix",
-    "ordinal": 233,
+    "ordinal": 234,
     "title": "Book VII, Letter XV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17363,7 +17376,7 @@
    },
    {
     "work_key": "iii.v.vii.x",
-    "ordinal": 234,
+    "ordinal": 235,
     "title": "Book VII, Letter XVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17376,7 +17389,7 @@
    },
    {
     "work_key": "iii.v.vii.xi",
-    "ordinal": 235,
+    "ordinal": 236,
     "title": "Book VII, Letter XIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17389,7 +17402,7 @@
    },
    {
     "work_key": "iii.v.vii.xii",
-    "ordinal": 236,
+    "ordinal": 237,
     "title": "Book VII, Letter XX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17402,7 +17415,7 @@
    },
    {
     "work_key": "iii.v.vii.xiii",
-    "ordinal": 237,
+    "ordinal": 238,
     "title": "Book VII, Letter XXIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17415,7 +17428,7 @@
    },
    {
     "work_key": "iii.v.vii.xiv",
-    "ordinal": 238,
+    "ordinal": 239,
     "title": "Book VII, Letter XXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17428,7 +17441,7 @@
    },
    {
     "work_key": "iii.v.vii.xv",
-    "ordinal": 239,
+    "ordinal": 240,
     "title": "Book VII, Letter XXVI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17441,7 +17454,7 @@
    },
    {
     "work_key": "iii.v.vii.xvi",
-    "ordinal": 240,
+    "ordinal": 241,
     "title": "Book VII, Letter XXVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17454,7 +17467,7 @@
    },
    {
     "work_key": "iii.v.vii.xvii",
-    "ordinal": 241,
+    "ordinal": 242,
     "title": "Book VII, Letter XXVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17467,7 +17480,7 @@
    },
    {
     "work_key": "iii.v.vii.xviii",
-    "ordinal": 242,
+    "ordinal": 243,
     "title": "Book VII, Letter XXX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17480,7 +17493,7 @@
    },
    {
     "work_key": "iii.v.vii.xix",
-    "ordinal": 243,
+    "ordinal": 244,
     "title": "Book VII, Letter XXXI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17493,7 +17506,7 @@
    },
    {
     "work_key": "iii.v.vii.xx",
-    "ordinal": 244,
+    "ordinal": 245,
     "title": "Book VII, Letter XXXII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17506,7 +17519,7 @@
    },
    {
     "work_key": "iii.v.vii.xxi",
-    "ordinal": 245,
+    "ordinal": 246,
     "title": "Book VII, Letter XXXIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17519,7 +17532,7 @@
    },
    {
     "work_key": "iii.v.vii.xxii",
-    "ordinal": 246,
+    "ordinal": 247,
     "title": "Book VII, Letter XXXIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17532,7 +17545,7 @@
    },
    {
     "work_key": "iii.v.vii.xxiii",
-    "ordinal": 247,
+    "ordinal": 248,
     "title": "Book VII, Letter XXXV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17545,7 +17558,7 @@
    },
    {
     "work_key": "iii.v.vii.xxiv",
-    "ordinal": 248,
+    "ordinal": 249,
     "title": "Book VII, Letter XXXVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17558,7 +17571,7 @@
    },
    {
     "work_key": "iii.v.vii.xxv",
-    "ordinal": 249,
+    "ordinal": 250,
     "title": "Book VII, Letter XXXIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17571,7 +17584,7 @@
    },
    {
     "work_key": "iii.v.vii.xxvi",
-    "ordinal": 250,
+    "ordinal": 251,
     "title": "Book VII, Letter XL",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17584,7 +17597,7 @@
    },
    {
     "work_key": "iii.v.vii.xxvii",
-    "ordinal": 251,
+    "ordinal": 252,
     "title": "Book VII, Letter XLII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17597,7 +17610,7 @@
    },
    {
     "work_key": "iii.v.vii.xxviii",
-    "ordinal": 252,
+    "ordinal": 253,
     "title": "Book VII, Letter XLIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17610,7 +17623,7 @@
    },
    {
     "work_key": "iii.v.viii.i",
-    "ordinal": 253,
+    "ordinal": 254,
     "title": "Book VIII, Letter I",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17623,7 +17636,7 @@
    },
    {
     "work_key": "iii.v.viii.ii",
-    "ordinal": 254,
+    "ordinal": 255,
     "title": "Book VIII, Letter II",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17636,7 +17649,7 @@
    },
    {
     "work_key": "iii.v.viii.iii",
-    "ordinal": 255,
+    "ordinal": 256,
     "title": "Book VIII, Letter III",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17649,7 +17662,7 @@
    },
    {
     "work_key": "iii.v.viii.iv",
-    "ordinal": 256,
+    "ordinal": 257,
     "title": "Book VIII, Letter V",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17662,7 +17675,7 @@
    },
    {
     "work_key": "iii.v.viii.v",
-    "ordinal": 257,
+    "ordinal": 258,
     "title": "Book VIII, Letter VI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17675,7 +17688,7 @@
    },
    {
     "work_key": "iii.v.viii.vi",
-    "ordinal": 258,
+    "ordinal": 259,
     "title": "Book VIII, Letter X",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17688,7 +17701,7 @@
    },
    {
     "work_key": "iii.v.viii.vii",
-    "ordinal": 259,
+    "ordinal": 260,
     "title": "Book VIII, Letter XIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17701,7 +17714,7 @@
    },
    {
     "work_key": "iii.v.viii.viii",
-    "ordinal": 260,
+    "ordinal": 261,
     "title": "Book VIII, Letter XIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17714,7 +17727,7 @@
    },
    {
     "work_key": "iii.v.viii.ix",
-    "ordinal": 261,
+    "ordinal": 262,
     "title": "Book VIII, Letter XV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17727,7 +17740,7 @@
    },
    {
     "work_key": "iii.v.viii.x",
-    "ordinal": 262,
+    "ordinal": 263,
     "title": "Book VIII, Letter XVII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17740,7 +17753,7 @@
    },
    {
     "work_key": "iii.v.viii.xi",
-    "ordinal": 263,
+    "ordinal": 264,
     "title": "Book VIII, Letter XVIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17753,7 +17766,7 @@
    },
    {
     "work_key": "iii.v.viii.xii",
-    "ordinal": 264,
+    "ordinal": 265,
     "title": "Book VIII, Letter XX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17766,7 +17779,7 @@
    },
    {
     "work_key": "iii.v.viii.xiii",
-    "ordinal": 265,
+    "ordinal": 266,
     "title": "Book VIII, Letter XXI",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17779,7 +17792,7 @@
    },
    {
     "work_key": "iii.v.viii.xiv",
-    "ordinal": 266,
+    "ordinal": 267,
     "title": "Book VIII, Letter XXII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17792,7 +17805,7 @@
    },
    {
     "work_key": "iii.v.viii.xv",
-    "ordinal": 267,
+    "ordinal": 268,
     "title": "Book VIII, Letter XXIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17805,7 +17818,7 @@
    },
    {
     "work_key": "iii.v.viii.xvi",
-    "ordinal": 268,
+    "ordinal": 269,
     "title": "Book VIII, Letter XXIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17818,7 +17831,7 @@
    },
    {
     "work_key": "iii.v.viii.xvii",
-    "ordinal": 269,
+    "ordinal": 270,
     "title": "Book VIII, Letter XXIX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17831,7 +17844,7 @@
    },
    {
     "work_key": "iii.v.viii.xviii",
-    "ordinal": 270,
+    "ordinal": 271,
     "title": "Book VIII, Letter XXX",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17844,7 +17857,7 @@
    },
    {
     "work_key": "iii.v.viii.xix",
-    "ordinal": 271,
+    "ordinal": 272,
     "title": "Book VIII, Letter XXXIII",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17857,7 +17870,7 @@
    },
    {
     "work_key": "iii.v.viii.xx",
-    "ordinal": 272,
+    "ordinal": 273,
     "title": "Book VIII, Letter XXXIV",
     "author": "Gregory the Great",
     "certainty": null,
@@ -17870,7 +17883,7 @@
    },
    {
     "work_key": "iii.v.viii.xxi",
-    "ordinal": 273,
+    "ordinal": 274,
     "title": "Book VIII, Letter XXXV",
     "author": "Gregory the Great",
     "certainty": null,

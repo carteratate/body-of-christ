@@ -157,7 +157,11 @@ NPNF_WORKS = {
 # that opens that part, by (file, letter div): (first paragraph id, the part's label).
 # Letter 197's second section, on the relics of Dionysius of Milan, is not Basil's
 # (Cavallin 1945, in Quasten; Fedwick 1981, "De reliquis Dionysii").
-_LETTER_PARTS = {("npnf208.xml", "ix.cxcviii"): ("ix.cxcviii-p9", "Section 2")}
+_LETTER_PARTS = {("npnf208.xml", "ix.cxcviii"): ("ix.cxcviii-p9", "Section 2"),
+                 # Gregory's Register II, 41: some manuscripts give the letter in another
+                 # form, with a paper on monasteries' privileges, which Barmby prints after
+                 # it under a note (cut, rule G).
+                 ("npnf212.xml", "iii.v.ii.xxii"): ("iii.v.ii.xxii-p6", "Second version")}
 # Letters in a collection that another writer sent, by (file, letter div): the sender,
 # from the letter's title line, as 1.8c credits Cyprian's correspondents ("Antipater to
 # Basil."). 3.2's labels (`attributions`) add the rest.
@@ -894,7 +898,9 @@ _LEO_FROM = {("npnf212.xml", "ii.iv.lv"): "ii.iv.lv-p7"}
 # Quesnel's, not Leo's (rule G). Leo's salutations and the questions Rusticus put to him
 # (Letter CLXVII) are printed in the same classes, and stay.
 _LEO_SUMMARY_CLASSES = frozenset({"c27", "c30", "c31", "c33"})
-_LEO_SALUTATION = re.compile(r"^\(?(?:Leo\b|To )")
+# A salutation in parentheses is Leo's own only when it opens with his name (Letter CLIX);
+# "(To Marcian Augustus, about…)" is Feltoe's summary (Letter CIV).
+_LEO_SALUTATION = re.compile(r"^(?:\(?Leo\b|To )")
 _LEO_QUESTION = re.compile(r"^Question [IVXL]+\.")
 
 
