@@ -157,6 +157,25 @@
   white-space: nowrap;
 }
 
+/* A work: its title, and its edition on a quieter second line. */
+.titled {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  text-align: left;
+  line-height: 1.25;
+}
+
+/* A title is what tells the works apart, so it wraps rather than being cut. */
+.titled .label {
+  white-space: normal;
+}
+
+.detail {
+  font-size: 11px;
+  color: var(--color-brand-muted);
+}
+
 .count {
   margin-left: auto;
   min-width: 18px;

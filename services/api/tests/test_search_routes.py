@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 from app.deps.auth import get_current_user
 from app.models.auth import AuthUser
 from app.models.search import SearchFilters, SearchRequest
-from app.rag.constants import CANONICAL_COLLECTIONS, LEGACY_COLLECTIONS, VALID_COLLECTIONS
+from app.rag.constants import VALID_COLLECTIONS
 from app.routes.search import _resolve_search_plan, router
 
 USER_ID = "00000000-0000-0000-0000-000000000001"
@@ -71,11 +71,7 @@ async def test_resolve_search_plan_accepts_all_valid():
         quota=3,
     )
     result = await _resolve_search_plan(body)
-    # An old key beside its new key is dropped (5.1b.1), so every key leaves the new ones.
-    assert set(result.collections) == set(CANONICAL_COLLECTIONS)
-    body.filters.collections = sorted(LEGACY_COLLECTIONS)
-    result = await _resolve_search_plan(body)
-    assert set(result.collections) == set(LEGACY_COLLECTIONS)
+    assert set(result.collections) == set(VALID_COLLECTIONS)
 
 
 def test_focused_search_rejects_multiple_collections_before_rate_limit():

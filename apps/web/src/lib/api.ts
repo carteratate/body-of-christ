@@ -45,7 +45,8 @@ const API_URL = "";
 export interface SearchFilters {
   collections: string[];
   translation?: string;
-  /** Per collection, the genres and issuers searched (5.1a); absent is everything. */
+  /** Per collection, the genres and issuers (5.1a) or documents (the work filter)
+   * searched; absent is everything. */
   scopes?: Record<string, ScopeSelection>;
 }
 

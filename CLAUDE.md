@@ -231,8 +231,12 @@ or deleting a migration already on `master` fails unless the file says
   `H7_unmarked_heading` in `health_patterns.json`, which a collection joins when its adapter
   marks. The API sends `headings` with chunk events (only when non-empty), restored
   results, bookmarks and reader passages (`app/headings.py`); the web draws them with
-  `components/common/PassageBlocks.tsx` and draws an unmarked passage as before. No live
-  passage carries marks yet.
+  `components/common/PassageBlocks.tsx` and draws an unmarked passage as before. The
+  catechism collection (the CCC; the Compendium, whose bold question is a level-3 heading;
+  the Roman Catechism, whose translators' sub-headings left in its text are marked) and
+  Vatican II (the councils' documents by "Second Vatican Council", opted in through
+  `authors`) mark theirs in the build (#445 part 2); no live passage carries marks
+  until their metadata publish. Snapshots from format 3 export the marks.
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
   Places for what the cleanup decides. 2.2w's writer fills them, and every existing row
@@ -297,7 +301,7 @@ or deleting a migration already on `master` fails unless the file says
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040–0047 are committed (0044 and 0045 were applied on 16 Nov 2026, 0047 on 23 Nov 2026; 0046, which widens `documents_collection_check` to the new keys for 5.1b.3, is not yet applied and awaits Carter's approval); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0048 are committed (0044 and 0045 were applied on 16 Nov 2026; 0047 and 0046, which widened `documents_collection_check` to the new keys for 5.1b.3, on 23 Nov 2026; 0048, 5.1b.4's narrowing of that constraint to the eight keys, on 24 Nov 2026, ledger `20261125025359`, after the zero-old-keys count read 0 everywhere, Qdrant included); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -346,8 +350,9 @@ and it hands the runner three derived values: `focused`, `terminal_candidate_bud
 failures consistently. See §18.
 
 **HyDE writes one passage per collection, except** the Bible (its genres, above) and `papal`
-(5.1b.1), which writes one per kind of papal document its genre filter leaves on, in the
-prompt of that kind's old key (`hyde_s25.papal_hyde_kinds`; Carter, 22 Nov 2026).
+(5.1b.1), which writes one per kind of papal document its genre filter leaves on
+(encyclical, apostolic exhortation, other), in the prompt its old collection used
+(`hyde_s25._PAPAL_KINDS`, `papal_hyde_kinds`; Carter, 22 Nov 2026).
 
 **A plan can narrow a collection to some genres and issuers** (item 5.1a, `SearchPlan.scopes`,
 `rag/collection_scope.py`). The request lists what to search; a `CollectionScope` holds the
@@ -357,6 +362,14 @@ under every selection. Only the papal collections can be narrowed (`GENRES_BY_CO
 `ISSUERS_BY_COLLECTION` in `constants.py`, `papal` included, the genres a copy of `datapipeline/registry/genres.py`
 kept equal by a test). A search without scopes sends master's exact Qdrant filter and SQL
 (`tests/test_collection_scope.py`); keep it that way.
+
+**The work filter narrows a collection to some of its documents** (`documents`, by document ID,
+beside genres and issuers in the same `filters.scopes` entry; Qdrant `must_not` on
+`document_id`, SQL `d.id <> ALL(...)`). By document because the CCC and the Roman Catechism
+share a genre. Only the Catechism takes it (`DOCUMENTS_BY_COLLECTION` in `constants.py`, kept
+equal to `works.json`'s published Catechism documents by `tests/test_work_filter.py`); another
+collection turns it on with an entry there and in the web's `SCOPED_COLLECTIONS`
+(`lib/collection-scopes.ts`), whose `WORK_LABELS` names and orders the works.
 
 The registry also holds evaluation arms (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical, Luna 6 and reasoning effort, seat rules). **Every pipeline runs Cohere**, alone or followed by one listwise LLM call; the single-stage pointwise LLM reranker (`llm_only`) was removed in October 2026. Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
 
@@ -507,7 +520,7 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/me` | Current user |
-| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. Optional `filters.scopes: {collection: {genres?, issuers?}}` narrows a papal collection (§5); `invalid_genre`/`invalid_issuer` are 422 with `detail.code` |
+| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. Optional `filters.scopes: {collection: {genres?, issuers?, documents?}}` narrows a papal collection by genre and issuer, or the Catechism by work (§5); `invalid_genre`/`invalid_issuer`/`invalid_document` are 422 with `detail.code` |
 | POST | `/search/guest` | SSE stream; guest session token, trial-limited; same optional `filters.scopes` |
 | POST | `/guest/claim` | Transfer guest work into a new account |
 | GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
@@ -604,20 +617,17 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 15. Collections — Canonical Source
 
-- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`). It holds
-  two vocabularies while corpus cleanup 5.1b runs: the eight `CANONICAL_COLLECTIONS` (with
-  `papal`, `church-law` and `theologians`) and the five old keys in `LEGACY_COLLECTIONS`, which
-  map to them (`encyclicals`, `apostolic-exhortations` and `papal-documents` to genres of
-  `papal`; `canon-law` to `church-law`; `medieval` to `theologians`). Since 5.1b.2 the web
-  offers only the eight new keys (labels: Papal documents, Church law, Theology &
-  Spirituality) and translates any old key it reads (`canonicalCollectionKey` in
-  `lib/collections.ts`; a restored old papal search becomes a Papal documents genre
-  selection, `canonicalSearchFilters`). `collection_scope.reads` decides which stored values a key reads,
-  so both vocabularies work whether or not 5.1b.3 has rewritten the stored values, and a
-  search's results are labelled with the key it sent. A plan drops an old key named beside
-  its new one and logs `legacy_collection_key`; 5.1b.4 removes the old keys.
-- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection, and
-  `LEGACY_COLLECTIONS`, the old keys' meaning, mirroring the API's).
+- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`, equal
+  to `CANONICAL_COLLECTIONS`): the eight collections, with `papal`, `church-law` and
+  `theologians` (labels Papal documents, Church law, Theology & Spirituality). Corpus cleanup
+  5.1b merged `encyclicals`, `apostolic-exhortations` and `papal-documents` into `papal` and
+  renamed `canon-law` and `medieval`; 5.1b.4 removed the old keys from the API (a plan drops
+  one like any unknown key) and from `documents_collection_check` (0048).
+- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection). It
+  keeps `LEGACY_COLLECTIONS`, the old keys' meaning, for keys a browser still holds (a
+  guest's saved draft, an old tab): `canonicalCollectionKey` translates them, and a
+  restored old papal search becomes a Papal documents genre selection
+  (`canonicalSearchFilters`), so the web never sends an old key (Carter, 23 Nov 2026).
 - **Datapipeline (5.1b.3):** `publication.SOURCE_ADAPTERS` builds the eight published
   collections; `SOURCE_BUILDS` builds the ten sources (`sources/<key>/`, the old names),
   which the work registry, the 0.1a to 0.1c checks, their known defects and the embedding
@@ -634,7 +644,7 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 - Defined in `apps/web/next.config.ts`.
 - **`script-src` and `default-src` are intentionally omitted** — nonce-based CSP is deferred, and `unsafe-inline` is required for Next.js hydration in the interim, so these directives are excluded rather than creating a false sense of security.
-- **`connect-src` includes:** `'self'`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `https://app.posthog.com`, `https://eu.posthog.com`
+- **`connect-src` includes:** `'self'`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `https://us.i.posthog.com`, `https://us-assets.i.posthog.com` (PostHog's US hosts; the project is in the US region, and posthog-js rewrites `app.posthog.com` to `us.i.posthog.com`, so allowing only the legacy host blocks every event)
 - **NEVER add `unsafe-eval` to `script-src`.**
 
 ---
@@ -662,15 +672,16 @@ collection**, and it changes retrieval shape rather than just raising the result
 else; take `SearchPlan.focused`. `SearchPlanError.code` is stable and routes translate it:
 `no_valid_collections` → 400, everything else (`invalid_quota`, `duplicate_collections`,
 `invalid_collections`, `focused_collection_count`, and 5.1a's `invalid_genre` and
-`invalid_issuer`, whose detail is `{code, message}`) → 422. (The guest route answers 422 for
-all of them.) A genre or issuer selection is not a collection: it never changes focused
-eligibility, and a focused search may narrow its one collection.
+`invalid_issuer` and the work filter's `invalid_document`, whose detail is `{code, message}`)
+→ 422. (The guest route answers 422 for all of them.) A genre, issuer or work selection is not
+a collection: it never changes focused eligibility, and a focused search may narrow its one
+collection.
 
 What focused changes, all derived from the plan:
 
 | | Standard | Focused |
 |---|---|---|
-| Collections | 1–8 (the API also accepts the five old keys until 5.1b.4) | exactly 1 |
+| Collections | 1–8 | exactly 1 |
 | `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
 | `max_passages_per_source` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |
@@ -679,9 +690,9 @@ What focused changes, all derived from the plan:
 takes no cap; it is bounded by `min(quota, _FLOOR_N)` and spreads across sources itself.
 
 **The cap is per *source*, and a source is the reader chapter for the chapter-keyed
-collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law` and `church-law`, `bible`) — see
-`dedup.source_key`. Those four are each stored as a single document (the Bible as one per
-book), so an earlier per-*document* cap limited a focused search to 4 results in total
+collections** in `rag/dedup.py` (`summa`, `catechism`, `church-law`, `bible`) — see
+`dedup.source_key`. Those four were each stored as a single document (the Bible as one per
+book; the Catechism collection gains the Compendium and the Roman Catechism in 5.5), so an earlier per-*document* cap limited a focused search to 4 results in total
 however many distinct articles or psalms ranked, which made issue #28's "return exactly
 ten" unreachable for exactly the collections focused search is most used on. Issue #105 is
 that defect reported from production; keying the cap per chapter fixed it.
@@ -716,9 +727,10 @@ changing quota rules.
 
 **`lib/search-draft.ts` owns draft quota/collection state and focused eligibility** —
 `SearchQuota`, `StandardQuota`, `focusedEligible`, and the draft reducer. It also owns the
-genre and issuer selections (5.1a: `excluded`, `scopes`, and the `genre-toggled`,
-`issuer-toggled`, `scope-only` and `scope-all` events), which never change focused
-eligibility. `lib/collection-scopes.json`, the values each papal collection offers, is
+genre, issuer and work selections (5.1a and the work filter: `excluded`, `scopes`, and the
+`genre-toggled`, `issuer-toggled`, `document-toggled`, `scope-only` and `scope-all` events),
+which never change focused eligibility. `lib/collection-scopes.json`, the values each
+narrowable collection offers, is
 generated from `datapipeline/registry/works.json` by its test. This is the one
 exception to §12's "draft controls stay in the page": the page renders it, but the
 transition rules live here and are unit-tested directly. `QuotaControl.tsx` and
@@ -736,9 +748,10 @@ the backups' user-data files and the Qdrant snapshot; the corpus copies are kept
 
 **Publishing now:** the publish thread runs batches one at a time (Carter, 24 Nov 2026), under
 the standing decisions in the plan's Decision log. Each live step still needs its lock-file PR
-and Carter's approval when it runs (0.4). He has so far closed each publish's rollback window
-early once its smoke checks passed (the "rollback window closed early" rows), each time as his
-own decision: ask him for each one.
+and Carter's approval when it runs (0.4). A publish's rollback window closes once its smoke
+checks pass, unless Carter says otherwise when he approves the apply: the publish thread then
+deletes the previous Qdrant collection without asking again, quoting that decision, and stops
+and asks only if a smoke check fails (Decision log "Publishing: windows, lock PRs and batches").
 
 Start from the "Start here" section of `docs/2026-09-28-corpus-cleanup-plan.md`; detailed
 work specifications are in `docs/corpus-cleanup/`. The plan's Decision log is settled.

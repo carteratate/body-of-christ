@@ -646,7 +646,7 @@
     {
      "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
      "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
-     "documents": 23
+     "documents": 24
     }
    ],
    "documents": [
@@ -794,6 +794,11 @@
      "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
      "title": "Code of Canon Law (1983)",
      "collection": "canon-law"
+    },
+    {
+     "document_id": "800373b1-d6c8-5a26-8910-8d1485b224c2",
+     "title": "Compendium of the Catechism of the Catholic Church",
+     "collection": "catechism"
     },
     {
      "document_id": "c1d5382f-c7c7-564d-989a-89775b36fd58",
@@ -1594,6 +1599,11 @@
      "collection": "apostolic-exhortations"
     },
     {
+     "document_id": "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",
+     "title": "Catechism of the Council of Trent",
+     "collection": "catechism"
+    },
+    {
      "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",
      "title": "The Stromata, or Miscellanies",
      "collection": "church-fathers",
@@ -1841,6 +1851,19 @@
      "document_id": "d28b5fff-a191-5d03-82c9-00341c628cb0",
      "title": "The Ascent of Mount Carmel",
      "collection": "medieval"
+    },
+    {
+     "document_id": "616dfaea-6099-593e-951f-2b017a7ec938",
+     "title": "Exsurge Domine",
+     "collection": "papal-documents",
+     "texts": [
+      "The bull's censure of the 41 propositions, which Deferrari prints after proposition 41 ('Censure of the Holy Pontiff', n. 781, p. 243), without his heading"
+     ]
+    },
+    {
+     "document_id": "9d7bcb10-5f20-5e83-a592-b237eed5b8e8",
+     "title": "Inter Cunctas",
+     "collection": "papal-documents"
     },
     {
      "document_id": "2f92bbcb-619d-5d04-b9e0-e8be423b2feb",

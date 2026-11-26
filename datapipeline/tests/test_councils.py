@@ -746,7 +746,8 @@ def test_deferraris_edition_is_listed_on_both_councils_rows():
 CONSTANCE = {**SCHROEDER_ENTRY, "council": "Council of Constance", "year": 1418}
 BASEL_FLORENCE = {**SCHROEDER_ENTRY, "council": "Council of Basel-Ferrara-Florence", "year": 1445}
 ARTICLES_NOTE = ("Articles the council condemned, not its teaching. Its sentence is not available on "
-                 "TheoCorpus at present. Translated by R. J. Deferrari (1957).")
+                 "TheoCorpus; Martin V's Inter Cunctas (1418) states its verdict. Translated by "
+                 "R. J. Deferrari (1957).")
 
 
 def test_constance_is_built_by_session_with_deferraris_texts_before_session_43():

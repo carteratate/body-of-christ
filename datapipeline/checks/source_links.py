@@ -96,13 +96,14 @@ def matches(blocks: list[str], fragment: str) -> list[str]:
 
 def first_is_passage(found: list[str], fragment: str, content: str) -> bool:
     """Whether the first match is where the passage stands: the text after it resembles
-    the passage's text after its fragment at least as much as at any later match."""
+    the passage's text after its fragment more than at any later match. A tie cannot tell
+    the places apart (two questions printed alike in the Compendium, 5.5), so it is not."""
     text = _normalize(content)
     start = text.find(_normalize(fragment))
     expected = text[start if start >= 0 else 0:][:_COMPARE_CHARS]
     scores = [SequenceMatcher(None, expected, f[:_COMPARE_CHARS], autojunk=False).ratio()
               for f in found]
-    return scores[0] >= max(scores)
+    return len(scores) == 1 or scores[0] > max(scores[1:])
 
 
 def vendored_pages() -> dict[str, str]:

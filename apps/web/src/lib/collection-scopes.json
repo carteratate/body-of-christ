@@ -32,6 +32,10 @@
     "label": "Boniface VIII"
    },
    {
+    "value": "pope-martin-v",
+    "label": "Martin V"
+   },
+   {
     "value": "pope-leo-x",
     "label": "Leo X"
    },
@@ -112,10 +116,12 @@
     "label": "Leo XIV"
    }
   ],
-  "documents": {
+  "documents": [],
+  "counts": {
    "apostolic-constitution": {
     "pope-boniface-viii": 1,
     "pope-leo-x": 1,
+    "pope-martin-v": 1,
     "pope-pius-ix": 1,
     "pope-pius-xii": 1
    },
@@ -163,5 +169,27 @@
     "pope-pius-ix": 1
    }
   }
+ },
+ "catechism": {
+  "genres": [],
+  "issuers": [],
+  "documents": [
+   {
+    "value": "9679c400-d314-5394-b916-f6fc27b50104",
+    "label": "Catechism of the Catholic Church",
+    "detail": "1992"
+   },
+   {
+    "value": "800373b1-d6c8-5a26-8910-8d1485b224c2",
+    "label": "Compendium of the Catechism",
+    "detail": "2005"
+   },
+   {
+    "value": "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",
+    "label": "Roman Catechism",
+    "detail": "Council of Trent, 1566 · McHugh and Callan, 1923"
+   }
+  ],
+  "counts": {}
  }
 }

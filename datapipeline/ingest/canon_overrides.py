@@ -4,7 +4,9 @@ Two kinds of canon are changed after the pages are parsed:
 
 - English overrides. The De concordia inter Codices canons (2016) take the L'Osservatore
   Romano English of 23 Sep 2016, p. 9, labelled unofficial, with a link to the official
-  Latin. The text lives in the vendored `sources/canon-law/overrides.json`, which
+  Latin. An override replaces the whole canon, one paragraph (`§2`) or one numbered item
+  of a paragraph (`§1 2°`), or adds a paragraph. A typo the reprint prints is corrected
+  only where `CORRECTIONS` declares it, and the override records it (#400). The text lives in the vendored `sources/canon-law/overrides.json`, which
   `scripts/vendor_sources.py --collection canon-law` builds from the EWTN reprint, so it
   stays out of the public repo like the pages. The tracked
   `canon_overrides_index.csv` lists every override without its text, with the text's
@@ -47,11 +49,14 @@ EWTN_TITLE = ("De concordia inter Codices, L'Osservatore Romano, Weekly Edition 
               "23 September 2016, page 9 (EWTN Library reprint)")
 
 # De concordia's articles that this item takes, by number: (canon, field, change). Art. 4
-# and 5 (868 §1 2° and §3) wait for the print check of 868 §3 (NEEDS-CARTER, section C).
+# and 5 (868 §1 2° and §3) joined after the republish (#400): the printed page could not
+# be reached, and Carter chose the reprint's text with one typo corrected (16 Nov 2026).
 ARTICLES = {
     1: (111, "content", "replace"),
     2: (112, "content", "replace"),
     3: (535, "§2", "replace"),
+    4: (868, "§1 2°", "replace"),
+    5: (868, "§3", "add"),
     6: (1108, "§3", "add"),
     7: (1109, "content", "replace"),
     8: (1111, "§1", "replace"),
@@ -63,7 +68,21 @@ ARTICLES = {
 # earlier version (1.5a builds that history passage). The page prints the other De
 # concordia canons in their 1983 English as if current, so the adapter keeps that English
 # as their history passage.
-PAGE_PRINTS_LATIN = frozenset({111, 112, 535})
+PAGE_PRINTS_LATIN = frozenset({111, 112, 535, 868})
+# The reprint's typos corrected, by article: (as printed, as published). Nothing else in an
+# article's text is changed; each printed string must occur once.
+CORRECTIONS = {
+    5: (("for than", "for them"),),
+}
+# What a reader of the override file should know about an article's text.
+NOTES = {
+    4: ("Agrees word for word with the Canon Law Society of Great Britain and Ireland's "
+        "English Code (R2), which stands in for the print check."),
+    5: ("The reprint is the only L'Osservatore Romano witness: the printed page could not "
+        "be reached, so this text is unchecked against it (Carter, 16 Nov 2026, #400). "
+        "\"The actual ministry\" stays as the reprint prints it, although the Latin is "
+        "ministrum proprium (\"their own minister\")."),
+}
 TEXT_REPLACED = {True: "unofficial English replaces Latin",
                  False: "2016 amendment, in unofficial English"}
 
@@ -88,7 +107,6 @@ NO_ENGLISH = {
                          "20220426-motu-proprio-recognitum-librum-vi.html"),
     700: NoEnglish(2023, "https://www.vatican.va/content/francesco/en/motu_proprio/documents/"
                          "20230402-motu-proprio-expedit-ut-iura.html"),
-    868: NoEnglish(2016, DE_CONCORDIA["url"]),
 }
 
 
@@ -126,6 +144,9 @@ class Override:
     retrieved: str
     page_sha256: str
     official_latin_url: str
+    # (as printed, as published) for each typo corrected in `text` (CORRECTIONS).
+    corrections: tuple[tuple[str, str], ...] = ()
+    notes: str = ""
 
     def index_row(self) -> dict[str, str]:
         return {"canon": str(self.canon), "field": self.field, "change": self.change,
@@ -133,12 +154,15 @@ class Override:
                 "source_title": self.source_title, "source_url": self.source_url,
                 "retrieved": self.retrieved, "page_sha256": self.page_sha256,
                 "text_sha256": hashlib.sha256(self.text.encode("utf-8")).hexdigest(),
-                "official_latin_url": self.official_latin_url}
+                "official_latin_url": self.official_latin_url,
+                "corrections": "; ".join(f"{a} -> {b}" for a, b in self.corrections),
+                "notes": self.notes}
 
 
 INDEX_FIELDS = ("canon", "field", "change", "status", "language", "source_title",
                 "source_url", "retrieved", "page_sha256", "text_sha256",
-                "official_latin_url")
+                "official_latin_url", "corrections", "notes")
+_FIELD = re.compile(r"^(?:content|§(\d+)(?: (\d+)°)?)$")
 
 
 def index_csv(overrides: list[Override]) -> str:
@@ -157,14 +181,17 @@ def load(path: str = OVERRIDES, index: str = INDEX) -> dict[int, list[Override]]
         raise FileNotFoundError(f"{path}: run scripts/vendor_sources.py --collection canon-law")
     with open(path, encoding="utf-8") as f:
         rows = json.load(f)["overrides"]
-    overrides = [Override(**r) for r in rows]
+    overrides = [Override(**{**r, "corrections": tuple(tuple(c) for c in
+                                                     r.get("corrections", ()))})
+                 for r in rows]
     for o in overrides:
         if o.status not in STATUSES or o.change not in CHANGES:
             raise ValueError(f"canon {o.canon}: status {o.status!r}, change {o.change!r}")
         if o.canon in NO_ENGLISH:
             raise ValueError(f"canon {o.canon} has no English and takes no override")
-        if o.field != "content" and not re.fullmatch(r"§\d+", o.field):
-            raise ValueError(f"canon {o.canon}: field {o.field!r}")
+        m = _FIELD.match(o.field)
+        if not m or (m.group(2) and o.change != "replace"):
+            raise ValueError(f"canon {o.canon}: field {o.field!r}, change {o.change!r}")
     with open(index, encoding="utf-8") as f:
         tracked = f.read()
     if index_csv(overrides) != tracked:
@@ -199,10 +226,16 @@ def apply(canon: int, content: str, overrides: list[Override]) -> str:
         if o.field == "content":
             content = o.text
             continue
-        n = int(o.field[1:])
+        para, item = _FIELD.match(o.field).groups()
+        n = int(para)
         groups = _paragraphs(content)
         numbers = [g[0] for g in groups]
-        if o.change == "replace":
+        if item is not None:
+            if n not in numbers:
+                raise ValueError(f"canon {canon}: no §{n} for {o.field}")
+            groups[numbers.index(n)] = (n, _replace_item(canon, o, groups[numbers.index(n)][1],
+                                                         int(item)))
+        elif o.change == "replace":
             if n not in numbers:
                 raise ValueError(f"canon {canon}: no {o.field} to replace")
             groups[numbers.index(n)] = (n, o.text.split("\n"))
@@ -213,6 +246,31 @@ def apply(canon: int, content: str, overrides: list[Override]) -> str:
             groups.insert(numbers.index(n - 1) + 1, (n, o.text.split("\n")))
         content = "\n".join(line for _, lines in groups for line in lines)
     return content
+
+
+_ITEM = re.compile(r"^((?:§\s*\d+\.\s*)?)(\d+)\s*([/°])\s*")
+
+
+def _replace_item(canon: int, o: Override, lines: list[str], item: int) -> list[str]:
+    """A paragraph's lines with numbered item `item` replaced by the override's text, which
+    reads `§N. M° ...`. The line keeps the marker the page prints (`2/`), so the canon's
+    items stay alike."""
+    head = _prefix(o.field)
+    if not o.text.startswith(head + " "):
+        raise ValueError(f"canon {canon}: {o.field} text does not open with {head!r}")
+    hits = [i for i, line in enumerate(lines)
+            if (m := _ITEM.match(line)) and int(m.group(2)) == item]
+    if len(hits) != 1:
+        raise ValueError(f"canon {canon}: no single item {item}° in §{o.field[1:].split()[0]}")
+    m = _ITEM.match(lines[hits[0]])
+    new = f"{m.group(1)}{item}{m.group(3)} {o.text[len(head):].strip()}"
+    return lines[:hits[0]] + [new] + lines[hits[0] + 1:]
+
+
+def _prefix(field: str) -> str:
+    """How the article's text opens for a field: `§2.` for `§2`, `§1. 2°` for `§1 2°`."""
+    para, _, item = field.partition(" ")
+    return f"{para}. {item}" if item else f"{para}."
 
 
 # --------------------------------------------------------------------------- vendoring
@@ -254,12 +312,19 @@ def build_overrides(html: bytes, retrieved: str) -> list[Override]:
     out = []
     for art, (canon, field, change) in sorted(ARTICLES.items()):
         text = texts[art]
-        if field != "content" and not text.startswith(field + "."):
+        if field != "content" and not text.startswith(_prefix(field)):
             raise ValueError(f"article {art}: expected {field}, found {text[:20]!r}")
+        for printed, corrected in CORRECTIONS.get(art, ()):
+            if text.count(printed) != 1:
+                raise ValueError(f"article {art}: {printed!r} occurs {text.count(printed)} "
+                                 "times, not once")
+            text = text.replace(printed, corrected)
         out.append(Override(canon=canon, field=field, change=change, text=text,
                             language="en", status=UNOFFICIAL_ENGLISH,
                             source_title=EWTN_TITLE, source_url=EWTN_URL, retrieved=retrieved,
-                            page_sha256=sha, official_latin_url=DE_CONCORDIA["url"]))
+                            page_sha256=sha, official_latin_url=DE_CONCORDIA["url"],
+                            corrections=CORRECTIONS.get(art, ()),
+                            notes=NOTES.get(art, "")))
     return out
 
 

@@ -50,14 +50,15 @@ DOCUMENTS_FILE = "documents.jsonl"
 REFERENCES_FILE = "references.json"
 CHAPTERS_FILE = "document_chapters.jsonl"
 SNAPSHOT_FILE = "snapshot.json"
-# 2: adds document_chapters.jsonl (0.1d).
-FORMAT = 2
+# 2: adds document_chapters.jsonl (0.1d). 3: passages carry `headings`, the marks in
+# metadata.headings (issue #445), so the health check reads live marks as built ones.
+FORMAT = 3
 
 # checks.health.load_snapshot reads these; unit_label lets the release report treat the
 # display pieces of one Summa objection or reply as one unit.
 PASSAGE_FIELDS = ("id", "document_id", "collection", "title", "author", "anchor",
                   "chapter_key", "chapter_label", "reference", "unit_label", "position",
-                  "content")
+                  "content", "headings")
 DOCUMENT_FIELDS = ("id", "collection", "title", "author", "year", "translation",
                    "chunk_count", "metadata")
 CHAPTER_FIELDS = ("document_id", "ordinal", "chapter_key", "chapter_label", "chunk_count")
@@ -73,7 +74,7 @@ DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 PASSAGES_SQL = """
 SELECT c.id::text AS id, c.document_id::text AS document_id, d.collection, d.title,
        d.author, c.anchor, c.chapter_key, c.chapter_label, c.reference, c.unit_label,
-       c.position, c.content
+       c.position, c.content, c.metadata->'headings' AS headings
 FROM chunks c JOIN documents d ON d.id = c.document_id
 ORDER BY d.collection, c.document_id, c.position, c.id
 """
@@ -174,6 +175,9 @@ async def _read(conn) -> dict:
     for d in documents:
         if isinstance(d.get("metadata"), str):   # asyncpg returns jsonb as text
             d["metadata"] = json.loads(d["metadata"])
+    for p in passages:
+        if isinstance(p.get("headings"), str):
+            p["headings"] = json.loads(p["headings"])
     references = {
         "passages": {pid: {t: counts.get(t, 0) for t in REFERENCE_TABLES}
                      for pid, counts in sorted(by_passage.items())},

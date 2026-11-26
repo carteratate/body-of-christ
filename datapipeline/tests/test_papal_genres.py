@@ -42,8 +42,13 @@ def test_values_come_from_the_genre_module():
 
 
 def test_every_listed_document_has_a_row_in_its_collection():
+    """Every vendored document, and every one a printing gives alone (5.9)."""
+    from ingest import papal_printings
+
     labels = papal_genres.load()
-    listed = {(c, s) for c in papal_genres.COLLECTIONS for s in _listed_slugs(c)}
+    listed = {(c, s) for c in papal_genres.COLLECTIONS for s in _listed_slugs(c)} | {
+        tuple(p.key.split("/", 1)) for c in papal_genres.COLLECTIONS
+        for p in papal_printings.printed_only(c)}
     assert {(x.collection, slug) for slug, x in labels.items()} == listed
 
 

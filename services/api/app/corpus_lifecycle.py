@@ -60,7 +60,7 @@ def read_elsewhere_url(reason_code: str, collection: str | None, document_scope:
     `metadata.official_latin_urls` keyed by the passage's anchor (`can/295`), with any
     `#retired-<release>` suffix 2.2w added dropped. No entry, no link: the Code's own
     URL is an index page that does not hold the canon (2.4f)."""
-    if (not document_scope and collection in ("canon-law", "church-law")
+    if (not document_scope and collection == "church-law"
             and reason_code in _ELSEWHERE_CANON_PASSAGE_REASONS):
         latin = (metadata or {}).get("official_latin_urls")
         if not anchor or not isinstance(latin, dict):
@@ -80,7 +80,9 @@ def read_elsewhere_url(reason_code: str, collection: str | None, document_scope:
 def tombstone(row) -> Tombstone:
     """A Tombstone from a `_TOMBSTONE_SQL` row."""
     snapshot = row["snapshot"] or {}
-    collection = snapshot.get("collection") or row["collection"]
+    # The document's key today, where it still exists: a snapshot keeps the key of its
+    # day (`canon-law` before 5.1b.3), and the links come from that document's metadata.
+    collection = row["collection"] or snapshot.get("collection")
     document_scope = row["entity"] == "document" or bool(row["document_scope"])
     return Tombstone(
         entity=row["entity"], rule=row["rule"], reason_code=row["reason_code"],

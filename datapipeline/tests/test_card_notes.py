@@ -139,14 +139,16 @@ def test_exsurge_domines_note_leaves_its_passages_for_the_overview():
     note = ("Propositions of Martin Luther that the bull condemned, not its teaching. The rest "
             "of the bull is not available on TheoCorpus at present. Translated by R. J. "
             "Deferrari (1957).")
-    doc = card_notes.apply(_document([_passage(0, note=note), _passage(1, note=note)],
+    # The censure after them (5.9) is the bull's own words and carries no note.
+    doc = card_notes.apply(_document([_passage(0, note=note), _passage(1, note=note),
+                                      _passage(2)],
                                      collection="papal-documents", title="Exsurge Domine"),
                            {"work_id": "papal-documents/exsurge-domine"})
     assert all(p.note is None for p in doc.passages)
     assert doc.metadata["card_notes"] == [{
         "kind": "incomplete", "show": "overview",
-        "text": "Only the condemned propositions are given; the rest of the bull is not "
-                "available on TheoCorpus at present."}]
+        "text": "Only the condemned propositions and the censure are given; the rest of the "
+                "bull is not available on TheoCorpus at present."}]
     assert check.problems(doc) == []
 
 

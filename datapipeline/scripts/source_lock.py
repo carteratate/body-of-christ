@@ -100,6 +100,18 @@ _UNREGISTERED_NOTES = {
        "the scan Stromata III's English is read from, through ocr/texts/"
        "chadwick-stromata-3.json (#399)" for kind in ("djvu.xml", "djvu.txt")},
 }
+# The Roman Catechism (5.5), read through the OCR tool's frozen text; Fordham's
+# transcription only checks that OCR (the gate's baseline; Carter, 22 Nov 2026).
+_UNREGISTERED_NOTES.update({
+    **{f"catechism/catechismofcounc0000jose/catechismofcounc0000jose_{kind}":
+       "the scan the Roman Catechism is read from, through ocr/texts/"
+       "mchugh-callan-roman-catechism.json (5.5)"
+       for kind in ("djvu.xml", "page_numbers.json")},
+    "catechism/catechismofcounc0000jose/catechismofcounc0000jose_djvu.txt":
+        "the scan's plain OCR text, vendored by R6; the OCR tool reads the _djvu.xml (5.5)",
+    "catechism/fordham-romancat.html":
+        "Fordham's transcription, used only to check the Roman Catechism's OCR (5.5)",
+})
 _UNREGISTERED_DIR_NOTES = {
     "theologians": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/",
     "roman-curia": "parked for 5.3 (branch feat/roman-curia-collection)",
@@ -154,6 +166,8 @@ def _role_and_url(sources: Path, collection: str, rel: str,
                   manifest_name: str | None, named: dict[str, dict]) -> tuple[str, str | None]:
     """Classify one file of a registered collection."""
     file_in_collection = rel.split("/", 1)[1]
+    if collection == "catechism" and rel in _UNREGISTERED_NOTES:
+        return "vendored-unregistered", None     # the Roman Catechism's scan (5.5)
     if rel in _DERIVED_INPUTS:
         return "adapter-input", _DERIVED_INPUTS[rel]
     printed = _printing_inputs()
