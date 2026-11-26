@@ -407,6 +407,18 @@ PASSAGE_NOTES: dict[tuple[str, str], str] = {
     ("church-fathers/npnf212/iii.v", "iii.v.i.xviii"):
         "Parts of this letter repeat the Book of Pastoral Rule (Part II, chapters 2 to 7) "
         "and are given only there.",
+    # Leo's Letter CI: NPNF prints only part of it (rule G cuts the editor's pointer).
+    ("church-fathers/npnf212/ii.iv", "ii.iv.xcvi"):
+        "Only chapter III of this letter is translated in this edition.",
+    # Register I, 26: NPNF prints only part of it (rule G cuts the editor's pointer).
+    ("church-fathers/npnf212/iii.v", "iii.v.i.xix"):
+        "This letter opens as Book I, Letter VII does, and its opening is given only there.",
+    # Register II, 20: NPNF prints only part of it (rule G cuts the editor's pointer).
+    ("church-fathers/npnf212/iii.v", "iii.v.ii.x"):
+        "Two passages of this letter repeat Book II, Letter XIX almost word for word and are given only there.",
+    # Register XIII, 8: NPNF prints only part of it (rule G cuts the editor's pointer).
+    ("church-fathers/npnf213/ii", "ii.ix.v"):
+        "Most of this letter is the same as Book XIII, Letter IX, and is given only there.",
     # Register XI, 64: the request for Saint Sixtus's relics and its grant, which Barmby
     # (after Bede's copy and the Lucca manuscript) takes for an interpolation; the passage
     # that holds them, by anchor.

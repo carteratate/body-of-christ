@@ -136,6 +136,11 @@ PASSAGE_NOTES: dict[str, Note | None] = {
     "are given only there.": caution(
         "incomplete", "Parts of this letter repeat the Book of Pastoral Rule (Part II, "
                       "chapters 2 to 7) and are given only there."),
+    # 5.6a: letters NPNF2-12 and NPNF2-13 print only in part, the rest under another.
+    "Only chapter III of this letter is translated in this edition.": caution("incomplete", "Only chapter III of this letter is translated in this edition."),
+    "This letter opens as Book I, Letter VII does, and its opening is given only there.": caution("incomplete", "This letter opens as Book I, Letter VII does, and its opening is given only there."),
+    "Two passages of this letter repeat Book II, Letter XIX almost word for word and are given only there.": caution("incomplete", "Two passages of this letter repeat Book II, Letter XIX almost word for word and are given only there."),
+    "Most of this letter is the same as Book XIII, Letter IX, and is given only there.": caution("incomplete", "Most of this letter is the same as Book XIII, Letter IX, and is given only there."),
     # 5.6a: Gregory's Register XI, 64 (Barmby's note).
     "The request for Saint Sixtus's relics and its grant, in this passage, may be a later "
     "addition: Bede's copy and the Lucca manuscript lack them.": caution(

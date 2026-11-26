@@ -869,13 +869,18 @@ def test_register_letters_carry_their_book(leo_gregory):
     other = [p for p in first.passages if p.chapter_key == "iii.v.ii.xxii/version"]
     assert other and other[0].content.startswith("Gregory to Castorius, Bishop of Ariminum.")
     assert other[0].chapter_label == "Book II, Letter XLI · To Castorius, Bishop: Second version"
+    paper = [p.content[m["at"]:m["end"]] for p in other
+             for m in (p.metadata or {}).get("headings", [])]
+    assert paper == ["Of the privileges of Monasteries."]
     assert "[In place of the epistle" not in text
     for note in ("[In Colbert. and Paul. diac.", "[Here follows an account",
                  "[The beginning of this epistle is the same", "[See Reg. Past.",
                  "[A long passage, thus beginning"):
         assert note not in text, note                                    # Barmby's brackets
     assert "[i.e. monks of St. Theodore]" in text                       # his gloss stays
-    assert "[N.B. This date is absent" not in "\n".join(p.content for p in second.passages)
+    second_text = "\n".join(p.content for p in second.passages)
+    assert "[N.B. This date is absent" not in second_text
+    assert "(ministerium: in Bede, mysterium)" not in second_text          # his reading
     # Augustine of Canterbury's questions head the Book of Answers (Book XI, 64), level 2.
     marks = [(m, p) for p in second.passages if p.chapter_key == "ii.vii.xxx"
              for m in (p.metadata or {}).get("headings", [])]
@@ -899,6 +904,13 @@ def test_leo_and_gregory_registry_labels():
         "Pseudo-Gregory the Great", "pseudonymous")
     assert register["ii.v.xxx"]["certainty"] == "disputed"
     assert works["church-fathers/npnf212/iii.iv"]["attribution"]["clavis"] == "CPL 1712"
+    # Letters printed only in part carry a note on every row of the letter.
+    rows = [json.loads(line) for line in open(os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "registry", "passages", "church-fathers.jsonl"))]
+    noted = {r["anchor"].split("/")[0] for r in rows if (r.get("note") or "").startswith(
+        ("Only chapter III", "This letter opens as", "Two passages of this letter",
+         "Most of this letter", "Parts of this letter"))}
+    assert noted == {"ii.iv.xcvi", "iii.v.i.xix", "iii.v.ii.x", "ii.ix.v", "iii.v.i.xviii"}
     from scripts.npnf_registry import EXCLUDED
     assert EXCLUDED["npnf212.xml"]["ii.iv.xxi"][0] == "rule-a"      # Eutyches's letter
     leo = next(d for d in build_all() if d.title == "Letters of Leo the Great")

@@ -11151,7 +11151,7 @@
   "added_on": "2026-11-10"
  },
  {
-  "id": "rm-13219",
+  "id": "rm-13220",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "619bfcf9-8ae3-590c-94dd-bdb9be431c11",
@@ -11170,7 +11170,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13230",
+  "id": "rm-13231",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "619bfcf9-8ae3-590c-94dd-bdb9be431c11",
@@ -11189,7 +11189,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13217",
+  "id": "rm-13218",
   "scope": "span",
   "collection": "church-fathers",
   "document_id": "619bfcf9-8ae3-590c-94dd-bdb9be431c11",
@@ -11208,7 +11208,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13218",
+  "id": "rm-13219",
   "scope": "span",
   "collection": "church-fathers",
   "document_id": "619bfcf9-8ae3-590c-94dd-bdb9be431c11",
@@ -11288,6 +11288,25 @@
   "scope": "span",
   "collection": "church-fathers",
   "document_id": "619bfcf9-8ae3-590c-94dd-bdb9be431c11",
+  "anchor": "ii.vii.xxx/from-p45",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5c2036d68cc498fc38ca279f3429eb4be1807c32",
+   "excerpt": "(ministerium: in Bede, mysterium)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-26"
+ },
+ {
+  "id": "rm-13216",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "619bfcf9-8ae3-590c-94dd-bdb9be431c11",
   "anchor": "ii.vii.xxxiii/from-p7",
   "passage_id": null,
   "reason": "rule-g-editorial",
@@ -11303,7 +11322,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13216",
+  "id": "rm-13217",
   "scope": "span",
   "collection": "church-fathers",
   "document_id": "619bfcf9-8ae3-590c-94dd-bdb9be431c11",
@@ -17919,7 +17938,7 @@
   "added_on": "2026-11-01"
  },
  {
-  "id": "rm-13220",
+  "id": "rm-13221",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "a6627b58-1917-5f58-ab91-8054f951ff9b",
@@ -17938,7 +17957,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13228",
+  "id": "rm-13229",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "a6627b58-1917-5f58-ab91-8054f951ff9b",
@@ -22337,7 +22356,7 @@
   "added_on": "2026-11-12"
  },
  {
-  "id": "rm-13221",
+  "id": "rm-13222",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "b7c98b46-5298-5307-9324-c8b2d9802b6b",
@@ -22356,7 +22375,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13227",
+  "id": "rm-13228",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "b7c98b46-5298-5307-9324-c8b2d9802b6b",
@@ -31051,7 +31070,7 @@
   "added_on": "2026-11-10"
  },
  {
-  "id": "rm-13222",
+  "id": "rm-13223",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "e7750a2a-ddc8-53f5-9a88-c34ba73acd90",
@@ -31070,7 +31089,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13229",
+  "id": "rm-13230",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "e7750a2a-ddc8-53f5-9a88-c34ba73acd90",
@@ -32895,7 +32914,7 @@
   "added_on": "2026-11-10"
  },
  {
-  "id": "rm-13223",
+  "id": "rm-13224",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "fd809b86-2e8b-585d-943f-9a2f389eb28e",
@@ -32914,7 +32933,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13226",
+  "id": "rm-13227",
   "scope": "class",
   "collection": "church-fathers",
   "document_id": "fd809b86-2e8b-585d-943f-9a2f389eb28e",
@@ -37740,7 +37759,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13224",
+  "id": "rm-13225",
   "scope": "passage",
   "collection": "church-fathers",
   "document_id": "fd809b86-2e8b-585d-943f-9a2f389eb28e",
@@ -37780,7 +37799,7 @@
   "added_on": "2026-11-26"
  },
  {
-  "id": "rm-13225",
+  "id": "rm-13226",
   "scope": "passage",
   "collection": "church-fathers",
   "document_id": "fd809b86-2e8b-585d-943f-9a2f389eb28e",

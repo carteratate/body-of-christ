@@ -163,6 +163,9 @@ _LETTER_PARTS = {("npnf208.xml", "ix.cxcviii"): ("ix.cxcviii-p9", "Section 2"),
                  # form, with a paper on monasteries' privileges, which Barmby prints after
                  # it under a note (cut, rule G).
                  ("npnf212.xml", "iii.v.ii.xxii"): ("iii.v.ii.xxii-p6", "Second version")}
+# The headings inside such a part, by paragraph id: level. The paper the second version of
+# Register II, 41 appends opens "Of the privileges of Monasteries."
+_PART_HEADINGS = {"iii.v.ii.xxii-p8": 2}
 # Letters in a collection that another writer sent, by (file, letter div): the sender,
 # from the letter's title line, as 1.8c credits Cyprian's correspondents ("Antipater to
 # Basil."). 3.2's labels (`attributions`) add the rest.
@@ -205,7 +208,9 @@ _NPNF_NOTE_BRACKET = re.compile(r"^\[(?:See |N\.B\.|A long passage|al\.,|as we s
 _NPNF_EDITOR_SPANS = {
     ("npnf208.xml", "vii.vi-p56"): (" (A.V., “of” instead of “through a woman”)",),
     # The translator's source line under Gregory's quotation of Homer (Letter V).
-    ("npnf207.xml", "iv.iii.iv-p6"): ("—Od. viii. 492.",)}
+    ("npnf207.xml", "iv.iii.iv-p6"): ("—Od. viii. 492.",),
+    # Barmby's reading from Bede, in Augustine's tenth question (Register XI, 64).
+    ("npnf213.xml", "ii.vii.xxx-p54"): (" (ministerium: in Bede, mysterium)",)}
 _NPNF_NUMBER = re.compile(r"^(Chapter|Homily|Letter) ([IVXLC]+)\.$")
 _CANONICA = re.compile(r"^\(?Canonica \w+\.?\)?$")
 # NPNF2-07: Cyril's number lines ("Lecture IV.", "FIRST CATECHETICAL LECTURE"), Gregory's
@@ -1033,8 +1038,9 @@ _HEADS = {"basil": _basil_head, "lectures": _lecture_head, "orations": _oration_
 
 
 def _letter_part(filename, letter, parent_map):
-    """The part of `letter` another writer wrote (`_LETTER_PARTS`), moved out of it into a
-    chapter div of its own, `<letter>/<n>`, or None."""
+    """The part of `letter` another writer wrote, or another version of it
+    (`_LETTER_PARTS`), moved out of it into a chapter div of its own, `<letter>/<n>`, or
+    None."""
     part = _LETTER_PARTS.get((filename, letter.get("id")))
     if part is None:
         return None
@@ -1096,7 +1102,9 @@ def _npnf_document(filename, w: NpnfWork, work, parent_map):
                               title=f"{number}, {label}", author=w.author))
             chapters.append((None, div, ChapterPlan(
                 label=f"{title}: {label}", work_key=div.get("id"), work_label=number,
-                any_length=True)))
+                any_length=True, headings=tuple(
+                    (b.get("id"), _PART_HEADINGS[b.get("id")], False)
+                    for b in direct_blocks(div) if b.get("id") in _PART_HEADINGS))))
     return _make_doc(filename, w.author, w.title, chapters, work=work, editor=editor,
                      works=works)
 
