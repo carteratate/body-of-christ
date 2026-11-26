@@ -393,6 +393,10 @@ def test_letter_sender():
                    passage_author="Ceretius, Salonius and Veranus")]
     leo_letters = _doc(*leo, collection="church-fathers", title="Letters", author="Leo the Great")
     assert content.letter_senders("church-fathers", [leo_letters]) == {}
+    leo[0].passage_author = "Anatolius of Constantinople"     # the same see, another man
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["f1"]}
+    leo[0].passage_author = "Flavian of Constantinople"
     leo[1].passage_author = None                # credited to Leo, as it would be by default
     assert content.letter_senders("church-fathers", [leo_letters]) == {
         "attribution.letter_sender:church-fathers/doc-1": ["g1"]}

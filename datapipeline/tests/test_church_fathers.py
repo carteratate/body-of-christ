@@ -799,7 +799,7 @@ def leo_gregory():
 
 def test_npnf212_and_213_build_leo_and_gregorys_works(leo_gregory):
     assert {k: (d.title, d.author) for k, d in leo_gregory.items()} == {
-        ("npnf212.xml", "ii.iv"): ("Letters", "Leo the Great"),
+        ("npnf212.xml", "ii.iv"): ("Letters of Leo the Great", "Leo the Great"),
         ("npnf212.xml", "ii.v"): ("Sermons", "Leo the Great"),
         ("npnf212.xml", "iii.iv"): ("The Book of Pastoral Rule", "Gregory the Great"),
         ("npnf212.xml", "iii.v"): ("Register of Letters, Books I to VIII", "Gregory the Great"),
@@ -825,6 +825,19 @@ def test_leo_editors_summaries_are_cut(leo_gregory):
     assert (work.title, work.author) == ("Letter LVI", "Galla Placidia")
     label = next(p.chapter_label for p in letters.passages if p.chapter_key == "ii.iv.lv")
     assert label == "Letter LVI · From Galla Placidia Augusta to Theodosius"
+    by_letter = {}
+    for p in letters.passages:
+        by_letter[p.chapter_key] = by_letter.get(p.chapter_key, "") + "\n\n" + p.content
+    # Leo's salutations stay where the summaries go (Letters XVIII, XXIX, CLIX).
+    assert "Leo, bishop of the city of Rome, to Januarius" in by_letter["ii.iv.xviii"]
+    assert "Those who renounce heresy and schism" not in by_letter["ii.iv.xviii"]
+    assert "To Caesar Theodosius" in by_letter["ii.iv.xxix"]
+    assert "(Leo, the bishop, to Nicaetas" in by_letter["ii.iv.cliii"]
+    # Rusticus's questions stay, marked as headings (Letter CLXVII).
+    rusticus = [p for p in letters.passages if p.chapter_key == "ii.iv.clxi"]
+    marks = [p.content[m["at"]:m["end"]] for p in rusticus
+             for m in (p.metadata or {}).get("headings", [])]
+    assert len(marks) == 19 and marks[0].startswith("Question I. Concerning a presbyter")
     labels = {p.chapter_key: p.chapter_label for p in letters.passages}
     assert labels["ii.iv.lii"] == "Letter LII · From Theodoret, Bishop of Cyrus, to Leo"
     assert labels["ii.iv.xxviii"] == "Letter XXVIII · To Flavian commonly called “the Tome”"
@@ -851,6 +864,9 @@ def test_register_letters_carry_their_book(leo_gregory):
     text = "\n".join(p.content for p in first.passages)
     assert "Indiction IX., Being the First Year" not in text          # the Book's dating line
     assert "Gregory to Justinus, Praetor of Sicily." in text           # his salutation, kept
+    for note in ("[In Colbert. and Paul. diac.", "[Here follows an account",
+                 "[The beginning of this epistle is the same"):
+        assert note not in text, note                                    # Barmby's brackets
     # Augustine of Canterbury's questions head the Book of Answers (Book XI, 64), level 2.
     marks = [(m, p) for p in second.passages if p.chapter_key == "ii.vii.xxx"
              for m in (p.metadata or {}).get("headings", [])]

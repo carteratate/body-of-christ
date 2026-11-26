@@ -138,8 +138,9 @@ NPNF_WORKS = {
                  letters=True),
     ),
     "npnf212.xml": (
-        NpnfWork("ii.iv", "Leo the Great", "Letters", skip=_LEO_SUMMARIES, letters=True,
-                 style="leo"),
+        # Named for him here, so Basil's Letters keep their title (`distinct_titles`).
+        NpnfWork("ii.iv", "Leo the Great", "Letters of Leo the Great", skip=_LEO_SUMMARIES,
+                 letters=True, style="leo"),
         NpnfWork("ii.v", "Leo the Great", "Sermons", style="leo", works=True),
         # Barmby's preface on the title (iii.iv.i) is the editor's.
         NpnfWork("iii.iv", "Gregory the Great", "The Book of Pastoral Rule",
@@ -889,8 +890,12 @@ _LEO_NUMBER = re.compile(r"^(Letter|Sermon) ([IVXLC]+)\.$")
 # letters around it (Letters LV to LVIII: four summarized, LVI printed).
 _LEO_FROM = {("npnf212.xml", "ii.iv.lv"): "ii.iv.lv-p7"}
 # The classes Feltoe prints the editors' chapter summaries in ("I. Through the negligence
-# of the authorities…"): the Ballerini's and Quesnel's, not Leo's (rule G).
-_LEO_SUMMARY_CLASSES = frozenset({"c27", "c31", "c33"})
+# of the authorities…", "He thanks him for his information…"): the Ballerini's and
+# Quesnel's, not Leo's (rule G). Leo's salutations and the questions Rusticus put to him
+# (Letter CLXVII) are printed in the same classes, and stay.
+_LEO_SUMMARY_CLASSES = frozenset({"c27", "c30", "c31", "c33"})
+_LEO_SALUTATION = re.compile(r"^\(?(?:Leo\b|To )")
+_LEO_QUESTION = re.compile(r"^Question [IVXL]+\.")
 
 
 def _wholly_editorial(t: str) -> bool:
@@ -920,13 +925,15 @@ def _leo_head(filename, elem, parent_map=None) -> _Head:
     if at + 1 < len(blocks) and blocks[at + 1].get("class") in ("c26", "c32"):
         lines.append(blocks[at + 1])
     rest = blocks[len(lines):]
-    notes = [b for b in rest if b.get("class") in _LEO_SUMMARY_CLASSES
-             or _wholly_editorial(_text(b))]
+    notes = [b for b in rest if (b.get("class") in _LEO_SUMMARY_CLASSES
+                                 or _wholly_editorial(_text(b)))
+             and not _LEO_SALUTATION.match(_text(b)) and not _LEO_QUESTION.match(_text(b))]
+    headings = [(b, 2) for b in rest if _LEO_QUESTION.match(_text(b))]
     if start:
         notes = blocks[:k0] + notes
         lines = [b for b in lines if b not in notes]
         title = _text(blocks[at + 1]).strip("().") if at + 1 < len(blocks) else title
-    return _Head(f"{kind} {n}", title, lines, notes)
+    return _Head(f"{kind} {n}", title, lines, notes, headings=headings)
 
 
 # NPNF2-12: the Pastoral Rule's four Parts, by div.
@@ -996,7 +1003,11 @@ def _register_head(filename, elem, parent_map=None) -> _Head:
             raise ValueError(f"{elem.get('id')}: no Book")
         book = m.group(1)
     headings = [(b, 2) for b in blocks if _AUGUSTINE_QUESTION.match(_text(b))]
-    return _Head(f"Book {book}, Letter {n}", _attr_title(elem), lines, headings=headings)
+    # Barmby's notes in brackets inside a letter: a manuscript's dating, a pointer to the
+    # same words in another letter (rule G).
+    notes = [b for b in blocks[len(lines):] if _wholly_editorial(_text(b))]
+    return _Head(f"Book {book}, Letter {n}", _attr_title(elem), lines, notes,
+                 headings=headings)
 
 
 _HEADS = {"basil": _basil_head, "lectures": _lecture_head, "orations": _oration_head,

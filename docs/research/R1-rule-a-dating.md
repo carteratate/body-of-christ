@@ -383,7 +383,7 @@ Dates for the facts: the lectures "347 or 348" (Quasten p. 404); the orations an
 
 | Work | Credited to | Certainty | Basis |
 |---|---|---|---|
-| Leo's Letters, Sermons; Gregory's Pastoral Rule and Register | Leo; Gregory | genuine | CPL 1656, 1657, 1712 and 1714. Feltoe rejects Quesnel's doubt about Letter XVII; the bracketed words his notes doubt inside Sermons XXIV, XXXIII and XXXVI stay in their brackets |
+| Leo's Letters, Sermons; Gregory's Pastoral Rule and Register | Leo; Gregory | genuine | CPL 1656, 1657, 1712 and 1714. Feltoe rejects Quesnel's doubt about Letter XVII; the bracketed words his notes doubt inside Sermons XXXIII, LXVII and LXXII stay in their brackets |
 | Register XIV, 17, to Felix of Messana | Pseudo-Gregory the Great | pseudonymous | "Open to grave suspicion … an unskilful imitation of his style"; Jaffé lists it among the spurious (Barmby's note) |
 | Register IX, 61, Recared to Gregory | Recared | disputed | "The genuineness of this letter is considered doubtful. It may have been a forgery founded on Epistle CXXII." (Barmby) |
 | Register XIII, 8 and 9, privileges for Brunhild's foundations at Autun | Gregory the Great | disputed | "The genuineness, or at any rate the freedom from interpolation, of all these three Epistles is disputed. The Benedictine Editors … defend their authenticity." (Barmby, under XIII, 10, which NPNF2-13 prints only as a pointer) |

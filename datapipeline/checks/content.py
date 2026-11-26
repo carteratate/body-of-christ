@@ -372,19 +372,29 @@ def _letter_lines(document: Document, letter: list) -> list[str]:
     return lines
 
 
-# Words of an editor's title line that are not the sender's name: "The first from Flavian,
-# Bp. of Constantinople", "A Second One from Flavian", "the Synod of Chalcedon" (5.6a,
-# Leo).
-_NOT_NAMES = frozenset({"the", "a", "first", "second", "one", "from", "bp", "bishop", "of",
-                        "pope", "st", "saint", "and"})
+# Words of an editor's title line before the sender's name: "The first from Flavian, Bp.
+# of Constantinople", "A Second One from Flavian", "the Synod of Chalcedon" (5.6a, Leo).
+_NOT_NAMES = frozenset({"the", "a", "first", "second", "one", "from", "synod", "council",
+                        "of"})
 
 
 def _sender_named(sender: str, author: str) -> bool:
-    """Whether the credited `author` is the sender the title line names: one of its name
-    words is the author's."""
+    """Whether the credited `author` is the sender the title line names: its first name
+    word (not its see) is the author's."""
     names = [w for w in _fold(sender).replace(",", " ").replace(".", " ").split()
              if w not in _NOT_NAMES]
-    return any(w in _fold(author).split(" ") for w in names)
+    return bool(names) and names[0] in _fold(author).split(" ")
+
+
+def _title_and_greeting(document: Document, letter: list) -> tuple[str, str] | None:
+    """The editor's title line of a letter (the one after its "Epistle N." line) and the
+    letter's own greeting after it, or None without a number line."""
+    lines = _letter_lines(document, letter)
+    number = next((i for i, line in enumerate(lines[:4]) if LETTER_NUMBER_LINE.match(line)), None)
+    if number is None or number + 1 >= len(lines):
+        return None
+    greeting = next((line for line in lines[number + 2:] if not line.startswith("Argument")), "")
+    return lines[number + 1], greeting
 
 
 def letter_sender(document: Document, letter: list) -> str | None:
@@ -393,12 +403,10 @@ def letter_sender(document: Document, letter: list) -> str | None:
     addresses someone ("To …"), or the title or the greeting opens with the document's
     author ("Cyprian to the Lapsed"; "1. Cyprian to Cæcilius"). The lines are the
     source's (`source_letter_lines`) where it is at hand, else the passages'."""
-    lines = _letter_lines(document, letter)
-    number = next((i for i, line in enumerate(lines[:4]) if LETTER_NUMBER_LINE.match(line)), None)
-    if number is None or number + 1 >= len(lines):
+    heading = _title_and_greeting(document, letter)
+    if heading is None:
         return None
-    title = lines[number + 1]
-    greeting = next((line for line in lines[number + 2:] if not line.startswith("Argument")), "")
+    title, greeting = heading
     author = _fold(document.author or "").split(" ")[0]
     if title.startswith("To ") or _fold(title).split(" ")[0] == author \
             or _fold(greeting.lstrip("0123456789. ")).split(" ")[0] == author:
@@ -426,8 +434,7 @@ def letter_senders(collection: str, documents: list[Document]) -> Failures:
                 continue
             # A title line naming the senders together ("From Three Gallic Bishops") is
             # matched by the letter's own greeting ("Ceretius, Salonius and Veranus to…").
-            greeting = next((line for line in _letter_lines(d, letter)[2:]
-                             if not line.startswith("Argument")), "")
+            greeting = _title_and_greeting(d, letter)[1]
             greeted = _fold(greeting.lstrip("0123456789. ")).split(" ")[0]
             if any(not _sender_named(sender, author := resolved_author(d, p))
                    and greeted != _fold(author).split(" ")[0] for p in letter):
