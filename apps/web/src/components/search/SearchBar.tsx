@@ -51,12 +51,19 @@ export function SearchBar({
     if (!el) return;
     el.style.height = "auto";
     // Safari's scrollHeight leaves out a wrapped placeholder, so an empty box is
-    // measured with its hint as the value, then emptied again before paint.
-    const empty = el.value === "";
-    if (empty) el.value = el.placeholder;
+    // measured from a hidden copy holding its hint (writing the hint into the
+    // box itself would cost the user's undo history).
+    let probe = el;
+    if (el.value === "") {
+      probe = el.cloneNode() as HTMLTextAreaElement;
+      probe.value = el.placeholder;
+      probe.setAttribute("aria-hidden", "true");
+      probe.style.cssText = `position:absolute;visibility:hidden;width:${el.offsetWidth}px;height:auto`;
+      el.after(probe);
+    }
     // scrollHeight leaves out the borders, which a border-box height includes.
-    const height = el.scrollHeight + el.offsetHeight - el.clientHeight;
-    if (empty) el.value = "";
+    const height = probe.scrollHeight + probe.offsetHeight - probe.clientHeight;
+    if (probe !== el) probe.remove();
     el.style.height = `${height}px`;
   }, [value, placeholder]);
 
