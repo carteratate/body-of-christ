@@ -967,6 +967,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - The papal HyDE kinds are keyed by kind (`_PAPAL_KINDS`: encyclical, apostolic exhortation, other), with the old prompts and lengths unchanged byte for byte; the medieval prompt and the `canon-law` entries go.
   - Also removed: `card_notes._BADGE_KINDS` (no badge names a kind now), the old keys in `corpus_lifecycle`, `footnotes`, `reader_access` and `dedup`, and `republish_checks.py`'s old keys (Papal documents asks one ordinary and one reference question per kind).
   - Migration `0048_drop_legacy_collection_keys.sql`, with its `-- non-additive:` reason; tested on a local database, including the refusal while an old key remains.
+- **Done (24 Nov 2026).** #482 merged; 5.1b.3's rollback window had closed, so the rollback note above no longer applies. The read-only count read 0 for documents (live and retired), staging (absent), preferences, and the saved filters of searches and guest trials; `chunks_live` held 0 old-key points of 51,519. 0048 applied through the Supabase migration tool (ledger `20261125025359`); `documents_collection_check` lists the eight keys and is validated.
 
 ### 5.0. Decide how Denzinger is handled
 

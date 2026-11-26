@@ -114,6 +114,7 @@ When Carter answers an entry, the implementer adds a line under it, `Answered <Y
   Not needed (2026-11-21): the read-only check found keyword indexes on `genre` and `issuer` in `chunks-republish-2026-10`, the target of `chunks_live`.
 - **5.1b.3** [Phase 5]. Approve the migration, the lock-file PR, the apply and index switch, the script that rewrites collection names in saved preferences and searches, and the API restart.
 - **5.1b.4** [Phase 5]. Approve the migration that removes the old collection names (0048), once the count in its PR reads zero.
+  Answered 2026-11-24: approved after #482 merged, with 5.1b.3's rollback window already closed. The count read 0 in every place, and `chunks_live` held 0 old-key points of 51,519; 0048 applied (ledger `20261125025359`).
 - **5.3a, 5.3b, 5.4, 5.5, 5.6a, 5.6b, 5.6c** [Phase 5]. For every addition, approve its lock-file PR and its apply, and for 5.3a also its migration and the PR that makes the Roman Curia collection visible.
 
 ---
