@@ -10,9 +10,11 @@ SearchQuota = Literal[3, 4, 5, 10]
 
 
 class ScopeSelection(BaseModel):
-    """What to search inside one collection (5.1a). An absent list is every value."""
+    """What to search inside one collection (5.1a, and the work filter's documents). An
+    absent list is every value."""
     genres: Optional[list[str]] = Field(default=None, max_length=50)
     issuers: Optional[list[str]] = Field(default=None, max_length=100)
+    documents: Optional[list[str]] = Field(default=None, max_length=100)
 
 
 class SearchFilters(BaseModel):
