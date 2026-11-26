@@ -6,7 +6,9 @@ from typing import Iterable, Mapping
 
 from app.config import settings
 from app.rag.collection_scope import CollectionScope
-from app.rag.constants import GENRES_BY_COLLECTION, ISSUERS_BY_COLLECTION, VALID_COLLECTIONS
+from app.rag.constants import (
+    DOCUMENTS_BY_COLLECTION, GENRES_BY_COLLECTION, ISSUERS_BY_COLLECTION, VALID_COLLECTIONS,
+)
 
 ALLOWED_QUOTAS: frozenset[int] = frozenset({3, 4, 5, 10})
 FOCUSED_QUOTA = 10
@@ -26,7 +28,8 @@ class SearchPlanError(ValueError):
 
 # Codes added by 5.1a. Their HTTP detail is `{"code", "message"}`, so a client can tell
 # them apart; the older codes keep their plain-string detail.
-SCOPE_ERROR_CODES: frozenset[str] = frozenset({"invalid_genre", "invalid_issuer"})
+SCOPE_ERROR_CODES: frozenset[str] = frozenset({
+    "invalid_genre", "invalid_issuer", "invalid_document"})
 
 
 def http_detail(exc: SearchPlanError) -> str | dict[str, str]:
@@ -82,6 +85,9 @@ class SearchPlan:
             if scope.excluded_issuers:
                 entry["issuers"] = sorted(
                     ISSUERS_BY_COLLECTION[scope.collection] - scope.excluded_issuers)
+            if scope.excluded_documents:
+                entry["documents"] = sorted(
+                    DOCUMENTS_BY_COLLECTION[scope.collection] - scope.excluded_documents)
             saved[scope.collection] = entry
         return saved
 
@@ -133,7 +139,7 @@ def resolve_scopes(
     collections: tuple[str, ...],
     scope_filters: Mapping[str, Mapping[str, Iterable[str] | None]] | None,
 ) -> tuple[CollectionScope, ...]:
-    """Validate `filters.scopes` against the genre and issuer vocabularies.
+    """Validate `filters.scopes` against the genre, issuer and document vocabularies.
 
     Every scope sent is validated, so a bad value is refused whichever collections are
     selected; only the scopes of collections the search includes apply. A selection of
@@ -151,6 +157,10 @@ def resolve_scopes(
             excluded_issuers=_excluded(
                 collection, selection.get("issuers"), ISSUERS_BY_COLLECTION,
                 "invalid_issuer", "issuer",
+            ),
+            excluded_documents=_excluded(
+                collection, selection.get("documents"), DOCUMENTS_BY_COLLECTION,
+                "invalid_document", "work",
             ),
         )
     scopes = [resolved[c] for c in collections if c in resolved and resolved[c].narrowed]
