@@ -661,7 +661,7 @@
     {
      "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
      "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
-     "documents": 23
+     "documents": 24
     }
    ],
    "documents": [
@@ -809,6 +809,11 @@
      "document_id": "aa889573-50b2-5a1d-9264-f309583c0c1b",
      "title": "Code of Canon Law (1983)",
      "collection": "canon-law"
+    },
+    {
+     "document_id": "800373b1-d6c8-5a26-8910-8d1485b224c2",
+     "title": "Compendium of the Catechism of the Catholic Church",
+     "collection": "catechism"
     },
     {
      "document_id": "c1d5382f-c7c7-564d-989a-89775b36fd58",
@@ -1607,6 +1612,11 @@
      "document_id": "83ef10a9-f7a6-594c-b29d-bf96bf9dccbd",
      "title": "Menti Nostrae",
      "collection": "apostolic-exhortations"
+    },
+    {
+     "document_id": "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",
+     "title": "Catechism of the Council of Trent",
+     "collection": "catechism"
     },
     {
      "document_id": "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38",

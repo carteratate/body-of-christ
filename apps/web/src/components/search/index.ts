@@ -8,4 +8,3 @@ export { RelevanceExplanation } from "./RelevanceExplanation";
 export { ResultsSkeleton } from "./ResultsSkeleton";
 export { SearchBar } from "./SearchBar";
 export { SearchResults } from "./SearchResults";
-export { TranslationSelector } from "./TranslationSelector";

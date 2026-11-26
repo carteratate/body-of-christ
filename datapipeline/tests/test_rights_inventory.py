@@ -12,7 +12,7 @@ import rights_inventory as R
 ENTRIES = R.load()
 # md5 of the sorted document IDs of a master build, joined with commas: the 421 live
 # documents as of 0.2. A PR that changes the published document set updates it on purpose.
-LIVE_DOCUMENT_IDS_MD5 = "7cfb1df939a248fe2ec92fc30b9c844e"   # 438: 5.6a adds Basil's three works (NPNF2-08)
+LIVE_DOCUMENT_IDS_MD5 = "441ee9f677edd2f98ad8b29a57a79117"   # 440: 5.6a adds Basil's three works (NPNF2-08)
 
 
 def test_every_entry_has_required_fields_and_known_status():
