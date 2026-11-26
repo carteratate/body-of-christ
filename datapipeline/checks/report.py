@@ -108,7 +108,7 @@ def sentinel_value(sentinel: Sentinel, documents: list[Document],
     """`units` are the collection's source units, which the 0.1d sentinels read."""
     name = sentinel.name
     if name == "ccc_1471_definition":
-        return unit_coverage.ccc_1471_definition(documents, units or [])
+        return unit_coverage.ccc_1471_definition(ccc_documents(documents), units or [])
     if name == "sirach_prologue":
         return unit_coverage.sirach_prologue(documents, sources)
     if name == "nostra_aetate_4":
@@ -188,7 +188,7 @@ def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
                 seq.bible_verses(documents, units)
         elif collection == "catechism":
             result.sequence.setdefault("ccc_paragraphs", {})[collection] = \
-                seq.ccc_paragraphs(documents)
+                seq.ccc_paragraphs(ccc_documents(documents))
         elif collection == "canon-law":
             result.sequence.setdefault("canons", {})[collection] = seq.canons(documents)
         elif collection == "summa":
@@ -218,6 +218,12 @@ def run(collections: list[str] | tuple[str, ...] = COLLECTIONS,
     return result
 
 
+def ccc_documents(documents: list[Document]) -> list[Document]:
+    """The Catechism of the Catholic Church among a catechism build's documents: the
+    paragraph checks are its, not the Compendium's or the Roman Catechism's (5.5)."""
+    return [d for d in documents if (d.metadata or {}).get("source_key") == "catechism"]
+
+
 # Report rules counted for the summary but never failing (0.1d).
 REPORT_ONLY_RULES = ("R13_lower_start", "R14_hyphen_space")
 
@@ -233,7 +239,7 @@ def run_review(result: RunResult, collection: str, documents: list[Document],
     review.update(content.run(collection, documents))
     units = [u for f in files for u in units_by_file[f]]
     if collection == "catechism":
-        review.update(unit_coverage.catechism_paragraph_words(documents, units))
+        review.update(unit_coverage.catechism_paragraph_words(ccc_documents(documents), units))
     if collection == "bible":
         review.update(unit_coverage.bible_superscriptions(documents, units))
     review.update(health.tracked_check_ids(violations))

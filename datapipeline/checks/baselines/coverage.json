@@ -2,8 +2,8 @@
  "measured_on": {
   "apostolic-exhortations": "feat/1.3d-7-haerent-animo-menti-nostrae aee69b1",
   "bible": "feat/1.4a-bible-every-verse 66c7561",
-  "canon-law": "feat/1.5b-canon-law-current-text ba63afd",
-  "catechism": "feat/279-catechism-us-text 302b98d",
+  "canon-law": "feat/400-canon-868-ore 024d6ee",
+  "catechism": "worktree-bridge-cse_01MzvQVhQofyfUudPetZQnd3 7ae3d38",
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
@@ -673,8 +673,8 @@
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann834-878_en.html": {
-   "body_chars": 18733,
-   "covered_chars": 18733,
+   "body_chars": 19132,
+   "covered_chars": 19132,
    "pct": 100.0
   },
   "canon-law/cic_lib4-cann879-958_en.html": {
@@ -732,9 +732,14 @@
    "covered_chars": 9580,
    "pct": 100.0
   },
+  "catechism/compendium-ccc.html": {
+   "body_chars": 270971,
+   "covered_chars": 229359,
+   "pct": 84.64
+  },
   "catechism/us-edition/ccc-us.json": {
-   "body_chars": 1220548,
-   "covered_chars": 1220548,
+   "body_chars": 1220760,
+   "covered_chars": 1220760,
    "pct": 100.0
   },
   "church-fathers/apostolic fathers.xml": {
@@ -2222,6 +2227,13 @@
    "covered_chars": 14428,
    "pct": 99.44
   },
+  "800373b1-d6c8-5a26-8910-8d1485b224c2": {
+   "collection": "catechism",
+   "source_file": "compendium-ccc.html",
+   "body_chars": 270971,
+   "covered_chars": 229359,
+   "pct": 84.64
+  },
   "807935f8-f62c-53b6-baae-0fd9f7a0aa20": {
    "collection": "medieval",
    "source_file": "imitation-of-christ.xml",
@@ -2393,8 +2405,8 @@
   "9679c400-d314-5394-b916-f6fc27b50104": {
    "collection": "catechism",
    "source_file": "us-edition/ccc-us.json",
-   "body_chars": 1220548,
-   "covered_chars": 1220548,
+   "body_chars": 1220760,
+   "covered_chars": 1220760,
    "pct": 100.0
   },
   "973645b6-6110-5711-a635-6b84c2632fd8": {
@@ -2540,8 +2552,8 @@
   "aa889573-50b2-5a1d-9264-f309583c0c1b": {
    "collection": "canon-law",
    "source_file": "cic_lib1-cann1-6_en.html",
-   "body_chars": 729760,
-   "covered_chars": 728544,
+   "body_chars": 730159,
+   "covered_chars": 728943,
    "pct": 99.83
   },
   "aab26640-78db-55d5-a667-17defe433306": {

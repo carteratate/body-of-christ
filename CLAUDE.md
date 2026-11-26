@@ -297,7 +297,7 @@ or deleting a migration already on `master` fails unless the file says
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040–0048 are committed (0044 and 0045 were applied on 16 Nov 2026, 0047 on 23 Nov 2026; 0046, which widens `documents_collection_check` to the new keys for 5.1b.3, is not yet applied and awaits Carter's approval; 0048, 5.1b.4's narrowing of that constraint to the eight keys, is applied only after 5.1b.3's publish and user-row script, once the count in its PR reads zero, and with Carter's approval); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0048 are committed (0044 and 0045 were applied on 16 Nov 2026; 0047 and 0046, which widened `documents_collection_check` to the new keys for 5.1b.3, on 23 Nov 2026; 0048, 5.1b.4's narrowing of that constraint to the eight keys, on 24 Nov 2026, ledger `20261125025359`, after the zero-old-keys count read 0 everywhere, Qdrant included); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -678,8 +678,8 @@ takes no cap; it is bounded by `min(quota, _FLOOR_N)` and spreads across sources
 
 **The cap is per *source*, and a source is the reader chapter for the chapter-keyed
 collections** in `rag/dedup.py` (`summa`, `catechism`, `church-law`, `bible`) — see
-`dedup.source_key`. Those four are each stored as a single document (the Bible as one per
-book), so an earlier per-*document* cap limited a focused search to 4 results in total
+`dedup.source_key`. Those four were each stored as a single document (the Bible as one per
+book; the Catechism collection gains the Compendium and the Roman Catechism in 5.5), so an earlier per-*document* cap limited a focused search to 4 results in total
 however many distinct articles or psalms ranked, which made issue #28's "return exactly
 ten" unreachable for exactly the collections focused search is most used on. Issue #105 is
 that defect reported from production; keying the cap per chapter fixed it.

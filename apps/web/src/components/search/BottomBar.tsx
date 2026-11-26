@@ -10,8 +10,6 @@ interface BottomBarProps {
   // Pre-search
   activeCollections: readonly string[];
   onToggleCollection: (c: string) => void;
-  translation: string;
-  onTranslationChange: (t: string) => void;
   excluded?: Readonly<Record<string, ScopeExclusions>>;
   onScopeEvent?: (event: Extract<SearchDraftEvent, { readonly collection: string }>) => void;
   quota: number;
@@ -32,8 +30,6 @@ interface BottomBarProps {
 export function BottomBar({
   activeCollections,
   onToggleCollection,
-  translation,
-  onTranslationChange,
   excluded,
   onScopeEvent,
   quota,
@@ -67,8 +63,6 @@ export function BottomBar({
         <CollectionToggles
           activeCollections={activeCollections}
           onToggle={onToggleCollection}
-          translation={translation}
-          onTranslationChange={onTranslationChange}
           excluded={excluded}
           onScopeEvent={onScopeEvent}
           scopesLocked={loading}
