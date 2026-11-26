@@ -401,12 +401,12 @@ PASSAGE_NOTES: dict[tuple[str, str], str] = {
     ("church-fathers/third-century-3/iii.iii", "iii.iii.iii.xi"):
         "This canon is a later addition.",
     (_BASIL_LETTERS, "ix.cxxvi"): _CREED_NOTE,
-    # Register I, 24 (to John of Constantinople and the other patriarchs): Barmby prints
+    # Register I, 25 (to John of Constantinople and the other patriarchs): Barmby prints
     # only the openings of the passages it shares with the Pastoral Rule, pointing to
-    # them there; his pointers are cut (rule G).
+    # them there (his "III., 4" is Part II, chapter 4); his pointers are cut (rule G).
     ("church-fathers/npnf212/iii.v", "iii.v.i.xviii"):
-        "Parts of this letter repeat the Book of Pastoral Rule (Part II, chapters 2 to 7, "
-        "and Part III, chapter 4) and are given only there.",
+        "Parts of this letter repeat the Book of Pastoral Rule (Part II, chapters 2 to 7) "
+        "and are given only there.",
     # Register XI, 64: the request for Saint Sixtus's relics and its grant, which Barmby
     # (after Bede's copy and the Lucca manuscript) takes for an interpolation; the passage
     # that holds them, by anchor.

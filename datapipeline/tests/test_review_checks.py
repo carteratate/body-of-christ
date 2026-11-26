@@ -403,6 +403,9 @@ def test_letter_sender():
     leo_letters = _doc(*leo, collection="church-fathers", title="Letters", author="Leo the Great")
     assert content.letter_senders("church-fathers", [leo_letters]) == {
         "attribution.letter_sender:church-fathers/doc-1": ["c1"]}
+    leo[2].passage_author = "Council of Constantinople"     # another council
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["c1"]}
     leo[2].passage_author = "Council of Chalcedon"
     assert content.letter_senders("church-fathers", [leo_letters]) == {}
     leo[1].passage_author = "Ceretius"          # the greeting names three

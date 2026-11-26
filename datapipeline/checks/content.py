@@ -391,8 +391,12 @@ def _greeting_names(greeting: str, author: str) -> bool:
 def _sender_named(sender: str, author: str) -> bool:
     """Whether the credited `author` is the sender the title line names: its first name
     word (not its see) is the author's."""
-    names = [_SAME_NAME.get(w, w) for w in _fold(sender).replace(",", " ").replace(".", " ").split()
-             if w not in _NOT_NAMES]
+    def words(name: str) -> list[str]:
+        return [_SAME_NAME.get(w, w) for w in _fold(name).replace(",", " ").replace(".", " ").split()
+                if w not in _NOT_NAMES]
+    names = words(sender)
+    if names[:1] == ["council"]:            # a council: its whole name
+        return names == words(author)
     return bool(names) and names[0] in _fold(author).split(" ")
 
 

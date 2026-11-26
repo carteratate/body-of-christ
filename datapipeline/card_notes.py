@@ -130,12 +130,12 @@ PASSAGE_NOTES: dict[str, Note | None] = {
     "which the English translation does not print.": caution(
         "incomplete", "The Latin text ends this article with a short reply to all the "
                       "objections together, which the English translation does not print."),
-    # 5.6a: Gregory's Register I, 24, whose passages shared with the Pastoral Rule NPNF2-12
+    # 5.6a: Gregory's Register I, 25, whose passages shared with the Pastoral Rule NPNF2-12
     # prints only there.
-    "Parts of this letter repeat the Book of Pastoral Rule (Part II, chapters 2 to 7, and "
-    "Part III, chapter 4) and are given only there.": caution(
+    "Parts of this letter repeat the Book of Pastoral Rule (Part II, chapters 2 to 7) and "
+    "are given only there.": caution(
         "incomplete", "Parts of this letter repeat the Book of Pastoral Rule (Part II, "
-                      "chapters 2 to 7, and Part III, chapter 4) and are given only there."),
+                      "chapters 2 to 7) and are given only there."),
     # 5.6a: Gregory's Register XI, 64 (Barmby's note).
     "The request for Saint Sixtus's relics and its grant, in this passage, may be a later "
     "addition: Bede's copy and the Lucca manuscript lack them.": caution(
