@@ -259,9 +259,10 @@ TEXT_HEADINGS = frozenset({
 
 
 def _heading_marks(content: str) -> list[dict]:
-    paras = headings.paragraphs(content)
-    return [headings.mark(a, b, level=3) for k, (a, b) in enumerate(paras)
-            if content[a:b] in TEXT_HEADINGS and k + 1 < len(paras)]
+    """A mark for each listed sub-heading the passage prints. One a cut strands at the end
+    of a passage is still marked, so H6 refuses it rather than H7 missing it."""
+    return [headings.mark(a, b, level=3) for a, b in headings.paragraphs(content)
+            if content[a:b] in TEXT_HEADINGS]
 
 
 def build_document(text: dict | None = None) -> Document:

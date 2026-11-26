@@ -22,9 +22,7 @@
  "sequence.bible_verses.duplicated:ESG/8": {
   "fixed_by": "1.4a",
   "description": "Esther 8:13 holds Greek addition E (4,183 characters, R3), longer than one card, so it is cut across two pieces (\"Esther 8:12–13\", \"Esther 8:13\"). 1.4a cannot shorten it: the Decision log (Esther additions numbering, R3) keeps WEB-C's verse numbers, so there are no lettered verses to cut at. Left for Carter to reassign or accept.",
-  "units": [
-   "ESG/8/13"
-  ]
+  "units": ["ESG/8/13"]
  },
  "sequence.thml_chapters.missing:church-fathers/second-century.xml#iii.iii": {
   "fixed_by": "1.8e",

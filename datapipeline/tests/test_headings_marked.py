@@ -125,8 +125,7 @@ def test_compendium_marks_each_question():
     if not os.path.exists(catechism_compendium._DEFAULT_SRC):
         pytest.skip("Compendium source not vendored")
     doc = catechism_compendium.build_document()
-    assert all(_marked(p)[:1] == [(p.content.split("\n\n")[0], 3)] for p in doc.passages)
-    assert _marked(doc.passages[11]) == [("12. What is Apostolic Tradition?", 3)]
+    assert all(_marked(p) == [(p.content.split("\n\n")[0], 3)] for p in doc.passages)
     assert health.check_documents("catechism", [doc], report=False) == []
 
 
