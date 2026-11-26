@@ -120,9 +120,10 @@ def test_a_bare_number_counts_only_at_the_start():
 
 
 @pytest.mark.sources
-@pytest.mark.skipif(not os.path.exists(_DEFAULT_SRC), reason="catechism sources not vendored")
 def test_compendium_marks_each_question():
     from ingest import catechism_compendium
+    if not os.path.exists(catechism_compendium._DEFAULT_SRC):
+        pytest.skip("Compendium source not vendored")
     doc = catechism_compendium.build_document()
     assert all(_marked(p)[:1] == [(p.content.split("\n\n")[0], 3)] for p in doc.passages)
     assert _marked(doc.passages[11]) == [("12. What is Apostolic Tradition?", 3)]
@@ -136,8 +137,15 @@ def test_roman_catechism_marks_the_translators_sub_headings_left_in_the_text():
         doc = roman_catechism.build_document()
     except FileNotFoundError:
         pytest.skip("Roman Catechism OCR text not available")
-    marked = [m for p in doc.passages for m in _marked(p)]
-    assert sorted(text for text, _ in marked) == sorted(roman_catechism.TEXT_HEADINGS)
+    marked = sorted((p.anchor, *m) for p in doc.passages for m in _marked(p))
+    assert marked == [
+        ("creed/article-9/8", "Other Uses of the Word “Church”", 3),
+        ("decalogue/commandment-4/11", "That Thou Mayest be Long-lived, etc.", 3),
+        ("decalogue/commandment-4/4/from-p8", "Explanation of the Fourth Commandment: “Honour”", 3),
+        ("sacraments/1", "The Word “Sacrament”", 3),
+        ("sacraments/eucharist/2", "Meaning of the Word “Eucharist”", 3),
+        ("sacraments/penance/1", "Different Meanings of the Word “Penance”", 3),
+    ]
     # Only the two known defects (checks/known_defects.json) remain.
     assert sorted(v.anchor for v in health.check_documents("catechism", [doc], report=False)) \
         == ["lords-prayer/amen/6", "lords-prayer/opening-words/9"]

@@ -245,7 +245,7 @@ def _pieces(paragraphs: list[str]) -> list[tuple[int, str]]:
 
 
 # The translators' sub-headings the OCR units left inside a section's text, rather than
-# over it (issue #445): marked where they stand, at level 3 under the section's own
+# over it (issue #445), found against their contents in the vendored Fordham transcription: marked where they stand, at level 3 under the section's own
 # heading (its unit label). Two more are known defects (checks/known_defects.json): one
 # the OCR garbled ('66 Our”') and one that ends its passage instead of opening the next.
 TEXT_HEADINGS = frozenset({
@@ -254,6 +254,7 @@ TEXT_HEADINGS = frozenset({
     "Meaning of the Word “Eucharist”",
     "Different Meanings of the Word “Penance”",
     "Explanation of the Fourth Commandment: “Honour”",
+    "That Thou Mayest be Long-lived, etc.",
 })
 
 
