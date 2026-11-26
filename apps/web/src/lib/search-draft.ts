@@ -1,5 +1,5 @@
 import type { SearchPreferenceDraft } from "./api";
-import { scopeOptions, type ScopeFacet, type ScopeSelection } from "./collection-scopes";
+import { SCOPE_FACETS, scopeOptions, type ScopeFacet, type ScopeSelection } from "./collection-scopes";
 import { ALL_COLLECTION_KEYS, canonicalCollectionKey } from "./collections";
 
 
@@ -13,7 +13,8 @@ export interface SearchDraftInitial {
   readonly last_standard_quota?: unknown;
 }
 
-/** The values of one collection the user turned off, per facet (5.1a). */
+/** The values of one collection the user turned off, per facet (5.1a; documents, the
+ * work filter). */
 export type ScopeExclusions = Readonly<Record<ScopeFacet, readonly string[]>>;
 
 export interface SearchDraft {
@@ -35,6 +36,7 @@ export type SearchDraftEvent =
   | { readonly type: "translation-selected"; readonly translation: string }
   | { readonly type: "genre-toggled"; readonly collection: string; readonly genre: string }
   | { readonly type: "issuer-toggled"; readonly collection: string; readonly issuer: string }
+  | { readonly type: "document-toggled"; readonly collection: string; readonly document: string }
   | { readonly type: "scope-only"; readonly collection: string; readonly facet: ScopeFacet; readonly value: string }
   | { readonly type: "scope-all"; readonly collection: string; readonly facet: ScopeFacet }
   | { readonly type: "scopes-cleared" };
@@ -68,6 +70,7 @@ function normalizeCollections(values: unknown): string[] {
 }
 
 const NO_EXCLUSIONS: Readonly<Record<string, ScopeExclusions>> = Object.freeze({});
+const NOTHING_OFF: ScopeExclusions = Object.freeze({ genres: [], issuers: [], documents: [] });
 
 function scopeValues(collection: string, facet: ScopeFacet): string[] {
   return scopeOptions(collection)?.[facet].map((option) => option.value) ?? [];
@@ -79,7 +82,7 @@ function requestScopes(
   const scopes: Record<string, ScopeSelection> = {};
   for (const [collection, off] of Object.entries(excluded)) {
     const selection: ScopeSelection = {};
-    for (const facet of ["genres", "issuers"] as const) {
+    for (const facet of SCOPE_FACETS) {
       if (off[facet].length > 0) {
         selection[facet] = scopeValues(collection, facet).filter((value) => !off[facet].includes(value));
       }
@@ -108,11 +111,10 @@ function buildSearchDraft(
   const excluded = Object.freeze(Object.fromEntries(
     Object.entries(excludedValues)
       .filter(([collection, off]) => collectionSnapshot.includes(collection)
-        && (off.genres.length > 0 || off.issuers.length > 0))
-      .map(([collection, off]) => [collection, Object.freeze({
-        genres: Object.freeze([...off.genres]),
-        issuers: Object.freeze([...off.issuers]),
-      })]),
+        && SCOPE_FACETS.some((facet) => off[facet].length > 0))
+      .map(([collection, off]) => [collection, Object.freeze(Object.fromEntries(
+        SCOPE_FACETS.map((facet) => [facet, Object.freeze([...off[facet]])]),
+      ) as ScopeExclusions)]),
   ));
   const scopes = requestScopes(excluded);
   return Object.freeze({
@@ -128,7 +130,7 @@ function buildSearchDraft(
 }
 
 function withExclusions(draft: SearchDraft, collection: string, facet: ScopeFacet, off: readonly string[]): SearchDraft {
-  const current = draft.excluded[collection] ?? { genres: [], issuers: [] };
+  const current = draft.excluded[collection] ?? NOTHING_OFF;
   const sameSet = off.length === current[facet].length && off.every((value) => current[facet].includes(value));
   if (sameSet) return draft;
   return buildSearchDraft(
@@ -190,6 +192,8 @@ export function transitionSearchDraft(draft: SearchDraft, event: SearchDraftEven
       return transitionScope(draft, event.collection, "genres", { toggle: event.genre });
     case "issuer-toggled":
       return transitionScope(draft, event.collection, "issuers", { toggle: event.issuer });
+    case "document-toggled":
+      return transitionScope(draft, event.collection, "documents", { toggle: event.document });
     case "scope-only":
       return transitionScope(draft, event.collection, event.facet, { only: event.value });
     case "scope-all":

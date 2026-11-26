@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type CSSProperties } from "react";
-import { scopeOptions } from "@/lib/collection-scopes";
+import { SCOPED_COLLECTIONS, scopeOptions } from "@/lib/collection-scopes";
 import { COLLECTIONS, hexToRgb } from "@/lib/collections";
 import type { ScopeExclusions, SearchDraftEvent } from "@/lib/search-draft";
 import { GenreFilter } from "./GenreFilter";
@@ -140,7 +140,8 @@ export function CollectionToggles({
                 }}
                 aria-haspopup="dialog"
                 aria-expanded={open}
-                aria-label={`Filter ${col.label} by kind and pope`}
+                aria-label={`Filter ${col.label} by ${
+                  (SCOPED_COLLECTIONS[col.key] ?? []).includes("documents") ? "work" : "kind and pope"}`}
                 aria-hidden={!isActive}
                 disabled={scopesLocked}
                 tabIndex={isActive ? 0 : -1}

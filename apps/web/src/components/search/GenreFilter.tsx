@@ -4,7 +4,9 @@ import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type 
 import { createPortal } from "react-dom";
 import { Check, X } from "lucide-react";
 
-import { scopeOptions, visibleScopeValues, type ScopeFacet } from "@/lib/collection-scopes";
+import {
+  SCOPED_COLLECTIONS, scopeOptions, visibleScopeValues, type ScopeFacet, type ScopeValue,
+} from "@/lib/collection-scopes";
 import { hexToRgb, type CollectionMeta } from "@/lib/collections";
 import type { ScopeExclusions, SearchDraftEvent } from "@/lib/search-draft";
 import styles from "./GenreFilter.module.css";
@@ -25,9 +27,15 @@ const GAP = 10;
 const HEADER = 48;
 const MIN_LIST = 160;
 
+const HEADINGS: Record<ScopeFacet, { heading: string; plural: string }> = {
+  genres: { heading: "Kind", plural: "kinds" },
+  issuers: { heading: "Pope", plural: "popes" },
+  documents: { heading: "Work", plural: "works" },
+};
+
 /**
- * What to search inside one collection (5.1a): its kinds and its popes, all ticked to
- * start. Opens out of the caret in the collection's pill, the same on phone and laptop,
+ * What to search inside one collection, all ticked to start: its kinds and its popes
+ * (5.1a), or its works (the work filter, Catechism for now). Opens out of the caret in the collection's pill, the same on phone and laptop,
  * and closes on any press outside it or on Escape.
  */
 export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: GenreFilterProps) {
@@ -98,13 +106,14 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
 
   const options = scopeOptions(collection.key);
   if (!options) return null;
-  // Each list shows what the other's ticks leave, with those counts.
-  const shown = visibleScopeValues(options, excluded);
-
-  const sections: { facet: ScopeFacet; heading: string }[] = [
-    ...(options.genres.length > 1 ? [{ facet: "genres" as const, heading: "Kind" }] : []),
-    ...(options.issuers.length > 0 ? [{ facet: "issuers" as const, heading: "Pope" }] : []),
-  ];
+  // Kind and Pope each show what the other's ticks leave, with those counts; a work
+  // is one document, so the Work list has no count.
+  const counted = visibleScopeValues(options, excluded);
+  const shown: Record<ScopeFacet, (ScopeValue & { documents?: number })[]> = {
+    ...counted, documents: [...options.documents],
+  };
+  const facets = SCOPED_COLLECTIONS[collection.key] ?? [];
+  const sections = facets.filter((facet) => options[facet].length > (facet === "genres" ? 1 : 0));
 
   const style = {
     "--rgb": hexToRgb(collection.hex),
@@ -117,9 +126,9 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
   } as CSSProperties;
 
   function toggle(facet: ScopeFacet, value: string): ScopeEvent {
-    return facet === "genres"
-      ? { type: "genre-toggled", collection: collection.key, genre: value }
-      : { type: "issuer-toggled", collection: collection.key, issuer: value };
+    if (facet === "genres") return { type: "genre-toggled", collection: collection.key, genre: value };
+    if (facet === "issuers") return { type: "issuer-toggled", collection: collection.key, issuer: value };
+    return { type: "document-toggled", collection: collection.key, document: value };
   }
 
   return createPortal(
@@ -147,7 +156,8 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
         </button>
       </div>
       <div className={styles.scroll} style={{ maxHeight: place ? Math.min(place.maxHeight, 380) : undefined }}>
-        {sections.map(({ facet, heading }) => {
+        {sections.map((facet) => {
+          const { heading, plural } = HEADINGS[facet];
           const off = excluded?.[facet] ?? [];
           return (
             <div key={facet} role="group" aria-label={heading}>
@@ -158,7 +168,7 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
                   className={styles.pillButton}
                   disabled={off.length === 0}
                   onClick={() => onEvent({ type: "scope-all", collection: collection.key, facet })}
-                  aria-label={`All ${heading === "Pope" ? "popes" : "kinds"}`}
+                  aria-label={`All ${plural}`}
                 >
                   All
                 </button>
@@ -185,10 +195,19 @@ export function GenreFilter({ collection, anchor, excluded, onEvent, onClose }: 
                       <span className={styles.box} aria-hidden>
                         {ticked && <Check size={11} strokeWidth={3.5} />}
                       </span>
-                      <span className={styles.label}>{option.label}</span>
-                      <span className={styles.count} aria-label={`${option.documents} documents`}>
-                        {option.documents}
-                      </span>
+                      {option.detail ? (
+                        <span className={styles.titled}>
+                          <span className={styles.label}>{option.label}</span>
+                          <span className={styles.detail}>{option.detail}</span>
+                        </span>
+                      ) : (
+                        <span className={styles.label}>{option.label}</span>
+                      )}
+                      {option.documents !== undefined && (
+                        <span className={styles.count} aria-label={`${option.documents} documents`}>
+                          {option.documents}
+                        </span>
+                      )}
                     </button>
                     <button
                       type="button"

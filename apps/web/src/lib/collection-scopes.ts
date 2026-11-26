@@ -3,42 +3,80 @@ import data from "./collection-scopes.json";
 import { canonicalCollectionKey, LEGACY_COLLECTIONS } from "./collections";
 
 /**
- * Which collections a search can narrow by genre and issuer (corpus cleanup 5.1a), and
- * the values each one holds, in the order the filter lists them. Generated from
- * `datapipeline/registry/works.json` by `collection-scopes.test.ts` (`npx vitest run -u
- * collection-scopes` rewrites it); the API's vocabulary is `GENRES_BY_COLLECTION` and
- * `ISSUERS_BY_COLLECTION` in `services/api/app/rag/constants.py`.
+ * Which collections a search can narrow, by which lists, and the values each one holds,
+ * in the order the filter lists them: genre and issuer (corpus cleanup 5.1a), and
+ * document, the work filter. Generated from `datapipeline/registry/works.json` by
+ * `collection-scopes.test.ts` (`npx vitest run -u collection-scopes` rewrites it); the
+ * API's vocabulary is `GENRES_BY_COLLECTION`, `ISSUERS_BY_COLLECTION` and
+ * `DOCUMENTS_BY_COLLECTION` in `services/api/app/rag/constants.py`.
  */
-export type ScopeFacet = "genres" | "issuers";
+export type ScopeFacet = "genres" | "issuers" | "documents";
+
+export const SCOPE_FACETS: readonly ScopeFacet[] = ["genres", "issuers", "documents"];
 
 export interface ScopeValue {
   readonly value: string;
   readonly label: string;
+  /** A second line under the label (a work's edition). */
+  readonly detail?: string;
 }
 
 export interface CollectionScopeOptions {
   readonly genres: readonly ScopeValue[];
   readonly issuers: readonly ScopeValue[];
-  /** Published documents per genre and issuer: `documents[genre][issuer]`. */
-  readonly documents: Readonly<Record<string, Readonly<Record<string, number>>>>;
+  /** The works (documents) the filter lists, by document ID; empty without a work filter. */
+  readonly documents: readonly ScopeValue[];
+  /** Published documents per genre and issuer: `counts[genre][issuer]`. */
+  readonly counts: Readonly<Record<string, Readonly<Record<string, number>>>>;
 }
 
 /** One collection's selection as the API takes it: the values searched, absent = all. */
 export interface ScopeSelection {
   genres?: string[];
   issuers?: string[];
+  documents?: string[];
 }
 
 export interface RegistryWork {
   readonly collection: string;
+  readonly document_id?: string;
+  readonly title?: string;
+  readonly status?: string;
   readonly genre?: string | null;
   readonly issuer?: string | null;
   readonly issuer_label?: string | null;
   readonly year?: number | null;
 }
 
-// The collections the API can narrow. Roman Curia joins with 5.3a.
-export const SCOPED_COLLECTIONS = ["papal"] as const;
+/**
+ * The collections the API can narrow, and by which lists. Roman Curia joins with 5.3a.
+ * A work filter (`documents`) can be turned on for another collection (Councils, Church
+ * Fathers) by listing it here and in the API's `DOCUMENTS_BY_COLLECTION`.
+ */
+export const SCOPED_COLLECTIONS: Readonly<Record<string, readonly ScopeFacet[]>> = {
+  papal: ["genres", "issuers"],
+  catechism: ["documents"],
+};
+
+/**
+ * How the work filter names a document, in the order it lists them (Carter, 26 Nov
+ * 2026). A published document of a collection with a work filter that is not named
+ * here is listed after these, by year, under its registry title.
+ */
+export const WORK_LABELS: Readonly<Record<string, ScopeValue & { readonly collection: string }>> = {
+  "9679c400-d314-5394-b916-f6fc27b50104": {
+    collection: "catechism", value: "9679c400-d314-5394-b916-f6fc27b50104",
+    label: "Catechism of the Catholic Church", detail: "1992",
+  },
+  "800373b1-d6c8-5a26-8910-8d1485b224c2": {
+    collection: "catechism", value: "800373b1-d6c8-5a26-8910-8d1485b224c2",
+    label: "Compendium of the Catechism", detail: "2005",
+  },
+  "c6d78d5e-5f23-5f86-b0ca-97a741e186bf": {
+    collection: "catechism", value: "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",
+    label: "Roman Catechism", detail: "Council of Trent, 1566 · McHugh and Callan, 1923",
+  },
+};
 
 export const COLLECTION_SCOPES: Readonly<Record<string, CollectionScopeOptions>> = data;
 
@@ -61,7 +99,11 @@ export function buildCollectionScopes(
   works: readonly RegistryWork[],
 ): Record<string, CollectionScopeOptions> {
   const out: Record<string, CollectionScopeOptions> = {};
-  for (const collection of SCOPED_COLLECTIONS) {
+  for (const [collection, facets] of Object.entries(SCOPED_COLLECTIONS)) {
+    if (!facets.includes("genres")) {
+      out[collection] = { genres: [], issuers: [], documents: workOptions(works, collection), counts: {} };
+      continue;
+    }
     const genres = new Map<string, number>();
     const issuers = new Map<string, { label: string; first: number }>();
     const documents: Record<string, Record<string, number>> = {};
@@ -91,14 +133,33 @@ export function buildCollectionScopes(
       issuers: [...issuers]
         .sort(([, a], [, b]) => a.first - b.first)
         .map(([value, { label }]) => ({ value, label: scopeIssuerLabel(label) })),
+      documents: facets.includes("documents") ? workOptions(works, collection) : [],
       // Keys sorted so the generated file only changes when the counts do.
-      documents: Object.fromEntries(Object.keys(documents).sort().map((genre) => [
+      counts: Object.fromEntries(Object.keys(documents).sort().map((genre) => [
         genre,
         Object.fromEntries(Object.entries(documents[genre]).sort(([a], [b]) => a.localeCompare(b))),
       ])),
     };
   }
   return out;
+}
+
+/** The works a collection's work filter lists: the named ones in their order, then any
+ * other published document of the collection by year. */
+function workOptions(works: readonly RegistryWork[], collection: string): ScopeValue[] {
+  const named = Object.values(WORK_LABELS).filter((work) => work.collection === collection);
+  const published = works.filter((work) => canonicalCollectionKey(work.collection) === collection
+    && work.status === "active" && work.document_id);
+  const ids = new Set(published.map((work) => work.document_id));
+  const others = published
+    .filter((work) => !WORK_LABELS[work.document_id!])
+    .sort((a, b) => (a.year ?? 0) - (b.year ?? 0))
+    .map((work) => ({ value: work.document_id!, label: work.title ?? work.document_id! }));
+  return [
+    ...named.filter((work) => ids.has(work.value))
+      .map(({ value, label, detail }) => ({ value, label, ...(detail ? { detail } : {}) })),
+    ...others,
+  ];
 }
 
 export interface ScopeValueCount extends ScopeValue {
@@ -114,10 +175,10 @@ export interface ScopeValueCount extends ScopeValue {
 export function visibleScopeValues(
   options: CollectionScopeOptions,
   excluded: { readonly genres: readonly string[]; readonly issuers: readonly string[] } | undefined,
-): Record<ScopeFacet, ScopeValueCount[]> {
+): Record<"genres" | "issuers", ScopeValueCount[]> {
   const offGenres = new Set(excluded?.genres ?? []);
   const offIssuers = new Set(excluded?.issuers ?? []);
-  const count = (genre: string, issuer: string) => options.documents[genre]?.[issuer] ?? 0;
+  const count = (genre: string, issuer: string) => options.counts[genre]?.[issuer] ?? 0;
   const genres = options.genres
     .map((genre) => ({
       ...genre,
@@ -151,13 +212,13 @@ export function parseScopeSelections(
     if (!scopeOptions(collection) || !collections.includes(collection)) continue;
     if (typeof raw !== "object" || raw === null) continue;
     const selection: ScopeSelection = {};
-    for (const facet of ["genres", "issuers"] as const) {
+    for (const facet of SCOPE_FACETS) {
       const values = (raw as Record<string, unknown>)[facet];
       if (!Array.isArray(values)) continue;
       const kept = [...new Set(values.filter((v): v is string => typeof v === "string"))];
       if (kept.length > 0) selection[facet] = kept;
     }
-    if (selection.genres || selection.issuers) scopes[collection] = selection;
+    if (selection.genres || selection.issuers || selection.documents) scopes[collection] = selection;
   }
   return Object.keys(scopes).length > 0 ? scopes : undefined;
 }
@@ -199,9 +260,12 @@ export function canonicalSearchFilters(
   // Selections of collections that were already new keys pass through unchanged.
   for (const key of keys) {
     if (key === canonicalCollectionKey(key) && scopeOptions(key)) {
-      const genres = stringList(selection(key).genres);
-      const issuers = stringList(selection(key).issuers);
-      if (genres || issuers) out[key] = { ...(genres ? { genres } : {}), ...(issuers ? { issuers } : {}) };
+      const entry: ScopeSelection = {};
+      for (const facet of SCOPE_FACETS) {
+        const values = stringList(selection(key)[facet]);
+        if (values) entry[facet] = values;
+      }
+      if (entry.genres || entry.issuers || entry.documents) out[key] = entry;
     }
   }
 
