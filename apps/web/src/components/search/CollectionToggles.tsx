@@ -5,7 +5,6 @@ import { scopeOptions } from "@/lib/collection-scopes";
 import { COLLECTIONS, hexToRgb } from "@/lib/collections";
 import type { ScopeExclusions, SearchDraftEvent } from "@/lib/search-draft";
 import { GenreFilter } from "./GenreFilter";
-import { TranslationSelector } from "./TranslationSelector";
 import styles from "./CollectionToggles.module.css";
 
 type ScopeEvent = Extract<SearchDraftEvent, { readonly collection: string }>;
@@ -13,8 +12,6 @@ type ScopeEvent = Extract<SearchDraftEvent, { readonly collection: string }>;
 interface CollectionTogglesProps {
   activeCollections: readonly string[];
   onToggle: (collection: string) => void;
-  translation: string;
-  onTranslationChange: (t: string) => void;
   /** Genre and issuer filters (5.1a); a collection without options has no caret. */
   excluded?: Readonly<Record<string, ScopeExclusions>>;
   onScopeEvent?: (event: ScopeEvent) => void;
@@ -34,13 +31,10 @@ function Caret() {
 export function CollectionToggles({
   activeCollections,
   onToggle,
-  translation,
-  onTranslationChange,
   excluded = {},
   onScopeEvent,
   scopesLocked = false,
 }: CollectionTogglesProps) {
-  const [translationOpen, setTranslationOpen] = useState(false);
   const [scopeOpen, setScopeOpen] = useState<string | null>(null);
   const openCue = useRef<HTMLButtonElement | null>(null);
   // A search starting closes the panel for good, not just while it runs.
@@ -54,7 +48,6 @@ export function CollectionToggles({
 
       {COLLECTIONS.map((col) => {
         const isActive = activeCollections.includes(col.key);
-        const isBible = col.key === "bible";
         const rgb = hexToRgb(col.hex);
 
         const activeStyle = {
@@ -68,44 +61,9 @@ export function CollectionToggles({
           color: `rgba(${rgb},0.65)`,
         };
 
-        if (isBible) {
-          return (
-            <div key={col.key} className="relative">
-              {/* Split-button pill: left part toggles collection, right part opens translation dropdown */}
-              <div
-                className="flex items-center rounded-full text-xs font-medium transition-colors"
-                style={isActive ? activeStyle : inactiveStyle}
-              >
-                <button
-                  onClick={() => onToggle(col.key)}
-                  className="flex items-center gap-1 py-1 pl-3 pr-1.5"
-                  aria-pressed={isActive}
-                >
-                  {col.label}
-                </button>
-                <button
-                  onClick={() => setTranslationOpen(true)}
-                  aria-label="Select Bible translation"
-                  aria-expanded={translationOpen}
-                  className="py-1 pr-2 text-[9px] transition-opacity hover:opacity-70"
-                >
-                  ▾
-                </button>
-              </div>
-
-              {translationOpen && (
-                <TranslationSelector
-                  value={translation}
-                  onChange={(t) => {
-                    onTranslationChange(t);
-                  }}
-                  onClose={() => setTranslationOpen(false)}
-                />
-              )}
-            </div>
-          );
-        }
-
+        // The Bible pill had a translation dropdown with one choice (WEB-C); it went
+        // until a second translation exists. That one should come back as a
+        // single-choice "Translation" list in this caret panel (5.1a), not a dropdown.
         if (onScopeEvent && scopeOptions(col.key)) {
           // The pill keeps its width: selecting slides the name left and shows the caret.
           const open = isActive && scopeOpen === col.key;
