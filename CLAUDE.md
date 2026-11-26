@@ -632,7 +632,7 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 - Defined in `apps/web/next.config.ts`.
 - **`script-src` and `default-src` are intentionally omitted** — nonce-based CSP is deferred, and `unsafe-inline` is required for Next.js hydration in the interim, so these directives are excluded rather than creating a false sense of security.
-- **`connect-src` includes:** `'self'`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `https://app.posthog.com`, `https://eu.posthog.com`
+- **`connect-src` includes:** `'self'`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `https://us.i.posthog.com`, `https://us-assets.i.posthog.com` (PostHog's US hosts; the project is in the US region, and posthog-js rewrites `app.posthog.com` to `us.i.posthog.com`, so allowing only the legacy host blocks every event)
 - **NEVER add `unsafe-eval` to `script-src`.**
 
 ---
