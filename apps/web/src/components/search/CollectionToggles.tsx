@@ -61,9 +61,6 @@ export function CollectionToggles({
           color: `rgba(${rgb},0.65)`,
         };
 
-        // The Bible pill had a translation dropdown with one choice (WEB-C); it went
-        // until a second translation exists. That one should come back as a
-        // single-choice "Translation" list in this caret panel (5.1a), not a dropdown.
         if (onScopeEvent && scopeOptions(col.key)) {
           // The pill keeps its width: selecting slides the name left and shows the caret.
           const open = isActive && scopeOpen === col.key;
@@ -118,6 +115,10 @@ export function CollectionToggles({
           );
         }
 
+        // The Bible is a plain pill: its one-choice translation dropdown was removed.
+        // A second translation should come back as a single-choice "Translation" list
+        // in the 5.1a caret panel (GenreFilter, with a Bible entry in collection-scopes),
+        // not as a dropdown on the pill.
         return (
           <button
             key={col.key}
