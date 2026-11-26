@@ -12,11 +12,12 @@ function subscribeNarrow(onChange: () => void) {
   return () => media.removeEventListener("change", onChange);
 }
 
-function useNarrowViewport() {
+/** Null until the browser can say: the server cannot know which hint fits. */
+function useNarrowViewport(): boolean | null {
   return useSyncExternalStore(
     subscribeNarrow,
     () => typeof window.matchMedia === "function" && window.matchMedia(NARROW_QUERY).matches,
-    () => false,
+    () => null,
   );
 }
 
@@ -42,7 +43,9 @@ export function SearchBar({
   disabled,
 }: SearchBarProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const placeholder = searchPlaceholder(disabled, useNarrowViewport());
+  const narrow = useNarrowViewport();
+  // No hint in the server HTML: the full one would show clipped on a phone until hydration.
+  const placeholder = narrow === null ? "" : searchPlaceholder(disabled, narrow);
 
   // useLayoutEffect (not useEffect) so the resize happens before paint —
   // prevents the cursor visually escaping below the textarea for one frame.

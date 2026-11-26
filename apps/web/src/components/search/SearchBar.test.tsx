@@ -70,3 +70,13 @@ describe("SearchBar placeholder", () => {
     );
   });
 });
+
+describe("SearchBar server render", () => {
+  it("sends no hint before the browser reports its width", async () => {
+    const { renderToString } = await import("react-dom/server");
+    const html = renderToString(
+      <SearchBar value="" onChange={vi.fn()} onSubmit={vi.fn()} loading={false} disabled={false} />,
+    );
+    expect(html).toContain('placeholder=""');
+  });
+});
