@@ -168,7 +168,7 @@ describe("genre and issuer scopes (5.1a)", () => {
 
   it("turns one genre off and sends the rest", () => {
     const draft = transitionSearchDraft(papal(), { type: "genre-toggled", collection: "papal", genre: "other" });
-    expect(draft.excluded).toEqual({ papal: { genres: ["other"], issuers: [] } });
+    expect(draft.excluded).toEqual({ papal: { genres: ["other"], issuers: [], documents: [] } });
     expect(draft.scopes).toEqual({ papal: { genres: genres.filter((g) => g !== "other") } });
   });
 
@@ -241,5 +241,46 @@ describe("genre and issuer scopes (5.1a)", () => {
     draft = transitionSearchDraft(draft, { type: "scope-only", collection: "papal", facet: "genres", value: "encyclical" });
     expect(draft.quota).toBe(10);
     expect(draft.focusedEligible).toBe(true);
+  });
+});
+
+describe("work scopes (Catechism)", () => {
+  const CCC = "9679c400-d314-5394-b916-f6fc27b50104";
+  const COMPENDIUM = "800373b1-d6c8-5a26-8910-8d1485b224c2";
+  const ROMAN = "c6d78d5e-5f23-5f86-b0ca-97a741e186bf";
+  const catechism = () => createSearchDraft({
+    preferred_translation: "CPDV", default_collections: ["catechism", "bible"],
+    default_quota: 4, last_standard_quota: 4,
+  });
+
+  it("turns one work off and sends the others, by document", () => {
+    const draft = transitionSearchDraft(catechism(), { type: "document-toggled", collection: "catechism", document: ROMAN });
+    expect(draft.excluded).toEqual({ catechism: { genres: [], issuers: [], documents: [ROMAN] } });
+    expect(draft.scopes).toEqual({ catechism: { documents: [CCC, COMPENDIUM] } });
+  });
+
+  it("keeps one work ticked, and ignores a document the collection does not list", () => {
+    const only = transitionSearchDraft(catechism(), {
+      type: "scope-only", collection: "catechism", facet: "documents", value: CCC,
+    });
+    expect(only.scopes).toEqual({ catechism: { documents: [CCC] } });
+    expect(transitionSearchDraft(only, { type: "document-toggled", collection: "catechism", document: CCC })).toBe(only);
+    expect(transitionSearchDraft(only, { type: "document-toggled", collection: "catechism", document: "nope" })).toBe(only);
+  });
+
+  it("offers no work filter on a collection without one, and no genre filter on the Catechism", () => {
+    const papal = createSearchDraft({ default_collections: ["papal", "catechism"], default_quota: 4 });
+    expect(transitionSearchDraft(papal, { type: "document-toggled", collection: "papal", document: CCC })).toBe(papal);
+    expect(transitionSearchDraft(papal, { type: "genre-toggled", collection: "catechism", genre: "catechism" })).toBe(papal);
+  });
+
+  it("drops the work filter when the Catechism is deselected, and leaves focused eligibility alone", () => {
+    let draft = createSearchDraft({ default_collections: ["catechism"], default_quota: 10 });
+    draft = transitionSearchDraft(draft, { type: "document-toggled", collection: "catechism", document: ROMAN });
+    expect(draft.quota).toBe(10);
+    expect(draft.focusedEligible).toBe(true);
+    draft = transitionSearchDraft(draft, { type: "collection-toggled", collection: "bible" });
+    draft = transitionSearchDraft(draft, { type: "collection-toggled", collection: "catechism" });
+    expect(draft.scopes).toBeUndefined();
   });
 });

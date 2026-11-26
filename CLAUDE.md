@@ -359,6 +359,14 @@ under every selection. Only the papal collections can be narrowed (`GENRES_BY_CO
 kept equal by a test). A search without scopes sends master's exact Qdrant filter and SQL
 (`tests/test_collection_scope.py`); keep it that way.
 
+**The work filter narrows a collection to some of its documents** (`documents`, by document ID,
+beside genres and issuers in the same `filters.scopes` entry; Qdrant `must_not` on
+`document_id`, SQL `d.id <> ALL(...)`). By document because the CCC and the Roman Catechism
+share a genre. Only the Catechism takes it (`DOCUMENTS_BY_COLLECTION` in `constants.py`, kept
+equal to `works.json`'s published Catechism documents by `tests/test_work_filter.py`); another
+collection turns it on with an entry there and in the web's `SCOPED_COLLECTIONS`
+(`lib/collection-scopes.ts`), whose `WORK_LABELS` names and orders the works.
+
 The registry also holds evaluation arms (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical, Luna 6 and reasoning effort, seat rules). **Every pipeline runs Cohere**, alone or followed by one listwise LLM call; the single-stage pointwise LLM reranker (`llm_only`) was removed in October 2026. Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
 
 **Comparing pipelines is `services/api/scripts/run_eval_suite.py`** (in-process, writes
@@ -508,7 +516,7 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/me` | Current user |
-| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. Optional `filters.scopes: {collection: {genres?, issuers?}}` narrows a papal collection (§5); `invalid_genre`/`invalid_issuer` are 422 with `detail.code` |
+| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. Optional `filters.scopes: {collection: {genres?, issuers?, documents?}}` narrows a papal collection by genre and issuer, or the Catechism by work (§5); `invalid_genre`/`invalid_issuer`/`invalid_document` are 422 with `detail.code` |
 | POST | `/search/guest` | SSE stream; guest session token, trial-limited; same optional `filters.scopes` |
 | POST | `/guest/claim` | Transfer guest work into a new account |
 | GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
@@ -660,9 +668,10 @@ collection**, and it changes retrieval shape rather than just raising the result
 else; take `SearchPlan.focused`. `SearchPlanError.code` is stable and routes translate it:
 `no_valid_collections` → 400, everything else (`invalid_quota`, `duplicate_collections`,
 `invalid_collections`, `focused_collection_count`, and 5.1a's `invalid_genre` and
-`invalid_issuer`, whose detail is `{code, message}`) → 422. (The guest route answers 422 for
-all of them.) A genre or issuer selection is not a collection: it never changes focused
-eligibility, and a focused search may narrow its one collection.
+`invalid_issuer` and the work filter's `invalid_document`, whose detail is `{code, message}`)
+→ 422. (The guest route answers 422 for all of them.) A genre, issuer or work selection is not
+a collection: it never changes focused eligibility, and a focused search may narrow its one
+collection.
 
 What focused changes, all derived from the plan:
 
@@ -714,9 +723,10 @@ changing quota rules.
 
 **`lib/search-draft.ts` owns draft quota/collection state and focused eligibility** —
 `SearchQuota`, `StandardQuota`, `focusedEligible`, and the draft reducer. It also owns the
-genre and issuer selections (5.1a: `excluded`, `scopes`, and the `genre-toggled`,
-`issuer-toggled`, `scope-only` and `scope-all` events), which never change focused
-eligibility. `lib/collection-scopes.json`, the values each papal collection offers, is
+genre, issuer and work selections (5.1a and the work filter: `excluded`, `scopes`, and the
+`genre-toggled`, `issuer-toggled`, `document-toggled`, `scope-only` and `scope-all` events),
+which never change focused eligibility. `lib/collection-scopes.json`, the values each
+narrowable collection offers, is
 generated from `datapipeline/registry/works.json` by its test. This is the one
 exception to §12's "draft controls stay in the page": the page renders it, but the
 transition rules live here and are unit-tested directly. `QuotaControl.tsx` and

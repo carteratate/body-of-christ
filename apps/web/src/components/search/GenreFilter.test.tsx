@@ -177,3 +177,46 @@ describe("genre and issuer filter while searching and near the top (5.1a)", () =
     expect(panel.hasAttribute("data-below")).toBe(side === "top");
   });
 });
+
+describe("work filter (Catechism)", () => {
+  afterEach(cleanup);
+  const CCC = "9679c400-d314-5394-b916-f6fc27b50104";
+  const COMPENDIUM = "800373b1-d6c8-5a26-8910-8d1485b224c2";
+  const ROMAN = "c6d78d5e-5f23-5f86-b0ca-97a741e186bf";
+  const workCue = () => {
+    const element = document.querySelector<HTMLButtonElement>('[aria-label="Filter Catechism by work"]');
+    if (!element) throw new Error("no caret for Catechism");
+    return element;
+  };
+
+  it("lists the three works, all ticked, with no Kind or Pope list and no counts", () => {
+    render(<Harness collections={["catechism"]} />);
+    fireEvent.click(workCue());
+    const dialog = screen.getByRole("dialog", { name: "Search within Catechism" });
+    expect(dialog.textContent).toContain("Work");
+    expect(dialog.textContent).not.toContain("Kind");
+    expect(dialog.textContent).not.toContain("Pope");
+    const boxes = screen.getAllByRole("checkbox");
+    expect(boxes.map((box) => box.textContent)).toEqual([
+      "Catechism of the Catholic Church1992",
+      "Compendium of the Catechism2005",
+      "Roman CatechismCouncil of Trent, 1566 · McHugh and Callan, 1923",
+    ]);
+    expect(boxes.every((box) => box.getAttribute("aria-checked") === "true")).toBe(true);
+    expect(dialog.querySelector('[aria-label$=" documents"]')).toBeNull();
+  });
+
+  it("narrows by document, keeps one ticked, and All returns to every work", () => {
+    render(<Harness collections={["catechism", "bible"]} />);
+    fireEvent.click(workCue());
+    fireEvent.click(screen.getByRole("checkbox", { name: /^Roman Catechism/ }));
+    expect(scopes()).toEqual({ catechism: { documents: [CCC, COMPENDIUM] } });
+
+    fireEvent.click(screen.getByRole("button", { name: "Only Roman Catechism" }));
+    expect(scopes()).toEqual({ catechism: { documents: [ROMAN] } });
+    expect(screen.getByRole("checkbox", { name: /^Roman Catechism/ }).getAttribute("aria-disabled")).toBe("true");
+
+    fireEvent.click(screen.getByRole("button", { name: "All works" }));
+    expect(scopes()).toBeNull();
+  });
+});
