@@ -1,9 +1,3 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
-
 # apps/web — frontend rules
 
 Repo-wide invariants live in `/CLAUDE.md` at the root. Read it. This file covers only
@@ -29,7 +23,7 @@ concern, and duplicating it in a component is the usual way this codebase regres
 | SSE decoding | `src/lib/search-stream.ts` | Add a second decoder, or parse events in a component. Add a new event field here **once**. |
 | Search + restore lifecycle | `src/lib/search-experience/` | Put AbortControllers, run generations, stream buffers, terminal flags, or animation timers in `SearchPage.tsx`. |
 | Draft quota/collection rules, and genre/issuer selections (5.1a) | `src/lib/search-draft.ts` | Re-derive focused eligibility from a raw quota int. |
-| Collection keys, old and new (5.1b) | `src/lib/collections.ts` (`canonicalCollectionKey`, `getCollectionMeta`), `src/lib/collection-scopes.ts` (`canonicalSearchFilters`) | Compare a stored collection key (a bookmark, a document, a saved search) without translating it first: until 5.1b.3 rewrites them, stored keys are old (`encyclicals`, `canon-law`, `medieval`). |
+| Collection keys, old and new (5.1b) | `src/lib/collections.ts` (`canonicalCollectionKey`, `getCollectionMeta`), `src/lib/collection-scopes.ts` (`canonicalSearchFilters`) | Send an old key (`encyclicals`, `canon-law`, `medieval`) to the API, which ignores it since 5.1b.4 (a search of only old keys is a 400). A key read from the browser's own storage can still be old: translate it first. |
 
 (Root §12, §14, §18)
 

@@ -12,7 +12,7 @@ import rights_inventory as R
 ENTRIES = R.load()
 # md5 of the sorted document IDs of a master build, joined with commas: the 421 live
 # documents as of 0.2. A PR that changes the published document set updates it on purpose.
-LIVE_DOCUMENT_IDS_MD5 = "caa73c68c74bfe4506b5aca070235de5"   # 435: 1.8b split the Augustine volumes
+LIVE_DOCUMENT_IDS_MD5 = "b9b3b237116a7c5af68e1e329a9f1437"   # 437: 5.5 adds the Compendium and the Roman Catechism
 
 
 def test_every_entry_has_required_fields_and_known_status():
@@ -114,9 +114,9 @@ def test_approval_is_all_or_nothing():
 def test_inventory_matches_the_built_works_exactly():
     import hashlib
 
-    from publication import SOURCE_ADAPTERS
+    from publication import SOURCE_BUILDS
 
-    documents = {c: SOURCE_ADAPTERS[c]() for c in SOURCE_ADAPTERS}
+    documents = {c: SOURCE_BUILDS[c]() for c in SOURCE_BUILDS}
     # The built document IDs (0.2 acceptance: the 421 live ones, and 1.8b's 14 new works):
     # the built inputs are the ones in use.
     ids = sorted(d.id for docs in documents.values() for d in docs)

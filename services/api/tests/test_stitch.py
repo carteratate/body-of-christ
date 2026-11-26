@@ -111,7 +111,7 @@ def test_a_sed_contra_needs_nothing():
 def test_non_summa_passages_are_never_stitched():
     """unit_label elsewhere is a locator ("Can. 33"), naming position not argument role."""
     assert stitch.attachment_relation(
-        _chunk(unit_label="Can. 33", collection="canon-law")) is None
+        _chunk(unit_label="Can. 33", collection="church-law")) is None
     assert stitch.attachment_relation(
         _chunk(unit_label="Objection 1", collection="councils")) is None
     assert stitch.attachment_relation(_chunk(unit_label=None)) is None
@@ -451,7 +451,6 @@ def test_a_result_missing_from_its_own_article_is_reported():
     """The article was fetched but does not contain the passage that matched it: the two
     stores disagree about chunk ids. Silent, that is every Summa card quietly losing its
     attachment with nothing to look at."""
-    import logging
 
     passages = _article()
     stranger = _chunk("not-in-this-article", "Objection 1", position=0)
@@ -852,7 +851,7 @@ def test_restore_applies_the_same_role_rules_as_the_live_path():
     assert stitch.attachment_relation(
         _as_chunk(_restore_row(unit_label="On the contrary"))) is None
     assert stitch.attachment_relation(
-        _as_chunk(_restore_row(unit_label="Can. 33", collection="canon-law"))) is None
+        _as_chunk(_restore_row(unit_label="Can. 33", collection="church-law"))) is None
 
 
 def test_the_restore_shim_carries_the_fields_stitching_depends_on():

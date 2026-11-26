@@ -5,7 +5,7 @@
                               [--out <dir>] [--public | --no-public]
 
 Tells a reviewer what a build would change against what users see today. Builds the
-collections through SOURCE_ADAPTERS, maps every live passage in the snapshot to one remap
+sources through SOURCE_BUILDS, maps every live passage in the snapshot to one remap
 outcome (release/remap.py), checks D1, counts the saved user rows each outcome touches,
 and runs 0.1b's health rules on the build and on the snapshot and, when the vendored
 sources are present, 0.1a's coverage and sequence checks. Writes to <out> (default
@@ -511,7 +511,15 @@ def report_md(data: dict, public: bool) -> str:
 
 def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool = True,
         registry: R.Registry | None = None, build: dict[str, list[Document]] | None = None,
-        run_checks: bool | None = None, index_path: str = SNAPSHOT_INDEX) -> int:
+        run_checks: bool | None = None, index_path: str = SNAPSHOT_INDEX,
+        published: tuple[str, ...] | None = None,
+        checks_supplement=None) -> int:
+    """`collections` are sources (`publication.SOURCE_BUILDS`). A staged report passes
+    `published`, the collections the publish writes, so live rows are read only where
+    that publish covers them, under whichever key they are filed (5.1b.3), and, for a
+    source it publishes only part of, `checks_supplement`: called only when the coverage
+    checks run, it returns that source's full build, whose documents outside the build
+    join it for those checks, which read every file of the source."""
     meta, problems = verify_snapshot(snapshot_dir, index_path)
     if problems:
         for p in problems:
@@ -520,11 +528,11 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
               file=sys.stderr)
         return 1
 
-    live = health_cli.load_snapshot(snapshot_dir, collections)
+    live = health_cli.load_snapshot(snapshot_dir, collections, published=published)
     old = old_passages(live)
     if build is None:
         checks_report.placeholder_credentials()
-        build = {c: checks_report.SOURCE_ADAPTERS[c]() for c in collections}
+        build = {c: checks_report.SOURCE_BUILDS[c]() for c in collections}
     registry = registry if registry is not None else load_registry()
     built = [d for c in collections for d in build[c]]
     result = R.remap(old, built, registry)
@@ -581,7 +589,8 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
         from checks.source_text import SOURCES
         run_checks = all(os.path.isdir(os.path.join(SOURCES, c)) for c in collections)
     if run_checks:
-        summary = checks_summary(checks_report.run(collections, documents_by_collection=build),
+        checked = with_supplement(build, checks_supplement() if checks_supplement else {})
+        summary = checks_summary(checks_report.run(collections, documents_by_collection=checked),
                                  known)
         for c in collections:
             sections[c]["checks"] = summary[c]
@@ -631,6 +640,17 @@ def run(snapshot_dir: str, collections: tuple[str, ...], out: str, public: bool 
     for i in status["fixed_remove_entry"][:20]:
         print(f"fixed, remove entry: {i}", file=sys.stderr)
     return 1 if status["unexpected"] or status["fixed_remove_entry"] else 0
+
+
+def with_supplement(build: dict[str, list[Document]],
+                    supplement: dict[str, list[Document]]) -> dict[str, list[Document]]:
+    """The build, each source joined by the supplement's documents it lacks: the staged
+    documents are judged as staged, the rest of a partly published source as built."""
+    out = dict(build)
+    for source, whole in supplement.items():
+        have = {d.id for d in out.get(source, [])}
+        out[source] = [*out.get(source, []), *(d for d in whole if d.id not in have)]
+    return out
 
 
 def _write_jsonl(path: str, rows: list[dict], collections: tuple[str, ...]) -> None:

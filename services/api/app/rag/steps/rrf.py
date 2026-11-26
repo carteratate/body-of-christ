@@ -124,23 +124,4 @@ def run(
             for e in merged
         ]
 
-    return _one_key_per_passage(output)
-
-
-def _one_key_per_passage(output: dict[str, list[ChunkCandidate]]) -> dict[str, list[ChunkCandidate]]:
-    """Keep each passage under one key: the one where it fused highest, ties to the
-    first key in sorted order. Two scopes of one search share a passage only while
-    5.1b.3's rewrite has reached one store and not the other: an old papal key reads a
-    rewritten passage by genre, so Evangelii Gaudium (stored as an encyclical, an
-    exhortation by genre) can come back from Qdrant under `encyclicals` and from
-    Postgres under `apostolic-exhortations`. Otherwise this changes nothing."""
-    best: dict[str, tuple[float, str]] = {}
-    for col in sorted(output):
-        for candidate in output[col]:
-            held = best.get(candidate.chunk_id)
-            if held is None or candidate.rrf_score > held[0]:
-                best[candidate.chunk_id] = (candidate.rrf_score, col)
-    return {
-        col: kept for col, candidates in output.items()
-        if (kept := [c for c in candidates if best[c.chunk_id][1] == col])
-    }
+    return output

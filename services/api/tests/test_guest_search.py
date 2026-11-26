@@ -808,6 +808,9 @@ def test_claim_public_route_saves_and_confirms_guest_preferences(client):
         "default_quota": 10,
         "last_standard_quota": 5,
         "theme": "dark",
+        # The claim does not write the card style, so it does not report one: the
+        # browser keeps the style it already shows.
+        "result_card_style": None,
     }
 
 

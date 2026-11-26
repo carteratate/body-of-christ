@@ -96,13 +96,14 @@ def matches(blocks: list[str], fragment: str) -> list[str]:
 
 def first_is_passage(found: list[str], fragment: str, content: str) -> bool:
     """Whether the first match is where the passage stands: the text after it resembles
-    the passage's text after its fragment at least as much as at any later match."""
+    the passage's text after its fragment more than at any later match. A tie cannot tell
+    the places apart (two questions printed alike in the Compendium, 5.5), so it is not."""
     text = _normalize(content)
     start = text.find(_normalize(fragment))
     expected = text[start if start >= 0 else 0:][:_COMPARE_CHARS]
     scores = [SequenceMatcher(None, expected, f[:_COMPARE_CHARS], autojunk=False).ratio()
               for f in found]
-    return scores[0] >= max(scores)
+    return len(scores) == 1 or scores[0] > max(scores[1:])
 
 
 def vendored_pages() -> dict[str, str]:
@@ -208,11 +209,11 @@ def write_misses(outcomes: dict[str, str], path: str = MISSES,
 
 def built_passages(collection: str, source_keys: list[str]) -> list[dict]:
     """The named built documents' passages on vatican.va, under their registry IDs."""
-    from checks.report import SOURCE_ADAPTERS, placeholder_credentials
+    from checks.report import SOURCE_BUILDS, placeholder_credentials
     from release.remap import default_passage_id
 
     placeholder_credentials()
-    documents = [d for d in SOURCE_ADAPTERS[collection]()
+    documents = [d for d in SOURCE_BUILDS[collection]()
                  if d.metadata.get("source_key") in source_keys]
     missing = set(source_keys) - {d.metadata["source_key"] for d in documents}
     if missing:

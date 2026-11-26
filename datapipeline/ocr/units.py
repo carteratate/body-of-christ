@@ -472,9 +472,332 @@ class DeferrariExtracts(Headed):
         return _with_text(para, text)
 
 
+class RomanCatechism:
+    """McHugh and Callan's Catechism of the Council of Trent (1923; 5.5). The Catechism
+    prints no headings of its own (its first editions had none); the translators set a
+    heading over every section, which the adapter turns into labels (rule G). The
+    paragraphs, headings included, are grouped into passages of about `PASSAGE_WORDS`, as
+    a work without units is, except that a passage never ends with a heading: a heading
+    goes on with the text under it. The person's check sees the headings as printed, and
+    the adapter finds the sections by them (`roman_catechism_heading`).
+
+    Left out: the title lines before "INTRODUCTORY", the translators' notes the clean-up
+    leaves in the body (a lettered note, "a The term …", or a run of references,
+    "Heb. xiii. 9. * Matt. xvi. 18."), and specks read as words ("Ir", "J"). The note
+    calls the OCR reads as marks, letters or digits come off the text
+    (`strip_catechism_calls`)."""
+    name = "roman-catechism"
+
+    def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
+              closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
+        from ocr.work import PASSAGE_WORDS
+
+        if series or closes or bounds:
+            raise ValueError(f"{self.name} units take no series, closes or bounds")
+        start = next((k for k, p in enumerate(paragraphs) if p.text.strip() == "INTRODUCTORY"),
+                     None)
+        if start is None:
+            raise ValueError("no INTRODUCTORY heading")
+        kept = [p for p in paragraphs[start:]
+                if not (catechism_note(p.text) or _speck(p.text))]
+        paras = [p if roman_catechism_heading(p.text) else _with_catechism_text(p)
+                 for p in _joined_headings(kept)]
+        paras = [p for p in paras if p.text.strip()]
+        groups: list[list] = []
+        current: list = []
+        count = 0
+        for para in paras:
+            heading = roman_catechism_heading(para.text) and not para.continues
+            if current and count >= PASSAGE_WORDS and heading:
+                groups.append(current)
+                current, count = [], 0
+            elif current and count + len(para.text.split()) > PASSAGE_WORDS and not heading \
+                    and not roman_catechism_heading(current[-1].text):
+                groups.append(current)
+                current, count = [], 0
+            current.append(para)
+            count += len(para.text.split())
+        if current:
+            groups.append(current)
+        return [Unit(f"{n:04d}", g) for n, g in enumerate(groups, 1)]
+
+
+# A translators' note left in the body: a lettered one ("a The term", "b On the
+# institution"), or a run of references ("Heb. xiii. 9. * Matt. xvi. 18.").
+_LETTERED_NOTE = re.compile(r"^\W{0,2}[a-h]\s?(?:[A-Z][a-z]|On\b|Qn\b|In\b)")
+_REFERENCE = re.compile(r"\b(?:[IVXLCivxlc]{1,8}\.|\d+[,;.:]|cf\.|[Ii]bid|Sess\.|Summa|Theol|"
+                        r"Serm\.|Epist\.|lib\.|c\.|n\.|De\s[A-Z]|[A-Z][a-z]{0,5}\.)")
+
+
+def catechism_note(text: str) -> bool:
+    """Whether a body paragraph is a translators' note the clean-up left in the text."""
+    words = text.split()
+    if not words:
+        return False
+    if _LETTERED_NOTE.match(text):
+        return True
+    return len(words) < 60 and len(_REFERENCE.findall(text)) / len(words) > 0.35
+
+
+def _speck(text: str) -> bool:
+    """A paragraph with no word of three letters or more: a speck read as letters."""
+    return not re.search(r"[A-Za-z]{3}", text)
+
+
+_CAPS_FUNCTION = {"OF", "THE", "AND", "TO", "IN", "BY", "FOR", "OR", "A", "AN", "ON", "WITH",
+                  "FROM", "AT", "AS", "IS", "ARE", "BE", "NOT", "THAN", "ITS", "HIS"}
+_STRUCTURAL = re.compile(r"^(?:PART|ARTICLE|CHAPTER)\s+[IVXL1]+\b|^[A-Z]+ (?:PETITION|COMMANDMENT)$")
+
+
+def _caps(text: str) -> bool:
+    letters = [c for c in text if c.isalpha()]
+    return bool(letters) and sum(c.isupper() for c in letters) / len(letters) >= 0.6
+
+
+def roman_catechism_heading(text: str) -> bool:
+    """Whether a paragraph is one of the translators' headings: short, not closed as a
+    sentence (a colon may end one, "Extent of this Power:"), and set in capitals, in title
+    case, or as a quoted phrase of the Creed or the Lord's Prayer ("“Our Father”")."""
+    if text.strip().endswith(".") and not _caps(text):
+        return False      # a sentence ("Amen."); a heading in capitals may end with a stop
+    text = text.strip(" .")
+    words = text.split()
+    if not words or len(words) > 18 or re.search(r"[a-z][.,]$|,$", text):
+        return False
+    if _caps(text) or (text[:1] in "“\"" and text[-1:] in "”\"’"):
+        return True
+    if text.endswith(";") or len(words) > 12 or not words[0][:1].isupper():
+        return False
+    # Title case, short words left small ("Names of this Sacrament", "The Rites and
+    # ceremonies of the Mass", "Dispositions with which this Petition should be Offered").
+    if not words[-1][:1].isupper():
+        return False
+    return (sum(w[:1].isupper() for w in words) / len(words) >= 0.4
+            or all(w[:1].isupper() or w.lower() in _SMALL_WORDS for w in words))
+
+
+# Words a title-case heading leaves small.
+_SMALL_WORDS = frozenset(
+    "of the and to in by for or a an on with from at as is are be not than its his this that "
+    "which these those should into our we us it were who whom what how why their them may "
+    "can must has have was".split())
+
+
+# A heading in capitals the OCR ran into the paragraph under it ("IT WAS NOT A SACRAMENT
+# How much the Sacrament ..."), or whose first line it ran onto the end of the paragraph
+# above ("... created us? GOD IS CALLED “FATHER” BECAUSE HE ADOPTS CHRISTIANS").
+_CAPS_WORD = r"[A-Z“”\"‘’'][A-Z“”\"‘’',:;-]*"
+_RUN_IN_HEADING = re.compile(rf"^((?:{_CAPS_WORD} ){{2,}}{_CAPS_WORD}[:.]?) (?=[A-Z][a-z])")
+_RUN_ON_HEADING = re.compile(rf"(?<=[.?!:”’)] )((?:{_CAPS_WORD} ){{2,}}{_CAPS_WORD})$")
+
+
+def _letters(text: str) -> int:
+    return len(re.sub(r"[^A-Z]", "", text))
+
+
+def _split_run_in(paragraphs: list) -> list:
+    out: list = []
+    for para in paragraphs:
+        m = _RUN_IN_HEADING.match(para.text)
+        if m and _letters(m.group(1)) >= 10:
+            out.append(replace(para, text=m.group(1)))
+            para = replace(para, text=para.text[m.end():], continues=False)
+        m = _RUN_ON_HEADING.search(para.text)
+        if m and _letters(m.group(1)) >= 12:
+            out.append(replace(para, text=para.text[:m.start()].rstrip()))
+            para = replace(para, text=m.group(1), continues=False)
+        out.append(para)
+    return out
+
+
+def _joined_headings(paragraphs: list) -> list:
+    """`paragraphs` with a heading the clean-up set over two lines put back together: a
+    quoted heading not yet closed, or a heading in capitals whose first line filled the
+    measure or breaks off at a word that cannot end it ("… OF THE", "FOR-"), followed by
+    one in capitals that is not a Part, Article, commandment or petition."""
+    out: list = []
+    for para in _split_run_in(paragraphs):
+        prev = out[-1] if out else None
+        if prev is not None and roman_catechism_heading(prev.text) and roman_catechism_heading(para.text):
+            t, nxt = prev.text.strip(), para.text.strip()
+            open_quote = t.count("“") > t.count("”")
+            quoted = t[:1] in "“\"" and t.endswith(("”", "\""))
+            unfinished = not quoted and (len(t) >= 40 or t.endswith(("-", ":"))
+                                         or t.split()[-1].rstrip(",.") in _CAPS_FUNCTION)
+            caps_run = (unfinished and _caps(t) and _caps(nxt) and not _STRUCTURAL.match(t)
+                        and not _STRUCTURAL.match(nxt) and nxt[:1] not in "“\"")
+            if open_quote or caps_run:
+                joined = f"{t[:-1]}{nxt}" if t.endswith("-") else f"{t} {nxt}"
+                out[-1] = replace(prev, text=joined, raw=prev.raw + "\n" + para.raw,
+                                  leaves=sorted(set(prev.leaves) | set(para.leaves)))
+                continue
+        out.append(para)
+    return out
+
+
+# Note calls as this scan reads them: marks glued to a word or standing alone ("hearing,®",
+# "prophets,>", "world3*", "™"), a question mark or digits after a stop ("Spirit.?",
+# "eyes.2", "Christ.22,"), digits after a word ("church24"), and a mark before a word
+# ("»On", "_bFor").
+_CALL_MARKS = "*®°>%»«™©¢@#+|_~=§"
+_LONE_CALL = re.compile(r"(?<!\S)[" + re.escape(_CALL_MARKS) + r"?\d’'”\"]*[" + re.escape(_CALL_MARKS)
+                        + r"][" + re.escape(_CALL_MARKS) + r"?\d’'”\"]*(?!\S)")
+_GLUED_CALL = re.compile(r"(?<=[A-Za-z.,;:!?”’)])\d{0,2}[" + re.escape(_CALL_MARKS) + r"][" + re.escape(_CALL_MARKS)
+                         + r"?\d]*(?=[\s,;:.”’]|$)")
+_STOP_CALL = re.compile(r"(?<=[a-z][.,;:!])(?:\?+\d*|\d{1,2})(?=[\s,;:”’]|$)")
+_WORD_DIGITS = re.compile(r"(?<=[a-z]{2})\d{1,2}(?=[\s,;:.”’]|$)")
+_LEADING_CALL = re.compile(r"(?<!\S)[" + re.escape(_CALL_MARKS) + r"]+[a-h]?(?=[A-Z])")
+
+
+def strip_catechism_calls(text: str) -> str:
+    """The text without the note calls this scan's OCR reads as marks, digits or a
+    question mark after a stop. A closing quotation mark after a stop where no quotation
+    is open is a call too (`strip_note_calls`)."""
+    text = _LEADING_CALL.sub("", text)
+    text = _GLUED_CALL.sub("", text)
+    text = _LONE_CALL.sub("", text)
+    text = _STOP_CALL.sub("", text)
+    text = _WORD_DIGITS.sub("", text)
+    return re.sub(r" {2,}", " ", strip_note_calls(text)).strip()
+
+
+def _with_catechism_text(para):
+    return replace(para, text=strip_stray_quotes(strip_catechism_calls(para.text)))
+
+
+class ChadwickSections:
+    """Clement's *Stromata* III in Henry Chadwick's translation (*Alexandrian Christianity*,
+    1954, pp. 40–92; #399), one unit per Stählin section, `ch03/s012`, as the print
+    numbers them: "12. If Plato himself …". The adapter rejoins the sections and cuts
+    them where ANF's passages begin (`ingest/stromata_chadwick.py`).
+
+    - The heading lines above chapter I ("On Marriage", "Miscellanies, Book III", "THE
+      TEXT") go, and each "CHAPTER N" heading, which only says where a chapter starts;
+    - the sections are found in order, 1 to `unit_count`, each number where a paragraph
+      opens or after a sentence's end, so a section that opens inside a paragraph (15)
+      is found too. The OCR splits a number ("1 06.", "6 1 .") or reads its digits as
+      letters ("i." for 1, "no." for 110); all 110 must be found, in order;
+    - the number itself goes: it is Stählin's reference, not Clement's text;
+    - so do the note calls, which the OCR reads as a number standing alone after a
+      word ("necessity." 1 And"), sometimes with a mark ("5 *");
+    - a verse line, or a line the clean-up opened as a paragraph though the one before
+      does not end a sentence, continues the paragraph before it."""
+    name = "chadwick"
+    SECTIONS = 110
+
+    _TITLE = re.compile(r"^(On Marriage|Miscellanies, Book III|THE TEXT)$")
+    _CHAPTER = re.compile(r"^CHAPTER ([IVXL]+)\b\s*")
+    _ENDS = re.compile(r"[.?!:;\"”’'*)]\W*(\d{1,2}\W*)?$")
+    _DIGIT = {"0": "[0oO]", "1": "[1Iil]", "5": "[5S]"}
+    # A note call: a number standing alone after a word or a stop, with any mark the OCR
+    # read beside it; or glued to a closing quotation mark ('ofGod."83').
+    _CALL = re.compile(r"(?<=[\w.,;:!?\"”’')\]*])(?:\s?/)?\s+\d{1,2}(?:\s?\*)?(?=\s|$)"
+                       r"|(?<=[\"”’])\d{1,2}(?=\s|$)")
+
+    def _number(self, n: int) -> str:
+        digits = r"\s?".join(self._DIGIT.get(d, d) for d in str(n))
+        return rf"(?:{digits}|no)" if n == 110 else digits
+
+    def split(self, paragraphs: list, series: tuple[int, ...] | None = None,
+              closes: tuple[str, ...] = (), bounds: tuple[dict, ...] = ()) -> list[Unit]:
+        from ocr.work import PASSAGE_WORDS, group_passages
+
+        if series or closes or bounds:
+            raise ValueError("chadwick units take no series, closes or bounds")
+        start = next((k for k, p in enumerate(paragraphs) if self._CHAPTER.match(p.text)), None)
+        if start is None or any(not self._TITLE.match(p.text.strip()) for p in paragraphs[:start]):
+            raise ValueError("chadwick: the text does not open with its title lines and CHAPTER I")
+        body, chapters = self._body(paragraphs[start:])
+        units: list[Unit] = []
+        n, at = 1, (0, 0)
+        cuts = []
+        while True:
+            found = self._find(body, n, at)
+            if found is None:
+                break
+            cuts.append((n, found))
+            at, n = (found[0], found[1] + 1), n + 1
+        if not cuts or cuts[0][1] != (0, 0):
+            raise ValueError("chadwick: section 1 does not open the text")
+        if len(cuts) != self.SECTIONS:
+            raise ValueError(f"chadwick: sections 1 to {len(cuts)} found, Book III has "
+                             f"{self.SECTIONS}; section {len(cuts) + 1} is not where expected")
+        for k, (n, (para, off)) in enumerate(cuts):
+            end = cuts[k + 1][1] if k + 1 < len(cuts) else (len(body), 0)
+            section = self._section(body, (para, off), end)
+            chapter = max(c for c, at_para in chapters if at_para <= para)
+            groups = group_passages(section, PASSAGE_WORDS)
+            uid = f"ch{chapter:02d}/s{n:03d}"
+            units.extend(Unit(uid if len(groups) == 1 else f"{uid}-{j:02d}", g)
+                         for j, g in enumerate(groups, 1))
+        return units
+
+    def _body(self, paragraphs: list) -> tuple[list, list[tuple[int, int]]]:
+        """The paragraphs without the chapter headings, verse lines joined to the line
+        before, and (chapter, first paragraph) for each chapter."""
+        body, chapters = [], []
+        for para in paragraphs:
+            m = self._CHAPTER.match(para.text)
+            if m:
+                chapters.append((_roman(m.group(1)), len(body)))
+                rest = para.text[m.end():].strip()
+                if not rest:
+                    continue
+                para = replace(para, text=rest, continues=False)
+            elif body and (not self._ENDS.search(body[-1].text) or para.text[:1].islower()):
+                para = replace(para, continues=True)
+            body.append(para)
+        numbers = [c for c, _ in chapters]
+        if numbers != list(range(1, len(numbers) + 1)):
+            raise ValueError(f"chadwick: chapters out of order: {numbers}")
+        return body, chapters
+
+    def _find(self, body: list, n: int, at: tuple[int, int]) -> tuple[int, int] | None:
+        """Where section `n` opens, at or after `at`: its number opening a paragraph, or
+        after a sentence's end (and any note call there)."""
+        pattern = re.compile(rf"(?:^|(?<=[.?!:\"”’'*)])\s+(?:\S{{1,3}}\s+)?)"
+                             rf"(?={self._number(n)}\s?[.,]{{1,2}}\s)")
+        for k in range(at[0], len(body)):
+            text = body[k].text
+            for m in pattern.finditer(text, at[1] if k == at[0] else 0):
+                pos = m.end()
+                return k, pos
+        return None
+
+    def _section(self, body: list, start: tuple[int, int], end: tuple[int, int]) -> list:
+        """The section's paragraphs from `start` to `end`, its number and note calls
+        taken out."""
+        (p0, o0), (p1, o1) = start, end
+        out = []
+        for k in range(p0, p1 + 1 if o1 else p1):
+            para = body[k]
+            text = para.text[o0 if k == p0 else 0:o1 if k == p1 else None]
+            if k == p0:
+                text = re.sub(rf"^{self._number_any()}\s?[.,]{{1,2}}\s+", "", text)
+                para = replace(para, continues=False)
+            text = re.sub(r" {2,}", " ", self._CALL.sub("", text)).strip()
+            if text:
+                out.append(replace(para, text=text))
+        return out
+
+    def _number_any(self) -> str:
+        return r"(?:[0-9IilOoS](?:\s?[0-9IilOoS]){0,2}|no)"
+
+
+def _roman(numeral: str) -> int:
+    values = {"I": 1, "V": 5, "X": 10, "L": 50}
+    total = 0
+    for k, ch in enumerate(numeral):
+        v = values[ch]
+        total += -v if k + 1 < len(numeral) and values[numeral[k + 1]] > v else v
+    return total
+
+
 UNITS: dict[str, Units] = {SchroederCanons.name: SchroederCanons(), Bounded.name: Bounded(),
                            Headed.name: Headed(), DeferrariExtracts.name: DeferrariExtracts(),
-                           ChrystalLetter.name: ChrystalLetter()}
+                           ChrystalLetter.name: ChrystalLetter(),
+                           RomanCatechism.name: RomanCatechism(),
+                           ChadwickSections.name: ChadwickSections()}
 
 
 def get_units(name: str) -> Units:

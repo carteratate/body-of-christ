@@ -3,10 +3,17 @@
 Status of each collection's source material and its publication to both stores
 (`publish.py`; see "Publishing a collection" below).
 
-| Collection | Source | Re-published (both stores) | Notes |
+Rows are sources (`publication.SOURCE_BUILDS`). Since 5.1b.3 the three papal sources
+publish together as `papal`, `canon-law` as `church-law`, and `medieval` as
+`theologians`, except Boethius, who publishes with `church-fathers` (README, "Source
+data").
+
+| Source | Source files | Re-published (both stores) | Notes |
 |---|---|---|---|
 | **bible** | local `sources/bible/eng-web-c_usfm/` (+ pericope JSON) | ✅ | WEB-C; passage = pericope clamped to chapter |
 | **catechism** | structure: local `sources/catechism/ccc.json` (nossbigg/catechism-ccc-json, vatican.va's English); words and footnotes: local `sources/catechism/us-edition/ccc-us.json`, the US edition from Catholic Cross Reference's Catechism search, built once by `scripts/fetch_us_catechism.py` (#279), then corrected to the USCCB's current online book by the reviewed table `ingest/catechism_corrections.json` (each entry checked against the page image) | ✅ | three-tier chunking; TOC fragments dropped; US text aligned by paragraph number (`ingest/catechism_us.py`); footnotes in `metadata.footnotes` |
+| **catechism** (Compendium) | local `sources/catechism/compendium-ccc.html`, the Compendium of the Catechism's English page on vatican.va (5.5) | not yet | `ingest/catechism_compendium.py`; one passage per question (598) with its answer; the CCC paragraph numbers under each question in `metadata.ccc_references`; the motu proprio, introduction, appendix and texts between sections left out |
+| **catechism** (Roman Catechism) | McHugh and Callan's 1923 translation, Internet Archive scan `sources/catechism/catechismofcounc0000jose/` (`_djvu.xml`, page map), read through 1.2f's OCR tool into the tracked `ocr/texts/mchugh-callan-roman-catechism.json`; Fordham's transcription (`sources/catechism/fordham-romancat.html`) only checks it (5.5) | not yet | `ingest/roman_catechism.py`; one passage per translators' section, their headings as labels; notes, introduction and appendices left out |
 | **church-fathers** | local `sources/church-fathers/*.xml` (vendored CCEL ANF/NPNF ThML) | ✅ | one document per (father, work) (128); book-structured works (City of God, etc.) flattened to `Book N · Chapter M` |
 | **summa** | local `sources/summa/summa.xml` (ThML) | ✅ | one passage per article part; apparatus expanded |
 | **encyclicals** | local `sources/encyclicals/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per encyclical (131); one passage per §; section or §-bucket chapters; footnotes stripped |
@@ -27,7 +34,7 @@ number of source files — one file can yield several documents (the medieval
 Re-check without touching either store:
 
 ```bash
-python3 -c "from publication import SOURCE_ADAPTERS as A; d=A['encyclicals'](); print(len(d))"
+python3 -c "from publication import SOURCE_BUILDS as B; d=B['encyclicals'](); print(len(d))"
 ```
 
 **Adapters read `manifest.json`, not the directory**, so a vendored file that no
@@ -46,7 +53,8 @@ Approved downloads that no PR has ingested yet wait in `sources/_incoming/<path>
 
 ## Publishing a collection
 
-Each entry in `publication.py`'s `SOURCE_ADAPTERS` registry returns a `list[Document]`
+Each entry in `publication.py`'s `SOURCE_ADAPTERS` registry (by published collection;
+`SOURCE_BUILDS` holds the same by source) returns a `list[Document]`
 of clean `Passage`s with anchors, chapter keys, and source-specific cleaning. To check
 one without writing anything:
 

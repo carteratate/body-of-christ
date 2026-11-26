@@ -23,7 +23,7 @@ npm run build          # production build
 npm run lint           # ESLint — the repo baseline is ZERO errors
 npm test               # vitest run
 
-# Backend (services/api) — deps in pyproject.toml; `python3` on this machine
+# Backend (services/api) — deps in pyproject.toml, pinned in requirements*.lock; `python3` on this machine
 uvicorn app.main:app --reload   # dev server on :8000
 python3 -m pytest tests/
 
@@ -46,6 +46,14 @@ docker run --env-file services/api/.env -p 8000:8000 theocorpus-api
 
 For a publish, a rollback or a store repair, read `datapipeline/README.md` before running
 commands.
+
+CI (`.github/workflows/ci.yml`) runs only the jobs a PR's paths can affect
+(`scripts/ci_changes.sh`): `web` for `apps/web/` and the two outside files its tests read,
+`api` and `datapipeline` for anything but documentation (`docs/` except `docs/adr/`, and
+`*.md`), and `api-image`, which builds `services/api/Dockerfile` without pushing it, for
+`services/api/`. A skipped job reports success. **When a test starts reading a file in another
+area of the repo, add that path to `scripts/ci_changes.sh`**, or CI will skip the test
+for PRs that change only that file. Pushes to `master` always run every job.
 
 ---
 
@@ -91,6 +99,13 @@ links to `/search`.
 
 SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tables.
 
+CI enforces it (`scripts/check_migrations.py`, in the `api` job): a new or changed migration
+fails on DROP TABLE/COLUMN/VIEW/TYPE/SCHEMA/FUNCTION/POLICY, RENAME, ALTER COLUMN … TYPE,
+SET NOT NULL or TRUNCATE outside the `staging` schema, unless the file has a line
+`-- non-additive: <what breaks for the running API, who approved it>`. Editing, renaming
+or deleting a migration already on `master` fails unless the file says
+`-- migration-edit-approved: <reason>`, and a new file may not reuse a number.
+
 ### Core (V1)
 - `user_usage` — the search rate-limit counters
 - `chat_sessions`, `chat_messages` — no longer written since the V1 chat API was removed;
@@ -113,6 +128,12 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
 - `reading_progress` — per-document reader position (0027)
 - `product_feedback` — in-app feedback, including anonymous (0028–0030)
 - `user_preferences.last_standard_quota` — remembers the pre-focused quota (0034); see §18
+- `user_preferences.result_card_style` — Settings' "Result card style" (0047): `tint`
+  (today's look, the default) or `plain`, a result card drawn like a saved passage.
+  **Applied to production on 23 Nov 2026** (ledger `20261123175943`). The cards read
+  `lib/result-card-style.ts`, which AppShell fills with the account's value and guests
+  read from this browser. `routes/preferences.py` still works without the column
+  (rechecked every 5 min), reporting `null` so the web keeps the browser's own choice
 - `search_costs` — per-search provider cost, written best-effort from the SSE generator's
   `finally` in `rag/pipeline.py`, so it covers every exit including a client leaving
   mid-explanations (`completed = false`), for authenticated and guest searches (0036).
@@ -278,7 +299,7 @@ SQL migrations ONLY. Schema changes must be additive. RLS on all user-owned tabl
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040–0045 are committed (0044 and 0045 were applied on 16 Nov 2026); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0048 are committed (0044 and 0045 were applied on 16 Nov 2026; 0047 and 0046, which widened `documents_collection_check` to the new keys for 5.1b.3, on 23 Nov 2026; 0048, 5.1b.4's narrowing of that constraint to the eight keys, on 24 Nov 2026, ledger `20261125025359`, after the zero-old-keys count read 0 everywhere, Qdrant included); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -327,8 +348,9 @@ and it hands the runner three derived values: `focused`, `terminal_candidate_bud
 failures consistently. See §18.
 
 **HyDE writes one passage per collection, except** the Bible (its genres, above) and `papal`
-(5.1b.1), which writes one per kind of papal document its genre filter leaves on, in the
-prompt of that kind's old key (`hyde_s25.papal_hyde_kinds`; Carter, 22 Nov 2026).
+(5.1b.1), which writes one per kind of papal document its genre filter leaves on
+(encyclical, apostolic exhortation, other), in the prompt its old collection used
+(`hyde_s25._PAPAL_KINDS`, `papal_hyde_kinds`; Carter, 22 Nov 2026).
 
 **A plan can narrow a collection to some genres and issuers** (item 5.1a, `SearchPlan.scopes`,
 `rag/collection_scope.py`). The request lists what to search; a `CollectionScope` holds the
@@ -405,6 +427,23 @@ No LangGraph or agent frameworks. No pgvector for retrieval.
   and still logs to stderr.
 - Frontend: TypeScript, HTTP calls centralized in `src/lib/api.ts`, no DB SDK in frontend.
 - Lint baseline is zero errors. Leave no new warnings in files you touch.
+- Python dependencies are locked. Edit `services/api/pyproject.toml` or
+  `datapipeline/requirements.txt`, then run `scripts/lock_python_deps.sh` (needs uv) and
+  commit the regenerated `requirements*.lock`. The production image and CI install only
+  from the locks, and CI fails when a lock is out of date with its input. The script
+  keeps existing pins; `--upgrade-package NAME` moves one on purpose.
+- Python lint is zero errors too: `ruff check services/api datapipeline scripts` (Pyflakes
+  rules, `ruff.toml`). `services/api/app` is type-checked by basedpyright (pyright's
+  standard rules) against `services/api/.basedpyright/baseline.json`, which holds the 153
+  errors that existed when the check was added: CI fails only on new ones. When you fix
+  some, run `basedpyright --writebaseline` in `services/api` and commit the smaller
+  baseline. Both tools come with `requirements-dev.lock`.
+- Dependency audits in CI: `npm audit --omit=dev --audit-level=critical` (web job; every
+  other npm finding, from high down and in dev dependencies, is counted in the job summary
+  but does not block) and `pip-audit` on `services/api/requirements.lock` and
+  `datapipeline/requirements.lock` (api job, after the tests; any finding blocks). An
+  advisory published today can turn an unrelated PR red: upgrade the package, or, if it
+  cannot apply, add `--ignore-vuln ID` to both `pip-audit` lines with the reason.
 
 ---
 
@@ -568,20 +607,25 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 ## 15. Collections — Canonical Source
 
-- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`). It holds
-  two vocabularies while corpus cleanup 5.1b runs: the eight `CANONICAL_COLLECTIONS` (with
-  `papal`, `church-law` and `theologians`) and the five old keys in `LEGACY_COLLECTIONS`, which
-  map to them (`encyclicals`, `apostolic-exhortations` and `papal-documents` to genres of
-  `papal`; `canon-law` to `church-law`; `medieval` to `theologians`). Since 5.1b.2 the web
-  offers only the eight new keys (labels: Papal documents, Church law, Theology &
-  Spirituality) and translates any old key it reads (`canonicalCollectionKey` in
-  `lib/collections.ts`; a restored old papal search becomes a Papal documents genre
-  selection, `canonicalSearchFilters`). `collection_scope.reads` decides which stored values a key reads,
-  so both vocabularies work whether or not 5.1b.3 has rewritten the stored values, and a
-  search's results are labelled with the key it sent. A plan drops an old key named beside
-  its new one and logs `legacy_collection_key`; 5.1b.4 removes the old keys.
-- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection, and
-  `LEGACY_COLLECTIONS`, the old keys' meaning, mirroring the API's).
+- **Single source of truth:** `services/api/app/rag/constants.py` (`VALID_COLLECTIONS`, equal
+  to `CANONICAL_COLLECTIONS`): the eight collections, with `papal`, `church-law` and
+  `theologians` (labels Papal documents, Church law, Theology & Spirituality). Corpus cleanup
+  5.1b merged `encyclicals`, `apostolic-exhortations` and `papal-documents` into `papal` and
+  renamed `canon-law` and `medieval`; 5.1b.4 removed the old keys from the API (a plan drops
+  one like any unknown key) and from `documents_collection_check` (0048).
+- **Frontend mirror:** `apps/web/src/lib/collections.ts` (label + CSS var per collection). It
+  keeps `LEGACY_COLLECTIONS`, the old keys' meaning, for keys a browser still holds (a
+  guest's saved draft, an old tab): `canonicalCollectionKey` translates them, and a
+  restored old papal search becomes a Papal documents genre selection
+  (`canonicalSearchFilters`), so the web never sends an old key (Carter, 23 Nov 2026).
+- **Datapipeline (5.1b.3):** `publication.SOURCE_ADAPTERS` builds the eight published
+  collections; `SOURCE_BUILDS` builds the ten sources (`sources/<key>/`, the old names),
+  which the work registry, the 0.1a to 0.1c checks, their known defects and the embedding
+  overlap stay keyed by (`collection_keys.source_of`). Until 5.1b.3's publish is applied,
+  live rows carry the old keys, and 2.2w reads them as part of the new key
+  (`collection_keys.live_keys`). Boethius moves from `theologians` to `church-fathers` only
+  in a stage of both (`publish.py stage --collection` repeats); a Fathers-only stage
+  before then leaves him where he is (`publication.place_boethius`).
 - **To add one:** update `constants.py`, sync `collections.ts`, add a `--color-collection-*` token in `globals.css`, and add a migration extending the DB collection constraint.
 
 ---
@@ -626,7 +670,7 @@ What focused changes, all derived from the plan:
 
 | | Standard | Focused |
 |---|---|---|
-| Collections | 1–8 (the API also accepts the five old keys until 5.1b.4) | exactly 1 |
+| Collections | 1–8 | exactly 1 |
 | `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
 | `max_passages_per_source` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |
@@ -635,9 +679,9 @@ What focused changes, all derived from the plan:
 takes no cap; it is bounded by `min(quota, _FLOOR_N)` and spreads across sources itself.
 
 **The cap is per *source*, and a source is the reader chapter for the chapter-keyed
-collections** in `rag/dedup.py` (`summa`, `catechism`, `canon-law` and `church-law`, `bible`) — see
-`dedup.source_key`. Those four are each stored as a single document (the Bible as one per
-book), so an earlier per-*document* cap limited a focused search to 4 results in total
+collections** in `rag/dedup.py` (`summa`, `catechism`, `church-law`, `bible`) — see
+`dedup.source_key`. Those four were each stored as a single document (the Bible as one per
+book; the Catechism collection gains the Compendium and the Roman Catechism in 5.5), so an earlier per-*document* cap limited a focused search to 4 results in total
 however many distinct articles or psalms ranked, which made issue #28's "return exactly
 ten" unreachable for exactly the collections focused search is most used on. Issue #105 is
 that defect reported from production; keying the cap per chapter fixed it.
@@ -685,16 +729,20 @@ winner count to it, so ten works without a special case.
 
 ## Active work: corpus cleanup
 
-The corpus is being fixed and republished before any collection is added or reorganized.
-The Phase 4 republish went live on 20 Nov 2026 (`republish-2026-10`, #192); its rollback window
-runs to 4 Dec 2026, and until its lock entry is removed then (4.1b step 13) no other publish can run.
-A rollback in that window restores a corpus with no stored Summa tree, and the Summa reader would
-fall back to its flat chapter list.
+The Phase 4 republish went live on 20 Nov 2026 (`republish-2026-10`, #192), and Phase 5 is
+under way. Carter closed the republish's rollback window early (21 Nov 2026), so its lock entry
+is gone and other publishes can run; only part 5 of 4.1b step 13 waits for 4 Dec 2026 (deleting
+the backups' user-data files and the Qdrant snapshot; the corpus copies are kept).
+
+**Publishing now:** the publish thread runs batches one at a time (Carter, 24 Nov 2026), under
+the standing decisions in the plan's Decision log. Each live step still needs its lock-file PR
+and Carter's approval when it runs (0.4). A publish's rollback window closes once its smoke
+checks pass, unless Carter says otherwise when he approves the apply: the publish thread then
+deletes the previous Qdrant collection without asking again, quoting that decision, and stops
+and asks only if a smoke check fails (Decision log "Publishing: windows, lock PRs and batches").
+
 Start from the "Start here" section of `docs/2026-09-28-corpus-cleanup-plan.md`; detailed
 work specifications are in `docs/corpus-cleanup/`. The plan's Decision log is settled.
-The findings of the 6 Oct 2026 corpus reviews (C-01 to C-30) are routed to their items in
-`docs/corpus-cleanup/REVIEW-GAPS-PLAN.md`; the order after 2.1 is 0.1d (their checks), then Phase 1,
-with 1.7 waiting for research item R7.
 
 ---
 

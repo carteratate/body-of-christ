@@ -258,7 +258,7 @@ async def test_collection_below_keep_floor_gets_terminal_reranker_seat():
     floor = settings.cohere_keep_score_floor
     per_col = {
         "bible": [_ranked(0, 0.9, "bible")],
-        "canon-law": [_ranked(1, floor - 0.2, "canon-law")],  # all below floor
+        "church-law": [_ranked(1, floor - 0.2, "church-law")],  # all below floor
     }
     captured = {}
 
@@ -273,12 +273,12 @@ async def test_collection_below_keep_floor_gets_terminal_reranker_seat():
     ):
         _out, all_scored = await rerank.run(
             RerankConfig(use_cohere=True, llm_provider="haiku"),
-            {"bible": [_cand(0)], "canon-law": [_cand(1, "canon-law")]}, "q", 4,
+            {"bible": [_cand(0)], "church-law": [_cand(1, "church-law")]}, "q", 4,
             CostTracker(),
         )
 
-    assert "canon-law" in {c.collection for c in captured["pool"]}
-    assert "canon-law" in {c.collection for c in all_scored}
+    assert "church-law" in {c.collection for c in captured["pool"]}
+    assert "church-law" in {c.collection for c in all_scored}
 
 
 # --- regression: silent-failure audit findings ---
@@ -293,11 +293,11 @@ async def test_llm_rejected_chunk_is_not_resurrected_at_its_cohere_score():
 
     per_col = {
         "bible": [_ranked(0, 0.70, "bible")],
-        "canon-law": [_ranked(1, 0.93, "canon-law")],
+        "church-law": [_ranked(1, 0.93, "church-law")],
     }
 
     async def _listwise(pool, query, tracker, provider, step="x"):
-        out = [_ranked(0, 0.80, "bible"), _ranked(1, 0.05, "canon-law")]
+        out = [_ranked(0, 0.80, "bible"), _ranked(1, 0.05, "church-law")]
         out[1].include = False          # listwise derives include from the score
         return out
 
@@ -308,17 +308,17 @@ async def test_llm_rejected_chunk_is_not_resurrected_at_its_cohere_score():
     ):
         ranked, all_scored = await rerank.run(
             RerankConfig(use_cohere=True, llm_provider="haiku"),
-            {"bible": [_cand(0)], "canon-law": [_cand(1, "canon-law")]}, "q", 4,
+            {"bible": [_cand(0)], "church-law": [_cand(1, "church-law")]}, "q", 4,
             CostTracker(),
         )
 
     # The rejected chunk appears in all_scored only at its LLM score, never 0.93.
-    canon = [r for r in all_scored if r.collection == "canon-law"]
+    canon = [r for r in all_scored if r.collection == "church-law"]
     assert canon and canon[0].reranker_score == 0.05
 
     final = quota_cap.run(
         collection_guarantee.run(await dedup.run(ranked), all_scored,
-                                 ["bible", "canon-law"]), 4,
+                                 ["bible", "church-law"]), 4,
     )
     assert final[0].collection == "bible", (
         f"reranker-rejected chunk resurfaced at rank 1: "
@@ -331,13 +331,13 @@ async def test_guarantee_candidates_use_terminal_reranker_scores_only():
     floor = settings.cohere_keep_score_floor
     per_col = {
         "bible": [_ranked(0, 0.90, "bible")],
-        "canon-law": [_ranked(1, floor - 0.02, "canon-law")],  # below keep floor
+        "church-law": [_ranked(1, floor - 0.02, "church-law")],  # below keep floor
     }
 
     async def _listwise(pool, query, tracker, provider, step="x"):
         return [
             _ranked(0, 0.80, "bible"),
-            _ranked(1, 0.20, "canon-law"),
+            _ranked(1, 0.20, "church-law"),
         ]
 
     with (
@@ -347,11 +347,11 @@ async def test_guarantee_candidates_use_terminal_reranker_scores_only():
     ):
         _r, all_scored = await rerank.run(
             RerankConfig(use_cohere=True, llm_provider="haiku"),
-            {"bible": [_cand(0)], "canon-law": [_cand(1, "canon-law")]}, "q", 4,
+            {"bible": [_cand(0)], "church-law": [_cand(1, "church-law")]}, "q", 4,
             CostTracker(),
         )
-    assert "canon-law" in {r.collection for r in all_scored}
-    assert next(r for r in all_scored if r.collection == "canon-law").reranker_score == 0.20
+    assert "church-law" in {r.collection for r in all_scored}
+    assert next(r for r in all_scored if r.collection == "church-law").reranker_score == 0.20
 
 
 def test_llm_pool_is_globally_score_sorted():

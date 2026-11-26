@@ -12,7 +12,7 @@ The rules, from the spec and Carter's answers of 13 Nov 2026 (Decision log "Sour
 credits for document facts (2.3)"):
 
 - `genre`: a papal document's `metadata["genre"]` (1.3b, `papal_genres.csv`); `catechism`
-  and `code` for the Catechism and the Code; a Church Fathers work's from
+  and `code` for the Catechism and the Code, `compendium` for the Compendium (5.5); a Church Fathers work's from
   `FATHERS_GENRES` (3.2); otherwise none.
 - `form`: how the papal chancery issued a papal document, `bull` or `brief`, from its
   `metadata["form"]` (1.3b, `papal_genres.csv`; issue #330); none where none is recorded,
@@ -44,7 +44,8 @@ import card_notes
 import identity
 from model import Document
 
-PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
+# The papal collection under its key since 5.1b.3, and the old keys it replaces.
+PAPAL_COLLECTIONS = ("papal", "encyclicals", "apostolic-exhortations", "papal-documents")
 HOLY_SEE = ("holy-see", "Holy See")
 VATICAN_CREDIT = "© Dicastery for Communication – Libreria Editrice Vaticana"
 
@@ -56,10 +57,16 @@ YEAR = {
     "summa": 1265,
 }
 DATE_DISPLAY = {"summa": "1265 to 1274"}
+# A genre the collection's own does not give (D5): the Compendium of the Catechism (5.5).
+GENRES = {"catechism/compendium": "compendium"}
 
 # One credit naming every edition a document holds (Carter's answer 5A). Each starts
 # with the main row's credit line, which `test_document_facts` checks.
 COMBINED_CREDITS = {
+    # Stromata III, which ANF left in Latin, in Chadwick's English (#399; Carter, 21 Nov
+    # 2026).
+    "church-fathers/second-century/vi.iv":
+        "Sourced via CCEL.org; Book III translated by Henry Chadwick (1954)",
     "councils/ecum-03-council-of-ephesus":
         "Sourced via CCEL.org; Nestorius's second letter to Cyril translated by James "
         "Chrystal (1895)",
@@ -276,7 +283,7 @@ def _issuer(document: Document) -> tuple[str | None, str | None]:
     if document.collection == "councils":
         label = meta.get("council") or document.title
         return issuer_slug(label), label
-    if document.collection in ("catechism", "canon-law"):
+    if document.collection in ("catechism", "canon-law", "church-law"):
         return HOLY_SEE
     return None, None
 
@@ -286,7 +293,10 @@ def _genre(document: Document, work_id: str) -> str | None:
         return FATHERS_GENRES[work_id]
     if document.collection in PAPAL_COLLECTIONS:
         return (document.metadata or {}).get("genre")
-    return {"catechism": "catechism", "canon-law": "code"}.get(document.collection)
+    if work_id in GENRES:
+        return GENRES[work_id]
+    return {"catechism": "catechism", "canon-law": "code", "church-law": "code"
+            }.get(document.collection)
 
 
 def _form(document: Document) -> str | None:

@@ -15,6 +15,7 @@ import pytest
 
 from checks.health import load_snapshot
 from scripts import export_live_snapshot as E
+from tests.pg_corpus import postgres_unavailable
 
 DOC = "11111111-1111-1111-1111-111111111111"
 P1 = "22222222-2222-2222-2222-222222222222"
@@ -237,9 +238,9 @@ def _run(args):
 @pytest.fixture()
 def database():
     if os.geteuid() == 0:
-        pytest.skip("initdb cannot run as root")
+        postgres_unavailable("initdb cannot run as root")
     if not all(shutil.which(c) for c in ("initdb", "pg_ctl")):
-        pytest.skip("local PostgreSQL tools are unavailable")
+        postgres_unavailable("local PostgreSQL tools are unavailable")
     short_tmp = "/private/tmp" if Path("/private/tmp").is_dir() else "/tmp"
     with tempfile.TemporaryDirectory(prefix="tc-export-", dir=short_tmp) as directory:
         root = Path(directory)

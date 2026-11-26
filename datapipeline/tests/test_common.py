@@ -4,9 +4,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import re
 import defusedxml.ElementTree as ET
 from ingest.common import (
-    parse_thml_string, ThmlDocument,
-    _detect_chunk_level, _detect_is_multi_author,
-    _short_author_name, _maybe_title_case, _build_reference,
+    parse_thml_string, _detect_chunk_level, _detect_is_multi_author,
+    _short_author_name, _maybe_title_case,
 )
 
 STANDARD_THML = """<?xml version="1.0" encoding="UTF-8"?>

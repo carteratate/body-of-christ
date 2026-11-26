@@ -15,7 +15,7 @@ import { OverviewNotes } from "@/components/common/PassageFacts";
 import { parseOverviewNotes } from "@/lib/card-notes";
 import { canonicalCollectionKey, getCollectionMeta } from "@/lib/collections";
 import { LIFT } from "@/lib/lift";
-import { hasReaderReturnMarker, isReaderReturnKey, movedReaderHref, type ReaderOrigin } from "@/lib/readerNavigation";
+import { hasReaderReturnMarker, isReaderReturnKey, movedReaderHref, readerSectionCollection, type ReaderOrigin } from "@/lib/readerNavigation";
 import { NavPendingBar } from "@/components/common/NavPending";
 import { useReaderBack } from "./useReaderBack";
 import { getGuestSessionToken } from "@/lib/trial";
@@ -175,9 +175,11 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   const matchingChapters = useMemo(() => {
     if (contents) return [];   // the tree does its own filtering
     return placeHeldTexts(chapters, held)
-      .filter((item) => matchesEntry(item, query, documentInfo?.collection ?? ""));
-  }, [chapters, contents, documentInfo?.collection, held, query]);
-  const visibleChapters = matchingChapters.slice(0, visibleLimit);
+      .filter((item) => matchesEntry(item, query, documentInfo ? readerSectionCollection(documentInfo) : ""));
+  }, [chapters, contents, documentInfo, held, query]);
+  // A Bible book shows every chapter at once: its grid is small boxes, and the
+  // longest book (Psalms, 150) still fits. Other documents load in batches.
+  const visibleChapters = documentInfo?.collection === "bible" ? matchingChapters : matchingChapters.slice(0, visibleLimit);
 
   function openChapter(chapterKey: string, anchor?: string | null) {
     const next = new URLSearchParams({ from: origin, chapter: chapterKey });
@@ -254,7 +256,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
   }
 
   const collectionMeta = getCollectionMeta(documentInfo.collection);
-  const language = sectionLanguage(documentInfo.collection);
+  const language = sectionLanguage(readerSectionCollection(documentInfo));
   // With held texts among them the cells are not all sections.
   const entryPlural = held.length > 0 ? "entries" : language.plural;
   const facts = documentInfo.facts ?? null;
@@ -420,7 +422,7 @@ export function DocumentOverview({ docId, mobileHeader, isGuest = false }: Props
                     ))}
                   </div>
                 )}
-                {visibleLimit < matchingChapters.length && (
+                {visibleChapters.length < matchingChapters.length && (
                   <div className="mt-4 flex flex-col items-center gap-2">
                     <p className="text-xs text-brand-muted">Showing {visibleChapters.length.toLocaleString()} of {matchingChapters.length.toLocaleString()} {entryPlural}</p>
                     <button type="button" onClick={() => setVisibleLimit((limit) => limit + SECTION_BATCH_SIZE)} className="min-h-11 rounded-md border border-brand-accent px-4 text-sm font-medium text-brand-accent transition-colors hover:bg-brand-accent hover:text-brand-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent">

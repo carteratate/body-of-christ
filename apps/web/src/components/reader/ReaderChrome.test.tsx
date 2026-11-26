@@ -23,7 +23,7 @@ describe("ReaderChrome", () => {
   it("keeps the TheoCorpus brand beside the mobile app-menu trigger", () => {
     render(
       <ReaderChrome
-        document={{ id: "doc-1", title: "Catechism", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
+        document={{ id: "doc-1", title: "Catechism of the Catholic Church", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
         toc={[{ chapter_key: "chapter-1", chapter_label: "Chapter 1" }]}
         currentChapterKey="chapter-1"
         backLabel="Back to Library"
@@ -47,7 +47,7 @@ describe("ReaderChrome", () => {
     expect(openMobileNavigation).toHaveBeenCalledWith("reader-app-nav-trigger");
   });
 
-  it("uses a visible source-aware overview action", () => {
+  it("names the overview action for the document", () => {
     const onBrowseSections = vi.fn();
     render(
       <ReaderChrome
@@ -67,9 +67,41 @@ describe("ReaderChrome", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Browse Paragraphs" }));
+    fireEvent.click(screen.getByRole("button", { name: "Back to Catechism" }));
     expect(onBrowseSections).toHaveBeenCalledOnce();
     expect(screen.queryByText("Contents")).toBeNull();
+  });
+
+  it("names the overview action for the document in every collection, cutting a long title to fit", () => {
+    for (const [collection, title] of [
+      ["bible", "Genesis"],
+      ["summa", "Summa Theologiae"],
+      ["church-law", "Code of Canon Law"],
+      ["vatican-ii", "Pastoral Constitution on the Church in the Modern World (Gaudium et Spes)"],
+    ]) {
+      render(
+        <ReaderChrome
+          document={{ id: "doc-1", title, author: null, collection, year: null, metadata: {}, chunk_count: 1 }}
+          toc={[]}
+          currentChapterKey={null}
+          backLabel="Back to Search"
+          onBack={vi.fn()}
+          onBrowseSections={vi.fn()}
+          onJump={vi.fn()}
+          fontSize="medium"
+          spacing="comfortable"
+          onFontSizeChange={vi.fn()}
+          onSpacingChange={vi.fn()}
+          onReportContent={vi.fn()}
+          reportHref="/feedback"
+        />,
+      );
+      const overview = screen.getByRole("button", { name: `Back to ${title}` });
+      expect(overview.textContent).toBe(`Back to ${title}`);
+      expect(overview.querySelector("span")?.className).toContain("truncate");
+      expect(screen.queryByText(/^Browse /)).toBeNull();
+      cleanup();
+    }
   });
 
   it("orders the reading title before the explicit back and browse controls", () => {
@@ -92,7 +124,7 @@ describe("ReaderChrome", () => {
     );
 
     const back = screen.getByRole("button", { name: "Back to Library" });
-    const browse = screen.getByRole("button", { name: "Browse Paragraphs" });
+    const browse = screen.getByRole("button", { name: "Back to Catechism of the Catholic Church" });
     const title = screen.getByText("Catechism of the Catholic Church");
     expect(title.compareDocumentPosition(back) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(back.compareDocumentPosition(browse) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -207,7 +239,7 @@ describe("ReaderChrome", () => {
     const onReportContent = vi.fn();
     render(
       <ReaderChrome
-        document={{ id: "doc-1", title: "Catechism", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
+        document={{ id: "doc-1", title: "Catechism of the Catholic Church", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
         toc={[]}
         currentChapterKey={null}
         backLabel="Back to Search"
@@ -231,7 +263,7 @@ describe("ReaderChrome", () => {
 
   it("marks Back busy while its navigation is pending", () => {
     const props = {
-      document: { id: "doc-1", title: "Catechism", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 },
+      document: { id: "doc-1", title: "Catechism of the Catholic Church", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 },
       toc: [],
       currentChapterKey: null,
       backLabel: "Back to Library",

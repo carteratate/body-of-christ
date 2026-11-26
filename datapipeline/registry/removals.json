@@ -1746,7 +1746,9 @@
   "span": null,
   "judgment": null,
   "added_by": "1.5b",
-  "added_on": "2026-11-11"
+  "added_on": "2026-11-11",
+  "closed_by": "400",
+  "closed_on": "2026-11-22"
  },
  {
   "id": "rm-0001",
@@ -6186,7 +6188,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4011",
@@ -6202,7 +6206,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4012",
@@ -6218,7 +6224,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4014",
@@ -6234,7 +6242,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4015",
@@ -6250,7 +6260,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4016",
@@ -6266,7 +6278,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4017",
@@ -6282,7 +6296,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4018",
@@ -6298,7 +6314,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4019",
@@ -6314,7 +6332,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4020",
@@ -6330,7 +6350,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4021",
@@ -6346,7 +6368,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4003",
@@ -6362,7 +6386,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4022",
@@ -6378,7 +6404,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4023",
@@ -6394,7 +6422,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4024",
@@ -6410,7 +6440,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4025",
@@ -6426,7 +6458,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4026",
@@ -6442,7 +6476,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4027",
@@ -6458,7 +6494,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4028",
@@ -6474,7 +6512,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4029",
@@ -6490,7 +6530,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4030",
@@ -6506,7 +6548,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4031",
@@ -6522,7 +6566,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4004",
@@ -6538,7 +6584,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4032",
@@ -6554,7 +6602,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4033",
@@ -6570,7 +6620,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4034",
@@ -6586,7 +6638,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4035",
@@ -6602,7 +6656,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4005",
@@ -6618,7 +6674,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4006",
@@ -6634,7 +6692,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4007",
@@ -6650,7 +6710,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4008",
@@ -6666,7 +6728,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4009",
@@ -6682,7 +6746,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4010",
@@ -6698,7 +6764,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-4013",
@@ -6714,7 +6782,9 @@
   "church_act": null,
   "judgment": null,
   "added_by": "3.3",
-  "added_on": "2026-11-14"
+  "added_on": "2026-11-14",
+  "closed_by": "#399",
+  "closed_on": "2026-11-21"
  },
  {
   "id": "rm-1427",

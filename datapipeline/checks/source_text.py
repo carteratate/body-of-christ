@@ -37,6 +37,8 @@ from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 from checks.language import latin_runs, mostly_foreign
 from ingest.editorial import PLAIN_CALLERS
 from ingest.editorial_keep import kept_quotes, quoted_text
+from ingest.stromata_chadwick import BOOK as _CHADWICK_BOOK
+from ingest.stromata_chadwick import SOURCE_FILE as _CHADWICK_FILE
 
 SOURCES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "sources")
 
@@ -47,6 +49,8 @@ REGIONS = ("body", "note", "toc", "heading", "apparatus", "withheld", "excluded"
 
 
 PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
+# The file the Catechism of the Catholic Church is measured on (#279).
+CCC_FILE = "us-edition/ccc-us.json"
 
 
 class SourceUnit(NamedTuple):
@@ -167,10 +171,15 @@ def withheld_canons(path: str = REMOVALS_PATH) -> frozenset[str]:
 
 _withheld_chapters: dict[str, frozenset[tuple[str, str]]] = {}
 
+# (ThML file, div id) of each chapter whose untranslated text another edition's English
+# replaces: ANF's Latin Stromata III, built from Chadwick's translation (#399). Its Latin
+# is withheld under rule E as before; no passage reads it.
+REPLACED_CHAPTERS = frozenset({(_CHADWICK_FILE, _CHADWICK_BOOK)})
+
 
 def withheld_chapters(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
     """(ThML file, div id) of each chapter every passage of which the removal registry
-    retires because no English exists (rule E, 3.3): Stromata III ch. 3, Divine
+    retires because no English exists (rule E, 3.3): Divine
     Institutes VI.23, On the Workmanship of God 12. A chapter that keeps a passage is
     not listed; its Latin paragraphs are `mostly_foreign`. Read from the registry files
     beside `path`: a passage row's anchor is `<div>` or `<div>/<piece>`, and its work's
@@ -262,8 +271,9 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     listed in editorial_divs.json, and everything inside them, are "apparatus", and so
     is a paragraph a removal registry span entry records (`removed_paragraphs`), and the
     own paragraphs of a div `editorial_own_text` lists. A body paragraph mostly in another
-    language (`checks.language.mostly_foreign`), or in a chapter the removal registry
-    retires whole for rule E (`withheld_chapters`), is "withheld" (3.3); a body paragraph in
+    language (`checks.language.mostly_foreign`), in a chapter the removal registry
+    retires whole for rule E (`withheld_chapters`), or in one another edition's English
+    replaces (`REPLACED_CHAPTERS`), is "withheld" (3.3, #399); a body paragraph in
     a unit rules A to C take out (`excluded_divs`) is "excluded" (3.1). A quotation of the author that
     `ingest.editorial_keep` keeps from an editorial div is body under its passage's
     chapter key (`<div>/retractations`), and a footnote caller printed as a plain digit
@@ -311,7 +321,8 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                     own = "apparatus" if region == "body" and (
                         _paragraph_sha1(text) in removed or div_id in own_text) else region
                     if own == "body" and (mostly_foreign(text)
-                                          or (source_file, div_id) in withheld):
+                                          or (source_file, div_id) in withheld
+                                          or (source_file, div_id) in REPLACED_CHAPTERS):
                         own = "withheld"
                     for q in quotes.get(child.get("id"), [])[:1]:
                         a, b = quoted_text(text, q, child.get("id"))
@@ -950,6 +961,48 @@ def ccc_us_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     return units
 
 
+# The Compendium's references line under each question ("27-30 44-45"), and a footnote
+# of its introduction ("[1] John Paul II, …").
+_COMPENDIUM_NUMBERS = re.compile(r"^[\d\s,;\-–]+$")
+_COMPENDIUM_NOTE = re.compile(r"^\[\d+\]")
+
+
+def compendium_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
+    """vatican.va's Compendium of the Catechism (5.5). One unit per paragraph or list item
+    of the page's `#corpo`: the language bar and contents before the motu proprio's
+    heading are contents, centred lines headings, the introduction's "[n]" footnotes
+    notes, and the line of CCC paragraph numbers under each question apparatus (the
+    adapter keeps it in metadata). Everything else is body, the motu proprio,
+    introduction, appendix and the texts between sections included, so what the adapter
+    leaves out shows as uncovered."""
+    source_file = source_file or os.path.basename(path)
+    with open(path, "rb") as f:
+        soup = BeautifulSoup(f.read().decode("latin-1"), "html.parser")
+    units = []
+    contents = True
+    for el in soup.find(id="corpo").find_all(["p", "li"]):
+        if el.name == "p" and el.find_parent("li") is not None:
+            continue
+        for br in el.find_all("br"):
+            br.replace_with(" ")
+        text = " ".join(el.get_text("").split())
+        if not text:
+            continue
+        contents = contents and text != "MOTU PROPRIO"
+        if contents:
+            region = "toc"
+        elif el.get("align") == "center":
+            region = "heading"
+        elif _COMPENDIUM_NOTE.match(text):
+            region = "note"
+        elif _COMPENDIUM_NUMBERS.match(text):
+            region = "apparatus"
+        else:
+            region = "body"
+        units.append(SourceUnit(source_file, None, text, region))
+    return units
+
+
 # --------------------------------------------------------------------------- files
 
 # Collections whose files are listed in sources/<collection>/manifest.json, by format.
@@ -997,8 +1050,9 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
         return sorted(os.path.relpath(p, base)
                       for p in glob(os.path.join(base, "eng-web-c_usfm", "*.usfm")))
     if collection == "catechism":
-        # The words come from the US edition (#279); ccc.json supplies only structure.
-        return ["us-edition/ccc-us.json"]
+        # The CCC's words come from the US edition (#279); ccc.json supplies only
+        # structure. The Compendium is vatican.va's page (5.5).
+        return [CCC_FILE, "compendium-ccc.html"]
     if collection == "summa":
         return ["summa.xml"]
     raise ValueError(f"unknown collection {collection!r}")
@@ -1010,6 +1064,8 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
         return summa_units(path, source_file)
     if source_file.endswith(".xml"):
         return thml_units(path, source_file)
+    if collection == "catechism" and source_file.endswith(".html"):
+        return compendium_units(path, source_file)
     if source_file.endswith(".html"):
         return html_units(path, source_file, papal=collection in PAPAL_COLLECTIONS,
                           canon_law=collection == "canon-law",

@@ -34,17 +34,11 @@ _COSINE_THRESHOLD = 0.9
 # own points say which line applies, whatever the alias points at.
 _PREFIXED_THRESHOLDS = {
     "summa": 0.950,
-    "canon-law": 0.912,
     "councils": 0.928,
-    "encyclicals": 0.928,
-    "apostolic-exhortations": 0.930,
-    "papal-documents": 0.930,
-    "medieval": 0.931,
     "church-fathers": 0.923,
     "catechism": 0.919,
-    # A result carries the key it was searched under (5.1b.1). The new keys take their
-    # old collections' lines; `papal` takes the line two of its three old keys share.
-    # 5.1b.3 measures the merged collection when it rewrites the stored values.
+    # `papal` takes the line two of its three old collections shared; `church-law` and
+    # `theologians` keep the lines of `canon-law` and `medieval` (5.1b).
     "papal": 0.930,
     "church-law": 0.912,
     "theologians": 0.931,
@@ -97,7 +91,7 @@ _PER_SOURCE_CAP = 2
 # pagination — and ingest already writes chapter_key=make_anchor(book_slug, chapter)
 # on every verse chunk.
 _CHAPTER_KEYED_COLLECTIONS: frozenset[str] = frozenset({
-    "summa", "catechism", "canon-law", "church-law", "bible",
+    "summa", "catechism", "church-law", "bible",
 })
 
 # Collections that use the chapter grain in FOCUSED search only. Church Fathers holds
