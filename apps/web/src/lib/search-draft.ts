@@ -33,6 +33,7 @@ export interface SearchDraft {
 export type SearchDraftEvent =
   | { readonly type: "collection-toggled"; readonly collection: string }
   | { readonly type: "quota-selected"; readonly quota: SearchQuota }
+  // No control sends this until a second translation exists (see CollectionToggles).
   | { readonly type: "translation-selected"; readonly translation: string }
   | { readonly type: "genre-toggled"; readonly collection: string; readonly genre: string }
   | { readonly type: "issuer-toggled"; readonly collection: string; readonly issuer: string }
