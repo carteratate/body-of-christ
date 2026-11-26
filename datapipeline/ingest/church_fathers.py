@@ -103,10 +103,11 @@ _NPNF207_SKIP = frozenset({"ii.i", "ii.ii", "ii.iii", "iii.i", "iii.ii", "iii.xi
 # Leo's letters that NPNF2-12 gives only as Feltoe's summary ("(Congratulating him on being
 # present at the synod of Ephesus.)", or in brackets, as the "Second Tome", Letter CLXV,
 # whose text he leaves to the Councils), or by a pointer to another letter ("See Letter
-# CLVIII."), by div id. The two divs that print several letters' numbers (CXXI and CXXII;
+# CLVIII."), or only his note on it ("Much shorter than, but to nearly the same effect as,
+# xxxi."), by div id. The two divs that print several letters' numbers (CXXI and CXXII;
 # LXII to LXIV) are summaries too.
 _LEO_SUMMARIES = frozenset(f"ii.iv.{n}" for n in (
-    "ii", "iii", "v", "viii", "xi", "xiii", "xxv", "xxxvi", "xli", "xlvi", "xlvii",
+    "ii", "iii", "v", "viii", "xi", "xiii", "xxv", "xxx", "xxxvi", "xli", "xlvi", "xlvii",
     "xlviii", "xlix", "l", "li", "liii", "liv", "lvii", "lviii", "lix", "lx", "lxv",
     "lxvi", "lxvii", "lxviii", "lxix", "lxx", "lxxi", "lxxii", "lxxiii", "lxxvi",
     "lxxviii", "lxxix", "lxxxi", "lxxxii", "lxxxiv", "lxxxv", "lxxxvi", "lxxxvii",
@@ -194,6 +195,12 @@ NOT_ENGLISH = {("npnf208.xml", "ix.cxxvi"): frozenset({
 # Spirit]") and the passages Newman's version marks in brackets (Letters 2, 71, 203, 204)
 # are the translation's and stay.
 _NPNF_EDITOR_BRACKET = re.compile(r"\bA\.\s?V\.|\blxx\b", re.IGNORECASE)
+# The editors' notes in brackets inside a paragraph: Barmby's pointers to the Pastoral Rule
+# ("[See Reg. Past., Pt. II. ch. 6…]") and his notes on the manuscripts ("[N.B. This date is
+# absent…]", "[al., … So Bede.]"), and Feltoe's to the editors' chapters ("[as we said
+# above, chap. viii.]"). Their glosses ("[i.e. monks of St. Theodore]") and supplied words
+# stay, as Jackson's do.
+_NPNF_NOTE_BRACKET = re.compile(r"^\[(?:See |N\.B\.|A long passage|al\.,|as we said above)")
 # The same comparison printed in parentheses, by (file, paragraph id): the span as printed.
 _NPNF_EDITOR_SPANS = {
     ("npnf208.xml", "vii.vi-p56"): (" (A.V., “of” instead of “through a woman”)",),
@@ -729,7 +736,8 @@ class _NpnfEditor(Editor):
                 read.add(id(block))
                 return marked, notes
             out, spans, cuts = _cut_brackets(
-                marked, lambda span: bool(_NPNF_EDITOR_BRACKET.search(span)))
+                marked, lambda span: bool(_NPNF_EDITOR_BRACKET.search(span)
+                                          or _NPNF_NOTE_BRACKET.match(span)))
             if id(block) not in read:           # paragraph_segments reads it again
                 read.add(id(block))
                 edit.removed += [Removed(edit.locators[id(block)], "bracket", t)

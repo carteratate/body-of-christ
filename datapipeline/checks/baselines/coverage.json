@@ -1208,14 +1208,14 @@
    "pct": 99.83
   },
   "church-fathers/npnf212.xml": {
-   "body_chars": 1928732,
-   "covered_chars": 1917078,
-   "pct": 99.4
+   "body_chars": 1928272,
+   "covered_chars": 1913915,
+   "pct": 99.26
   },
   "church-fathers/npnf213.xml": {
    "body_chars": 490720,
-   "covered_chars": 487246,
-   "pct": 99.29
+   "covered_chars": 486987,
+   "pct": 99.24
   }
  },
  "documents": {

@@ -374,8 +374,9 @@ def _letter_lines(document: Document, letter: list) -> list[str]:
 
 # Words of an editor's title line before the sender's name: "The first from Flavian, Bp.
 # of Constantinople", "A Second One from Flavian", "the Synod of Chalcedon" (5.6a, Leo).
-_NOT_NAMES = frozenset({"the", "a", "first", "second", "one", "from", "synod", "council",
-                        "of"})
+_NOT_NAMES = frozenset({"the", "a", "first", "second", "one", "from", "of"})
+# A council is credited as one ("the Synod of Chalcedon" is the Council of Chalcedon).
+_SAME_NAME = {"synod": "council"}
 
 
 def _greeting_names(greeting: str, author: str) -> bool:
@@ -390,7 +391,7 @@ def _greeting_names(greeting: str, author: str) -> bool:
 def _sender_named(sender: str, author: str) -> bool:
     """Whether the credited `author` is the sender the title line names: its first name
     word (not its see) is the author's."""
-    names = [w for w in _fold(sender).replace(",", " ").replace(".", " ").split()
+    names = [_SAME_NAME.get(w, w) for w in _fold(sender).replace(",", " ").replace(".", " ").split()
              if w not in _NOT_NAMES]
     return bool(names) and names[0] in _fold(author).split(" ")
 

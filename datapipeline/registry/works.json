@@ -12862,21 +12862,8 @@
     "clavis_ref": null
    },
    {
-    "work_key": "ii.iv.xxx",
-    "ordinal": 23,
-    "title": "Letter XXX",
-    "author": "Leo the Great",
-    "certainty": null,
-    "attribution_note": null,
-    "notes": null,
-    "date_display": null,
-    "year": null,
-    "genre": null,
-    "clavis_ref": null
-   },
-   {
     "work_key": "ii.iv.xxxi",
-    "ordinal": 24,
+    "ordinal": 23,
     "title": "Letter XXXI",
     "author": "Leo the Great",
     "certainty": null,
@@ -12889,7 +12876,7 @@
    },
    {
     "work_key": "ii.iv.xxxii",
-    "ordinal": 25,
+    "ordinal": 24,
     "title": "Letter XXXII",
     "author": "Leo the Great",
     "certainty": null,
@@ -12902,7 +12889,7 @@
    },
    {
     "work_key": "ii.iv.xxxiii",
-    "ordinal": 26,
+    "ordinal": 25,
     "title": "Letter XXXIII",
     "author": "Leo the Great",
     "certainty": null,
@@ -12915,7 +12902,7 @@
    },
    {
     "work_key": "ii.iv.xxxiv",
-    "ordinal": 27,
+    "ordinal": 26,
     "title": "Letter XXXIV",
     "author": "Leo the Great",
     "certainty": null,
@@ -12928,7 +12915,7 @@
    },
    {
     "work_key": "ii.iv.xxxv",
-    "ordinal": 28,
+    "ordinal": 27,
     "title": "Letter XXXV",
     "author": "Leo the Great",
     "certainty": null,
@@ -12941,7 +12928,7 @@
    },
    {
     "work_key": "ii.iv.xxxvii",
-    "ordinal": 29,
+    "ordinal": 28,
     "title": "Letter XXXVII",
     "author": "Leo the Great",
     "certainty": null,
@@ -12954,7 +12941,7 @@
    },
    {
     "work_key": "ii.iv.xxxviii",
-    "ordinal": 30,
+    "ordinal": 29,
     "title": "Letter XXXVIII",
     "author": "Leo the Great",
     "certainty": null,
@@ -12967,7 +12954,7 @@
    },
    {
     "work_key": "ii.iv.xxxix",
-    "ordinal": 31,
+    "ordinal": 30,
     "title": "Letter XXXIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -12980,7 +12967,7 @@
    },
    {
     "work_key": "ii.iv.xl",
-    "ordinal": 32,
+    "ordinal": 31,
     "title": "Letter XL",
     "author": "Leo the Great",
     "certainty": null,
@@ -12993,7 +12980,7 @@
    },
    {
     "work_key": "ii.iv.xlii",
-    "ordinal": 33,
+    "ordinal": 32,
     "title": "Letter XLII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13006,7 +12993,7 @@
    },
    {
     "work_key": "ii.iv.xliii",
-    "ordinal": 34,
+    "ordinal": 33,
     "title": "Letter XLIII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13019,7 +13006,7 @@
    },
    {
     "work_key": "ii.iv.xliv",
-    "ordinal": 35,
+    "ordinal": 34,
     "title": "Letter XLIV",
     "author": "Leo the Great",
     "certainty": null,
@@ -13032,7 +13019,7 @@
    },
    {
     "work_key": "ii.iv.xlv",
-    "ordinal": 36,
+    "ordinal": 35,
     "title": "Letter XLV",
     "author": "Leo the Great",
     "certainty": null,
@@ -13045,7 +13032,7 @@
    },
    {
     "work_key": "ii.iv.lii",
-    "ordinal": 37,
+    "ordinal": 36,
     "title": "Letter LII",
     "author": "Theodoret of Cyrus",
     "certainty": null,
@@ -13058,7 +13045,7 @@
    },
    {
     "work_key": "ii.iv.lv",
-    "ordinal": 38,
+    "ordinal": 37,
     "title": "Letter LVI",
     "author": "Galla Placidia",
     "certainty": null,
@@ -13071,7 +13058,7 @@
    },
    {
     "work_key": "ii.iv.lvi",
-    "ordinal": 39,
+    "ordinal": 38,
     "title": "Letter LIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13084,7 +13071,7 @@
    },
    {
     "work_key": "ii.iv.lxi",
-    "ordinal": 40,
+    "ordinal": 39,
     "title": "Letter LXVI",
     "author": "Leo the Great",
     "certainty": null,
@@ -13097,7 +13084,7 @@
    },
    {
     "work_key": "ii.iv.lxii",
-    "ordinal": 41,
+    "ordinal": 40,
     "title": "Letter LXVII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13110,7 +13097,7 @@
    },
    {
     "work_key": "ii.iv.lxiii",
-    "ordinal": 42,
+    "ordinal": 41,
     "title": "Letter LXVIII",
     "author": "Ceretius, Salonius and Veranus",
     "certainty": null,
@@ -13123,7 +13110,7 @@
    },
    {
     "work_key": "ii.iv.lxiv",
-    "ordinal": 43,
+    "ordinal": 42,
     "title": "Letter LXIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13136,7 +13123,7 @@
    },
    {
     "work_key": "ii.iv.lxxiv",
-    "ordinal": 44,
+    "ordinal": 43,
     "title": "Letter LXXIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13149,7 +13136,7 @@
    },
    {
     "work_key": "ii.iv.lxxv",
-    "ordinal": 45,
+    "ordinal": 44,
     "title": "Letter LXXX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13162,7 +13149,7 @@
    },
    {
     "work_key": "ii.iv.lxxvii",
-    "ordinal": 46,
+    "ordinal": 45,
     "title": "Letter LXXXII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13175,7 +13162,7 @@
    },
    {
     "work_key": "ii.iv.lxxx",
-    "ordinal": 47,
+    "ordinal": 46,
     "title": "Letter LXXXV",
     "author": "Leo the Great",
     "certainty": null,
@@ -13188,7 +13175,7 @@
    },
    {
     "work_key": "ii.iv.lxxxiii",
-    "ordinal": 48,
+    "ordinal": 47,
     "title": "Letter LXXXVIII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13201,7 +13188,7 @@
    },
    {
     "work_key": "ii.iv.lxxxviii",
-    "ordinal": 49,
+    "ordinal": 48,
     "title": "Letter XCIII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13214,7 +13201,7 @@
    },
    {
     "work_key": "ii.iv.xc",
-    "ordinal": 50,
+    "ordinal": 49,
     "title": "Letter XCV",
     "author": "Leo the Great",
     "certainty": null,
@@ -13227,7 +13214,7 @@
    },
    {
     "work_key": "ii.iv.xciii",
-    "ordinal": 51,
+    "ordinal": 50,
     "title": "Letter XCVIII",
     "author": "Council of Chalcedon",
     "certainty": null,
@@ -13240,7 +13227,7 @@
    },
    {
     "work_key": "ii.iv.xcvi",
-    "ordinal": 52,
+    "ordinal": 51,
     "title": "Letter CI",
     "author": "Anatolius of Constantinople",
     "certainty": null,
@@ -13253,7 +13240,7 @@
    },
    {
     "work_key": "ii.iv.xcix",
-    "ordinal": 53,
+    "ordinal": 52,
     "title": "Letter CIV",
     "author": "Leo the Great",
     "certainty": null,
@@ -13266,7 +13253,7 @@
    },
    {
     "work_key": "ii.iv.c",
-    "ordinal": 54,
+    "ordinal": 53,
     "title": "Letter CV",
     "author": "Leo the Great",
     "certainty": null,
@@ -13279,7 +13266,7 @@
    },
    {
     "work_key": "ii.iv.ci",
-    "ordinal": 55,
+    "ordinal": 54,
     "title": "Letter CVI",
     "author": "Leo the Great",
     "certainty": null,
@@ -13292,7 +13279,7 @@
    },
    {
     "work_key": "ii.iv.ciii",
-    "ordinal": 56,
+    "ordinal": 55,
     "title": "Letter CVIII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13305,7 +13292,7 @@
    },
    {
     "work_key": "ii.iv.civ",
-    "ordinal": 57,
+    "ordinal": 56,
     "title": "Letter CIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13318,7 +13305,7 @@
    },
    {
     "work_key": "ii.iv.cviii",
-    "ordinal": 58,
+    "ordinal": 57,
     "title": "Letter CXIII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13331,7 +13318,7 @@
    },
    {
     "work_key": "ii.iv.cxii",
-    "ordinal": 59,
+    "ordinal": 58,
     "title": "Letter CXVII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13344,7 +13331,7 @@
    },
    {
     "work_key": "ii.iv.cxiv",
-    "ordinal": 60,
+    "ordinal": 59,
     "title": "Letter CXIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13357,7 +13344,7 @@
    },
    {
     "work_key": "ii.iv.cxv",
-    "ordinal": 61,
+    "ordinal": 60,
     "title": "Letter CXX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13370,7 +13357,7 @@
    },
    {
     "work_key": "ii.iv.cxvii",
-    "ordinal": 62,
+    "ordinal": 61,
     "title": "Letter CXXIII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13383,7 +13370,7 @@
    },
    {
     "work_key": "ii.iv.cxviii",
-    "ordinal": 63,
+    "ordinal": 62,
     "title": "Letter CXXIV",
     "author": "Leo the Great",
     "certainty": null,
@@ -13396,7 +13383,7 @@
    },
    {
     "work_key": "ii.iv.cxxiii",
-    "ordinal": 64,
+    "ordinal": 63,
     "title": "Letter CXXIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13409,7 +13396,7 @@
    },
    {
     "work_key": "ii.iv.cxxxiii",
-    "ordinal": 65,
+    "ordinal": 64,
     "title": "Letter CXXXIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13422,7 +13409,7 @@
    },
    {
     "work_key": "ii.iv.cl",
-    "ordinal": 66,
+    "ordinal": 65,
     "title": "Letter CLVI",
     "author": "Leo the Great",
     "certainty": null,
@@ -13435,7 +13422,7 @@
    },
    {
     "work_key": "ii.iv.clii",
-    "ordinal": 67,
+    "ordinal": 66,
     "title": "Letter CLVIII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13448,7 +13435,7 @@
    },
    {
     "work_key": "ii.iv.cliii",
-    "ordinal": 68,
+    "ordinal": 67,
     "title": "Letter CLIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13461,7 +13448,7 @@
    },
    {
     "work_key": "ii.iv.clvi",
-    "ordinal": 69,
+    "ordinal": 68,
     "title": "Letter CLXII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13474,7 +13461,7 @@
    },
    {
     "work_key": "ii.iv.clviii",
-    "ordinal": 70,
+    "ordinal": 69,
     "title": "Letter CLXIV",
     "author": "Leo the Great",
     "certainty": null,
@@ -13487,7 +13474,7 @@
    },
    {
     "work_key": "ii.iv.clx",
-    "ordinal": 71,
+    "ordinal": 70,
     "title": "Letter CLXVI",
     "author": "Leo the Great",
     "certainty": null,
@@ -13500,7 +13487,7 @@
    },
    {
     "work_key": "ii.iv.clxi",
-    "ordinal": 72,
+    "ordinal": 71,
     "title": "Letter CLXVII",
     "author": "Leo the Great",
     "certainty": null,
@@ -13513,7 +13500,7 @@
    },
    {
     "work_key": "ii.iv.clxiii",
-    "ordinal": 73,
+    "ordinal": 72,
     "title": "Letter CLXIX",
     "author": "Leo the Great",
     "certainty": null,
@@ -13526,7 +13513,7 @@
    },
    {
     "work_key": "ii.iv.clxv",
-    "ordinal": 74,
+    "ordinal": 73,
     "title": "Letter CLXXI",
     "author": "Leo the Great",
     "certainty": null,

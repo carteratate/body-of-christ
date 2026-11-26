@@ -397,6 +397,14 @@ def test_letter_sender():
     assert content.letter_senders("church-fathers", [leo_letters]) == {
         "attribution.letter_sender:church-fathers/doc-1": ["f1"]}
     leo[0].passage_author = "Flavian of Constantinople"
+    leo.append(_letter("XCVIII", "From the Synod of Chalcedon to Leo.",
+                       "The great and holy and universal Synod", "c1",
+                       passage_author="Cyril of Chalcedon"))   # a man of the council's see
+    leo_letters = _doc(*leo, collection="church-fathers", title="Letters", author="Leo the Great")
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["c1"]}
+    leo[2].passage_author = "Council of Chalcedon"
+    assert content.letter_senders("church-fathers", [leo_letters]) == {}
     leo[1].passage_author = "Ceretius"          # the greeting names three
     assert content.letter_senders("church-fathers", [leo_letters]) == {
         "attribution.letter_sender:church-fathers/doc-1": ["g1"]}

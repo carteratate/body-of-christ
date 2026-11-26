@@ -817,7 +817,8 @@ def test_leo_editors_summaries_are_cut(leo_gregory):
     built = {p.chapter_key for p in letters.passages}
     # Letters given only as Feltoe's summary are not built: in parentheses, in brackets
     # (the "Second Tome", Letter CLXV), or as a pointer.
-    assert not {"ii.iv.ii", "ii.iv.clix", "ii.iv.cliv"} & built
+    assert not {"ii.iv.ii", "ii.iv.clix", "ii.iv.cliv", "ii.iv.xxx"} & built
+    assert "ii.iv.xxxi" in built                     # the letter XXX's note points to
     # Letters LV to LVIII: the summary of four goes; Galla Placidia's LVI stays, hers.
     work = next(w for w in letters.works if w.work_key == "ii.iv.lv")
     assert (work.title, work.author) == ("Letter LVI", "Galla Placidia")
@@ -870,8 +871,11 @@ def test_register_letters_carry_their_book(leo_gregory):
     assert other[0].chapter_label == "Book II, Letter XLI · To Castorius, Bishop: Second version"
     assert "[In place of the epistle" not in text
     for note in ("[In Colbert. and Paul. diac.", "[Here follows an account",
-                 "[The beginning of this epistle is the same"):
+                 "[The beginning of this epistle is the same", "[See Reg. Past.",
+                 "[A long passage, thus beginning"):
         assert note not in text, note                                    # Barmby's brackets
+    assert "[i.e. monks of St. Theodore]" in text                       # his gloss stays
+    assert "[N.B. This date is absent" not in "\n".join(p.content for p in second.passages)
     # Augustine of Canterbury's questions head the Book of Answers (Book XI, 64), level 2.
     marks = [(m, p) for p in second.passages if p.chapter_key == "ii.vii.xxx"
              for m in (p.metadata or {}).get("headings", [])]
@@ -897,3 +901,5 @@ def test_leo_and_gregory_registry_labels():
     assert works["church-fathers/npnf212/iii.iv"]["attribution"]["clavis"] == "CPL 1712"
     from scripts.npnf_registry import EXCLUDED
     assert EXCLUDED["npnf212.xml"]["ii.iv.xxi"][0] == "rule-a"      # Eutyches's letter
+    leo = next(d for d in build_all() if d.title == "Letters of Leo the Great")
+    assert "ii.iv.xxi" not in {p.chapter_key for p in leo.passages}
