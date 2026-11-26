@@ -387,7 +387,7 @@ Dates for the facts: the lectures "347 or 348" (Quasten p. 404); the orations an
 | Register XIV, 17, to Felix of Messana | Pseudo-Gregory the Great | pseudonymous | "Open to grave suspicion … an unskilful imitation of his style"; Jaffé lists it among the spurious (Barmby's note) |
 | Register IX, 61, Recared to Gregory | Recared | disputed | "The genuineness of this letter is considered doubtful. It may have been a forgery founded on Epistle CXXII." (Barmby) |
 | Register XIII, 8 and 9, privileges for Brunhild's foundations at Autun | Gregory the Great | disputed | "The genuineness, or at any rate the freedom from interpolation, of all these three Epistles is disputed. The Benedictine Editors … defend their authenticity." (Barmby, under XIII, 10, which NPNF2-13 prints only as a pointer) |
-| Register XI, 64, the Book of Answers to Augustine of Canterbury | Gregory the Great | genuine | Barmby prefers Bede's copy and finds internal evidence of authenticity in the Preface |
+| Register XI, 64, the Book of Answers to Augustine of Canterbury | Gregory the Great | genuine | Barmby prefers Bede's copy and finds internal evidence of authenticity in the Preface. The request for Saint Sixtus's relics and its grant, absent from Bede and the Lucca manuscript, "may be regarded as an interpolation": its passage carries that caution |
 
 The works carry no dates: as Doctors, neither is dated for rule A, and the letters and sermons span their pontificates.
 

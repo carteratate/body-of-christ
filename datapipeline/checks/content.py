@@ -378,6 +378,15 @@ _NOT_NAMES = frozenset({"the", "a", "first", "second", "one", "from", "synod", "
                         "of"})
 
 
+def _greeting_names(greeting: str, author: str) -> bool:
+    """Whether the letter's greeting names the credited `author` as its senders: every
+    name before its " to " is one of the author's ("Ceretius, Salonius and Veranus to the
+    holy Lord…" for a letter credited to all three, not to Ceretius alone)."""
+    head = _fold(greeting.lstrip("0123456789. ")).split(" to ")[0]
+    names = [w for w in head.replace(",", " ").split() if w not in _NOT_NAMES | {"and"}]
+    return bool(names) and set(names) <= set(_fold(author).replace(",", " ").split())
+
+
 def _sender_named(sender: str, author: str) -> bool:
     """Whether the credited `author` is the sender the title line names: its first name
     word (not its see) is the author's."""
@@ -390,11 +399,17 @@ def _title_and_greeting(document: Document, letter: list) -> tuple[str, str] | N
     """The editor's title line of a letter (the one after its "Epistle N." line) and the
     letter's own greeting after it, or None without a number line."""
     lines = _letter_lines(document, letter)
-    number = next((i for i, line in enumerate(lines[:4]) if LETTER_NUMBER_LINE.match(line)), None)
+    # Within the letter's opening lines: Leo's Letter LVI stands below Feltoe's summary of
+    # the four letters around it (5.6a).
+    number = next((i for i, line in enumerate(lines) if LETTER_NUMBER_LINE.match(line)), None)
     if number is None or number + 1 >= len(lines):
         return None
     greeting = next((line for line in lines[number + 2:] if not line.startswith("Argument")), "")
-    return lines[number + 1], greeting
+    title = lines[number + 1].strip()
+    # A title line in parentheses: "(From Galla Placidia Augusta to Theodosius)."
+    if title.startswith("(") and title.rstrip(".").endswith(")"):
+        title = title.rstrip(".")[1:-1]
+    return title, greeting
 
 
 def letter_sender(document: Document, letter: list) -> str | None:
@@ -435,9 +450,8 @@ def letter_senders(collection: str, documents: list[Document]) -> Failures:
             # A title line naming the senders together ("From Three Gallic Bishops") is
             # matched by the letter's own greeting ("Ceretius, Salonius and Veranus to…").
             greeting = _title_and_greeting(d, letter)[1]
-            greeted = _fold(greeting.lstrip("0123456789. ")).split(" ")[0]
             if any(not _sender_named(sender, author := resolved_author(d, p))
-                   and greeted != _fold(author).split(" ")[0] for p in letter):
+                   and not _greeting_names(greeting, author) for p in letter):
                 keys.append(key)
         if keys:
             out[f"attribution.letter_sender:{collection}/{d.id}"] = keys

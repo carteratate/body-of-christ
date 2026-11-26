@@ -215,6 +215,10 @@ JUDGMENTS = {
         ("ii.vii.xxx-p2", "Internal evidence, as well as historic probability, supports"
                           " the superior genuineness of Bede’s copy (Cf.",
          "genuine", False),
+        # The scan splits the note at "Cod. ": it reads "This question, with the answer to
+        # it, is absent from Bede, and Cod. Lucens, and may be regarded as an interpolation."
+        ("ii.vii.xxx-p49", "Lucens , and may be regarded as an interpolation.",
+         "dubious", False),
         ("ii.ix.vii-p4", "The genuineness, or at any rate the freedom from "
                          "interpolation, of all these three Epistles is disputed.",
          "dubious", False),

@@ -981,9 +981,12 @@ _BOOK = re.compile(r"^Book ([IVXLC]+)\b")
 # The Register's first book prints its number on the letter's head, not on its div, whose
 # title is the indiction line.
 _REGISTER_BOOKS = {("npnf212.xml", "iii.v.i"): "I"}
-# The questions Augustine of Canterbury put to Gregory, which the Book of Answers repeats
-# as its headings ("Augustine's first question"), level 2.
-_AUGUSTINE_QUESTION = re.compile(r"^Augustine[’']s \w+ question\b")
+# The headings of the Book of Answers (Book XI, 64): Augustine of Canterbury's questions
+# and requests, and the answers and grant that follow each ("Augustine's first question",
+# "Answer of the blessed pope Gregory."), level 2.
+_AUGUSTINE_QUESTION = re.compile(r"^(?:Augustine[’']s \w+ (?:question|request)|Answer of "
+                                 r"(?:Saint|the blessed) [Pp]ope Gregory|Answer of Saint "
+                                 r"Gregory|The grant of Gregory)\b")
 # A manuscript's title line over a letter ("Here begins the epistle of the blessed
 # Gregory…"), which the label's address says (Book XI, 64).
 _INCIPIT = re.compile(r"^Here (?:begins|follows) the (?i:epistle)\b")

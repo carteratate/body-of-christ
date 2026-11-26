@@ -130,6 +130,12 @@ PASSAGE_NOTES: dict[str, Note | None] = {
     "which the English translation does not print.": caution(
         "incomplete", "The Latin text ends this article with a short reply to all the "
                       "objections together, which the English translation does not print."),
+    # 5.6a: Gregory's Register XI, 64 (Barmby's note).
+    "The request for Saint Sixtus's relics and its grant, in this passage, may be a later "
+    "addition: Bede's copy and the Lucca manuscript lack them.": caution(
+        "authorship", "The request for Saint Sixtus's relics and its grant, in this passage, "
+                      "may be a later addition: Bede's copy and the Lucca manuscript lack "
+                      "them."),
     # 5.6a: Basil's Letter 125, whose Greek creed is cut under rule E.
     "The Creed of Nicaea, which this letter quotes in full, is omitted: the translator left "
     "it in Greek.": caution(

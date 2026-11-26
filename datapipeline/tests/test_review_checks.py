@@ -397,9 +397,26 @@ def test_letter_sender():
     assert content.letter_senders("church-fathers", [leo_letters]) == {
         "attribution.letter_sender:church-fathers/doc-1": ["f1"]}
     leo[0].passage_author = "Flavian of Constantinople"
+    leo[1].passage_author = "Ceretius"          # the greeting names three
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["g1"]}
+    leo[1].passage_author = "Ceretius, Salonius and Veranus"
     leo[1].passage_author = None                # credited to Leo, as it would be by default
     assert content.letter_senders("church-fathers", [leo_letters]) == {
         "attribution.letter_sender:church-fathers/doc-1": ["g1"]}
+
+    # Letter LVI stands below Feltoe's summary of four letters, under a title line in
+    # parentheses.
+    galla = _p("Letters LV. to LVIII.\n\nA series of Letters.\n\n(1) From Valentinian the "
+               "Emperor to Theodosius Augustus.\n\nLetter LVI.\n\n(From Galla Placidia "
+               "Augusta to Theodosius).\n\nTo the Lord Theodosius, Galla Placidia. " + PROSE,
+               anchor="lvi", chapter_key="lvi", chapter_label="Letter LVI",
+               passage_author="Galla Placidia")
+    series = _doc(galla, collection="church-fathers", title="Letters", author="Leo the Great")
+    assert content.letter_senders("church-fathers", [series]) == {}
+    galla.passage_author = None
+    assert content.letter_senders("church-fathers", [series]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["lvi"]}
 
 
 def test_narrative_of_author_death():

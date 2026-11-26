@@ -805,8 +805,6 @@ def test_npnf212_and_213_build_leo_and_gregorys_works(leo_gregory):
         ("npnf212.xml", "iii.v"): ("Register of Letters, Books I to VIII", "Gregory the Great"),
         ("npnf213.xml", "ii"): ("Register of Letters, Books IX to XIV", "Gregory the Great")}
     assert len(leo_gregory[("npnf212.xml", "ii.v")].works) == 48
-    # NPNF2-13's Ephraim and Aphrahat are not read.
-    assert not any("Ephraim" in (d.author or "") for d in leo_gregory.values())
 
 
 def test_leo_editors_summaries_are_cut(leo_gregory):

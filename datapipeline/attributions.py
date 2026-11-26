@@ -15,7 +15,8 @@ work the build no longer emits (3.1's removals) loses them on the rerun.
 - `WORKS`, by (`work_id`, `work_key`): the same for a work inside a container (D6),
   written onto the entry's `works` row; `author` replaces the adapter's.
 - `PASSAGE_NOTES`, by (`work_id`, chapter key): a note on every passage of one chapter,
-  written onto the passage registry rows (`note`, one of the registry's overrides).
+  written onto the passage registry rows (`note`, one of the registry's overrides); or by
+  (`work_id`, passage anchor), on that passage alone.
 """
 from __future__ import annotations
 
@@ -400,6 +401,12 @@ PASSAGE_NOTES: dict[tuple[str, str], str] = {
     ("church-fathers/third-century-3/iii.iii", "iii.iii.iii.xi"):
         "This canon is a later addition.",
     (_BASIL_LETTERS, "ix.cxxvi"): _CREED_NOTE,
+    # Register XI, 64: the request for Saint Sixtus's relics and its grant, which Barmby
+    # (after Bede's copy and the Lucca manuscript) takes for an interpolation; the passage
+    # that holds them, by anchor.
+    ("church-fathers/npnf213/ii", "ii.vii.xxx/from-p45"):
+        "The request for Saint Sixtus's relics and its grant, in this passage, may be a "
+        "later addition: Bede's copy and the Lucca manuscript lack them.",
 }
 
 # Fields the registry's `attribution` object takes from DOCUMENTS; the rest are facts.
