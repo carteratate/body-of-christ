@@ -2,29 +2,31 @@
 
 import { useLayoutEffect, useRef, useSyncExternalStore, type KeyboardEvent } from "react";
 
-// The app's phone breakpoint (Sidebar, AppShell). Below it the full hints wrap.
-const NARROW_QUERY = "(max-width: 767px)";
+const subscribeNever = () => () => {};
 
-function subscribeNarrow(onChange: () => void) {
-  if (typeof window.matchMedia !== "function") return () => {};
-  const media = window.matchMedia(NARROW_QUERY);
-  media.addEventListener("change", onChange);
-  return () => media.removeEventListener("change", onChange);
+/** False in the server render and during hydration, true once the browser has the bar. */
+function useHydrated() {
+  return useSyncExternalStore(subscribeNever, () => true, () => false);
 }
 
-/** Null until the browser can say: the server cannot know which hint fits. */
-function useNarrowViewport(): boolean | null {
-  return useSyncExternalStore(
-    subscribeNarrow,
-    () => typeof window.matchMedia === "function" && window.matchMedia(NARROW_QUERY).matches,
-    () => null,
-  );
-}
-
-/** The box's hint: one line on a phone, the full wording on wider screens. */
-export function searchPlaceholder(disabled: boolean, narrow: boolean): string {
-  if (disabled) return narrow ? "Select a source to search." : "Select at least one source to search.";
-  return narrow ? "What's on your mind?" : "A question, a thought, a doubt: what's on your mind?";
+/** Size the box to its text, or to its hint when empty. */
+function fitToContent(el: HTMLTextAreaElement) {
+  el.style.height = "auto";
+  // Safari's scrollHeight leaves out a wrapped placeholder, so an empty box is
+  // measured from a hidden copy holding its hint (writing the hint into the
+  // box itself would cost the user's undo history).
+  let probe = el;
+  if (el.value === "") {
+    probe = el.cloneNode() as HTMLTextAreaElement;
+    probe.value = el.placeholder;
+    probe.setAttribute("aria-hidden", "true");
+    probe.style.cssText = `position:absolute;visibility:hidden;width:${el.offsetWidth}px;height:auto`;
+    el.after(probe);
+  }
+  // scrollHeight leaves out the borders, which a border-box height includes.
+  const height = probe.scrollHeight + probe.offsetHeight - probe.clientHeight;
+  if (probe !== el) probe.remove();
+  el.style.height = `${height}px`;
 }
 
 interface SearchBarProps {
@@ -43,32 +45,35 @@ export function SearchBar({
   disabled,
 }: SearchBarProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const narrow = useNarrowViewport();
-  // No hint in the server HTML: the full one would show clipped on a phone until hydration.
-  const placeholder = narrow === null ? "" : searchPlaceholder(disabled, narrow);
+  const hydrated = useHydrated();
+  const hint = disabled
+    ? "Select at least one source to search."
+    : "A question, a thought, a doubt: what's on your mind?";
+  // No hint in the server HTML: on a phone it wraps, and the box can't grow to fit
+  // it until the layout effect below runs.
+  const placeholder = hydrated ? hint : "";
 
   // useLayoutEffect (not useEffect) so the resize happens before paint —
   // prevents the cursor visually escaping below the textarea for one frame.
   useLayoutEffect(() => {
     const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = "auto";
-    // Safari's scrollHeight leaves out a wrapped placeholder, so an empty box is
-    // measured from a hidden copy holding its hint (writing the hint into the
-    // box itself would cost the user's undo history).
-    let probe = el;
-    if (el.value === "") {
-      probe = el.cloneNode() as HTMLTextAreaElement;
-      probe.value = el.placeholder;
-      probe.setAttribute("aria-hidden", "true");
-      probe.style.cssText = `position:absolute;visibility:hidden;width:${el.offsetWidth}px;height:auto`;
-      el.after(probe);
-    }
-    // scrollHeight leaves out the borders, which a border-box height includes.
-    const height = probe.scrollHeight + probe.offsetHeight - probe.clientHeight;
-    if (probe !== el) probe.remove();
-    el.style.height = `${height}px`;
+    if (el) fitToContent(el);
   }, [value, placeholder]);
+
+  // Re-fit when the box's width changes (a phone rotating to portrait), since its
+  // text or hint can then wrap onto another line.
+  useLayoutEffect(() => {
+    const el = textareaRef.current;
+    if (!el || typeof ResizeObserver !== "function") return;
+    let width = el.offsetWidth;
+    const observer = new ResizeObserver(() => {
+      if (el.offsetWidth === width) return;
+      width = el.offsetWidth;
+      fitToContent(el);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     // Enter submits; Shift+Enter is swallowed (search queries don't need newlines).
