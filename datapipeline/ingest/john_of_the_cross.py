@@ -12,9 +12,10 @@ keeps (`*`, `†`, `‡`, `§`, and the OCR's readings of them) are taken off he
 
 A treatise is its Argument and Prologue, then its books' chapters. Each "CHAPTER N." is
 followed by Lewis's title for it, one paragraph (the work's fixes set it so), unless it opens
-on a stanza (Book II, Chapter I); the title
-goes into the chapter label, never the text, and the chapters must run 1, 2, 3 within each
-book. A passage is a chapter, cut at paragraphs where it runs past `MAX_CHARS`. Every
+on a stanza (Book II, Chapter I); the title goes into the chapter label, clipped at 140
+characters as the CCEL works' are, and a title the clip cuts also opens the chapter's text as
+its heading (#445's marks), so the reader shows it whole. The chapters must run 1, 2, 3
+within each book. A passage is a chapter, cut at paragraphs where it runs past `MAX_CHARS`. Every
 passage carries the scanned-text label (`ocr.label`).
 """
 from __future__ import annotations
@@ -26,8 +27,10 @@ from dataclasses import dataclass, field
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from identity import PIECE_MARK, anchor as make_anchor  # noqa: E402
+from headings import Heading, prepend, with_headings  # noqa: E402
 from ingest.common import split_display_passage  # noqa: E402
 from ingest.pieces import piece_reference  # noqa: E402
+from ingest.thml_doc import _clip as clip_label  # noqa: E402
 from model import Document, Passage  # noqa: E402
 from normalize.text import clean_text  # noqa: E402
 from ocr.fixes import read_text  # noqa: E402
@@ -104,6 +107,7 @@ def strip_calls(text: str) -> str:
 class _Chapter:
     key: str
     label: str
+    title: str | None = None   # Lewis's title for the chapter, as printed
     paragraphs: list[str] = field(default_factory=list)
     pages: list[str] = field(default_factory=list)
 
@@ -124,6 +128,7 @@ def chapters(treatise: Treatise, passages: list[dict]) -> list[_Chapter]:
                 if _STANZA.match(para):
                     continue    # no title of its own: the chapter opens on its stanza
                 # The OCR reads the small type's closing full stop as a comma at times.
+                out[-1].title = para.rstrip('.,') + "."
                 out[-1].label += f". {para.rstrip('.,')}"
             elif m := _SECTION.match(para):
                 name = m.group(1).title()
@@ -204,6 +209,10 @@ def build_document(treatise: Treatise, text: dict | None = None) -> Document:
     for chapter in chapters(treatise, data["passages"]):
         chapter_key = make_anchor(treatise.slug, *chapter.key.split("/"))
         pieces = _pieces([strip_calls(q) for q in chapter.paragraphs])
+        # A label is clipped as the CCEL works' are (`thml_doc`); a title it cuts opens the
+        # chapter's text as its heading, so the reader still shows it whole.
+        label = clip_label(chapter.label)
+        held = [Heading(chapter.title, level=1)] if label != chapter.label else []
         seen: dict[int, int] = {}
         for k, (first, body) in enumerate(pieces, 1):
             seen[first] = seen.get(first, 0) + 1
@@ -211,12 +220,13 @@ def build_document(treatise: Treatise, text: dict | None = None) -> Document:
                 f"{chapter_key}{PIECE_MARK}p{first + 1}"
                 + (f"-{seen[first]}" if seen[first] > 1 else ""))
             short = chapter.label.split(". ", 1)[0]
+            content, marks = prepend(held if k == 1 else [], clean_text(body))
             passage = Passage(
-                content=clean_text(body),
+                content=content,
                 reference=piece_reference(f"{treatise.title}, {short}", None, None, k, len(pieces)),
-                anchor=anchor, chapter_key=chapter_key, chapter_label=chapter.label,
+                anchor=anchor, chapter_key=chapter_key, chapter_label=label,
                 position=len(passages), unit_label=None,
-                metadata={"pages": chapter.pages})
+                metadata=with_headings({"pages": chapter.pages}, marks))
             passages.append(label_passage(passage, data["metadata"]["scan_id"]))
     return Document(
         id=did, collection=SOURCE, title=treatise.title, author=AUTHOR, year=treatise.year,

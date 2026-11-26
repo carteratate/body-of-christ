@@ -111,3 +111,23 @@ def test_no_heading_mark_or_broken_paragraph_reaches_a_passage(document):
     assert sorted(label for label in labels if not shape.match(label)
                   or re.search(r"\. .*[A-Z]{4}|[.,]$", label)) == []
     assert "Book II, Chapter I" in labels
+
+
+@needs_text
+def test_a_clipped_label_leaves_the_whole_title_as_the_chapters_heading(document):
+    first = {}
+    for p in document.passages:
+        first.setdefault(p.chapter_key, p)
+    clipped = 0
+    for p in first.values():
+        assert len(p.chapter_label) <= 140, p.chapter_label
+        marks = (p.metadata or {}).get("headings") or []
+        title = p.chapter_label.split(". ", 1)[1] if ". " in p.chapter_label else ""
+        if marks:
+            clipped += 1
+            heading = p.content[marks[0]["at"]:marks[0]["end"]]
+            assert marks[0]["at"] == 0 and marks[0]["level"] == 1
+            assert heading.startswith(title) and len(heading) > len(title), p.anchor
+    assert clipped == 23
+    assert not any((p.metadata or {}).get("headings") for p in document.passages
+                   if p is not first[p.chapter_key])
