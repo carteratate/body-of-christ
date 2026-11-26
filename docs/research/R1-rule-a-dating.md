@@ -367,6 +367,30 @@ By the method of the Basil addendum above (Quasten's vol. III in its Spanish edi
 
 Dates for the facts: the lectures "347 or 348" (Quasten p. 404); the orations and letters span Gregory's life and carry none.
 
+## Addendum (5.6a, 26 Nov 2026): Leo and Gregory the Great (NPNF2-12, NPNF2-13)
+
+**Rule A.** Leo the Great (Doctor, 1754) and Gregory the Great (Doctor, 1298) pass by limit 2. Their collections keep letters by others, each judged for itself:
+
+| Letter | Writer | Decision | Basis |
+|---|---|---|---|
+| Leo, Letter XXI | Eutyches | leaves (limit 1) | Condemned by name: Second Council of Constantinople (553), anathema 11, the act cited for Origen |
+| Leo, Letter LII | Theodoret of Cyrus | stays | Never condemned by name: Constantinople II condemned his writings against Cyril (anathema 13), not him, and Chalcedon received him. His communion changed: he held out against the Union of 433 and joined it once he was no longer asked to condemn Nestorius explicitly (Quasten, Patrología II, p. 597). This letter is his appeal to Leo from the Robber Synod's deposition in 449, which Leo annulled (ibid.; p. 605 takes his Letters 113, 116 and 145 as written in 449), so it was written in communion |
+| Leo, Letters XXII, XXVI (Flavian of Constantinople), LVI (Galla Placidia), LXVIII (Ceretius, Salonius and Veranus), XCVIII (Council of Chalcedon), CI (Anatolius of Constantinople) | as named | stay | Bishops, a council and an empress in communion with Leo when they wrote, as his replies show; none condemned by name |
+| Gregory, Register II, 54 (Licinianus of Cartagena); III, 57 (John of Ravenna); IX, 127 (Columbanus); XIV, 16 (Felix of Messana) | as named | stay | Bishops and an abbot in communion; none condemned by name |
+| Gregory, Register IX, 61 | Recared | stays | A convert from Arianism, received in 587 and with his Church at Toledo in 589; the letter dates from about 598-9 (Barmby's notes to IX, 61 and IX, 122), after his reception |
+
+**Rule H.** From the translators' notes (copied to `editorial_judgments` first):
+
+| Work | Credited to | Certainty | Basis |
+|---|---|---|---|
+| Leo's Letters, Sermons; Gregory's Pastoral Rule and Register | Leo; Gregory | genuine | CPL 1656, 1657, 1712 and 1714. Feltoe rejects Quesnel's doubt about Letter XVII; the bracketed words his notes doubt inside Sermons XXIV, XXXIII and XXXVI stay in their brackets |
+| Register XIV, 17, to Felix of Messana | Pseudo-Gregory the Great | pseudonymous | "Open to grave suspicion … an unskilful imitation of his style"; Jaffé lists it among the spurious (Barmby's note) |
+| Register IX, 61, Recared to Gregory | Recared | disputed | "The genuineness of this letter is considered doubtful. It may have been a forgery founded on Epistle CXXII." (Barmby) |
+| Register XIII, 8 and 9, privileges for Brunhild's foundations at Autun | Gregory the Great | disputed | "The genuineness, or at any rate the freedom from interpolation, of all these three Epistles is disputed. The Benedictine Editors … defend their authenticity." (Barmby, under XIII, 10, which NPNF2-13 prints only as a pointer) |
+| Register XI, 64, the Book of Answers to Augustine of Canterbury | Gregory the Great | genuine | Barmby prefers Bede's copy and finds internal evidence of authenticity in the Preface |
+
+The works carry no dates: as Doctors, neither is dated for rule A, and the letters and sermons span their pontificates.
+
 ## Files
 
 - `datapipeline/registry/rule_a_R1.json`: 216 entries, as described above, and 16 more for Cyprian's correspondents since 3.1 (232).

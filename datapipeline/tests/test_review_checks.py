@@ -383,6 +383,19 @@ def test_letter_sender():
                   title="The Epistles of Cyprian.", author="Cyprian.",
                   works=[Work(work_key="w", ordinal=1, title="To Cyprian", author="Firmilian of Caesarea")])
     assert content.letter_senders("church-fathers", [worked]) == {}
+    # Leo's collection (5.6a): a title line with words before the sender's name, and one
+    # naming the senders together, whose greeting names them.
+    leo = [_letter("XXII", "The first from Flavian, Bp. of Constantinople to Pope Leo.",
+                   "To the most holy father Leo, Flavian", "f1",
+                   passage_author="Flavian of Constantinople"),
+           _letter("LXVIII", "From Three Gallic Bishops to St. Leo.",
+                   "Ceretius, Salonius and Veranus to Leo,", "g1",
+                   passage_author="Ceretius, Salonius and Veranus")]
+    leo_letters = _doc(*leo, collection="church-fathers", title="Letters", author="Leo the Great")
+    assert content.letter_senders("church-fathers", [leo_letters]) == {}
+    leo[1].passage_author = None                # credited to Leo, as it would be by default
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["g1"]}
 
 
 def test_narrative_of_author_death():

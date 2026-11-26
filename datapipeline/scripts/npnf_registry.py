@@ -49,7 +49,9 @@ from ingest import church_fathers, editorial  # noqa: E402
 from scripts import editorial_removals as er  # noqa: E402
 
 ITEM = "5.6a"
-IDS = (11501, 11999)
+# 5.6a's removal IDs: rm-11501 to rm-11999, then rm-13001 to rm-15999 once those ran out
+# (Carter, 26 Nov 2026; rm-12001 to rm-12999 are 5.4's and 5.6c's).
+IDS = ((11501, 11999), (13001, 15999))
 COLLECTION = "church-fathers"
 NOTE_RULE = "common._p_text_without_notes"
 NOTE_DETAIL = ("Translator and editor footnotes (ThML <note>) printed inline in the passages; "

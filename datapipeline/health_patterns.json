@@ -145,13 +145,26 @@
   "collections": [],
   "documents": [
    "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+   "619bfcf9-8ae3-590c-94dd-bdb9be431c11",
    "70347ebd-4832-59b6-813f-aeb2e120837b",
    "75cc7965-7501-595d-af44-9997bb7498be",
+   "7828e6cf-42fa-5e66-a8a8-177921d80eb1",
    "7f052676-7c0c-5904-b257-7ca10d489010",
    "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
-   "9398a664-a690-5431-a2cc-46046a3be21a"
+   "9398a664-a690-5431-a2cc-46046a3be21a",
+   "a6627b58-1917-5f58-ab91-8054f951ff9b",
+   "b7c98b46-5298-5307-9324-c8b2d9802b6b",
+   "e7750a2a-ddc8-53f5-9a88-c34ba73acd90"
   ],
-  "not_headings": {}
+  "not_headings": {
+   "619bfcf9-8ae3-590c-94dd-bdb9be431c11": [
+    {"text": "Gregory to Fantinus, &c", "reason": "Gregory's salutation, the letter's opening line"}
+   ],
+   "e7750a2a-ddc8-53f5-9a88-c34ba73acd90": [
+    {"text": "Gregory to Maximianus, bishop of Syracuse", "reason": "Gregory's salutation, the letter's opening line"},
+    {"text": "Gregory to John, Bishop of the Corinthians", "reason": "Gregory's salutation, the letter's opening line"}
+   ]
+  }
  },
  "R11_papal_editorial": {
   "_comment": "An editor's or translator's words in a papal passage (C-18, Opus A-010); the last pattern is an \"[N-M]\" paragraph-range marker, which only a table of contents prints.",

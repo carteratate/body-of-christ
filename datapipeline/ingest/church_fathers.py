@@ -101,7 +101,8 @@ _BASIL_SUMMARIES = frozenset(f"ix.{n}" for n in (
 _NPNF207_SKIP = frozenset({"ii.i", "ii.ii", "ii.iii", "iii.i", "iii.ii", "iii.xii", "iv.i",
                            "iv.ii.i", "iv.iv.iii.i", "iv.iv.vi.vi", "iv.iv.ix.iv"})
 # Leo's letters that NPNF2-12 gives only as Feltoe's summary ("(Congratulating him on being
-# present at the synod of Ephesus.)"), or by a pointer to another letter ("See Letter
+# present at the synod of Ephesus.)", or in brackets, as the "Second Tome", Letter CLXV,
+# whose text he leaves to the Councils), or by a pointer to another letter ("See Letter
 # CLVIII."), by div id. The two divs that print several letters' numbers (CXXI and CXXII;
 # LXII to LXIV) are summaries too.
 _LEO_SUMMARIES = frozenset(f"ii.iv.{n}" for n in (
@@ -114,7 +115,7 @@ _LEO_SUMMARIES = frozenset(f"ii.iv.{n}" for n in (
     "cxxiv", "cxxv", "cxxvi", "cxxvii", "cxxviii", "cxxix", "cxxx", "cxxxi", "cxxxii",
     "cxxxiv", "cxxxv", "cxxxvi", "cxxxvii", "cxxxviii", "cxxxix", "cxl", "cxli",
     "cxlii", "cxliii", "cxliv", "cxlv", "cxlvi", "cxlvii", "cxlviii", "cxlix", "cli",
-    "cliv", "clv", "clvii", "clxii", "clxiv", "clxvi", "clxvii"))
+    "cliv", "clv", "clvii", "clix", "clxii", "clxiv", "clxvi", "clxvii"))
 # Gregory's Register letters that NPNF2-13 gives by a pointer to an identical one ("For
 # the rest of this epistle see preceding Epistle IX."), and NPNF2-13's editors' divs
 # (title page, Barmby's literature list and his notes to the Pastoral Rule and Register).

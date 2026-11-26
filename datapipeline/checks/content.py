@@ -365,15 +365,35 @@ def source_letter_lines(document: Document, chapter_key: str) -> list[str] | Non
     return [line for line in lines if line][:8]
 
 
+def _letter_lines(document: Document, letter: list) -> list[str]:
+    lines = source_letter_lines(document, letter[0].chapter_key)
+    if lines is None:
+        lines = [line for p in letter for line in _paragraphs(p.content)][:8]
+    return lines
+
+
+# Words of an editor's title line that are not the sender's name: "The first from Flavian,
+# Bp. of Constantinople", "A Second One from Flavian", "the Synod of Chalcedon" (5.6a,
+# Leo).
+_NOT_NAMES = frozenset({"the", "a", "first", "second", "one", "from", "bp", "bishop", "of",
+                        "pope", "st", "saint", "and"})
+
+
+def _sender_named(sender: str, author: str) -> bool:
+    """Whether the credited `author` is the sender the title line names: one of its name
+    words is the author's."""
+    names = [w for w in _fold(sender).replace(",", " ").replace(".", " ").split()
+             if w not in _NOT_NAMES]
+    return any(w in _fold(author).split(" ") for w in names)
+
+
 def letter_sender(document: Document, letter: list) -> str | None:
     """The sender of one letter, from the editor's title line (the paragraph after the
     "Epistle N." line), or None when the letter has no such lines, the title line
     addresses someone ("To …"), or the title or the greeting opens with the document's
     author ("Cyprian to the Lapsed"; "1. Cyprian to Cæcilius"). The lines are the
     source's (`source_letter_lines`) where it is at hand, else the passages'."""
-    lines = source_letter_lines(document, letter[0].chapter_key)
-    if lines is None:
-        lines = [line for p in letter for line in _paragraphs(p.content)][:8]
+    lines = _letter_lines(document, letter)
     number = next((i for i, line in enumerate(lines[:4]) if LETTER_NUMBER_LINE.match(line)), None)
     if number is None or number + 1 >= len(lines):
         return None
@@ -404,8 +424,13 @@ def letter_senders(collection: str, documents: list[Document]) -> Failures:
             sender = letter_sender(d, letter)
             if sender is None:
                 continue
-            first = _fold(sender).split(" ")[0]
-            if any(first not in _fold(resolved_author(d, p)).split(" ") for p in letter):
+            # A title line naming the senders together ("From Three Gallic Bishops") is
+            # matched by the letter's own greeting ("Ceretius, Salonius and Veranus to…").
+            greeting = next((line for line in _letter_lines(d, letter)[2:]
+                             if not line.startswith("Argument")), "")
+            greeted = _fold(greeting.lstrip("0123456789. ")).split(" ")[0]
+            if any(not _sender_named(sender, author := resolved_author(d, p))
+                   and greeted != _fold(author).split(" ")[0] for p in letter):
                 keys.append(key)
         if keys:
             out[f"attribution.letter_sender:{collection}/{d.id}"] = keys

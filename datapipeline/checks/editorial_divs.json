@@ -1283,6 +1283,13 @@
  {
   "collection": "church-fathers",
   "file": "npnf212.xml",
+  "div": "ii.iv.clix",
+  "title": "To Leo Augustus.",
+  "item": "5.6a"
+ },
+ {
+  "collection": "church-fathers",
+  "file": "npnf212.xml",
   "div": "ii.iv.clxii",
   "title": "To all the Bishops of Campania, Samnium and Picenum.",
   "item": "5.6a"

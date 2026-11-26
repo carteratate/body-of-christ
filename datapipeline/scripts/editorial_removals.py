@@ -507,19 +507,33 @@ def _entry_key(e: dict) -> tuple:
 
 
 def plan(reg: registry.WorkRegistry, entries: list[dict], found: list, item: str = ITEM,
-         id_block: tuple[int, int] | None = None):
+         id_block: tuple | None = None):
     """The registry with `entries` in place of the item's earlier ones and the judgments
     copied into works.json, and the judgments not yet reviewed (nothing is planned while
     any are). `id_block`, when given, is the (first, last) the item's new IDs come from,
-    so items working at once never take the same one."""
+    so items working at once never take the same one, or several such blocks, used in
+    order (an item given a second block when its first ran out)."""
     kept = [e for e in reg.removals if e.get("added_by") != item
             or e.get("collection") != COLLECTION]
     numbers = [int(e["id"].split("-")[1]) for e in reg.removals]
-    if id_block is None:
+    blocks = None if id_block is None else (
+        (id_block,) if isinstance(id_block[0], int) else tuple(id_block))
+    if blocks is None:
         number = max(numbers) + 1
     else:
-        first, last = id_block
-        number = max((n for n in numbers if first <= n <= last), default=first - 1) + 1
+        used = [n for n in numbers if any(a <= n <= b for a, b in blocks)]
+        number = max(used, default=blocks[0][0] - 1) + 1
+
+    def take() -> str:
+        """The next free ID, past the end of a full block into the next one."""
+        nonlocal number
+        if blocks is not None and not any(a <= number <= b for a, b in blocks):
+            later = [a for a, _ in blocks if a > number]
+            if not later:
+                raise ValueError(f"{item}: removal IDs run past rm-{blocks[-1][1]}")
+            number = min(later)
+        number += 1
+        return f"rm-{number - 1:04d}"
     # An entry keeps its ID across runs: the same scope, anchor and span, counted in
     # order, since one passage can lose the same text twice (two rule lines).
     previous: dict[tuple, list[str]] = defaultdict(list)
@@ -529,11 +543,7 @@ def plan(reg: registry.WorkRegistry, entries: list[dict], found: list, item: str
             previous[_entry_key(e)].append(e["id"])
     for e in entries:
         ids = previous.get(_entry_key(e))
-        if ids:
-            e["id"] = ids.pop(0)
-        else:
-            e["id"] = f"rm-{number:04d}"
-            number += 1
+        e["id"] = ids.pop(0) if ids else take()
     # A retired piece may be where an earlier recut redirected another piece of the same
     # editorial div (1.10's merges). That redirect closes, and its old ID is retired too.
     retiring = {e["passage_id"] for e in entries if e["scope"] == "passage"}
@@ -549,15 +559,9 @@ def plan(reg: registry.WorkRegistry, entries: list[dict], found: list, item: str
                  "anchor": old["live_anchor"], "passage_id": old["passage_id"],
                  "judgment": None}
             ids = previous.get(_entry_key(e))
-            if ids:
-                e["id"] = ids.pop(0)
-            else:
-                e["id"] = f"rm-{number:04d}"
-                number += 1
+            e["id"] = ids.pop(0) if ids else take()
             entries.append(e)
             retiring.add(old["passage_id"])
-    if id_block is not None and number - 1 > id_block[1]:
-        raise ValueError(f"{item}: removal IDs run past rm-{id_block[1]}")
     passages = [dict(r) for r in reg.passages]
     for r in passages:
         if r["passage_id"] in retiring:

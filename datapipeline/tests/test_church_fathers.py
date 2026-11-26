@@ -90,8 +90,9 @@ def test_split_passages_have_complete_reader_boundaries():
     # 128 since 1.8c parses his text and brings the document back; 142 since 1.8b splits
     # the two Augustine treatise volumes into their 16 works; 109 since 3.1 removes 33
     # works under rules A to C; 112 since 5.6a adds Basil's three works (NPNF2-08); 115
-    # with Cyril's and Gregory of Nazianzus's (NPNF2-07).
-    assert len(docs) == 115
+    # with Cyril's and Gregory of Nazianzus's (NPNF2-07); 120 with Leo's and Gregory the
+    # Great's (NPNF2-12 and NPNF2-13).
+    assert len(docs) == 120
     for doc in docs:
         groups = defaultdict(list)
         for passage in doc.passages:
@@ -785,3 +786,88 @@ def test_mystagogical_lectures_do_not_take_the_lectures_date():
     assert entry["date_display"] == "347 or 348"
     work = next(x for x in entry["works"] if x["work_key"] == "ii.xxiii")
     assert work["date_display"] == "date disputed" and work["certainty"] == "disputed"
+
+
+# ------------------------------------------------------------------ 5.6a: NPNF2-12, NPNF2-13
+
+@pytest.fixture(scope="module")
+def leo_gregory():
+    return {(f, d.metadata["source_key"].split("#")[1]): d
+            for f in ("npnf212.xml", "npnf213.xml")
+            for d in build_documents(os.path.join(_SRC, f))}
+
+
+def test_npnf212_and_213_build_leo_and_gregorys_works(leo_gregory):
+    assert {k: (d.title, d.author) for k, d in leo_gregory.items()} == {
+        ("npnf212.xml", "ii.iv"): ("Letters", "Leo the Great"),
+        ("npnf212.xml", "ii.v"): ("Sermons", "Leo the Great"),
+        ("npnf212.xml", "iii.iv"): ("The Book of Pastoral Rule", "Gregory the Great"),
+        ("npnf212.xml", "iii.v"): ("Register of Letters, Books I to VIII", "Gregory the Great"),
+        ("npnf213.xml", "ii"): ("Register of Letters, Books IX to XIV", "Gregory the Great")}
+    assert len(leo_gregory[("npnf212.xml", "ii.v")].works) == 48
+    # NPNF2-13's Ephraim and Aphrahat are not read.
+    assert not any("Ephraim" in (d.author or "") for d in leo_gregory.values())
+
+
+def test_leo_editors_summaries_are_cut(leo_gregory):
+    letters, sermons = (leo_gregory[("npnf212.xml", k)] for k in ("ii.iv", "ii.v"))
+    text = "\n".join(p.content for d in (letters, sermons) for p in d.passages)
+    for editor in ("Through the negligence of the authorities the Pelagian heresy",
+                   "The story of the magi not only a byegone fact",       # a sermon's
+                   "Having been elected in absence"):
+        assert editor not in text, editor
+    built = {p.chapter_key for p in letters.passages}
+    # Letters given only as Feltoe's summary are not built: in parentheses, in brackets
+    # (the "Second Tome", Letter CLXV), or as a pointer.
+    assert not {"ii.iv.ii", "ii.iv.clix", "ii.iv.cliv"} & built
+    # Letters LV to LVIII: the summary of four goes; Galla Placidia's LVI stays, hers.
+    work = next(w for w in letters.works if w.work_key == "ii.iv.lv")
+    assert (work.title, work.author) == ("Letter LVI", "Galla Placidia")
+    label = next(p.chapter_label for p in letters.passages if p.chapter_key == "ii.iv.lv")
+    assert label == "Letter LVI · From Galla Placidia Augusta to Theodosius"
+    labels = {p.chapter_key: p.chapter_label for p in letters.passages}
+    assert labels["ii.iv.lii"] == "Letter LII · From Theodoret, Bishop of Cyrus, to Leo"
+    assert labels["ii.iv.xxviii"] == "Letter XXVIII · To Flavian commonly called “the Tome”"
+
+
+def test_pastoral_rule_labels_its_parts(leo_gregory):
+    rule = leo_gregory[("npnf212.xml", "iii.iv")]
+    labels = list(dict.fromkeys(p.chapter_label for p in rule.passages))
+    assert labels[0] == "Part I, Prologue"
+    assert labels[1] == "Part I, Chapter I. That the unskilful venture not to approach an " \
+                        "office of authority"
+    assert any(x.startswith("Part II, Chapter I. How one who has in due order") for x in labels)
+    assert labels[-1].startswith("Part IV. How the Preacher")
+    # Gregory's letter to John stays; Barmby's preface on the title does not.
+    assert rule.passages[0].content.startswith("Gregory to his most reverend")
+    assert not any("Liber Regulæ Pastoralis" in p.content for p in rule.passages)
+
+
+def test_register_letters_carry_their_book(leo_gregory):
+    first, second = (leo_gregory[k] for k in (("npnf212.xml", "iii.v"), ("npnf213.xml", "ii")))
+    titles = {w.work_key: w.title for w in first.works}
+    assert titles["iii.v.ii.i"] == "Book II, Letter III"
+    assert len(set(titles.values())) == len(titles)
+    text = "\n".join(p.content for p in first.passages)
+    assert "Indiction IX., Being the First Year" not in text          # the Book's dating line
+    assert "Gregory to Justinus, Praetor of Sicily." in text           # his salutation, kept
+    # Augustine of Canterbury's questions head the Book of Answers (Book XI, 64), level 2.
+    marks = [(m, p) for p in second.passages if p.chapter_key == "ii.vii.xxx"
+             for m in (p.metadata or {}).get("headings", [])]
+    assert marks and all(m["level"] == 2 for m, _ in marks)
+    assert "ii.ix.vii" not in {p.chapter_key for p in second.passages}   # a pointer
+    senders = {w.work_key: w.author for w in second.works}
+    assert senders["ii.v.lx"] == "Columbanus"
+
+
+def test_leo_and_gregory_registry_labels():
+    import json
+    works = {w["work_id"]: w for w in json.load(open(os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "registry", "works.json")))}
+    register = {x["work_key"]: x for x in works["church-fathers/npnf213/ii"]["works"]}
+    assert (register["ii.x.viii"]["author"], register["ii.x.viii"]["certainty"]) == (
+        "Pseudo-Gregory the Great", "pseudonymous")
+    assert register["ii.v.xxx"]["certainty"] == "disputed"
+    assert works["church-fathers/npnf212/iii.iv"]["attribution"]["clavis"] == "CPL 1712"
+    from scripts.npnf_registry import EXCLUDED
+    assert EXCLUDED["npnf212.xml"]["ii.iv.xxi"][0] == "rule-a"      # Eutyches's letter
