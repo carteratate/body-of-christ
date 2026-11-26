@@ -117,3 +117,27 @@ def test_vatican2_marks_the_heading_paragraph_not_an_identical_earlier_one():
 def test_a_bare_number_counts_only_at_the_start():
     assert not headings.repeats_label("The Church", "History 2: The Church")
     assert not headings.repeats_label("Ways to Pray", "Chapter 2: 3 Ways to Pray")
+
+
+@pytest.mark.sources
+@pytest.mark.skipif(not os.path.exists(_DEFAULT_SRC), reason="catechism sources not vendored")
+def test_compendium_marks_each_question():
+    from ingest import catechism_compendium
+    doc = catechism_compendium.build_document()
+    assert all(_marked(p)[:1] == [(p.content.split("\n\n")[0], 3)] for p in doc.passages)
+    assert _marked(doc.passages[11]) == [("12. What is Apostolic Tradition?", 3)]
+    assert health.check_documents("catechism", [doc], report=False) == []
+
+
+@pytest.mark.sources
+def test_roman_catechism_marks_the_translators_sub_headings_left_in_the_text():
+    from ingest import roman_catechism
+    try:
+        doc = roman_catechism.build_document()
+    except FileNotFoundError:
+        pytest.skip("Roman Catechism OCR text not available")
+    marked = [m for p in doc.passages for m in _marked(p)]
+    assert sorted(text for text, _ in marked) == sorted(roman_catechism.TEXT_HEADINGS)
+    # Only the two known defects (checks/known_defects.json) remain.
+    assert sorted(v.anchor for v in health.check_documents("catechism", [doc], report=False)) \
+        == ["lords-prayer/amen/6", "lords-prayer/opening-words/9"]

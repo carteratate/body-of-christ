@@ -190,6 +190,18 @@
      "text": "+ PERICLE FELICI Titular Archbishop of Samosata Secretary General of the Second Vatican Ecumenical Council",
      "reason": "the Secretary General's signature under the Preliminary Note of Explanation, not a heading"
     }
+   ],
+   "c6d78d5e-5f23-5f86-b0ca-97a741e186bf": [
+    {
+     "text": "By these, and similar arguments, the pastor will be able to instruct the faithful in this Article",
+     "reason": "the closing sentence of a section, whose full stop the OCR lost; not a heading"
+    }
+   ],
+   "800373b1-d6c8-5a26-8910-8d1485b224c2": [
+    {
+     "text": "For this reason God “wrote on the tables of the Law what men did not read in their hearts.” (Saint Augustine)",
+     "reason": "Augustine's saying printed under answer 417, ending in its attribution; not a heading"
+    }
    ]
   }
  },
