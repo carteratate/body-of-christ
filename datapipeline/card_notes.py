@@ -285,8 +285,8 @@ DOCUMENT_NOTES: dict[str, tuple[Note, ...]] = {
     "encyclicals/levate": (caution("incomplete", "This printing gives only part of each "
                                                  "paragraph."),),
     "papal-documents/exsurge-domine": (overview(
-        f"Only the condemned propositions are given; the rest of the bull is "
-        f"{NOT_AVAILABLE}.", "incomplete"),),
+        f"Only the condemned propositions and the censure are given; the rest of the bull "
+        f"is {NOT_AVAILABLE}.", "incomplete"),),
 }
 
 # The translator of each scanned edition a council takes passages from (the passage's

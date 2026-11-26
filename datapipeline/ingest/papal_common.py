@@ -1082,9 +1082,12 @@ def build_documents(collection: str, src_dir: str) -> list[Document]:
     manifest = manifest + [papal_printings.entry_of(p)
                            for p in papal_printings.printed_only(collection)]
     # A document published in part from the site's page (Exsurge Domine's propositions,
-    # R9) leaves out the passages an open `passage` removal holds, as a printing does.
+    # R9) leaves out the passages an open `passage` removal holds, as a printing does, and
+    # takes any passage a printing adds to it (its censure, 5.9).
     return [papal_printings.build_document(e, collection, src_dir)
             if papal_printings.printing(collection, e["slug"])
-            else drop_removed(build_document(e, collection, src_dir)) for e in manifest
+            else papal_printings.with_additions(
+                drop_removed(build_document(e, collection, src_dir)), collection, e["slug"])
+            for e in manifest
             if resolve_document_id(collection, f"{collection}/{e['slug']}",
                                    (collection, e["slug"])) not in held]

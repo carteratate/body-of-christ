@@ -1,0 +1,13 @@
+{
+ "_doc": "Per document built from its site's page: the passages a public-domain printing adds to it. See `additions` in ingest/papal_printings.py.",
+ "papal-documents/exsurge-domine": [
+  {
+   "work": "deferrari-exsurge-domine",
+   "url": "https://archive.org/details/sourcesofcatholi00denz",
+   "part": "censure",
+   "label": "Censure",
+   "after": 41,
+   "why": "5.9 (#420): the bull's censure of the 41 propositions, as Deferrari prints it after proposition 41 (n. 781, p. 243), without Denzinger's heading \"Censure of the Holy Pontiff:\" (rule G)"
+  }
+ ]
+}
