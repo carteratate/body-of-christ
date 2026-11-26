@@ -163,7 +163,7 @@ def _card(row, facts: DocumentFacts, labels: dict) -> PassageCard | None:
     url = reader_access.source_url(collection, {"url": row.get("document_url")})
     return card_notes.build(
         card_version_value=row.get("card_version"), card_notes=row.get("card_notes"),
-        card_translator=row.get("card_translator"), facts=facts, collection=collection,
+        card_translator=row.get("card_translator"), facts=facts,
         work_key=row.get("work_key"), note=row["note"], note_kind=row.get("note_kind"),
         translator=row.get("translator"), language=row["language"], text_labels=labels,
         notice=reader_access.source_credit(collection, url, row.get("title")))

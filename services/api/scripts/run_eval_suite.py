@@ -38,7 +38,7 @@ PIPELINES = [
     "hyde_cohere_luna_seats10t80_ftsminmatch_hydesample",  # noise floor
 ]
 
-COLLECTIONS = ["bible", "catechism", "summa", "encyclicals", "church-fathers"]
+COLLECTIONS = ["bible", "catechism", "summa", "papal", "church-fathers"]
 
 # Each query targets a different retrieval behaviour, not just a different topic.
 QUERIES: list[tuple[str, str, str]] = [
