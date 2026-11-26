@@ -149,12 +149,12 @@ export function buildCollectionScopes(
 function workOptions(works: readonly RegistryWork[], collection: string): ScopeValue[] {
   const named = Object.values(WORK_LABELS).filter((work) => work.collection === collection);
   const published = works.filter((work) => canonicalCollectionKey(work.collection) === collection
-    && work.status === "active" && work.document_id);
+    && work.status === "active" && work.document_id && work.title);
   const ids = new Set(published.map((work) => work.document_id));
   const others = published
     .filter((work) => !WORK_LABELS[work.document_id!])
     .sort((a, b) => (a.year ?? 0) - (b.year ?? 0))
-    .map((work) => ({ value: work.document_id!, label: work.title ?? work.document_id! }));
+    .map((work) => ({ value: work.document_id!, label: work.title! }));
   return [
     ...named.filter((work) => ids.has(work.value))
       .map(({ value, label, detail }) => ({ value, label, ...(detail ? { detail } : {}) })),
