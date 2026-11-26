@@ -84,7 +84,7 @@ describe("genre and issuer filter (5.1a)", () => {
     // The three old papal collections' kinds together (5.1b.2), each with its number of
     // documents. The numbers are read from the generated scope list, which grows with the
     // corpus (collection-scopes.test.ts holds it equal to works.json).
-    const documents = COLLECTION_SCOPES.papal.documents;
+    const documents = COLLECTION_SCOPES.papal.counts;
     const count = (genre: string, issuer?: string) => Object.entries(documents[genre] ?? {})
       .filter(([pope]) => issuer === undefined || pope === issuer)
       .reduce((n, [, k]) => n + k, 0);
