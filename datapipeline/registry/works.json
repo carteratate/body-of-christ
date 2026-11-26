@@ -18783,6 +18783,48 @@
   "card_translator": "Translated by Roy J. Deferrari (1957)"
  },
  {
+  "work_id": "papal-documents/inter-cunctas",
+  "document_id": "9d7bcb10-5f20-5e83-a592-b237eed5b8e8",
+  "collection": "papal-documents",
+  "source_key": "papal-documents/inter-cunctas",
+  "title": "Inter Cunctas",
+  "author": "Pope Martin V",
+  "frozen_on": "2026-11-23",
+  "status": "active",
+  "supersedes": [],
+  "rule_a": {
+   "applies": false,
+   "communion_start": null,
+   "communion_end": null,
+   "work_date": null,
+   "chronology_source": null,
+   "church_acts": [],
+   "decision": null,
+   "decision_basis": null
+  },
+  "attribution": {
+   "credited_as": null,
+   "certainty": null,
+   "clavis": null,
+   "basis": null,
+   "editorial_judgments": []
+  },
+  "works": [],
+  "genre": "apostolic-constitution",
+  "form": "bull",
+  "issuer": "pope-martin-v",
+  "issuer_label": "Pope Martin V",
+  "year": 1418,
+  "date_display": null,
+  "translation": "",
+  "source_credit": "Translated by Roy J. Deferrari (1957)",
+  "attribution_note": null,
+  "notes": "Only extracts of this bull are given, in R. J. Deferrari's translation of Denzinger (1957): questions 5–8 and 11–39 of those to be put to followers of Wyclif and Hus. Questions 1–4, 9 and 10, and the rest of the bull, are not available on TheoCorpus at present.",
+  "superseded_by": null,
+  "superseded_note": null,
+  "card_translator": "Translated by Roy J. Deferrari (1957)"
+ },
+ {
   "work_id": "papal-documents/misericordia-et-misera",
   "document_id": "1f231634-8057-5ead-8e82-e150dbe0b39b",
   "collection": "papal-documents",

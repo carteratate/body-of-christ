@@ -1077,6 +1077,10 @@ def build_documents(collection: str, src_dir: str) -> list[Document]:
     from ingest import papal_printings
 
     held = removed_document_ids()
+    # A document no site page gives follows the manifest's, from its printing alone
+    # (Inter Cunctas, 5.9).
+    manifest = manifest + [papal_printings.entry_of(p)
+                           for p in papal_printings.printed_only(collection)]
     # A document published in part from the site's page (Exsurge Domine's propositions,
     # R9) leaves out the passages an open `passage` removal holds, as a printing does, and
     # takes any passage a printing adds to it (its censure, 5.9).
