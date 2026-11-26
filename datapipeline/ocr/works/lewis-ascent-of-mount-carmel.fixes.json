@@ -1262,5 +1262,17 @@
   "find": "as these;he opens",
   "replace": "as these; he opens",
   "why": "Spacing the OCR lost, or a speck read as a comma, beside a punctuation mark; the page prints \"as these; he opens\"."
+ },
+ {
+  "passage": "0082",
+  "find": "darkness, Proofs from SS. Luke",
+  "replace": "darkness. Proofs from S. Luke",
+  "why": "A full stop read as a comma and \"S.\" as \"SS.\" in the chapter's title; the page (p. 70) prints \"darkness. Proofs from S. Luke\"."
+ },
+ {
+  "passage": "0271",
+  "find": "Imagination, Answer to an objection",
+  "replace": "Imagination. Answer to an objection",
+  "why": "A full stop read as a comma in the chapter's title; the page (p. 230) prints \"Imagination. Answer to an objection\"."
  }
 ]

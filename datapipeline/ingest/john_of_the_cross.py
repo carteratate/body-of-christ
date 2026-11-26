@@ -128,8 +128,9 @@ def chapters(treatise: Treatise, passages: list[dict]) -> list[_Chapter]:
                 if _STANZA.match(para):
                     continue    # no title of its own: the chapter opens on its stanza
                 # The OCR reads the small type's closing full stop as a comma at times.
-                out[-1].title = para.rstrip('.,') + "."
-                out[-1].label += f". {para.rstrip('.,')}"
+                title = strip_calls(para).rstrip('.,')
+                out[-1].title = title + "."
+                out[-1].label += f". {title}"
             elif m := _SECTION.match(para):
                 name = m.group(1).title()
                 key = name.lower() if not book else f"book-{book}/{name.lower()}"
