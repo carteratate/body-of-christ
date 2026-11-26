@@ -141,9 +141,69 @@
   ]
  },
  "H7_unmarked_heading": {
-  "_comment": "Block rules H7 and H8 (issue #445) run in these collections only: a heading-like paragraph (headings.looks_like_heading) with no mark in metadata.headings, and a level-1 heading that opens its chapter and repeats the chapter label without chapter_title. A collection joins when its adapter marks its headings. not_headings lists, by document ID, paragraphs the classifier takes for headings that are text (a signature, a dating line, a quotation lead-in), each with its reason; they are matched without case or punctuation.",
-  "collections": [],
-  "not_headings": {}
+  "_comment": "Block rules H7 and H8 (issue #445) run in these collections only, and in `authors`' documents of a collection (Vatican II among the councils): a heading-like paragraph (headings.looks_like_heading) with no mark in metadata.headings, and a level-1 heading that opens its chapter and repeats the chapter label without chapter_title. A collection joins when its adapter marks its headings. not_headings lists, by document ID, paragraphs the classifier takes for headings that are text (a signature, a dating line, a quotation lead-in), each with its reason; they are matched without case or punctuation.",
+  "collections": [
+   "catechism"
+  ],
+  "authors": {
+   "councils": [
+    "Second Vatican Council"
+   ]
+  },
+  "not_headings": {
+   "9679c400-d314-5394-b916-f6fc27b50104": [
+    {
+     "text": "You shall have no other gods before me …",
+     "reason": "a row of the Decalogue table after CCC 2051 (Exodus, Deuteronomy, the catechetical formula), not a heading"
+    },
+    {
+     "text": "You shall not take the name of the LORD your God in vain …",
+     "reason": "a row of the Decalogue table after CCC 2051 (Exodus, Deuteronomy, the catechetical formula), not a heading"
+    },
+    {
+     "text": "Observe the sabbath day, to keep it holy …",
+     "reason": "a row of the Decalogue table after CCC 2051 (Exodus, Deuteronomy, the catechetical formula), not a heading"
+    },
+    {
+     "text": "Honor your father and your mother …",
+     "reason": "a row of the Decalogue table after CCC 2051 (Exodus, Deuteronomy, the catechetical formula), not a heading"
+    },
+    {
+     "text": "Neither shall you covet your neighbor's wife …",
+     "reason": "a row of the Decalogue table after CCC 2051 (Exodus, Deuteronomy, the catechetical formula), not a heading"
+    }
+   ],
+   "13b94869-cf9c-590d-9573-66f1bd6ea457": [
+    {
+     "text": "Given in Rome at St. Peter's, November 21, 1964",
+     "reason": "the promulgation's dating line, not a heading"
+    }
+   ],
+   "1d8e4438-b930-5fa4-93cb-b393786064fa": [
+    {
+     "text": "Given in Rome at St. Peter's, November 21, 1964",
+     "reason": "the promulgation's dating line, not a heading"
+    }
+   ],
+   "c1b748c6-a250-5ca1-a087-4f6be5e75bbb": [
+    {
+     "text": "+ PERICLE FELICI Titular Archbishop of Samosata Secretary General of the Second Vatican Ecumenical Council",
+     "reason": "the Secretary General's signature under the Preliminary Note of Explanation, not a heading"
+    }
+   ],
+   "c6d78d5e-5f23-5f86-b0ca-97a741e186bf": [
+    {
+     "text": "By these, and similar arguments, the pastor will be able to instruct the faithful in this Article",
+     "reason": "the closing sentence of a section, whose full stop the OCR lost; not a heading"
+    }
+   ],
+   "800373b1-d6c8-5a26-8910-8d1485b224c2": [
+    {
+     "text": "For this reason God “wrote on the tables of the Law what men did not read in their hearts.” (Saint Augustine)",
+     "reason": "Augustine's saying printed under answer 417, ending in its attribution; not a heading"
+    }
+   ]
+  }
  },
  "R11_papal_editorial": {
   "_comment": "An editor's or translator's words in a papal passage (C-18, Opus A-010); the last pattern is an \"[N-M]\" paragraph-range marker, which only a table of contents prints.",

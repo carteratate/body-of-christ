@@ -25,6 +25,7 @@ import sys
 from dataclasses import dataclass, field
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import headings  # noqa: E402
 from identity import PIECE_MARK, anchor as make_anchor  # noqa: E402
 from ingest.catechism import _title  # noqa: E402
 from ingest.common import split_display_passage  # noqa: E402
@@ -243,6 +244,27 @@ def _pieces(paragraphs: list[str]) -> list[tuple[int, str]]:
     return pieces
 
 
+# The translators' sub-headings the OCR units left inside a section's text, rather than
+# over it (issue #445), found against their contents in the vendored Fordham transcription: marked where they stand, at level 3 under the section's own
+# heading (its unit label). Two more are known defects (checks/known_defects.json): one
+# the OCR garbled ('66 Our”') and one that ends its passage instead of opening the next.
+TEXT_HEADINGS = frozenset({
+    "Other Uses of the Word “Church”",
+    "The Word “Sacrament”",
+    "Meaning of the Word “Eucharist”",
+    "Different Meanings of the Word “Penance”",
+    "Explanation of the Fourth Commandment: “Honour”",
+    "That Thou Mayest be Long-lived, etc.",
+})
+
+
+def _heading_marks(content: str) -> list[dict]:
+    """A mark for each listed sub-heading the passage prints. One a cut strands at the end
+    of a passage is still marked, so H6 refuses it rather than H7 missing it."""
+    return [headings.mark(a, b, level=3) for a, b in headings.paragraphs(content)
+            if content[a:b] in TEXT_HEADINGS]
+
+
 def build_document(text: dict | None = None) -> Document:
     data = text if text is not None else read_text(WORK)
     sections = _sections(data["passages"])
@@ -262,12 +284,15 @@ def build_document(text: dict | None = None) -> Document:
                     f"{base}{PIECE_MARK}p{first + 1}"
                     + (f"-{seen[first]}" if seen[first] > 1 else ""))
                 ref = f"Roman Catechism, {chapter.short}" + (f", {unit_label}" if unit_label else "")
+                content = clean_text(body)
                 passage = Passage(
-                    content=clean_text(body),
+                    content=content,
                     reference=piece_reference(ref, None, None, k, len(pieces)),
                     anchor=anchor, chapter_key=make_anchor("roman-catechism", *chapter.key.split("/")),
                     chapter_label=chapter.label, position=len(passages), unit_label=unit_label,
-                    metadata={"pages": section.pages, "ocr_unit": section.unit})
+                    metadata=headings.with_headings(
+                        {"pages": section.pages, "ocr_unit": section.unit},
+                        _heading_marks(content)))
                 passages.append(label_passage(passage, data["metadata"]["scan_id"]))
     return Document(
         id=did, collection="catechism", title=TITLE, author=None, year=YEAR,

@@ -31,6 +31,7 @@ from dataclasses import dataclass, field
 from bs4 import BeautifulSoup, Tag
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import headings  # noqa: E402
 from identity import anchor as make_anchor  # noqa: E402
 from ingest.catechism import _title  # noqa: E402
 from model import Document, Passage  # noqa: E402
@@ -237,13 +238,20 @@ def build(source_path: str | None = None, questions: int = QUESTIONS) -> Build:
         if not e.blocks:
             raise ValueError(f"compendium: question {e.number} has no answer")
         key, label = e.chapter
+        content = clean_text("\n\n".join([e.question, *e.blocks]))
+        # The question, printed in bold over its answer, is the passage's heading (issue
+        # #445): level 3, under the chapter headings its label names.
+        (at, end), *_ = headings.paragraphs(content)
+        if content[at:end] != clean_text(e.question):
+            raise ValueError(f"compendium: question {e.number} is not its first paragraph")
         passages.append(Passage(
-            content=clean_text("\n\n".join([e.question, *e.blocks])),
+            content=content,
             reference=f"Compendium of the Catechism, Q. {e.number}",
             anchor=make_anchor("q", e.number),
             chapter_key=key, chapter_label=label, position=position,
             unit_label=f"Q. {e.number}",
-            metadata={"ccc_references": e.references}))
+            metadata={"ccc_references": e.references,
+                      headings.KEY: [headings.mark(at, end, level=3)]}))
     document = Document(
         id=did, collection="catechism", title=TITLE, author=None, year=2005,
         metadata={"source": "vatican.va (English)", "source_key": SOURCE_KEY,
