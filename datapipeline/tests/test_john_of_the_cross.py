@@ -131,3 +131,15 @@ def test_a_clipped_label_leaves_the_whole_title_as_the_chapters_heading(document
     assert clipped == 23
     assert not any((p.metadata or {}).get("headings") for p in document.passages
                    if p is not first[p.chapter_key])
+
+
+@needs_text
+def test_the_passage_registry_holds_exactly_the_built_anchors(document):
+    """A fix or an adapter change that moves a cut must reconcile the registry in the same
+    PR (`scripts/reconcile_registry.py --item 5.6c --collection medieval`)."""
+    import json
+    path = os.path.join(os.path.dirname(FROZEN), "..", "..", "registry", "passages", "medieval.jsonl")
+    with open(path, encoding="utf-8") as f:
+        rows = [json.loads(line) for line in f if line.strip()]
+    active = {r["anchor"] for r in rows if r["document_id"] == document.id and r["status"] == "active"}
+    assert active == {p.anchor for p in document.passages}
