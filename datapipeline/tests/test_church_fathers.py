@@ -855,6 +855,8 @@ def test_register_letters_carry_their_book(leo_gregory):
     marks = [(m, p) for p in second.passages if p.chapter_key == "ii.vii.xxx"
              for m in (p.metadata or {}).get("headings", [])]
     assert marks and all(m["level"] == 2 for m, _ in marks)
+    answers = next(p for p in second.passages if p.chapter_key == "ii.vii.xxx")
+    assert answers.content.startswith("Preface.—Through my most beloved son")  # incipit cut
     assert "ii.ix.vii" not in {p.chapter_key for p in second.passages}   # a pointer
     senders = {w.work_key: w.author for w in second.works}
     assert senders["ii.v.lx"] == "Columbanus"

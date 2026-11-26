@@ -971,6 +971,9 @@ _REGISTER_BOOKS = {("npnf212.xml", "iii.v.i"): "I"}
 # The questions Augustine of Canterbury put to Gregory, which the Book of Answers repeats
 # as its headings ("Augustine's first question"), level 2.
 _AUGUSTINE_QUESTION = re.compile(r"^Augustine[’']s \w+ question\b")
+# A manuscript's title line over a letter ("Here begins the epistle of the blessed
+# Gregory…"), which the label's address says (Book XI, 64).
+_INCIPIT = re.compile(r"^Here (?:begins|follows) the (?i:epistle)\b")
 
 
 def _register_head(filename, elem, parent_map=None) -> _Head:
@@ -983,6 +986,8 @@ def _register_head(filename, elem, parent_map=None) -> _Head:
         raise ValueError(f"{elem.get('id')}: no Epistle line")
     n = _EPISTLE.match(_text(blocks[at])).group(1)
     lines = blocks[:at + 2]
+    while len(lines) < len(blocks) and _INCIPIT.match(_text(blocks[len(lines)])):
+        lines.append(blocks[len(lines)])
     parent = parent_map[elem]
     book = _REGISTER_BOOKS.get((filename, parent.get("id")))
     if book is None:
