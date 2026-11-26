@@ -25,8 +25,8 @@ can make it in a PR. Effort runs from XS (one line) to M (a small feature with t
 |---|---|---|---|---|
 | 1 | Turn analytics on: set `NEXT_PUBLIC_POSTHOG_KEY` and `NEXT_PUBLIC_POSTHOG_HOST` for Vercel Production, and add PostHog's US hosts to the CSP **before** that build goes live (item 1) | High: there has never been any analytics | S | Setting + Code |
 | 2 | Let the API shut down gracefully: `exec` in the Dockerfile's `CMD`, and give Railway a draining time (finding A) | Medium: every deploy kills in-flight searches outright | XS + XS | Code + Setting |
-| 3 | Deploy the API only when `services/api/` changes, using watch paths (finding B) | Medium: 50 API restarts in four days, 37 of them for merges that did not touch the API | XS | Setting, or Code once #4 is done |
-| 4 | Point Railway at `services/api/railway.toml` (the config file is very likely not being read), then add `healthcheckPath`, `drainingSeconds` and `watchPatterns` to it (finding C) | Medium: makes #2, #3 and a healthcheck live in the repo | XS + S | Setting, then Code |
+| 3 | Deploy the API only when `services/api/` changes, using watch paths (finding B) | Medium: 50 API restarts in four days, 37 of them for merges that did not touch the API | XS | Setting |
+| 4 | **Before 1 Dec 2026**, set the builder to Dockerfile and add a `/health` healthcheck in the Railway dashboard: `railway.toml` stops being read that day (finding C, corrected) | High on 1 Dec: a Railpack build would ignore the Dockerfile | XS | Setting |
 | 5 | Keep `qdrant-client` within one minor version of the server (`>=1.18,<1.20`, which resolves to 1.19.1) in both dependency inputs, and re-lock (item 2) | Low today, but avoids a surprise | XS | Code |
 | 6 | Turn on leaked-password protection in Supabase Auth (security advisor) | Low to medium: blocks passwords known from breaches | XS | Setting |
 | 7 | Change the stored translation label from `CPDV` to `WEB-C`, accepting `CPDV` as an old alias (item 4) | Low: the label is wrong but steers nothing | M, plus a data backfill that needs Carter's OK | Code |
@@ -198,9 +198,9 @@ is just low. The fix is small:
 - **Code:** `CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]`.
   With `exec`, uvicorn becomes PID 1 and receives SIGTERM.
 - **Setting or config:** give Railway a draining time longer than a search, for example
-  60 s: `RAILWAY_DEPLOYMENT_DRAINING_SECONDS=60` on the service, or `drainingSeconds` in
-  `railway.toml` once finding C is fixed. Without it, Railway may follow SIGTERM with SIGKILL
-  before the drain completes.
+  120 s: `RAILWAY_DEPLOYMENT_DRAINING_SECONDS=120` on the service (#505 gives uvicorn 75 s,
+  then the 30 s guest drain). Not in `railway.toml`: see finding C. Without it, Railway may
+  follow SIGTERM with SIGKILL before the drain completes.
 
 ### B. 50 API deploys in four days, most of them unnecessary (setting or code)
 
@@ -213,24 +213,39 @@ search. Of the 50 deploys listed (22 Nov 17:01 to 26 Nov 17:43), 13 changed anyt
 
 Fix: watch paths of `/services/api/**`. That covers everything the Dockerfile copies:
 `requirements.lock`, `pyproject.toml` and `app/`. Carter can set this in the service's
-settings, or a thread can add `watchPatterns` to `railway.toml` once Railway reads that
-file (C). Note the side effect from Railway's docs: with watch paths set, an empty commit
+settings. Not in `railway.toml`: see finding C. Note the side effect from Railway's docs: with watch paths set, an empty commit
 no longer redeploys, so use "Deploy Latest Commit" to force one.
 
-### C. `services/api/railway.toml` is very likely ignored (setting)
+### C. Railway stops reading `railway.toml` on 1 Dec 2026 (setting) — corrected
 
-The file asks for `builder = "DOCKERFILE"` and `restartPolicyType = "ON_FAILURE"` (3
-retries). The live config shows `builder: RAILPACK` and no restart policy. Builds use the
-Dockerfile anyway because Railway detects one in the root directory. Railway's docs say
-the config file **does not follow the root directory** and must be given by absolute path.
-The service's root directory is `services/api`, so the file is only read if the config file
-path is set to `/services/api/railway.toml`.
+*Corrected on 26 Nov 2026. The first version of this finding named a
+`services/api/railway.toml`. No such file exists: the committed file is the root
+`railway.toml`, and the first version also said it was very likely ignored. Railway's
+docs, found during the review of #505, say otherwise.*
 
-- **Setting (Carter):** Settings → Config-as-code → `/services/api/railway.toml`.
-- **Then code:** add `healthcheckPath = "/health"`, `drainingSeconds` and `watchPatterns`.
-  There is no healthcheck today, so a deploy whose app fails after the container starts can
-  still replace a working one. Startup takes about 1 to 2 s, so a healthcheck costs
-  nothing.
+The repository's only config file is the root `railway.toml`. It asks for
+`builder = "DOCKERFILE"` (with a `dockerfilePath = "Dockerfile"` that does not exist at
+the root) and `restartPolicyType = "ON_FAILURE"` (3 retries). The service's root directory
+is `services/api`, no config file path is set, and the dashboard shows `builder: RAILPACK`.
+Railway's [Infrastructure as Code page](https://docs.railway.com/infrastructure-as-code)
+says that with no path set, the builder still reads a `railway.toml` at the service root or
+the repository root. So the root file may be in effect today. The dashboard view cannot tell.
+
+Config as Code is deprecated. **Existing `railway.toml` files stop being read on
+2026-12-01 (hard cutoff)**, and new services cannot opt in. Its replacement,
+Infrastructure as Code, is a `.railway/railway.ts` file applied with the Railway CLI.
+
+- **The risk on 1 Dec:** if the root file is what keeps the build on the Dockerfile, the
+  first deploy after the cutoff could build with Railpack. That would ignore the Dockerfile
+  and its `CMD`.
+- **Setting (Carter), before 1 Dec:** in the service's settings, set the builder to
+  Dockerfile, the healthcheck path to `/health`, the variable
+  `RAILWAY_DEPLOYMENT_DRAINING_SECONDS=120`, watch paths to `/services/api/**`, and, if
+  wanted, the restart policy to on failure with 3 retries. #505 lists them. There is no
+  healthcheck today, so a deploy whose app fails after the container starts can still
+  replace a working one. Startup takes about 1 to 2 s, so a healthcheck costs nothing.
+- **Later (code):** delete the root `railway.toml` once the dashboard holds these values,
+  or move to Infrastructure as Code if config in the repo is wanted.
 
 ### D. The startup line logs four key suffixes (code)
 
