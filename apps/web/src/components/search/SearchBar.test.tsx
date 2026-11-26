@@ -3,9 +3,12 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { SearchBar } from "./SearchBar";
+import { SearchBar, searchPlaceholder } from "./SearchBar";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 function renderBar(loading: boolean) {
   return render(
@@ -30,5 +33,40 @@ describe("SearchBar submit button", () => {
     expect(label?.className).toContain("invisible");
     expect(button.getAttribute("aria-busy")).toBe("true");
     expect((button as HTMLButtonElement).disabled).toBe(true);
+  });
+});
+
+describe("SearchBar placeholder", () => {
+  it("uses one-line hints on narrow screens and the full wording on wider ones", () => {
+    expect(searchPlaceholder(false, true)).toBe("What's on your mind?");
+    expect(searchPlaceholder(true, true)).toBe("Select a source to search.");
+    expect(searchPlaceholder(false, false)).toBe("A question, a thought, a doubt: what's on your mind?");
+    expect(searchPlaceholder(true, false)).toBe("Select at least one source to search.");
+  });
+
+  function stubViewport(narrow: boolean) {
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      matches: narrow && query === "(max-width: 767px)",
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }));
+  }
+
+  it("shows the short hints on a phone, keeping the button's full disabled title", () => {
+    stubViewport(true);
+    render(<SearchBar value="" onChange={vi.fn()} onSubmit={vi.fn()} loading={false} disabled />);
+
+    expect(screen.getByRole("textbox").getAttribute("placeholder")).toBe("Select a source to search.");
+    expect(screen.getByRole("button").getAttribute("title")).toBe("Select at least one source to search.");
+  });
+
+  it("shows the full hint on a wider screen", () => {
+    stubViewport(false);
+    render(<SearchBar value="" onChange={vi.fn()} onSubmit={vi.fn()} loading={false} disabled={false} />);
+
+    expect(screen.getByRole("textbox").getAttribute("placeholder")).toBe(
+      "A question, a thought, a doubt: what's on your mind?",
+    );
   });
 });
