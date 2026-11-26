@@ -2,6 +2,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  readerSectionCollection,
   consumeReaderReturnKey,
   hasReaderReturnMarker,
   markReaderReturn,
@@ -101,5 +102,13 @@ describe("retired anchors (corpus cleanup 2.4a)", () => {
   it("does the same for the guest reader", () => {
     const href = readerHref({ docId: "doc-a", origin: "search", returnKey: null, anchor, guest: true });
     expect(new URL(href, "https://theo-corpus.com").searchParams.get("anchor")).toBe(anchor);
+  });
+});
+
+describe("readerSectionCollection", () => {
+  it("keeps the paragraph-range wording for the Catechism of the Catholic Church only", () => {
+    expect(readerSectionCollection({ collection: "catechism", title: "Catechism of the Catholic Church" })).toBe("catechism");
+    expect(readerSectionCollection({ collection: "catechism", title: "Catechism of the Council of Trent" })).toBe("");
+    expect(readerSectionCollection({ collection: "summa", title: "Summa Theologiae" })).toBe("summa");
   });
 });

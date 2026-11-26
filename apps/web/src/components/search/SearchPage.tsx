@@ -281,13 +281,6 @@ function SearchPageInner({
     if (next !== draft) setDraft(next);
   }
 
-  function handleTranslationChange(value: string) {
-    const next = transitionSearchDraft(draft, { type: "translation-selected", translation: value });
-    if (next === draft) return;
-    saveDefault(next);
-    setDraft(next);
-  }
-
   function handleSelectQuery(text: string) {
     setSearchValue(text);
     handleSearch(text);
@@ -414,8 +407,6 @@ function SearchPageInner({
       <BottomBar
         activeCollections={searchView.loading && searchView.submittedCollections.length > 0 ? [...searchView.submittedCollections] : activeCollections}
         onToggleCollection={handleToggleCollection}
-        translation={searchView.loading && searchView.submittedTranslation ? searchView.submittedTranslation : translation}
-        onTranslationChange={handleTranslationChange}
         excluded={draft.excluded}
         onScopeEvent={handleScopeEvent}
         quota={searchView.loading && searchView.submittedQuota !== null ? searchView.submittedQuota : quota}

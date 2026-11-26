@@ -14,7 +14,7 @@ import unicodedata
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 
-from checks.source_text import SEGMENT_BREAK, SOURCES, SourceUnit
+from checks.source_text import CCC_FILE, SEGMENT_BREAK, SOURCES, SourceUnit
 from model import Document
 from normalize.text import repair_sentence_joins
 
@@ -134,6 +134,10 @@ def documents_by_file(collection: str, documents: list[Document], files: list[st
             out[file_by_key[meta["source_key"]]].append(doc)
         elif collection == "bible" and file_by_title.get(doc.title) in out:
             out[file_by_title[doc.title]].append(doc)
+        elif collection == "catechism" and meta.get("source_key") == "catechism" \
+                and CCC_FILE in out:
+            # The Catechism of the Catholic Church; the 5.5 additions name their own files.
+            out[CCC_FILE].append(doc)
         elif collection in ("canon-law", "catechism", "summa") and len(documents) == 1:
             for f in files:
                 out[f].append(doc)

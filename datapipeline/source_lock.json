@@ -12,28 +12,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/catechism/catechismofcounc0000jose/catechismofcounc0000jose_djvu.txt",
-  "sha256": "16d93090eb45dcd5b99fa724a318e5e1a42107fc8554040019feb81d9f38292c",
-  "bytes": 1321558,
-  "url": "https://archive.org/download/catechismofcounc0000jose/catechismofcounc0000jose_djvu.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/catechism/compendium-ccc.html",
-  "sha256": "a35594fda5cf56333ff59388de407e152f5cd41e012d68e34f2bf75bbfa691a8",
-  "bytes": 378892,
-  "url": "https://www.vatican.va/archive/compendium_ccc/documents/archive_2005_compendium-ccc_en.html",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/church-fathers/dionysius-works.xml",
   "sha256": "b28456f33db6ca2ffb42efa20200e5b98c4b6ec8b9134a87119c6de051b903d2",
   "bytes": 731266,
@@ -3171,11 +3149,11 @@
  {
   "collection": "canon-law",
   "path": "canon-law/overrides.json",
-  "sha256": "74a7659ea0a5b7baf407467cfeeb49ee5ddaea0272ceb6cad88e6c15059fa549",
-  "bytes": 10404,
+  "sha256": "2815eab2bc4ab3bfc60ed3af0f713f6d413c74371b4a84582d65b09a92d005c5",
+  "bytes": 13142,
   "url": "https://www.ewtn.com/catholicism/library/de-concordia-inter-codices-7264",
-  "acquired": "2026-11-11",
-  "hashed_on": "2026-11-11",
+  "acquired": "2026-11-22",
+  "hashed_on": "2026-11-22",
   "role": "adapter-input"
  },
  {
@@ -3190,6 +3168,39 @@
  },
  {
   "collection": "catechism",
+  "path": "catechism/catechismofcounc0000jose/catechismofcounc0000jose_djvu.txt",
+  "sha256": "16d93090eb45dcd5b99fa724a318e5e1a42107fc8554040019feb81d9f38292c",
+  "bytes": 1321558,
+  "url": "https://archive.org/download/catechismofcounc0000jose/catechismofcounc0000jose_djvu.txt",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "vendored-unregistered",
+  "note": "the scan's plain OCR text, vendored by R6; the OCR tool reads the _djvu.xml (5.5)"
+ },
+ {
+  "collection": "catechism",
+  "path": "catechism/catechismofcounc0000jose/catechismofcounc0000jose_djvu.xml",
+  "sha256": "15c4c0d6a7789898e71e5a08051405ea0e707e86ae75aa77293c9b91b59b44ae",
+  "bytes": 17947549,
+  "url": "https://archive.org/download/catechismofcounc0000jose/catechismofcounc0000jose_djvu.xml",
+  "acquired": "2026-11-22",
+  "hashed_on": "2026-11-22",
+  "role": "vendored-unregistered",
+  "note": "the scan the Roman Catechism is read from, through ocr/texts/mchugh-callan-roman-catechism.json (5.5)"
+ },
+ {
+  "collection": "catechism",
+  "path": "catechism/catechismofcounc0000jose/catechismofcounc0000jose_page_numbers.json",
+  "sha256": "38bf5ad2ba2376428542dde25f133315d92539c2e54eb303cbff7b6719a20c72",
+  "bytes": 114060,
+  "url": "https://archive.org/download/catechismofcounc0000jose/catechismofcounc0000jose_page_numbers.json",
+  "acquired": "2026-11-22",
+  "hashed_on": "2026-11-22",
+  "role": "vendored-unregistered",
+  "note": "the scan the Roman Catechism is read from, through ocr/texts/mchugh-callan-roman-catechism.json (5.5)"
+ },
+ {
+  "collection": "catechism",
   "path": "catechism/ccc.json",
   "sha256": "adf88ebe79be36ce56dc23554410fea1f5efe4d92d290d6d0634243bd9e030a7",
   "bytes": 2779722,
@@ -3197,6 +3208,27 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "adapter-input"
+ },
+ {
+  "collection": "catechism",
+  "path": "catechism/compendium-ccc.html",
+  "sha256": "a35594fda5cf56333ff59388de407e152f5cd41e012d68e34f2bf75bbfa691a8",
+  "bytes": 378892,
+  "url": "https://www.vatican.va/archive/compendium_ccc/documents/archive_2005_compendium-ccc_en.html",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "catechism",
+  "path": "catechism/fordham-romancat.html",
+  "sha256": "758d3cf0a94411095b686011c9a75bbffcb82c87fc97dd10316398c1ffc9fedc",
+  "bytes": 1412936,
+  "url": "https://sourcebooks.fordham.edu/mod/romancat.asp",
+  "acquired": "2026-11-22",
+  "hashed_on": "2026-11-22",
+  "role": "vendored-unregistered",
+  "note": "Fordham's transcription, used only to check the Roman Catechism's OCR (5.5)"
  },
  {
   "collection": "catechism",

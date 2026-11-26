@@ -79,6 +79,23 @@ def test_override_replaces_or_adds_one_paragraph():
         co.apply(535, "§1. One.", [_override(535, "§2", text="§2. Two.")])
 
 
+def test_override_replaces_one_item_keeping_the_page_marker():
+    canon = "§1. For an infant:\n1/ one;\n2/ Latin.\n§2. Two."
+    item = _override(868, "§1 2°", text="§1. 2° English, subject to § 3.")
+    assert co.apply(868, canon, [item]) \
+        == "§1. For an infant:\n1/ one;\n2/ English, subject to § 3.\n§2. Two."
+    with pytest.raises(ValueError, match="no single item"):
+        co.apply(868, "§1. For an infant:\n1/ one;\n§2. Two.", [item])
+    with pytest.raises(ValueError, match="does not open"):
+        co.apply(868, canon, [_override(868, "§1 2°", text="2° English.")])
+
+
+def test_item_field_is_only_replaced(tmp_path):
+    path, index = _write(tmp_path, [_override(868, "§1 3°", "add", text="§1. 3° New.")])
+    with pytest.raises(ValueError, match="field"):
+        co.load(path, index)
+
+
 def test_override_file_hash_mismatch_fails(tmp_path):
     path, index = _write(tmp_path, [_override()])
     with open(path, encoding="utf-8") as f:
@@ -101,6 +118,29 @@ def test_canon_without_english_takes_no_override(tmp_path):
         co.load(path, index)
 
 
+def _de_concordia_page(texts: dict[int, str]) -> bytes:
+    arts = "".join(f"<p>Art. {n}. Can. {n} is replaced by:</p><p>{texts.get(n, '§1. T.')}</p>"
+                   for n in range(1, 12))
+    return f"<html><body>{arts}<p>I decree that this letter …</p></body></html>".encode()
+
+
+def test_vendoring_corrects_only_the_declared_typo_and_records_it():
+    page = _de_concordia_page({
+        1: "§1. One.", 2: "§1. Two.", 3: "§2. Three.", 4: "§1. 2° Four.",
+        5: "§3. Impossible for than to obtain access to the actual ministry.",
+        6: "§3. Six.", 7: "§1. Seven.", 8: "§1. Eight.", 9: "§1. Nine.", 10: "§3. Ten.",
+        11: "§1. Eleven."})
+    rows = {(o.canon, o.field): o for o in co.build_overrides(page, "2026-11-22")}
+    s3 = rows[(868, "§3")]
+    assert s3.text == "§3. Impossible for them to obtain access to the actual ministry."
+    assert s3.corrections == (("for than", "for them"),)
+    assert "ministrum proprium" in s3.notes and "actual ministry" in s3.notes
+    assert rows[(868, "§1 2°")].corrections == () and rows[(111, "content")].notes == ""
+    assert "for than -> for them" in co.index_csv(list(rows.values()))
+    with pytest.raises(ValueError, match="occurs 0 times"):
+        co.build_overrides(page.replace(b"for than", b"for them"), "2026-11-22")
+
+
 def test_extract_de_concordia_reads_each_article():
     arts = "".join(f"<p>Art. {n}. Can. {n} is replaced by:</p><p>§1. Text {n}.</p>"
                    f"<p>§2. More {n}.</p>" for n in range(1, 12))
@@ -120,7 +160,7 @@ def test_canon_without_english_is_retired_with_tombstone():
     entries = {e["anchor"]: e for e in reg.removals
                if e["collection"] == "canon-law" and e["scope"] == "passage"}
     rows = {r["anchor"]: r for r in reg.passages if r["document_id"] == doc}
-    assert sorted(co.NO_ENGLISH) == [295, 296, 579, 695, 700, 868]
+    assert sorted(co.NO_ENGLISH) == [295, 296, 579, 695, 700]
     for n, spec in co.NO_ENGLISH.items():
         e = entries[f"can/{n}"]
         assert e["reason"] == "translation-in-preparation" and e["added_by"] == "1.5b"
@@ -133,8 +173,21 @@ def test_canon_without_english_is_retired_with_tombstone():
         assert co.latin_urls()[f"can/{n}"] == spec.latin_url
         assert spec.latin_url.startswith("https://www.vatican.va/")
     assert co.document_note() == (
-        "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no "
+        "Canons 295, 296, 579, 695 and 700 are not shown: their current text has no "
         "English translation. The official Latin is on vatican.va.")
+
+
+def test_canon_868_returns_under_its_old_ids():
+    """#400: rm-1953 is closed, not deleted, and both IDs are the ones 1.5a froze."""
+    reg = load_registry()
+    entry = next(e for e in reg.removals if e["id"] == "rm-1953")
+    assert entry["anchor"] == "can/868" and entry["closed_by"] == "400"
+    rows = {r["anchor"]: r for r in reg.passages
+            if r["document_id"] == "aa889573-50b2-5a1d-9264-f309583c0c1b"}
+    assert rows["can/868"]["passage_id"] == "8559e47c-c102-50bb-92b9-38f0636da9ce"
+    assert rows["can/868/history-1983"]["passage_id"] == "dbd3f223-8a1c-57ac-897d-409e2debcd38"
+    assert {rows[a]["status"] for a in ("can/868", "can/868/history-1983")} == {"active"}
+    assert "can/868" not in co.latin_urls()
 
 
 def test_withheld_canon_is_neither_missing_nor_allowed():
@@ -176,7 +229,10 @@ def built():
 @vendored
 def test_index_lists_every_override_with_its_source():
     overrides = co.load()
-    assert sorted(overrides) == [111, 112, 535, 1108, 1109, 1111, 1112, 1116, 1127]
+    assert sorted(overrides) == [111, 112, 535, 868, 1108, 1109, 1111, 1112, 1116, 1127]
+    assert [(o.field, o.change) for o in overrides[868]] == [("§1 2°", "replace"),
+                                                              ("§3", "add")]
+    assert overrides[868][1].corrections == (("for than", "for them"),)
     for rows in overrides.values():
         for o in rows:
             assert (o.status, o.language, o.source_url) == \
@@ -186,7 +242,7 @@ def test_index_lists_every_override_with_its_source():
 @vendored
 def test_unofficial_english_canons(built):
     by = {p.anchor: p for p in built.passages}
-    for n in (111, 112, 535, 1108, 1109, 1111, 1112, 1116, 1127):
+    for n in (111, 112, 535, 868, 1108, 1109, 1111, 1112, 1116, 1127):
         p = by[f"can/{n}"]
         assert p.searchable and latin_runs(p.content) == [], n
         assert p.metadata["text_status"] == "unofficial_english"
@@ -200,6 +256,15 @@ def test_unofficial_english_canons(built):
     assert "ascribed to the Latin Church" in by["can/1109"].content
     assert "of the Latin rite" in by["can/1109/history-1983"].content
     assert by["can/1116"].content.split("\n")[-1].startswith("§3. In addition")
+    c868 = by["can/868"].content.split("\n")
+    assert c868[2].startswith("2/ there must be a founded hope") and "subject to § 3" in c868[2]
+    assert c868[-1] == ("§3. An infant of non-Catholic Christian parents is baptized licitly "
+                        "if the parents, or at least one of them or the person who lawfully "
+                        "takes their place requests it and if it is physically or morally "
+                        "impossible for them to obtain access to the actual ministry.")
+    assert by["can/868/history-1983"].content.startswith(
+        "§1. 2/ there must be a founded hope")
+    assert not by["can/868/history-1983"].searchable
 
 
 @vendored

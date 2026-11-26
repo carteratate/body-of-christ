@@ -23,7 +23,7 @@ describe("ReaderChrome", () => {
   it("keeps the TheoCorpus brand beside the mobile app-menu trigger", () => {
     render(
       <ReaderChrome
-        document={{ id: "doc-1", title: "Catechism", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
+        document={{ id: "doc-1", title: "Catechism of the Catholic Church", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
         toc={[{ chapter_key: "chapter-1", chapter_label: "Chapter 1" }]}
         currentChapterKey="chapter-1"
         backLabel="Back to Library"
@@ -239,7 +239,7 @@ describe("ReaderChrome", () => {
     const onReportContent = vi.fn();
     render(
       <ReaderChrome
-        document={{ id: "doc-1", title: "Catechism", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
+        document={{ id: "doc-1", title: "Catechism of the Catholic Church", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 }}
         toc={[]}
         currentChapterKey={null}
         backLabel="Back to Search"
@@ -263,7 +263,7 @@ describe("ReaderChrome", () => {
 
   it("marks Back busy while its navigation is pending", () => {
     const props = {
-      document: { id: "doc-1", title: "Catechism", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 },
+      document: { id: "doc-1", title: "Catechism of the Catholic Church", author: null, collection: "catechism", year: null, metadata: {}, chunk_count: 1 },
       toc: [],
       currentChapterKey: null,
       backLabel: "Back to Library",

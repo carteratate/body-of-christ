@@ -20,7 +20,7 @@ source's adapter in `SOURCE_BUILDS`, and the eight collections a publish writes 
 | Collection (published) | Sources (`sources/<key>/`) | Source adapter |
 |---|---|---|
 | `bible` | `bible` | `ingest/bible.py` |
-| `catechism` | `catechism` | `ingest/catechism.py` |
+| `catechism` | `catechism` | `ingest/catechism.py`, then `ingest/catechism_compendium.py` (the Compendium) and `ingest/roman_catechism.py` (the Roman Catechism) |
 | `church-fathers` | `church-fathers`, and Boethius from `medieval` | `ingest/church_fathers.py`, `ingest/medieval.py` |
 | `church-law` | `canon-law` | `ingest/canon_law.py` |
 | `councils` | `councils` | `ingest/councils.py` |
