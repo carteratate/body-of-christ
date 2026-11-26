@@ -66,13 +66,20 @@ export function SearchBar({
     const el = textareaRef.current;
     if (!el || typeof ResizeObserver !== "function") return;
     let width = el.offsetWidth;
+    let frame = 0;
     const observer = new ResizeObserver(() => {
       if (el.offsetWidth === width) return;
       width = el.offsetWidth;
-      fitToContent(el);
+      // Next frame: resizing an observed element inside its own callback raises a
+      // "ResizeObserver loop" error.
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => fitToContent(el));
     });
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
