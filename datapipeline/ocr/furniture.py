@@ -87,7 +87,8 @@ class Removal:
     leaf: int
     page: str | None
     kind: str        # running_head | page_number | signature | catchword | speck |
-                     # margin_number | note_call (`pdf.py`) | rule | watermark | edge_strip
+                     # margin_number | note_call (`pdf.py`) | rule | watermark | edge_strip |
+                     # side_note
     text: str
 
 
@@ -236,10 +237,11 @@ def _usual_gap(lines: list[Line]) -> float:
     return statistics.median([max(0, b.top - a.bottom) for a, b in zip(lines, lines[1:])] or [0])
 
 
-def _split_notes(lines: list[Line], page: Page, after_note: bool) -> tuple[list[Line], list[Line]]:
+def _split_notes(lines: list[Line], page: Page, after_note: bool,
+                 note_start: re.Pattern | None = None) -> tuple[list[Line], list[Line]]:
     """(body, notes): the block at the foot of the page that opens with a note marker
     after a gap and is set tighter than the body, or that continues a note from the
-    previous page."""
+    previous page. `note_start` is a work's own marker, beside the usual ones."""
     if len(lines) < 2:
         return lines, []
     height = _body_height(lines, page.width)
@@ -262,7 +264,8 @@ def _split_notes(lines: list[Line], page: Page, after_note: bool) -> tuple[list[
         # foot of the page and start at the left margin, not a centred heading.
         carried = (after_note and line.top > page.height * (1 - CARRIED_NOTE_BAND)
                    and line.x0 - min(ln.x0 for ln in body[-3:]) < INDENT * page.width)
-        opens = (bool(_NOTE_START.match(line.text)) or carried) and not _HEADING.match(line.text)
+        marked = _NOTE_START.match(line.text) or (note_start and note_start.match(line.text))
+        opens = (bool(marked) or carried) and not _HEADING.match(line.text)
         if opens and gap > NOTE_GAP * height and tighter:
             return body, block
     return lines, []
@@ -340,7 +343,8 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
                 paragraph_opens: tuple[str, ...] = (),
                 rule_lines: tuple[str, ...] = (),
                 note_opens: tuple[str, ...] = (),
-                watermark: str | None = None) -> CleanResult:
+                watermark: str | None = None,
+                note_start: str | None = None) -> CleanResult:
     """The pages' body paragraphs, notes and removals. With `max_paragraph_words`, a
     paragraph is cut at the first line ending a sentence or a clause once it holds that
     many words, and the part after the cut `continues` it: a page-long paragraph is too
@@ -350,6 +354,10 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
     open a paragraph the clean-up would join to the one before: a decree whose heading
     the OCR lost and whose first line opens a page (Basel's decree 3, p. 475). One that
     matches no line, or more than one, raises.
+
+    `note_start` is a pattern for a work's own note marker, which the usual marks miss:
+    McHugh and Callan's lettered notes ("a The term"), and a call the OCR read as an
+    opening quotation mark ("“7 Pet. i. 18", 5.5).
 
     `watermark` is a pattern for a stamp the scanner put on the pages, not the printer
     ("Digitized by Google" on a Google scan, 1.3d): each match is taken out of the line it
@@ -418,7 +426,8 @@ def clean_pages(pages: list[Page], layout: Layout | None = None,
             k = next((k for k, ln in enumerate(lines) if id(ln) in opens), len(lines))
             body, notes = lines[:k], lines[k:]
         else:
-            body, notes = _split_notes(lines, page, after_note)
+            body, notes = _split_notes(lines, page, after_note,
+                                       re.compile(note_start) if note_start else None)
         if notes:
             result.notes.append(Note(page.leaf, page.number, "\n".join(ln.text for ln in notes)))
         after_note = bool(notes)
@@ -559,6 +568,47 @@ def strip_edge(page: Page, fraction: float,
     return kept, removed
 
 
+# A page needs this many lines of six words or more for its text block to be measured;
+# with fewer (a title page, a page of verse) its side notes stay for the fixes.
+SIDE_NOTE_FULL_LINES = 3
+
+
+def strip_side_notes(page: Page) -> tuple[list[Line], list[Removal]]:
+    """The page's lines without the words standing wholly outside its text block: the
+    notes an editor set in the outer margin beside the text ("Example of Samson", Lewis's
+    John of the Cross, 5.6c) and running heads set there ("CHAP. VI."). The block's edges
+    are the medians of its full lines' ends. A margin word the OCR read into a body line
+    goes from it; a line left with no words goes."""
+    full = [ln for ln in page.lines if len(ln.edges) >= 6]
+    if len(full) < SIDE_NOTE_FULL_LINES:
+        return page.lines, []
+    slack = MARGIN_SLACK * page.width
+    left = statistics.median(ln.x0 for ln in full) - slack
+    right = statistics.median(ln.x1 for ln in full) + slack
+    kept: list[Line] = []
+    removed: list[Removal] = []
+    for ln in page.lines:
+        words = ln.text.split(" ")
+        if len(words) != len(ln.edges):
+            if ln.x1 < left or ln.x0 > right:
+                removed.append(Removal(page.leaf, page.number, "side_note", ln.text))
+            else:
+                kept.append(ln)
+            continue
+        outside = [k for k, (x0, x1) in enumerate(ln.edges) if x1 < left or x0 > right]
+        if not outside:
+            kept.append(ln)
+            continue
+        removed.append(Removal(page.leaf, page.number, "side_note",
+                               " ".join(words[k] for k in outside)))
+        rest = [k for k in range(len(words)) if k not in outside]
+        if rest:
+            kept.append(replace(ln, text=" ".join(words[k] for k in rest),
+                                x0=ln.edges[rest[0]][0], x1=ln.edges[rest[-1]][1],
+                                edges=tuple(ln.edges[k] for k in rest)))
+    return kept, removed
+
+
 def clean_work(workdir, sources=None, force: bool = False,
                passage_words: int | None = None) -> CleanResult:
     """Read the work's pages, clean them, and write its passages and clean-up log.
@@ -605,10 +655,14 @@ def clean_work(workdir, sources=None, force: bool = False,
         for page in pages:
             page.lines, removed = strip_edge(page, config.edge_strip, config.edge_strip_words)
             strips += removed
+    if config.side_notes:
+        for page in pages:
+            page.lines, removed = strip_side_notes(page)
+            strips += removed
     result = clean_pages(pages, get_layout(config.layout), config.broken_words_continue,
                          config.max_paragraph_words, config.margin_numbers,
                          config.paragraph_opens, config.rule_lines, config.note_opens,
-                         config.watermark)
+                         config.watermark, config.note_start)
     result.removals.extend(strips)
     number = {p.leaf: p.number for p in pages}
     result.removals.extend(Removal(c.leaf, number[c.leaf], "note_call", f"{c.after}|{c.text}")

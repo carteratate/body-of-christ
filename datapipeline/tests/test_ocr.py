@@ -1181,3 +1181,42 @@ def test_three_column_reads_each_column_in_turn():
     assert kept[0] == "THE JESUIT."
     assert kept[1:19] == [f"column {c} line {k} of the running text" for c in range(3) for k in range(6)]
     assert kept[19:] == ["A HEADING ACROSS ALL THREE COLUMNS OF THE PAGE", "column 0 after the heading of the page"]
+
+
+# --- 5.6c: an editor's side notes beside the text block (Lewis's John of the Cross) -------
+
+from ocr.furniture import strip_side_notes  # noqa: E402
+
+
+def _eline(top, *words):
+    """A line of (text, x0, x1) words, as the djvu XML gives them."""
+    return Line(" ".join(w[0] for w in words), words[0][1], top, words[-1][2], top + 25,
+                edges=tuple((w[1], w[2]) for w in words))
+
+
+def _side_body(top, text="as he is tormented who falls into the hands of", x0=300):
+    return _eline(top, *[(w, x0 + 140 * k, x0 + 140 * k + 120) for k, w in enumerate(text.split())])
+
+
+def test_side_notes_go_from_either_margin_and_from_a_body_line_they_were_read_into():
+    lines = [_side_body(100), _side_body(150),
+             _eline(150, ("Example", 60, 180), ("of", 190, 230)),          # left margin
+             _side_body(200), _eline(200, ("Samson.", 1700, 1840)),             # right margin
+             _eline(250, *[(w, 300 + 140 * k, 420 + 140 * k)
+                           for k, w in enumerate("of the third and fourth part".split())],
+                    ("CHAP.", 1700, 1800)),                                 # read into a line
+             _eline(300, ("desires", 300, 420), ("themselves.", 440, 600))]  # a short last line
+    kept, removed = strip_side_notes(Page(0, 2000, 3000, lines))
+    assert [ln.text for ln in kept] == [
+        "as he is tormented who falls into the hands of"] * 3 + [
+        "of the third and fourth part", "desires themselves."]
+    assert kept[3].x1 == 1120 and len(kept[3].edges) == 6
+    assert sorted(r.text for r in removed) == ["CHAP.", "Example of", "Samson."]
+    assert {r.kind for r in removed} == {"side_note"}
+
+
+def test_a_page_too_short_to_measure_keeps_its_lines():
+    lines = [_side_body(100), _eline(150, ("In", 500, 540), ("an", 550, 590), ("obscure", 600, 760)),
+             _eline(150, ("Perfection,—", 1700, 1900))]
+    kept, removed = strip_side_notes(Page(0, 2000, 3000, lines))
+    assert kept == lines and removed == []

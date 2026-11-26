@@ -17,8 +17,6 @@ function Harness({ collections }: { collections: string[] }) {
       <CollectionToggles
         activeCollections={draft.collections}
         onToggle={(collection) => setDraft((d) => transitionSearchDraft(d, { type: "collection-toggled", collection }))}
-        translation={draft.translation}
-        onTranslationChange={() => {}}
         excluded={draft.excluded}
         onScopeEvent={(event: SearchDraftEvent) => setDraft((d) => transitionSearchDraft(d, event))}
       />
@@ -38,6 +36,12 @@ const cue = (name: string) => {
 
 describe("genre and issuer filter (5.1a)", () => {
   afterEach(cleanup);
+
+  it("draws the Bible as a plain toggle, with no translation dropdown", () => {
+    render(<Harness collections={["bible"]} />);
+    expect(screen.getByRole("button", { name: "Bible" }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.queryByRole("button", { name: /translation/i })).toBeNull();
+  });
 
   it("offers the caret only on a selected collection that can be narrowed", () => {
     const { unmount } = render(<Harness collections={["bible"]} />);
@@ -148,8 +152,6 @@ describe("genre and issuer filter while searching and near the top (5.1a)", () =
       <CollectionToggles
         activeCollections={["papal"]}
         onToggle={() => {}}
-        translation="CPDV"
-        onTranslationChange={() => {}}
         excluded={{}}
         onScopeEvent={() => {}}
         scopesLocked={locked}

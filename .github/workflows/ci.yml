@@ -17,7 +17,34 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Which jobs a PR needs (scripts/ci_changes.sh). A job skipped by its `if:` reports
+  # success, so the master ruleset, which requires web, api and datapipeline, still
+  # lets the PR merge. Pushes to master run everything, and so does every job if this
+  # one fails, so a broken filter cannot skip the tests.
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      web: ${{ steps.areas.outputs.web }}
+      tests: ${{ steps.areas.outputs.tests }}
+      image: ${{ steps.areas.outputs.image }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2  # the PR's merge commit and the base it merges into
+      - id: areas
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            git diff --name-only HEAD^1 HEAD | scripts/ci_changes.sh | tee -a "$GITHUB_OUTPUT"
+          else
+            printf 'web=true\ntests=true\nimage=true\n' | tee -a "$GITHUB_OUTPUT"
+          fi
+
   web:
+    needs: changes
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.web == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -30,12 +57,34 @@ jobs:
           node-version: 24  # the Vercel project's Node major
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
-      - run: npm ci
+      # node_modules itself, not only npm's download cache: unpacking it was half the
+      # job (npm ci, 55 s median). Keyed on the manifest, the lock and the runner, so any
+      # dependency change misses the cache and runs npm ci.
+      - uses: actions/cache@v6
+        id: node-modules
+        with:
+          path: apps/web/node_modules
+          key: node-modules-${{ runner.os }}-${{ runner.arch }}-node24-${{ hashFiles('apps/web/package.json', 'apps/web/package-lock.json') }}
+      - if: steps.node-modules.outputs.cache-hit != 'true'
+        run: npm ci
       - run: npm run lint
       - run: npx tsc --noEmit
       - run: npx vitest run
+      # Blocks only on a critical advisory in a production dependency, which is what
+      # reaches users; it passes today. Everything else (high, and all dev dependencies)
+      # is counted in the job summary without blocking, and Dependabot alerts track it.
+      - name: npm audit (blocks on critical, production dependencies)
+        run: npm audit --omit=dev --audit-level=critical
+      - name: npm audit summary (all dependencies, does not block)
+        if: ${{ !cancelled() }}
+        run: |
+          npm audit --json | jq -r '.metadata.vulnerabilities
+            | "npm audit, all dependencies: \(.critical) critical, \(.high) high, \(.moderate) moderate, \(.low) low"' \
+            | tee -a "$GITHUB_STEP_SUMMARY"
 
   api:
+    needs: changes
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.tests == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -55,13 +104,69 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.11"  # matches services/api/Dockerfile
-          cache: pip
-          cache-dependency-path: services/api/pyproject.toml
-      - run: pip install -e "services/api[dev]"
-      - run: python -m pytest -q
+      # uv installs the lock into the runner's Python several times faster than pip; the
+      # lock check below uses it too. No cache: every dependency is a pre-built wheel,
+      # which uv downloads in parallel, and uv's own advice is not to cache those in CI.
+      - run: pip install uv==0.13.9
+      - run: uv pip install --system --require-hashes -r services/api/requirements-dev.lock
+      - run: uv pip install --system --no-deps -e services/api
+      - name: Lock files match pyproject.toml
+        run: scripts/lock_python_deps.sh --check api
+      # Both pinned by requirements-dev.lock. ruff covers all three Python trees
+      # (ruff.toml); basedpyright fails only on type errors not in its baseline.
+      - name: Python lint (ruff)
+        run: ruff check services/api datapipeline scripts
+      - name: Type check app/ (basedpyright, new errors only)
+        run: basedpyright
         working-directory: services/api
+      # The real-SQL tests (migrations, staging, republish checks, keyword-search SQL)
+      # start their own throwaway clusters, so they need initdb and pg_ctl on PATH.
+      # REQUIRE_LOCAL_POSTGRES makes them fail rather than skip if the tools are missing.
+      - name: PostgreSQL tools
+        run: |
+          bin=$(ls -d /usr/lib/postgresql/*/bin 2>/dev/null | sort -V | tail -1)
+          if [ -z "$bin" ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq --no-install-recommends postgresql
+            bin=$(ls -d /usr/lib/postgresql/*/bin | sort -V | tail -1)
+          fi
+          echo "$bin" >> "$GITHUB_PATH"
+          "$bin/initdb" --version
+      - run: python -m pytest -q -rs -n auto
+        working-directory: services/api
+        env:
+          REQUIRE_LOCAL_POSTGRES: "1"
+      # Known vulnerabilities in what the API image and the datapipeline install. Any
+      # finding blocks: upgrade it (scripts/lock_python_deps.sh --upgrade-package NAME),
+      # or, if it cannot apply to us, add `--ignore-vuln ID` to both lines with a comment
+      # saying why. After the tests, so a new advisory does not hide their results.
+      - name: pip-audit (lock files)
+        if: ${{ !cancelled() }}
+        run: |
+          pip-audit -r services/api/requirements.lock --require-hashes --disable-pip --progress-spinner off
+          pip-audit -r datapipeline/requirements.lock --require-hashes --disable-pip --progress-spinner off
+
+  # Builds the image Railway deploys, so a broken Dockerfile or lock fails the PR rather
+  # than the deploy. Nothing is pushed. Layers are kept in the GitHub Actions cache, so
+  # a build whose lock is unchanged reuses the dependency layer and only copies app/.
+  api-image:
+    needs: changes
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.image == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: services/api
+          push: false
+          cache-from: type=gha,scope=api-image
+          cache-to: type=gha,scope=api-image,mode=max
 
   datapipeline:
+    needs: changes
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.tests == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -72,12 +177,30 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
-          cache: pip
-          cache-dependency-path: datapipeline/requirements.txt
       - uses: actions/cache@v6
         with:
           path: .tiktoken-cache
-          key: tiktoken-${{ hashFiles('datapipeline/requirements.txt') }}
-      - run: pip install -r datapipeline/requirements.txt
-      - run: python -m pytest -q -m "not smoke"
+          key: tiktoken-${{ hashFiles('datapipeline/requirements.lock') }}
+      - run: pip install uv==0.13.9  # see the api job
+      - run: uv pip install --system --require-hashes -r datapipeline/requirements.lock
+      - name: Lock file matches requirements.txt
+        run: scripts/lock_python_deps.sh --check datapipeline
+      # The real-SQL tests (migrations, staging, republish checks, keyword-search SQL)
+      # start their own throwaway clusters, so they need initdb and pg_ctl on PATH.
+      # REQUIRE_LOCAL_POSTGRES makes them fail rather than skip if the tools are missing.
+      - name: PostgreSQL tools
+        run: |
+          bin=$(ls -d /usr/lib/postgresql/*/bin 2>/dev/null | sort -V | tail -1)
+          if [ -z "$bin" ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq --no-install-recommends postgresql
+            bin=$(ls -d /usr/lib/postgresql/*/bin | sort -V | tail -1)
+          fi
+          echo "$bin" >> "$GITHUB_PATH"
+          "$bin/initdb" --version
+      # -n auto sizes workers by free memory (tests/conftest.py); loadscope builds each
+      # module's fixtures once.
+      - run: python -m pytest -q -rs -m "not smoke" -n auto --dist loadscope
         working-directory: datapipeline
+        env:
+          REQUIRE_LOCAL_POSTGRES: "1"

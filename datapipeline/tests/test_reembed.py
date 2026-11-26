@@ -405,9 +405,6 @@ def test_embedding_input_uses_full_document_neighbour_context():
     """A drifted point must be embedded with its whole document present, or its vector
     sits in a different frame from the siblings that were written correctly."""
     rows = _three_rows()
-    payloads = {"c0": {"content": "alpha text", "chapter_label": "Ch 1"},
-                "c1": {"content": "2 Cor. 11:28.", "chapter_label": "Ch 1"},
-                "c2": {"content": "gamma text", "chapter_label": "Ch 1"}}
     text = dict((r.chunk_id, t) for r, t in rd.plan(rows, {"c1"}))["c1"]
     assert "alpha text" in text
     assert "gamma text" in text

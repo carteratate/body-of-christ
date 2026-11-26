@@ -166,7 +166,7 @@ async def test_search_outcomes_are_saved_with_search_for_history():
 
 async def _no_explanation(*args, **kwargs):
     return
-    yield  # noqa: make this an async generator that yields nothing
+    yield  # makes this an async generator that yields nothing
 
 
 @pytest.mark.asyncio

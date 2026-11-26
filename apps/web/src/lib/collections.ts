@@ -24,11 +24,11 @@ export const ALL_COLLECTION_KEYS: string[] = COLLECTIONS.map((c) => c.key);
 
 /**
  * An old collection key and what it means now: its new collection, read whole or only
- * for some genres. Stored searches, preferences, bookmarks and documents carry old keys
- * until 5.1b.3 rewrites them, and the API accepts both (`LEGACY_COLLECTIONS` in
- * `services/api/app/rag/constants.py`, which this mirrors). `genres` are the only
- * genres the old key read; `withoutGenres` the genres it did not (it read the rest,
- * and documents with none).
+ * for some genres. 5.1b.3 rewrote every stored key and the API no longer accepts the old
+ * ones (5.1b.4), but a browser can still hold one: a guest's saved draft or settings, or
+ * a page loaded before the change. The web translates it here and never sends it.
+ * `genres` are the only genres the old key read; `withoutGenres` the genres it did not
+ * (it read the rest, and documents with none).
  */
 export interface LegacyCollection {
   readonly key: string;

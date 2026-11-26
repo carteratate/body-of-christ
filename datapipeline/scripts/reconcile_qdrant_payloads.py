@@ -214,8 +214,8 @@ async def main(collections: list[str], fields: tuple[str, ...],
                     written = await _apply(client, report, batch_size)
                 except Exception as exc:
                     print(f"    ✗ WRITE FAILED after retries: {exc}")
-                    print(f"      Re-run to resume — the diff is recomputed from scratch, "
-                          f"so already-written points are skipped.")
+                    print("      Re-run to resume — the diff is recomputed from scratch, "
+                          "so already-written points are skipped.")
                     exit_code = 1
                     continue
                 print(f"    wrote {written} point(s)")
