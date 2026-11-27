@@ -1274,5 +1274,53 @@
   "find": "Imagination, Answer to an objection",
   "replace": "Imagination. Answer to an objection",
   "why": "A full stop read as a comma in the chapter's title; the page (p. 230) prints \"Imagination. Answer to an objection\"."
+ },
+ {
+  "passage": "0047",
+  "find": "shake off the remora of them strength",
+  "replace": "shake off the remora of desire. It is a matter of deep regret, when God has given them strength",
+  "why": "The last line(s) of p. 41, which the clean-up filed as a page-foot note because the page ends short; restored from the page."
+ },
+ {
+  "passage": "0057",
+  "find": "Because if our attain to great joy",
+  "replace": "Because if our heart be truly engaged herein, we shall in a short time attain to great joy",
+  "why": "The last line(s) of p. 49, which the clean-up filed as a page-foot note because the page ends short; restored from the page."
+ },
+ {
+  "passage": "0204",
+  "find": "elevation of the mind to God, sometimes more of another",
+  "replace": "elevation of the mind to God, sometimes more, sometimes less, sometimes more of one, sometimes more of another",
+  "why": "The last line(s) of p. 171, which the clean-up filed as a page-foot note because the page ends short; restored from the page."
+ },
+ {
+  "passage": "0223",
+  "find": "definite words, which the mind while in a state",
+  "replace": "definite words, which the mind receives not from itself but from a third person, sometimes while in a state",
+  "why": "The last line(s) of p. 188, which the clean-up filed as a page-foot note because the page ends short; restored from the page."
+ },
+ {
+  "passage": "0291",
+  "find": "his own soul?’ There are many, rich",
+  "replace": "his own soul?’ There cannot be anything worth rejoicing in except that which makes us better servants of our God.\n\nNeither are men to rejoice in their children, because they are many, rich",
+  "why": "The last line(s) of p. 245, which the clean-up filed as a page-foot note because the page ends short; restored from the page."
+ },
+ {
+  "passage": "0363",
+  "find": "to-day in one cell, to-oratory to-day",
+  "replace": "to-day in one cell, to-morrow in another; they make their arrangements in one oratory to-day",
+  "why": "The last line(s) of p. 308, which the clean-up filed as a page-foot note because the page ends short; restored from the page."
+ },
+ {
+  "passage": "0367",
+  "find": "by such a priest, at such an nor after.",
+  "replace": "by such a priest, at such an hour, neither earlier nor later; on such a day, neither before nor after.",
+  "why": "The last line(s) of p. 312, which the clean-up filed as a page-foot note because the page ends short; restored from the page."
+ },
+ {
+  "passage": "0354",
+  "find": "satisfaction of our faculties in all visible and sensible",
+  "replace": "satisfaction of our faculties in all visible and sensible things.",
+  "why": "The last line of p. 301 (\"things.\"), which the clean-up filed as a page-foot note because the page ends short; restored from the page."
  }
 ]
