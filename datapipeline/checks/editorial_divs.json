@@ -1765,5 +1765,195 @@
   "div": "ii.iii",
   "title": "Bibliography",
   "item": "1.9"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/teresa-castle2.xml",
+  "div": "ii",
+  "title": "Note",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/teresa-castle2.xml",
+  "div": "iii",
+  "title": "Introduction",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/teresa-castle2.xml",
+  "div": "x.iii",
+  "title": "Introductory Note to Chapter III by the Editor",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/teresa-life.xml",
+  "div": "iv",
+  "title": "Introduction",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/teresa-life.xml",
+  "div": "vi",
+  "title": "Preface",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/teresa-life.xml",
+  "div": "vii",
+  "title": "Annals of the Saint's Life",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/teresa-life.xml",
+  "div": "ix",
+  "title": "The Relations",
+  "item": "5.6b",
+  "own_text": true
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "i.ii",
+  "title": "Frontispiece",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "i.iii",
+  "title": "Title Page",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "i.iv",
+  "title": "Dedication",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "i.v",
+  "title": "Translator's Introduction",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/desales-love.xml",
+  "div": "xiii.xiv",
+  "title": "Other Books",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/julian-revelations.xml",
+  "div": "xix",
+  "title": "Postscript by a Scribe",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "ii",
+  "title": "Note to This Electronic Edition",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "vi",
+  "title": "Preface",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "vii",
+  "title": "Prologue: The Parentage & Birth of Marie Françoise Thérèse Martin",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "viii",
+  "title": "Original Title Page",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "xx",
+  "title": "Epilogue: A Victim of Divine Love",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/therese-autobio.xml",
+  "div": "xxxii",
+  "title": "Selected Poems (Susan L. Emery's translation)",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "ii",
+  "title": "Approbation of the Latin Texts",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "iii",
+  "title": "Paul III, Pope, for a Perpetual Remembrance",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "iv",
+  "title": "Preface",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "vi",
+  "title": "General Note",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "vii",
+  "title": "Prayer of Father Diertins",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-exercises.xml",
+  "div": "xx",
+  "title": "General Index",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-autobiography.xml",
+  "div": "iii",
+  "title": "Editor's Preface",
+  "item": "5.6b"
+ },
+ {
+  "collection": "medieval",
+  "file": "../theologians/ignatius-autobiography.xml",
+  "div": "xiii",
+  "title": "Appendix: St. Ignatius and His Work for Education",
+  "item": "5.6b"
  }
 ]

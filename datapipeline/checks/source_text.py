@@ -35,6 +35,7 @@ import defusedxml.ElementTree as ET
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from checks.language import latin_runs, mostly_foreign
+from ingest import theologians
 from ingest.editorial import PLAIN_CALLERS
 from ingest.editorial_keep import kept_quotes, quoted_text
 from ingest.stromata_chadwick import BOOK as _CHADWICK_BOOK
@@ -287,6 +288,8 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     removed = removed_paragraphs()
     withheld = withheld_chapters()
     excluded = {d for f, d in excluded_divs() if f == source_file}
+    # 5.6b's headings and editors' paragraphs inside the author's chapters.
+    class_regions, heading_divs, paragraph_regions = theologians.not_body(source_file)
     quotes = {}
     for q in kept_quotes(source_file):
         quotes.setdefault(q.first, []).append(q)
@@ -318,8 +321,15 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                     for printed, without in PLAIN_CALLERS.get((source_file, child.get("id")),
                                                               ()):
                         text = text.replace(printed, without)
+                    text = theologians.without_page_refs(source_file, text)
                     own = "apparatus" if region == "body" and (
                         _paragraph_sha1(text) in removed or div_id in own_text) else region
+                    if own == "body" and div_id in heading_divs:
+                        own = "heading"           # a div's own heading lines (5.6b)
+                    elif own == "body" and child.get("id") in paragraph_regions:
+                        own = paragraph_regions[child.get("id")]
+                    elif own == "body" and child.get("class") in class_regions:
+                        own = class_regions[child.get("class")]
                     if own == "body" and (mostly_foreign(text)
                                           or (source_file, div_id) in withheld
                                           or (source_file, div_id) in REPLACED_CHAPTERS):
@@ -341,6 +351,33 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                 walk(child, div_id, region, in_div)
 
     walk(root, None, "body", False)
+    return [u for u in units if u.text.strip()]
+
+
+def gutenberg_units(path: str, source_file: str) -> list[SourceUnit]:
+    """A Project Gutenberg text (5.6b, `ingest.gutenberg_text`). Body is its paragraphs
+    between the START and END lines, before its notes heading; each note is "note". A
+    paragraph in capitals throughout is "heading"; the edition's front matter and
+    contents (`ingest.theologians.TEXT_APPARATUS`) are "apparatus"; a paragraph mostly in
+    another language is "withheld". unit_id is the paragraph's number (`p<k>`)."""
+    from ingest import gutenberg_text
+    name = source_file.removeprefix(f"../{theologians.SOURCE_DIR}/")
+    work = next(w for w in theologians.WORKS if w.file == name)
+    with open(path, encoding="utf-8", newline="") as f:
+        raw = f.read().replace("\r\n", "\n")
+    paras, notes = gutenberg_text.split_notes(
+        gutenberg_text.paragraphs(gutenberg_text.book_text(raw)), work.notes_heading)
+    texts = [gutenberg_text.CALLER.sub(
+        lambda m: "" if m.group(1) in notes else m.group(), t) for t, _ in paras]
+    apparatus = theologians.text_apparatus(name, texts)
+    units = []
+    for k, text in enumerate(texts):
+        letters = [c for c in text if c.isalpha()]
+        region = ("apparatus" if k in apparatus
+                  else "heading" if letters and all(c.isupper() for c in letters)
+                  else "withheld" if mostly_foreign(text) else "body")
+        units.append(SourceUnit(source_file, f"p{k + 1}", text, region))
+    units += [SourceUnit(source_file, None, text, "note") for text in notes.values()]
     return [u for u in units if u.text.strip()]
 
 
@@ -1042,7 +1079,11 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
             entries = [e for e in entries if resolve_document_id(
                 collection, f"{collection}/{e['slug']}", (collection, e["slug"])) not in held
                 and printing(collection, e["slug"]) is None]
-        return [e["file"] for e in entries]
+        files = [e["file"] for e in entries]
+        if collection == theologians.COLLECTION:
+            # 5.6b's works, read from sources/theologians/ (`ingest.theologians`).
+            files += [f"../{theologians.SOURCE_DIR}/{w.file}" for w in theologians.WORKS]
+        return files
     if collection == "canon-law":
         with open(os.path.join(base, "pages.json"), encoding="utf-8") as f:
             return [p["file"] for p in json.load(f) if p.get("parsed", True)]
@@ -1064,6 +1105,10 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
         return summa_units(path, source_file)
     if source_file.endswith(".xml"):
         return thml_units(path, source_file)
+    if source_file.endswith(".txt") and any(
+            w.ebook and source_file == f"../{theologians.SOURCE_DIR}/{w.file}"
+            for w in theologians.WORKS):
+        return gutenberg_units(path, source_file)
     if collection == "catechism" and source_file.endswith(".html"):
         return compendium_units(path, source_file)
     if source_file.endswith(".html"):

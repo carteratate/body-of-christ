@@ -12,7 +12,7 @@ import rights_inventory as R
 ENTRIES = R.load()
 # md5 of the sorted document IDs of a master build, joined with commas: the 421 live
 # documents as of 0.2. A PR that changes the published document set updates it on purpose.
-LIVE_DOCUMENT_IDS_MD5 = "c2f06542c3cee9614d4a5f620cf39a9a"   # 438: 5.5 adds the Compendium and the Roman Catechism; 5.9 Inter Cunctas
+LIVE_DOCUMENT_IDS_MD5 = "6548a6ff1445973281e2f0efceff05d6"   # 448: 5.6b adds Teresa, de Sales, Julian, Thérèse, Ignatius, Alphonsus and Brother Lawrence (10 works) to 5.5 and 5.9
 
 
 def test_every_entry_has_required_fields_and_known_status():

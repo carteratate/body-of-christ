@@ -4,14 +4,15 @@ from __future__ import annotations
 from model import Document
 from ingest import (church_fathers, summa, bible, catechism, medieval,
                     encyclicals, councils, canon_law,
-                    apostolic_exhortations, papal_documents)
+                    apostolic_exhortations, papal_documents, theologians)
 
 BUILDERS = {
     "church-fathers": church_fathers.build_all,
     "summa": lambda: [summa.build_document()],
     "bible": bible.build_documents,
     "catechism": lambda: [catechism.build_document()],
-    "medieval": medieval.build_documents,
+    # As publication.SOURCE_ADAPTERS: today's medieval works, then 5.6b's.
+    theologians.COLLECTION: lambda: medieval.build_documents() + theologians.build_documents(),
     "encyclicals": encyclicals.build_documents,
     "apostolic-exhortations": apostolic_exhortations.build_documents,
     "papal-documents": papal_documents.build_documents,

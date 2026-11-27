@@ -50,8 +50,14 @@ def test_no_ligatures_in_labels(built):
 
 @lru_cache(maxsize=None)
 def _source_text(collection: str) -> str:
+    from ingest.theologians import COLLECTION, SOURCE_DIR
+
+    # 5.6b's works build under the medieval key from their own folder.
+    folders = [collection] + ([SOURCE_DIR] if collection == COLLECTION else [])
     parts = []
-    for path in sorted(glob.glob(os.path.join(SOURCES, collection, "**", "*"), recursive=True)):
+    paths = [p for folder in folders
+             for p in glob.glob(os.path.join(SOURCES, folder, "**", "*"), recursive=True)]
+    for path in sorted(paths):
         if os.path.isfile(path) and not path.endswith("Identifier"):
             with open(path, encoding="utf-8", errors="replace") as f:
                 parts.append(html.unescape(f.read()))

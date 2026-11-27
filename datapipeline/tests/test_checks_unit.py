@@ -517,7 +517,7 @@ def test_editorial_divs_file_is_well_formed():
     for r in rows:
         assert set(r) - {"own_text"} == {"collection", "file", "div", "title", "item"}
         assert r.get("own_text", True) is True, r
-        assert r["item"] in ("1.8a", "1.8b", "1.9"), r
+        assert r["item"] in ("1.8a", "1.8b", "1.9", "5.6b"), r
 
 
 def test_thml_verse_lines_are_body(tmp_path):
