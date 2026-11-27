@@ -229,24 +229,30 @@ def _client(router) -> TestClient:
     return TestClient(app)
 
 
-def test_an_invalid_genre_is_a_422_with_its_code():
+def test_an_invalid_genre_is_a_422_with_its_code(caplog):
     from app.routes.search import router
 
     body = {"query": "grace", "quota": 4, "filters": {
         "collections": ["papal"], "scopes": {"papal": {"genres": ["nope"]}}}}
-    response = _client(router).post("/v1/search", json=body)
+    with caplog.at_level("INFO", "app.routes.search"):
+        response = _client(router).post("/v1/search", json=body)
     assert response.status_code == 422
     assert response.json()["detail"]["code"] == "invalid_genre"
+    assert "search refused: code=invalid_genre" in caplog.text
+    assert "grace" not in caplog.text
 
 
-def test_an_invalid_issuer_is_a_422_with_its_code_for_guests():
+def test_an_invalid_issuer_is_a_422_with_its_code_for_guests(caplog):
     from app.routes.guest_search import router
 
     body = {"query": "grace", "quota": 4, "session_token": "x" * 40, "filters": {
         "collections": ["papal"], "scopes": {"papal": {"issuers": ["nope"]}}}}
-    response = _client(router).post("/v1/search/guest", json=body)
+    with caplog.at_level("INFO", "app.routes.guest_search"):
+        response = _client(router).post("/v1/search/guest", json=body)
     assert response.status_code == 422
     assert response.json()["detail"]["code"] == "invalid_issuer"
+    assert "guest search refused: code=invalid_issuer" in caplog.text
+    assert "grace" not in caplog.text
 
 
 def test_the_older_codes_keep_their_plain_detail():

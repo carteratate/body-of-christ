@@ -457,6 +457,7 @@ async def guest_search(body: GuestSearchRequest, request: Request) -> StreamingR
             body.filters.collections, body.quota, body.filters.scope_filters(),
         )
     except SearchPlanError as exc:
+        logger.info("guest search refused: code=%s", exc.code)
         raise HTTPException(status_code=422, detail=http_detail(exc)) from exc
 
     ip_hash = _hash_ip(_get_client_ip(request))
