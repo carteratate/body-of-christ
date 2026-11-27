@@ -354,6 +354,33 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     return [u for u in units if u.text.strip()]
 
 
+def gutenberg_units(path: str, source_file: str) -> list[SourceUnit]:
+    """A Project Gutenberg text (5.6b, `ingest.gutenberg_text`). Body is its paragraphs
+    between the START and END lines, before its notes heading; each note is "note". A
+    paragraph in capitals throughout is "heading"; the edition's front matter and
+    contents (`ingest.theologians.TEXT_APPARATUS`) are "apparatus"; a paragraph mostly in
+    another language is "withheld". unit_id is the paragraph's number (`p<k>`)."""
+    from ingest import gutenberg_text
+    name = source_file.removeprefix(f"../{theologians.SOURCE_DIR}/")
+    work = next(w for w in theologians.WORKS if w.file == name)
+    with open(path, encoding="utf-8", newline="") as f:
+        raw = f.read().replace("\r\n", "\n")
+    paras, notes = gutenberg_text.split_notes(
+        gutenberg_text.paragraphs(gutenberg_text.book_text(raw)), work.notes_heading)
+    texts = [gutenberg_text.CALLER.sub(
+        lambda m: "" if m.group(1) in notes else m.group(), t) for t, _ in paras]
+    apparatus = theologians.text_apparatus(name, texts)
+    units = []
+    for k, text in enumerate(texts):
+        letters = [c for c in text if c.isalpha()]
+        region = ("apparatus" if k in apparatus
+                  else "heading" if letters and all(c.isupper() for c in letters)
+                  else "withheld" if mostly_foreign(text) else "body")
+        units.append(SourceUnit(source_file, f"p{k + 1}", text, region))
+    units += [SourceUnit(source_file, None, text, "note") for text in notes.values()]
+    return [u for u in units if u.text.strip()]
+
+
 # A passage may hold no run this long of a ThML file's CCEL `<description>` (3.1).
 DESCRIPTION_RUN = 40
 _QUOTED = re.compile(r'["\u201c][^"\u201c\u201d]*["\u201d]')
@@ -1078,6 +1105,8 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
         return summa_units(path, source_file)
     if source_file.endswith(".xml"):
         return thml_units(path, source_file)
+    if source_file.endswith(".txt"):
+        return gutenberg_units(path, source_file)
     if collection == "catechism" and source_file.endswith(".html"):
         return compendium_units(path, source_file)
     if source_file.endswith(".html"):

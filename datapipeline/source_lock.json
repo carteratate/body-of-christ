@@ -903,17 +903,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/pg13871.txt",
-  "sha256": "1f4df307f62f2be596e4be48afce14067cea1a1f54c957639087386b180716e9",
-  "bytes": 80593,
-  "url": "https://www.gutenberg.org/cache/epub/13871/pg13871.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/pg22088.txt",
   "sha256": "bfa42b93d323ed1b02657923f5c70143ce9c7cd54654f8ef086e48968d5bc357",
   "bytes": 818677,
@@ -984,17 +973,6 @@
   "sha256": "aa52d050e45fd4fc5423b1282f84d9fc6337b687b86dce0bae85d6349d2dcfeb",
   "bytes": 270046,
   "url": "https://www.gutenberg.org/cache/epub/63084/pg63084.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/pg72411.txt",
-  "sha256": "18684ebb448fe34ec152f2a0645c1d8bd85cd0d1b2281929467833036e74352f",
-  "bytes": 1232145,
-  "url": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
@@ -7000,6 +6978,26 @@
   "sha256": "4611e9128c4d957d342287dadc5adbcc82f0826815278875369fcf7045f2642d",
   "bytes": 395019,
   "url": "https://ccel.org/ccel/j/julian/revelations.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/pg13871.txt",
+  "sha256": "1f4df307f62f2be596e4be48afce14067cea1a1f54c957639087386b180716e9",
+  "bytes": 80593,
+  "url": "https://www.gutenberg.org/cache/epub/13871/pg13871.txt",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/pg72411.txt",
+  "sha256": "18684ebb448fe34ec152f2a0645c1d8bd85cd0d1b2281929467833036e74352f",
+  "bytes": 1232145,
+  "url": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "adapter-input"

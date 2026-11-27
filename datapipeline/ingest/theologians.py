@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import os
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable
 
 from xml.etree.ElementTree import Element      # builds an element, parses nothing
@@ -33,6 +33,7 @@ import defusedxml.ElementTree as ET
 import headings
 from model import Document
 from normalize.caps import smart_title_case
+from ingest import gutenberg_text
 from ingest.common import _block_text, _build_parent_map
 from ingest.keys import THEOLOGIANS
 from ingest.editorial import PLAIN_CALLERS, ChapterEdit, Editor, Removed
@@ -49,6 +50,10 @@ ANONYMOUS_1876 = "Anonymous translation (Rivingtons, 1876)"
 # Teresa's headings of the Life's chapters are not Lewis's: he left them out, following
 # Bouix, and Zimmerman's introduction to the 1904 edition prints them before the book.
 # The Counsels and Reminiscences are her words as others set them down.
+LAWRENCE_NOTE = ("Its Conversations are Joseph de Beaufort's record of what Brother "
+                 "Lawrence told him.")
+ANONYMOUS_1852 = "Anonymous translation (Dunigan, 1852)"
+ANONYMOUS_1895 = "Anonymous translation (Revell, about 1895)"
 IGNATIUS_NOTE = ("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface "
                  "opens it.")
 THERESE_NOTE = ("Its Counsels and Reminiscences are her sayings as her novices recorded "
@@ -72,6 +77,10 @@ class ThmlWork:
     # printed (no opening-capitals change); the chapter plans mark them.
     title_classes: frozenset[str] = frozenset()
     notes: str | None = None   # the document's note (2.3's `notes`)
+    # A Project Gutenberg text (`ingest.gutenberg_text`): its eBook number, recorded as
+    # provenance, and the heading its notes stand under.
+    ebook: int | None = None
+    notes_heading: str | None = None
 
     @property
     def source_key(self) -> str:
@@ -317,6 +326,8 @@ class _WorkEditor(Editor):
             marked = without_page_refs(callers, marked)
             if block.get("class") in self.title_classes:
                 return marked, notes          # a title in capitals throughout stays so
+            if self.source_file.endswith(".txt"):
+                return marked, notes          # a Gutenberg text, as its edition prints it
             if self.source_file in _LETTER_FILES and _SALUTATION.match(marked):
                 return _SALUTATION.sub(lambda m: _title(m.group(1)) + ",—", marked,
                                        count=1), notes
@@ -344,7 +355,11 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
               # cleaning would fold into the date's full stop across the paragraph break.
               ("therese-autobio.xml", "xxii.v-p2"): ((". . . I must", "… I must"),),
               # A Mystery's source line, as its neighbours print it ("Ibidem" with an l).
-              ("ignatius-exercises.xml", "xviii.xxxvii-p1"): (("lbidem.", "Ibidem."),)}
+              ("ignatius-exercises.xml", "xviii.xxxvii-p1"): (("lbidem.", "Ibidem."),),
+              # Part I ch. III § 2's title; the edition's contents prints "Mary, the hope
+              # of sinners".
+              ("pg72411.txt", "p287"): (("HAST THE HOPE OF SINNERS.",
+                                          "MARY, THE HOPE OF SINNERS."),)}
 # Mullan's references to pages of his edition, in the files that print them: the
 # edition's, not the text. In brackets ("They sent the Angel … (p. 133)."; "(P. 154)";
 # "(p. 152); and it contains"), or after a comma ("the Particular Examen, p. 21, and";
@@ -756,6 +771,264 @@ def _autobiography_chapters(root):
         out.append((None, ch, ChapterPlan(label=label)))
     return out
 
+# --------------------------------------------------------------------------- Gutenberg text
+
+# A Gutenberg work is one div of paragraphs (`ingest.gutenberg_text`), which its plan
+# cuts into chapter divs at the work's own headings. A heading paragraph (printed in
+# capitals, set in italics throughout, or a title line `headings.looks_like_heading`
+# takes for one) stays in the text, marked: in capitals before the chapter's first text,
+# level 1 (with `chapter_title` where the label repeats it); otherwise level 2.
+_ORDINALS = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH", "EIGHTH",
+             "NINTH", "TENTH", "ELEVENTH", "TWELFTH", "THIRTEENTH", "FOURTEENTH",
+             "FIFTEENTH")
+_ORDINAL = "|".join(_ORDINALS)
+_HEADING_CLASS = "heading"
+_TITLE_LINE_MAX = 80
+# A prayer's title line ("Prayer of St. Ephrem."), a heading though it ends in a stop.
+_TITLE_LINE = re.compile(rf"^Prayer (?:of|to) .{{3,{_TITLE_LINE_MAX - 10}}}$")
+
+
+# Paragraphs of a Gutenberg text that are the edition's, not the work's, as ranges by the
+# paragraphs that open and end them (end not included): the title page, approbation and
+# publishers' preface before the work's first line, and the Glories' contents. The plans
+# and the checks' extractor (`checks.source_text.gutenberg_units`) both read them.
+TEXT_APPARATUS = {
+    "pg72411.txt": ((None, "PROTEST OF THE AUTHOR."),
+                    ("CONTENTS.", "PETITION OF THE AUTHOR TO JESUS AND MARY.")),
+    "pg13871.txt": ((None, "CONVERSATIONS."),),
+}
+
+
+def text_apparatus(file: str, texts: list[str]) -> set[int]:
+    """The indices of `texts` (a Gutenberg text's paragraphs) in `TEXT_APPARATUS`."""
+    out: set[int] = set()
+    for start, end in TEXT_APPARATUS.get(file, ()):
+        a = 0 if start is None else texts.index(start)
+        out.update(range(a, texts.index(end)))
+    return out
+
+
+def _caps(text: str) -> bool:
+    letters = [c for c in text if c.isalpha()]
+    return bool(letters) and all(c.isupper() for c in letters)
+
+
+@dataclass
+class _Unit:
+    book: str | None
+    label: str
+    keep: int = 0              # text paragraphs it may hold and still take the next's
+    paras: list = field(default_factory=list)
+    heads: list = field(default_factory=list)       # (paragraph, level, text as read)
+    body: int = 0              # text paragraphs so far
+
+
+def _cut(paras, classify, file: str) -> list[_Unit]:
+    """Cut the paragraphs into units. `classify(k, text, unit)` returns "drop" (no text:
+    a repeated title, a Latin incipit), "heading" (a heading line, whatever it looks
+    like), "subheading" (one at level 2 wherever it stands), "text" (text, whatever it
+    looks like), a `_Unit` the paragraph opens, or None (text, or a heading by its look).
+    A unit with no more text than its `keep` (only its headings, or a part's line of
+    description) takes the headings of the unit after it instead of ending. A paragraph
+    is read with `TEXT_FIXES`, as the editor reads it."""
+    units: list[_Unit] = []
+    for k, p in enumerate(paras):
+        text = _text(p)
+        for printed, read in TEXT_FIXES.get((file, p.get("id")), ()):
+            text = text.replace(printed, read)
+        unit = units[-1] if units else None
+        kind = classify(k, text, unit) if text else "drop"
+        if kind == "drop":
+            continue
+        if isinstance(kind, _Unit):
+            if unit is not None and unit.body <= unit.keep:
+                unit.book = kind.book
+                unit.label = kind.label
+                unit.keep = max(unit.keep, kind.keep)
+            else:
+                units.append(kind)
+                unit = kind
+            heading = True
+        else:
+            heading = kind in ("heading", "subheading") or kind != "text" and (
+                _caps(text) or p.get("class") == "italic"
+                or headings.looks_like_heading(text) and len(text) <= _TITLE_LINE_MAX
+                or _TITLE_LINE.match(text) is not None)
+        if unit is None:
+            raise ValueError(f"text before the first chapter: {text[:60]!r}")
+        unit.paras.append(p)
+        if heading:
+            opening = unit.body <= unit.keep and _caps(text) and kind != "subheading"
+            unit.heads.append((p, 1 if opening else 2, text))
+        else:
+            unit.body += 1
+    return units
+
+
+def _text_chapters(units: list[_Unit]) -> list:
+    """The units as (book, div, ChapterPlan), each a `<div1 id="u<n>">`."""
+    out = []
+    for n, unit in enumerate(units, 1):
+        div = Element("div1", {"id": f"u{n}", "title": unit.label})
+        for p in unit.paras:
+            div.append(p)
+        heads = []
+        for p, level, text in unit.heads:
+            p.set("class", _HEADING_CLASS)
+            said = headings.normalized(text)
+            repeats = level == 1 and bool(said) and (
+                headings.repeats_label(text, unit.label)
+                or headings.normalized(unit.label).endswith(said))
+            heads.append((p.get("id"), level, repeats))
+        label = _MINOR_WORDS.sub(lambda m: m.group().lower(), unit.label)
+        out.append((unit.book, div, ChapterPlan(label=_clip(label), headings=tuple(heads))))
+    return out
+
+
+# The Glories of Mary (Dunigan, 1852): the author's protest, petition, address to the
+# reader, introduction and prayer for a good death; Part I on the Salve Regina (ten
+# chapters, most in sections, then the saints' prayers); Part II's nine discourses on the
+# feasts and dolors, the seven dolors, the virtues and the practices of devotion; then
+# the examples, the novena, the meditations and the prayers. Left out: the title page,
+# the archbishop's approbation, the publishers' preface to the American edition, the
+# contents, the repeated "THE GLORIES OF MARY.", "END OF THE FIRST PART.", the divider
+# before the examples (it names them and the meditations), each chapter's Latin line of
+# the Salve Regina (rule E; the English under it heads the chapter, level 2), the notes
+# (Alphonsus's sources, most in Latin: rule G keeps their count and scripture
+# references) and the index.
+_GLORIES_OWN = {"PROTEST OF THE AUTHOR.": None, "PETITION OF THE AUTHOR TO JESUS AND MARY.": None,
+                "TO THE READER.": None, "INTRODUCTION": None,
+                "PRAYER TO THE BLESSED VIRGIN TO OBTAIN A GOOD DEATH.": None,
+                "SOME DEVOUT PRAYERS OF VARIOUS SAINTS TO THE HOLY MOTHER.": "Part I",
+                "OF THE VIRTUES OF THE MOST HOLY MARY.": "Part II",
+                "VARIOUS PRACTICES OF DEVOTION TO THE DIVINE MOTHER.": "Part II",
+                "VARIOUS ADDITIONAL EXAMPLES APPERTAINING TO THE MOST HOLY MARY.": None,
+                "NOVENA OF MEDITATIONS": None,
+                "PRAYERS TO THE DIVINE MOTHER": None,
+                "LITTLE ROSARY OF THE SEVEN DOLORS OF MARY.": None,
+                "VARIOUS PRAYERS TO MARY.": None, "ACCLAMATIONS IN PRAISE OF MARY.": None}
+_GLORIES_LABELS = {"INTRODUCTION": "Introduction",
+                   "NOVENA OF MEDITATIONS": "Novena of Meditations for the Purification",
+                   "PRAYERS TO THE DIVINE MOTHER":
+                       "Prayers to the Divine Mother for Every Day of the Week"}
+_GLORIES_DROP = {"THE GLORIES OF MARY.", "END OF THE FIRST PART.",
+                 "MEDITATIONS FOR VARIOUS FESTIVALS, AND DIFFERENT DEVOTIONS IN HER HONOR."}
+_GLORIES_PART = re.compile(r"^PART (FIRST|SECOND)\b")
+_GLORIES_NUMBER = re.compile(r"^(CHAPTER|SECTION|DISCOURSE) ([IVX]+)\.$")
+_GLORIES_DOLOR = re.compile(rf"^ON THE ({_ORDINAL}) DOLOR\.$")
+_GLORIES_DAY = re.compile(rf"^({_ORDINAL}) DAY\.$")
+_GLORIES_DEVOTION = re.compile(r"^DEVOTION ([IVX]+)\.—(.+?)\.?$|^(TENTH AND LAST DEVOTION)\.$")
+_GLORIES_MEDITATION = re.compile(r"^MEDITATION(?: (FOR .+?))?\.?$")
+_MEDITATIONS = "Meditations for Various Feasts of Mary"
+_GLORIES_DOLORS = "REFLECTIONS ON EACH OF THE SEVEN DOLORS OF MARY IN PARTICULAR."
+_WEEKDAYS = {f"{d}." for d in ("SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
+                               "FRIDAY", "SATURDAY")}
+
+
+def _glories_chapters(root):
+    paras = list(root[0])
+    texts = [_text(p) for p in paras]
+    apparatus = text_apparatus("pg72411.txt", texts)
+    divider = texts.index("VARIOUS ADDITIONAL EXAMPLES APPERTAINING TO THE MOST HOLY MARY.")
+    # What a numbered heading waits for: the line after it that names it.
+    state = {"part": None, "chapter": None, "virtues": False, "names": None}
+
+    def classify(k, text, unit):
+        if k in apparatus or k == divider or text in _GLORIES_DROP:
+            return "drop"
+        if k and texts[k - 1].startswith("CHAPTER ") and _GLORIES_NUMBER.match(texts[k - 1]):
+            return "drop"                   # the Latin line of the Salve Regina
+        if text in _GLORIES_OWN:
+            state["part"] = _GLORIES_OWN[text]
+            state["virtues"] = text.startswith("OF THE VIRTUES")
+            label = _GLORIES_LABELS.get(text) or _title(text.rstrip("."))
+            return _Unit(state["part"], label, keep=1 if text == "NOVENA OF MEDITATIONS" else 0)
+        if m := _GLORIES_PART.match(text):
+            state["part"] = "Part I" if m.group(1) == "FIRST" else "Part II"
+            return _Unit(state["part"], state["part"], keep=1)
+        if m := _GLORIES_NUMBER.match(text):
+            kind, n = m.groups()
+            if kind == "CHAPTER":
+                state["chapter"] = n
+                state["virtues"] = False
+            state["names"] = (kind, n)
+            return _Unit(state["part"], f"{kind.capitalize()} {n}")
+        if text == _GLORIES_DOLORS:
+            return _Unit(state["part"], "On the Seven Dolors")
+        if text in _WEEKDAYS:
+            return "subheading"
+        if _caps(text) and unit is not None and unit.body == 0 and state["names"] is None \
+                and re.fullmatch(r"Chapter [IVX]+\. .+", unit.label):
+            # A chapter without sections: its title line names it, not the Latin's English.
+            unit.label = f"{unit.label.split('.')[0]}. {_title(text.rstrip('.!'))}"
+            return "heading"
+        if m := _GLORIES_DOLOR.match(text):
+            state["names"] = ("DOLOR", m.group(1))
+            return _Unit(state["part"], f"On the {m.group(1).capitalize()} Dolor")
+        if m := _GLORIES_DEVOTION.match(text):
+            if m.group(3):
+                return _Unit(state["part"], "Tenth and Last Devotion")
+            title = _title(m.group(2)).replace("“hail", "“Hail").rstrip(".”") + (
+                "”" if "“" in m.group(2) else "")
+            return _Unit(state["part"], f"Devotion {m.group(1)}. {title}")
+        if m := _GLORIES_DAY.match(text):
+            return _Unit("Novena of Meditations for the Purification",
+                         f"{m.group(1).capitalize()} Day")
+        if m := _GLORIES_MEDITATION.match(text):
+            if m.group(1) is None:
+                state["names"] = ("MEDITATION", "")
+                return _Unit(_MEDITATIONS, "Meditation")
+            return _Unit(_MEDITATIONS, _title(text.rstrip(".")))
+        if state["names"] and unit is not None:
+            kind, n = state["names"]
+            state["names"] = None
+            title = _title(text.rstrip(".!")) if _caps(text) else text.rstrip(".")
+            if kind == "CHAPTER":
+                unit.label = f"Chapter {n}. {title[0].upper()}{title[1:]}"
+            elif kind == "SECTION" and state["virtues"]:
+                unit.label = f"The Virtues of Mary, Section {n}. {title}"
+            elif kind == "SECTION":
+                unit.label = f"Chapter {state['chapter']}, Section {n}. {title}"
+            elif kind == "DOLOR":
+                unit.label = f"On the {n.capitalize()} Dolor. {title}"
+            elif kind == "DISCOURSE":
+                unit.label = f"Discourse {n}. {title}"
+            elif kind == "MEDITATION":
+                title = _title(text.upper().rstrip("."))
+                unit.label = f"Meditation {title[0].lower()}{title[1:]}"
+            return "heading"
+        return None
+
+    return _text_chapters(_cut(paras, classify, "pg72411.txt"))
+
+
+# The Practice of the Presence of God (Revell, about 1895): the four Conversations, which
+# Joseph de Beaufort wrote down (the document's note says so), and the fifteen Letters.
+# Left out: the title page, the publishers' preface and the translator's four notes
+# (rule G).
+_LAWRENCE_PART = {"CONVERSATIONS.": "Conversations", "LETTERS.": "Letters"}
+_LAWRENCE_UNIT = re.compile(rf"^({_ORDINAL}) (CONVERSATION|LETTER)\.$")
+
+
+def _lawrence_chapters(root):
+    paras = list(root[0])
+    apparatus = text_apparatus("pg13871.txt", [_text(p) for p in paras])
+    state = {"book": None}
+
+    def classify(k, text, unit):
+        if k in apparatus:
+            return "drop"
+        if text in _LAWRENCE_PART:
+            state["book"] = _LAWRENCE_PART[text]
+            return _Unit(state["book"], state["book"])
+        if m := _LAWRENCE_UNIT.match(text):
+            return _Unit(state["book"], f"{m.group(1).capitalize()} {m.group(2).capitalize()}")
+        if text.startswith("To "):
+            return "text"                     # a letter's address ("To the Reverend--")
+        return None
+
+    return _text_chapters(_cut(paras, classify, "pg13871.txt"))
+
 # A paragraph the file closes mid-sentence: it ends on a lower-case word, a comma, a
 # semicolon, a dash or the word "I", or the next part starts in lower case. A next part
 # that opens with its section number ("25. The devils") is a paragraph of its own.
@@ -919,21 +1192,37 @@ WORKS: tuple[ThmlWork, ...] = (
              title="The Autobiography of St. Ignatius", author="Ignatius of Loyola", year=1555,
              translation="J. F. X. O'Conor (1900)", chapters=_autobiography_chapters,
              genre="other", notes=IGNATIUS_NOTE),
+    # The two Gutenberg texts (`ingest.gutenberg_text`); neither names its translator.
+    ThmlWork(file="pg72411.txt", url="https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
+             title="The Glories of Mary", author="Alphonsus Liguori", year=1750,
+             translation=ANONYMOUS_1852, chapters=_glories_chapters, genre="treatise",
+             title_classes=frozenset({_HEADING_CLASS}), ebook=72411,
+             notes_heading="FOOTNOTES"),
+    ThmlWork(file="pg13871.txt", url="https://www.gutenberg.org/cache/epub/13871/pg13871.txt",
+             title="The Practice of the Presence of God", author="Brother Lawrence",
+             year=1692, translation=ANONYMOUS_1895, chapters=_lawrence_chapters,
+             genre="other", title_classes=frozenset({_HEADING_CLASS}), ebook=13871,
+             notes_heading="NOTES:", notes=LAWRENCE_NOTE),
 )
 
 
 def build_work(work: ThmlWork) -> Document:
-    root = _read_root(os.path.join(_SRC, work.file))
+    path = os.path.join(_SRC, work.file)
+    root = (gutenberg_text.read_root(path, work.notes_heading) if work.ebook
+            else _read_root(path))
     chapters = work.chapters(root)
     _verse_blocks([div for _, div, _ in chapters], work)
-    _rejoin_split_paragraphs([div for _, div, _ in chapters], work)
+    if not work.ebook:                    # a Gutenberg paragraph is the printed one
+        _rejoin_split_paragraphs([div for _, div, _ in chapters], work)
     parent_map = _build_parent_map(root)
     editor = _WorkEditor(work.file, work.source_key, parent_map,
                          title_classes=work.title_classes)
     doc = make_doc(collection=COLLECTION, filename=f"../{SOURCE_DIR}/{work.file}",
                    author=work.author, title=work.title,
                    chapters=chapters, source_key=work.source_key,
-                   year=work.year, extra_meta={"source_url": work.url}, editor=editor)
+                   year=work.year, editor=editor,
+                   extra_meta={"source_url": work.url,
+                               **({"gutenberg_ebook": work.ebook} if work.ebook else {})})
     if doc is None:
         raise ValueError(f"{work.file}: no passages")
     doc.translation = work.translation

@@ -44676,6 +44676,44 @@
   "added_on": "2026-11-23"
  },
  {
+  "id": "rm-10609",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator's notes printed after the letters (Project Gutenberg's [n] notes), called in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 4
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-26"
+ },
+ {
+  "id": "rm-10608",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Author's and translator's notes printed after the text (Project Gutenberg's [n] notes), called in the passages; only their count is kept, as editor_note_count, and their scripture references as footnotes.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1934
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-26"
+ },
+ {
   "id": "rm-10601",
   "scope": "class",
   "collection": "medieval",

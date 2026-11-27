@@ -675,6 +675,28 @@
    ]
   },
   {
+   "key": "gutenberg",
+   "name": "Project Gutenberg",
+   "url": "https://www.gutenberg.org",
+   "taken": "Plain-text editions of older printed translations of spiritual writers.",
+   "basis": [
+    "Public domain in the United States: published before 1931."
+   ],
+   "excerpt_bases": [],
+   "documents": [
+    {
+     "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+     "title": "The Glories of Mary",
+     "collection": "medieval"
+    },
+    {
+     "document_id": "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9",
+     "title": "The Practice of the Presence of God",
+     "collection": "medieval"
+    }
+   ]
+  },
+  {
    "key": "vatican",
    "name": "The Holy See (vatican.va)",
    "url": "https://www.vatican.va",

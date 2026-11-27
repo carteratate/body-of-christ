@@ -163,6 +163,10 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "Its Counsels and Reminiscences are her sayings as her novices recorded them.": (
         overview("Its Counsels and Reminiscences are her sayings as her novices recorded "
                  "them."),),
+    # 5.6b's Practice of the Presence of God (`ingest.theologians.LAWRENCE_NOTE`).
+    "Its Conversations are Joseph de Beaufort's record of what Brother Lawrence told him.": (
+        overview("Its Conversations are Joseph de Beaufort's record of what Brother Lawrence "
+                 "told him."),),
     # 5.6b's Autobiography of St. Ignatius (`ingest.theologians.IGNATIUS_NOTE`).
     "Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens it.": (
         overview("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens "
@@ -328,6 +332,9 @@ _TRANSLATIONS = {
     "United States edition (1997)": "",
     # The Devout Life's 1876 translation names no translator (5.6b; R6).
     "Anonymous translation (Rivingtons, 1876)": "Anonymous translation (Rivingtons, 1876)",
+    # The Glories of Mary's and Brother Lawrence's translations name no translator (R6).
+    "Anonymous translation (Dunigan, 1852)": "Anonymous translation (Dunigan, 1852)",
+    "Anonymous translation (Revell, about 1895)": "Anonymous translation (Revell, about 1895)",
 }
 _TAILS = re.compile(r"(?:\.\s+(?:Sourced via|Text:).*|;.*|,\s*(?:abridged|extract)\s*)$")
 _SENTENCE = re.compile(r"^(Translated by|Translation|Official English|From Hefele)")

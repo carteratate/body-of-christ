@@ -1,5 +1,6 @@
 """5.6b's theologians and spiritual writers (issue #207), from CCEL ThML: Teresa of Avila,
-Francis de Sales, Julian of Norwich, Thérèse of Lisieux and Ignatius of Loyola."""
+Francis de Sales, Julian of Norwich, Thérèse of Lisieux and Ignatius of Loyola; and from
+Project Gutenberg text, Alphonsus Liguori and Brother Lawrence."""
 import os, sys
 os.environ.setdefault("DATABASE_URL", "postgresql://test:test@localhost/test")
 os.environ.setdefault("OPENAI_API_KEY", "sk-test")
@@ -51,14 +52,16 @@ def _labels(doc) -> list[str]:
 def test_the_documents_under_the_collection_key():
     docs = _built()
     assert sorted(docs) == ["Introduction to the Devout Life", "Revelations of Divine Love",
-                            "The Autobiography of St. Ignatius", "The Interior Castle",
-                            "The Life of St. Teresa of Jesus",
+                            "The Autobiography of St. Ignatius", "The Glories of Mary",
+                            "The Interior Castle", "The Life of St. Teresa of Jesus",
+                            "The Practice of the Presence of God",
                             "The Spiritual Exercises of St. Ignatius of Loyola",
                             "The Story of a Soul", "Treatise on the Love of God"]
     for d in docs.values():
         assert d.collection == T.COLLECTION
         assert d.author in ("Teresa of Avila", "Francis de Sales", "Julian of Norwich",
-                            "Thérèse of Lisieux", "Ignatius of Loyola")
+                            "Thérèse of Lisieux", "Ignatius of Loyola",
+                            "Alphonsus Liguori", "Brother Lawrence")
         # The source key is the file's path under sources/.
         assert "../" + d.metadata["source_key"] == d.metadata["source_file"]
     assert (_castle().year, _life().year) == (1577, 1565)
@@ -175,7 +178,9 @@ def test_no_heading_or_note_leaks_and_passages_are_not_empty():
         assert len(anchors) == len(set(anchors)), doc.title
         for p in doc.passages:
             assert p.content.strip() and p.chapter_label and p.chapter_key
-            assert not p.content.startswith(("CHAPTER", "Chapter ")), p.anchor
+            # A chapter line opens a passage only as a marked heading.
+            marked = any(m["at"] == 0 for m in p.metadata.get("headings") or [])
+            assert marked or not p.content.startswith(("CHAPTER", "Chapter ")), p.anchor
 
 
 def test_a_paragraph_split_at_a_page_break_is_one_paragraph():
@@ -531,3 +536,80 @@ def test_autobiography_is_da_camaras_preface_and_the_eight_chapters():
     assert text.rstrip().endswith("Master Natalis can tell the rest.")
     assert not any(p.metadata.get("headings") for p in doc.passages)
     assert doc.notes == T.IGNATIUS_NOTE and doc.year == 1555
+
+
+# --------------------------------------------------------------------------- Gutenberg
+
+def _glories():
+    return _built()["The Glories of Mary"]
+
+
+def _lawrence():
+    return _built()["The Practice of the Presence of God"]
+
+
+def test_gutenberg_reader_cuts_the_licence_and_puts_notes_at_their_callers():
+    from ingest import gutenberg_text as G
+    root = G.read_root(os.path.join(T._SRC, "pg72411.txt"), "FOOTNOTES")
+    paras = list(root[0])
+    assert sum(1 for p in paras for c in p if c.tag == "note") == 1934
+    text = " ".join("".join(p.itertext()) for p in paras)
+    assert "Project Gutenberg" not in text and "INDEX." not in text
+    # A note running into a second paragraph stays one note.
+    note = next(c for p in paras for c in p if c.tag == "note" and c.get("n") == "20")
+    assert note.text.endswith("Filii gloriam cum Matre, non tam communem judico, quam "
+                              "eamdem. S. Arnol. de Laud. Virg.")
+
+
+def test_glories_of_mary_is_the_authors_parts_and_devotions():
+    doc = _glories()
+    labels = _labels(doc)
+    assert labels[:5] == ["Protest of the Author", "Petition of the Author to Jesus and Mary",
+                          "To the Reader", "Introduction",
+                          "Prayer to the Blessed Virgin to Obtain a Good Death"]
+    assert ("Part I · Chapter I, Section I. Of the Great Confidence We Should Have in "
+            "Mary, Because She Is the Queen of Mercy") in labels
+    assert "Part I · Chapter III, Section II. Mary, the Hope of Sinners" in labels
+    assert "Part I · Chapter IX. How Great Is the Clemency and Mercy of Mary" in labels
+    assert "Part II · Discourse I. On the Immaculate Conception of Mary" in labels
+    assert "Part II · On the Second Dolor. Of the Flight of Jesus into Egypt" in labels
+    assert "Part II · Devotion I. Of the “Hail Mary”" in labels
+    assert labels[-1] == "Acclamations in Praise of Mary"
+    text = _text(doc)
+    for gone in ("first complete translation of the work ever made", "Archbishop of New York",
+                 "PAGE.", "END OF THE FIRST PART", "SALVE REGINA, MATER MISERICORDIÆ",
+                 "VITA, DULCEDO", "HAST THE HOPE"):
+        assert gone not in text
+    assert sum(p.metadata.get("editor_note_count", 0) for p in doc.passages) == 1934
+    assert doc.metadata["gutenberg_ebook"] == 72411
+    assert (doc.year, doc.translation) == (1750, T.ANONYMOUS_1852)
+
+
+def test_glories_of_mary_marks_its_headings():
+    first = next(p for p in _glories().passages
+                 if p.chapter_label.startswith("Part I · Chapter I, Section I."))
+    assert [(t, lvl) for t, lvl, _ in _heads(first)][:5] == [
+        ("PART FIRST: ON THE SALVE REGINA.", 1), ("CHAPTER I.", 1),
+        ("Hail queen, Mother of mercy.", 2), ("SECTION I.", 1),
+        ("OF THE GREAT CONFIDENCE WE SHOULD HAVE IN MARY, BECAUSE SHE IS THE QUEEN OF "
+         "MERCY.", 1)]
+    assert _heads(first)[4][2]                          # repeats its label
+    marks = [t for p in _glories().passages for t, _, _ in _heads(p)]
+    assert marks.count("EXAMPLE.") == 38 and marks.count("PRAYER.") == 38
+    assert "Prayer of St. Ephrem." in marks and "MONDAY." in marks
+
+
+def test_brother_lawrence_is_the_conversations_and_letters():
+    doc = _lawrence()
+    labels = _labels(doc)
+    assert labels[0] == "Conversations · First Conversation"
+    assert labels[4] == "Letters · First Letter" and labels[-1] == "Letters · Fifteenth Letter"
+    assert len(labels) == 19
+    text = _text(doc)
+    assert "Publishers of Evangelical Literature" not in text
+    assert "This book consists of notes" not in text            # Revell's preface
+    assert "I suppose he means" not in text                     # a translator's note
+    assert "SECOND LETTER.\n\nTo the Reverend--\n\nNot finding" in text
+    assert not any(t.startswith("To the") for p in doc.passages for t, _, _ in _heads(p))
+    assert doc.notes == T.LAWRENCE_NOTE and doc.metadata["gutenberg_ebook"] == 13871
+    assert sum(p.metadata.get("editor_note_count", 0) for p in doc.passages) == 4
