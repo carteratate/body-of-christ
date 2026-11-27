@@ -243,6 +243,121 @@ WORKS: dict[tuple[str, str], dict] = {
 }
 WORKS[(_EPISTLES, "iv.iv.lxxiv")]["notes"] = _REBAPTISM_VIEW
 
+# --------------------------------------------------------------------------- 5.6a: Basil
+
+# NPNF2-08 (5.6a, #205). Rule H's sources for Basil's letters, read for 5.6a: Quasten's
+# Patrology in its Spanish edition, vol. II (BAC 1978; English vol. III), pp. 244-249, and
+# P. J. Fedwick's list of Basil's works with its Dubia and Spuria ("The Works of Basil of
+# Caesarea", in Fedwick, ed., Basil of Caesarea: Christian, Humanist, Ascetic, Toronto
+# 1981, which follows the Clavis, CPG 2900). The research and each letter's line are in
+# R1's 5.6a addendum.
+R1_BASIL = f"{R1}, 5.6a addendum (Basil)"
+QUASTEN_BASIL = "Quasten, Patrología II (BAC 1978), pp. 244-249"
+FEDWICK = "Fedwick (1981), The Works of Basil of Caesarea, Spuria"
+_BASIL_LETTERS = "church-fathers/npnf208/ix"
+for _work_id, _clavis in (("church-fathers/npnf208/vii", "CPG 2839"),
+                          ("church-fathers/npnf208/viii", "CPG 2835"),
+                          (_BASIL_LETTERS, "CPG 2900")):
+    DOCUMENTS[_work_id] = {"certainty": "genuine", "clavis": _clavis, "basis": R1_BASIL}
+_NOT_BASIL = "Transmitted among Basil's letters, but not his."
+_NYSSA = "Transmitted among Basil's letters; scholars now assign it to Gregory of Nyssa."
+_NAZIANZUS = ("Transmitted among Basil's letters; Fedwick (1981) assigns it to Gregory of "
+              "Nazianzus.")
+# By the letter's div in NPNF2-08 (Letter N is not div N: the volume skips and merges some).
+BASIL_LETTER_LABELS = {
+    # Letter 8, to the Caesareans: Evagrius Ponticus's (Bousset, Melcher; Quasten; Fedwick,
+    # Spuria). It stays, labelled as his, by Carter's decision of 24 Nov 2026 (Decision log
+    # "Basil's Letter 8 (5.6a)"), though rule A, limit 1 would leave it out.
+    "ix.ix": {"author": "Evagrius Ponticus", "certainty": "disputed",
+              "attribution_note": "Scholars now give this letter to Evagrius Ponticus, whose "
+                                  "teachings the Second Council of Nicaea condemned.",
+              "basis": f"{QUASTEN_BASIL} (Bousset, Melcher); {FEDWICK}; Decision log, "
+                       "Basil's Letter 8 (5.6a)"},
+    # Gregory of Nyssa: Letters 10, 16, 38 and 189.
+    "ix.xi": {"author": "Gregory of Nyssa", "certainty": "disputed",
+              "attribution_note": _NYSSA,
+              "basis": f"{QUASTEN_BASIL} (Pasquali); {FEDWICK}"},
+    "ix.xvii": {"author": "Gregory of Nyssa", "certainty": "genuine",
+                "attribution_note": "An extract from Gregory of Nyssa's Against Eunomius, "
+                                    "transmitted among Basil's letters.",
+                "basis": f"{QUASTEN_BASIL}; {FEDWICK}"},
+    "ix.xxxix": {"author": "Gregory of Nyssa", "certainty": "disputed", "clavis_ref": "CPG 3196",
+                 "attribution_note": _NYSSA, "basis": f"{QUASTEN_BASIL}; {FEDWICK}"},
+    "ix.cxc": {"author": "Gregory of Nyssa", "certainty": "disputed",
+               "attribution_note": _NYSSA, "basis": f"{QUASTEN_BASIL}; {FEDWICK}"},
+    # Gregory of Nazianzus: Letters 47 and 169 to 171 (166 and 321 print no text; 167, his
+    # Letter 66, is retired as a duplicate of his own copy in NPNF2-07).
+    "ix.xlviii": {"author": "Gregory of Nazianzus", "certainty": "disputed",
+                  "attribution_note": "Transmitted among Basil's letters, but written about "
+                                      "him; the Benedictine editors give it to Gregory of "
+                                      "Nazianzus's father, written in his son's hand.",
+                  "basis": f"{FEDWICK} (compares Gregory of Nazianzus, Letter 42); "
+                           "NPNF2-08's note on Letter 47"},
+    **{div: {"author": "Gregory of Nazianzus", "certainty": "disputed",
+             "attribution_note": _NAZIANZUS, "basis": FEDWICK}
+       for div in ("ix.clxx", "ix.clxxi", "ix.clxxii")},
+    # Basil's own letters to Libanius: Quasten counts 335 to 346 authentic, Fedwick lists
+    # these among the Dubia (342 among the Spuria). Limit 2 passes them as a Doctor's.
+    **{div: {"author": "Basil", "certainty": "disputed",
+             "attribution_note": _DOUBTFUL.format("Basil"),
+             "basis": f"{QUASTEN_BASIL}; Fedwick (1981), Dubia and Spuria"}
+       for div in ("ix.cccxxx", "ix.cccxxxii", "ix.cccxxxiv", "ix.cccxxxvii", "ix.cccxxxix")},
+    # Letter 187, the governor Antipater's reply to Letter 186, by its title line, as
+    # 1.8c credits Cyprian's correspondents. No source records him as other than a
+    # Christian, so rule A presumes him in communion.
+    "ix.clxxxviii": {"author": "Antipater", "certainty": "genuine",
+                     "basis": "NPNF2-08's title line, \"Antipater to Basil\""},
+    # Pseudo-Basil: spurious letters whose writer no source names a heretic (rule B keeps
+    # them, labelled).
+    **{div: {"author": "Pseudo-Basil", "certainty": "pseudonymous",
+             "attribution_note": _NOT_BASIL, "basis": f"{QUASTEN_BASIL}; {FEDWICK}"}
+       for div in ("ix.xlii", "ix.xliii", "ix.xliv", "ix.xlv", "ix.xlvi", "ix.li",
+                   "ix.lxxxii", "ix.ccclvii")},
+    # The Libanius letters Fedwick lists as spurious; Quasten calls the letters after 346
+    # but 358 "spurious, or at least doubtful".
+    **{div: {"author": "Pseudo-Basil", "certainty": "pseudonymous",
+             "attribution_note": _NOT_BASIL, "basis": f"{FEDWICK}; {QUASTEN_BASIL}"}
+       for div in ("ix.cccxliii", "ix.cccxlv", "ix.cccxlvi", "ix.cccxlviii", "ix.cccli",
+                   "ix.cccliv")},
+    # Letter 197's second section, on Dionysius's relics (`_LETTER_PARTS`).
+    "ix.cxcviii/2": {"author": "Pseudo-Basil", "certainty": "pseudonymous",
+                     "attribution_note": "A later addition to Basil's letter to Ambrose.",
+                     "basis": f"{QUASTEN_BASIL} (Cavallin 1945); {FEDWICK}"},
+    # Letter 360, on images: spurious, but quoted by the Second Council of Nicaea, so a
+    # received work that stays under rule D.
+    "ix.ccclv": {"author": "Pseudo-Basil", "certainty": "pseudonymous",
+                 "attribution_note": "Not by Basil. The Second Council of Nicaea (787) "
+                                     "quoted it as his.",
+                 "basis": f"{QUASTEN_BASIL}; {FEDWICK}; rule D (quoted in Nicaea II, act "
+                          "4)"},
+}
+WORKS.update({(_BASIL_LETTERS, div): labels for div, labels in BASIL_LETTER_LABELS.items()})
+# ---------------------------------------------------------- 5.6a: Cyril and Gregory
+
+# NPNF2-07 (5.6a, #205). Both are Doctors; the volume prints only their own works. The
+# Mystagogical Lectures' authorship is disputed (Quasten, Patrología II, pp. 404-407: one
+# manuscript gives them to Cyril's successor John and three to Cyril and John; the evidence
+# decides nothing); the
+# Catechism cites them as Cyril's ("St. Cyril of Jerusalem, Catech. myst."), so rule H
+# credits him and the certainty says the rest.
+R1_NPNF207 = f"{R1}, 5.6a addendum (Cyril and Gregory of Nazianzus)"
+for _work_id in ("church-fathers/npnf207/ii", "church-fathers/npnf207/iii",
+                 "church-fathers/npnf207/iv"):
+    DOCUMENTS[_work_id] = {"certainty": "genuine", "basis": R1_NPNF207}
+WORKS[("church-fathers/npnf207/ii", "ii.iv")] = {
+    "author": "Cyril of Jerusalem", "certainty": "genuine", "basis": R1_NPNF207}
+WORKS[("church-fathers/npnf207/ii", "ii.xxiii")] = {
+    "author": "Cyril of Jerusalem", "certainty": "disputed",
+    "attribution_note": "Some manuscripts give these lectures to Cyril's successor, John of "
+                        "Jerusalem; the Catechism cites them as Cyril's.",
+    "basis": f"Quasten, Patrología II (BAC 1978), pp. 404-407; CCC, footnotes citing "
+             f"\"Catech. myst.\"; {R1_NPNF207}"}
+
+# The Creed of Nicaea Letter 125 quotes in Greek is cut under rule E
+# (`ingest.church_fathers.NOT_ENGLISH`).
+_CREED_NOTE = ("The Creed of Nicaea, which this letter quotes in full, is omitted: the "
+               "translator left it in Greek.")
+
 PASSAGE_NOTES: dict[tuple[str, str], str] = {
     **{("church-fathers/apostolic-fathers/iii.ii", key):
        "Chapters 11 and 12 are a later addition by another hand."
@@ -250,6 +365,7 @@ PASSAGE_NOTES: dict[tuple[str, str], str] = {
     # The Canonical Epistle's eleventh canon (ANF 6's elucidation; 3.2, moved by 4.4).
     ("church-fathers/third-century-3/iii.iii", "iii.iii.iii.xi"):
         "This canon is a later addition.",
+    (_BASIL_LETTERS, "ix.cxxvi"): _CREED_NOTE,
 }
 
 # Fields the registry's `attribution` object takes from DOCUMENTS; the rest are facts.

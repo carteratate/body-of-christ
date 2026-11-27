@@ -149,6 +149,13 @@ FATHERS_DATES = {
     _CF + "on-the-holy-trinity/v.vii": (401, "c. 401", "III (Spanish), Augustine"),
     _CF + "on-the-holy-trinity/v.viii": (415, "415", "III (Spanish), Augustine"),
     _CF + "on-the-holy-trinity/v.ix": (424, "424 to 425", "III (Spanish), Augustine"),
+    # 5.6a: Basil (Spanish vol. II, English vol. III). The letters, written from his
+    # retreat to his death, have no one date there.
+    _CF + "npnf208/vii": (375, "c. 375", "II (Spanish), Basil, p. 231"),
+    _CF + "npnf208/viii": (None, "before 370", "II (Spanish), Basil, pp. 238-239"),
+    # Cyril's lectures: "347 or 348" (Quasten); Gregory's orations and letters span his
+    # life, with no one date.
+    _CF + "npnf207/ii": (347, "347 or 348", "II (Spanish), Cyril of Jerusalem, p. 404"),
 }
 # Works inside a container, by (work_id, work_key), as FATHERS_DATES.
 FATHERS_WORK_DATES = {
@@ -156,6 +163,11 @@ FATHERS_WORK_DATES = {
     (_CF + "third-century-2/iii.iv", "iii.iv.i.x"): (204, "c. 204", "II, Hippolytus"),
     (_CF + "third-century-2/v.iii", "v.iii.iii"): (None, "late 2nd century",
                                                    "II, The Muratorian Fragment"),
+    # 5.6a: the Mystagogical Lectures carry no date of the prebaptismal ones: Quasten
+    # dates only those (347 or 348), and some give these to Cyril's successor John
+    # (bishop 386-417).
+    (_CF + "npnf207/ii", "ii.xxiii"): (None, "date disputed",
+                                       "II (Spanish), Cyril of Jerusalem, pp. 404-407"),
 }
 # Genres from 2.1's writer genres (Carter, 15 Nov 2026): letters, treatises (apologies
 # and dialogues too), commentaries, sermons, poems, manuals, law for church orders, and
@@ -167,7 +179,8 @@ _LETTER = ("apostolic-fathers/ii.ii", "apostolic-fathers/iii.ii", "apostolic-fat
                                                   "viii", "x", "xi", "xii")),
            "apostolic-fathers/vi.ii", "third-century-2/iv.iv", "third-century-3/v.iii",
            "third-century-3/ix.iv", "third-century-3/x.iii", "third-century-3/vi.vii",
-           "third-century-3/vi.viii", "third-century-3/vi.x")
+           "third-century-3/vi.viii", "third-century-3/vi.x", "npnf208/ix",
+           "npnf207/iv")
 _TREATISE = ("apostolic-fathers/viii.ii", "apostolic-fathers/viii.iii",
              "apostolic-fathers/viii.iv", "apostolic-fathers/viii.v",
              "apostolic-fathers/viii.vi", "apostolic-fathers/viii.vii",
@@ -181,6 +194,7 @@ _TREATISE = ("apostolic-fathers/viii.ii", "apostolic-fathers/viii.iii",
              "third-century/iii.v", "third-century/iv.iii", "third-fourth-century/iii.ii",
              "third-fourth-century/iii.iii", "third-fourth-century/iii.iv",
              "third-fourth-century/iii.v", "third-fourth-century/v.ii", "incarnation",
+             "npnf208/vii",
              "city-of-god/iv", "city-of-god/v", "on-the-holy-trinity/iv",
              *(f"on-the-holy-trinity/{k}" for k in ("iv.iii", "iv.iv", "iv.v", "iv.vi", "v",
                                                      "v.ii", "v.iii", "v.iv", "v.v", "v.vi",
@@ -190,7 +204,8 @@ FATHERS_GENRES = {
     **{_CF + k: "treatise" for k in _TREATISE},
     **{_CF + k: "commentary" for k in ("third-fourth-century/vi.ii", "third-century-3/iv.iv")},
     **{_CF + k: "sermon" for k in ("on-the-holy-trinity/iv.vii", "third-century-3/xi.ix",
-                                   "third-century-3/xi.x")},
+                                   "third-century-3/xi.x", "npnf208/viii", "npnf207/ii",
+                                   "npnf207/iii")},
     _CF + "third-century/v.ii": "poem",
     _CF + "third-fourth-century/iii.vi": "poem",
     _CF + "on-the-holy-trinity/iv.ii": "manual",
@@ -248,6 +263,7 @@ TRANSLATION = {
     "church-fathers/city-of-god.xml": NPNF1,
     "church-fathers/on-the-holy-trinity.xml": NPNF1,
     "church-fathers/npnf204.xml": NPNF2,
+    "church-fathers/npnf208.xml": "Blomfield Jackson (1895)",
     "church-fathers/confessions.xml": "E. B. Pusey (1838)",
     "medieval/consolation-of-philosophy.xml": "W. V. Cooper (1902)",
     "medieval/imitation-of-christ.xml": "Aloysius Croft and Harold Bolton (1940)",
@@ -256,6 +272,10 @@ TRANSLATION = {
 }
 # Anselm's three works share one file.
 TRANSLATION_BY_KEY = {
+    # NPNF2-07 (5.6a): one volume, two translations.
+    "church-fathers/npnf207.xml#ii": "Edwin Hamilton Gifford (1894)",
+    "church-fathers/npnf207.xml#iii": "Charles Gordon Browne and James Edward Swallow (1894)",
+    "church-fathers/npnf207.xml#iv": "Charles Gordon Browne and James Edward Swallow (1894)",
     "medieval/proslogium-monologium-and-cur-deus-homo.xml#iii": "Sidney Norton Deane (1903)",
     "medieval/proslogium-monologium-and-cur-deus-homo.xml#iv": "Sidney Norton Deane (1903)",
     "medieval/proslogium-monologium-and-cur-deus-homo.xml#vi": "James Gardiner Vose (1854-1855)",

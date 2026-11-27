@@ -76,3 +76,16 @@ def test_a_heading_that_is_no_paragraph_read_is_refused():
     with pytest.raises(ValueError, match="not paragraphs read"):
         _build(_chapter("Of Love.", "Text of the chapter, long enough to keep: " * 4),
                ChapterPlan(label="Chapter I", headings=(("c1-p9", 2, False),)))
+
+
+def test_a_heading_without_a_level_is_an_epigraph():
+    # 5.6a: Cyril's Scripture reading under a lecture's title.
+    elem = _chapter("Romans vi. 3, 4", "Know ye not that so many of us " * 4,
+                    "1. These daily introductions into the Mysteries are profitable. " * 3)
+    plan = ChapterPlan(label="Lecture XX", headings=(("c1-p1", None, False),
+                                                       ("c1-p2", None, False)))
+    doc = make_doc(collection="church-fathers", filename="t.xml", author="A", title="T",
+                   chapters=[(None, elem, plan)], source_key="church-fathers/t.xml")
+    marks = doc.passages[0].metadata["headings"]
+    assert [m["role"] for m in marks] == ["epigraph", "epigraph"]
+    assert all("level" not in m for m in marks)

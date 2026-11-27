@@ -141,9 +141,17 @@
   ]
  },
  "H7_unmarked_heading": {
-  "_comment": "Block rules H7 and H8 (issue #445) run in these collections only, and in `authors`' documents of a collection (Vatican II among the councils): a heading-like paragraph (headings.looks_like_heading) with no mark in metadata.headings, and a level-1 heading that opens its chapter and repeats the chapter label without chapter_title. A collection joins when its adapter marks its headings; documents lists single documents that join before their collection (5.6b's works, by document ID). not_headings lists, by document ID, paragraphs the classifier takes for headings that are text (a signature, a dating line, a quotation lead-in), each with its reason; they are matched without case or punctuation.",
+  "_comment": "Block rules H7 and H8 (issue #445) run in these collections only, in `authors`' documents of a collection (Vatican II among the councils), and in the `documents` listed one at a time (new works in a collection whose others are not marked yet): a heading-like paragraph (headings.looks_like_heading) with no mark in metadata.headings, and a level-1 heading that opens its chapter and repeats the chapter label without chapter_title. A collection joins when its adapter marks its headings. not_headings lists, by document ID, paragraphs the classifier takes for headings that are text (a signature, a dating line, a quotation lead-in), each with its reason; they are matched without case or punctuation.",
   "collections": [
    "catechism"
+  ],
+  "documents": [
+   "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+   "70347ebd-4832-59b6-813f-aeb2e120837b",
+   "75cc7965-7501-595d-af44-9997bb7498be",
+   "7f052676-7c0c-5904-b257-7ca10d489010",
+   "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+   "9398a664-a690-5431-a2cc-46046a3be21a"
   ],
   "authors": {
    "councils": [

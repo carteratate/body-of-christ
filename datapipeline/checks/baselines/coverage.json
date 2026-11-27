@@ -1246,6 +1246,16 @@
    "body_chars": 14059391,
    "covered_chars": 14048828,
    "pct": 99.92
+  },
+  "church-fathers/npnf208.xml": {
+   "body_chars": 1304714,
+   "covered_chars": 1295490,
+   "pct": 99.29
+  },
+  "church-fathers/npnf207.xml": {
+   "body_chars": 1739439,
+   "covered_chars": 1736549,
+   "pct": 99.83
   }
  },
  "documents": {

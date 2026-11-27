@@ -12,7 +12,7 @@ import rights_inventory as R
 ENTRIES = R.load()
 # md5 of the sorted document IDs of a master build, joined with commas: the 421 live
 # documents as of 0.2. A PR that changes the published document set updates it on purpose.
-LIVE_DOCUMENT_IDS_MD5 = "6548a6ff1445973281e2f0efceff05d6"   # 448: 5.6b adds Teresa, de Sales, Julian, Thérèse, Ignatius, Alphonsus and Brother Lawrence (10 works) to 5.5 and 5.9
+LIVE_DOCUMENT_IDS_MD5 = "286d309790c087151f6a2f00096f3970"   # 454: 5.6a adds Basil, Cyril and Gregory of Nazianzus (6 works) to 5.6b's 448
 
 
 def test_every_entry_has_required_fields_and_known_status():
