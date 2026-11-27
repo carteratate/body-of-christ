@@ -1,9 +1,15 @@
+/* As wide as the buttons shown: 3·4·5, then 10 as well. */
 .viewport {
   position: relative;
-  width: 148px;
+  width: 111px;
   height: 32px;
   flex: none;
   overflow: visible;
+  transition: width 250ms ease-out;
+}
+
+.viewportWide {
+  width: 148px;
 }
 
 .standardChoices {
@@ -80,6 +86,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .viewport,
   .standardButton,
   .standardChoices,
   .tenButton {

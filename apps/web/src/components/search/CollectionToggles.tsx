@@ -41,10 +41,7 @@ export function CollectionToggles({
   if (scopesLocked && scopeOpen !== null) setScopeOpen(null);
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className="text-[10px] font-medium uppercase tracking-widest text-brand-muted">
-        Sources:
-      </span>
+    <div className="flex flex-wrap items-center gap-1.5 max-md:justify-center">
 
       {COLLECTIONS.map((col) => {
         const isActive = activeCollections.includes(col.key);
