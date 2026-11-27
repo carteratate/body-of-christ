@@ -263,7 +263,9 @@ NOT_BODY_PARAGRAPHS = {"teresa-life.xml": {"viii.xli-p58": "apparatus",
                        # Worde's colophon verses ("Infinite laud with thankings manifold"),
                        # the printer's, not Hilton's.
                        "hilton-ladder.xml": {f"ii_1.ii.iii.xv.ii-p{n}": "apparatus"
-                                             for n in (11, *range(13, 29))}}
+                                             for n in (11, *range(13, 29))},
+                       # "FINIS." after the Treatise's last "Amen": the printer's.
+                       "hilton-treatise.xml": {"iii.xvi-p6": "apparatus"}}
 
 
 def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str], dict[str, str]]:
@@ -1094,6 +1096,8 @@ _KEEP_CAPS = frozenset({("anonymous2-cloud.xml", "lxxxi-p13")})
 
 def _cloud_chapters(root):
     out = []
+    # The manuscript's table of the chapters, in order: each chapter's title as printed.
+    table = [_text(p) for p in _div(root, "vi") if p.get("class") == "item2"]
     for div_id, label in (("iv", "Prayer on the Prologue"), ("v", "Prologue")):
         div = _div(root, div_id)
         lead = tuple((_text(h), 1) for h in div if h.tag in _HEAD_TAGS and _text(h))
@@ -1106,9 +1110,9 @@ def _cloud_chapters(root):
             continue
         rubric = next(_text(h) for h in div if h.tag in _HEAD_TAGS and _text(h))
         summary = next(p for p in div if p.get("class") == "ChapterSummary")
-        # The file leaves chapters 56's and 66's title paragraphs empty; the div's title,
-        # as the manuscript's table of the chapters prints it, names them.
-        title = _text(summary) or (div.get("title") or "")[m.end():]
+        # The file leaves chapters 56's and 66's title paragraphs empty (and gives 56 the
+        # div title of 55); the manuscript's table of the chapters names them.
+        title = _text(summary) or table[int(m.group(1)) - 1]
         full = f"Chapter {m.group(1)}. {' '.join(title.split()).rstrip('. ')}"
         label = _clip(full)
         heads = [(summary.get("id"), 1, label == full)] if _text(summary) else []

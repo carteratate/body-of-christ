@@ -671,9 +671,10 @@ def test_cloud_is_the_prayer_prologue_and_75_chapters_with_its_rubrics():
         ("Of four degrees of Christian men’s living; and of the course of his calling that "
          "this book was made unto.", 1, True)]
     assert first.content.split("\n\n")[2].startswith("Ghostly friend in God")
-    # The file leaves chapter 56's title paragraph empty; its div title names it.
-    assert ("Chapter 56. How they be deceived that follow the fervour of spirit in "
-            "condemning of some without discretion") in labels
+    # The file leaves chapter 56's title paragraph empty (and repeats 55's div title); the
+    # manuscript's table of the chapters names it.
+    assert any(l.startswith("Chapter 56. How they be deceived that lean more to the "
+                            "curiosity of natural wit") for l in labels)
     text = _text(doc)
     for gone in ("little family of mystical treatises", "Regard, consideration.",
                  "Here Beginneth a Table of the Chapters"):
@@ -701,10 +702,11 @@ def test_scale_is_its_two_books_with_their_printed_headings():
         assert gone not in text
     assert text.rstrip().endswith("for their souls’ health.")
     assert doc.translation == T.CRESSY_1659
-    # The 1901 printing's citations ("1 Cor. 13.", "St Matt. 5.") are footnotes: 185 of
-    # the 186 notes the file tags as Scripture (one follows a Latin phrase).
+    # The 1901 printing's citations ("1 Cor. 13.", "St Matt. 5.") are footnotes: every
+    # one a note opens with (one, after a Latin phrase, stays out, as everywhere).
     refs = [f["text"] for p in doc.passages for f in p.metadata.get("footnotes") or []]
-    assert len(refs) == 185 and "1 Cor. 13." in refs and "S. Matt. 5." in refs
+    assert len(refs) == 190 and "1 Cor. 13." in refs and "S. Matt. 5." in refs
+    assert {"Cantic. 1.", "Cantic. 2.", "Ezec. 1.", "Ezec. 33.", "Ezec. 40."} <= set(refs)
     # A title the label cuts is not hidden as a repeat of it.
     for p in doc.passages:
         for m in p.metadata.get("headings") or []:
@@ -721,3 +723,4 @@ def test_treatise_is_its_sixteen_chapters():
     assert [(t, lvl) for t, lvl, _ in _heads(first)][:1] == [("CHAPTER I", 1)]
     assert "Dear Brother in Christ, —There be in the" in first.content
     assert "Written by WALTER HILTON" not in _text(doc)
+    assert _text(doc).rstrip().endswith("Amen.")                  # "FINIS." is the printer's
