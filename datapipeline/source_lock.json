@@ -441,17 +441,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/anonymous2-cloud.xml",
-  "sha256": "f29e0cf42983c39ba400a57cbcaab3c4b75868936db7f669c2d1493279b811c8",
-  "bytes": 332558,
-  "url": "https://ccel.org/ccel/a/anonymous2/cloud.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/anselm-devotions.xml",
   "sha256": "ac4c75820d8cf80ee7b76ea8c59d056ee9e85d30c23876337b2a840fb629ccd9",
   "bytes": 345840,
@@ -731,28 +720,6 @@
   "sha256": "f8bbfc17062da5fe53f59f659daf9ef01eb7c2d81d35438841fa829fe67d6d28",
   "bytes": 755711,
   "url": "https://archive.org/download/handbookofmoralt0004koch/handbookofmoralt0004koch_djvu.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/hilton-ladder.xml",
-  "sha256": "7a189b96ee0620e426d7de8e365483657867626b15830bc22c49e1b1b3ac735c",
-  "bytes": 743898,
-  "url": "https://ccel.org/ccel/h/hilton/ladder.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/hilton-treatise.xml",
-  "sha256": "0b258bc070b103a33f419d4b2f6b02fe57c563c18c9c59cbdabff601e2bca7e5",
-  "bytes": 83173,
-  "url": "https://ccel.org/ccel/h/hilton/treatise.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
@@ -6934,6 +6901,16 @@
  },
  {
   "collection": "theologians",
+  "path": "theologians/anonymous2-cloud.xml",
+  "sha256": "f29e0cf42983c39ba400a57cbcaab3c4b75868936db7f669c2d1493279b811c8",
+  "bytes": 332558,
+  "url": "https://ccel.org/ccel/a/anonymous2/cloud.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
   "path": "theologians/desales-devout_life.xml",
   "sha256": "af8c467a87fbbcf2aaac1764e7962fdcd64b8eab5db740ca565752533d73861f",
   "bytes": 651626,
@@ -6948,6 +6925,26 @@
   "sha256": "b76a42327e2a53ef47912374dd1746c70d263158cef7a62b6bb1a56f45e3c8f5",
   "bytes": 1890439,
   "url": "https://ccel.org/ccel/d/desales/love.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/hilton-ladder.xml",
+  "sha256": "7a189b96ee0620e426d7de8e365483657867626b15830bc22c49e1b1b3ac735c",
+  "bytes": 743898,
+  "url": "https://ccel.org/ccel/h/hilton/ladder.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/hilton-treatise.xml",
+  "sha256": "0b258bc070b103a33f419d4b2f6b02fe57c563c18c9c59cbdabff601e2bca7e5",
+  "bytes": 83173,
+  "url": "https://ccel.org/ccel/h/hilton/treatise.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "adapter-input"

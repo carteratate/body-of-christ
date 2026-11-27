@@ -1,6 +1,7 @@
 """5.6b's theologians and spiritual writers (issue #207), from CCEL ThML: Teresa of Avila,
 Francis de Sales, Julian of Norwich, Thérèse of Lisieux and Ignatius of Loyola; and from
-Project Gutenberg text, Alphonsus Liguori and Brother Lawrence."""
+Project Gutenberg text, Alphonsus Liguori and Brother Lawrence; the Cloud of Unknowing and
+Walter Hilton from CCEL ThML."""
 import os, sys
 os.environ.setdefault("DATABASE_URL", "postgresql://test:test@localhost/test")
 os.environ.setdefault("OPENAI_API_KEY", "sk-test")
@@ -52,16 +53,20 @@ def _labels(doc) -> list[str]:
 def test_the_documents_under_the_collection_key():
     docs = _built()
     assert sorted(docs) == ["Introduction to the Devout Life", "Revelations of Divine Love",
-                            "The Autobiography of St. Ignatius", "The Glories of Mary",
+                            "The Autobiography of St. Ignatius", "The Cloud of Unknowing",
+                            "The Glories of Mary",
                             "The Interior Castle", "The Life of St. Teresa of Jesus",
                             "The Practice of the Presence of God",
+                            "The Scale (or Ladder) of Perfection",
                             "The Spiritual Exercises of St. Ignatius of Loyola",
-                            "The Story of a Soul", "Treatise on the Love of God"]
+                            "The Story of a Soul", "Treatise Written to a Devout Man",
+                            "Treatise on the Love of God"]
     for d in docs.values():
         assert d.collection == T.COLLECTION
         assert d.author in ("Teresa of Avila", "Francis de Sales", "Julian of Norwich",
                             "Thérèse of Lisieux", "Ignatius of Loyola",
-                            "Alphonsus Liguori", "Brother Lawrence")
+                            "Alphonsus Liguori", "Brother Lawrence", "Anonymous",
+                            "Walter Hilton")
         # The source key is the file's path under sources/.
         assert "../" + d.metadata["source_key"] == d.metadata["source_file"]
     assert (_castle().year, _life().year) == (1577, 1565)
@@ -179,8 +184,7 @@ def test_no_heading_or_note_leaks_and_passages_are_not_empty():
         for p in doc.passages:
             assert p.content.strip() and p.chapter_label and p.chapter_key
             # A chapter line opens a passage only as a marked heading.
-            marked = p.metadata["source_file"].endswith(".txt") and any(
-                m["at"] == 0 for m in p.metadata.get("headings") or [])   # Gutenberg
+            marked = any(m["at"] == 0 for m in p.metadata.get("headings") or [])
             assert marked or not p.content.startswith(("CHAPTER", "Chapter ")), p.anchor
 
 
@@ -638,3 +642,72 @@ def test_gutenberg_works_keep_their_vulgate_scripture_references_as_footnotes():
     assert not any(f.startswith("Rev.") for f in glories)
     assert [f["text"] for p in _lawrence().passages
             for f in p.metadata.get("footnotes") or []] == ["Gal. i, 10; Eph. vi, 5, 6."]
+
+
+# --------------------------------------------------------------------------- Cloud, Hilton
+
+def _cloud():
+    return _built()["The Cloud of Unknowing"]
+
+
+def _scale():
+    return _built()["The Scale (or Ladder) of Perfection"]
+
+
+def _treatise():
+    return _built()["Treatise Written to a Devout Man"]
+
+
+def test_cloud_is_the_prayer_prologue_and_75_chapters_with_its_rubrics():
+    doc = _cloud()
+    labels = _labels(doc)
+    assert labels[:3] == ["Prayer on the Prologue", "Prologue",
+                          "Chapter 1. Of four degrees of Christian men’s living; and of the "
+                          "course of his calling that this book was made unto"]
+    assert len(labels) == 77 and labels[-1].startswith("Chapter 75. Of some certain tokens")
+    first = _passage(doc, "vii")
+    assert _heads(first) == [
+        ("HERE BEGINNETH THE FIRST CHAPTER", 1, False),
+        ("Of four degrees of Christian men’s living; and of the course of his calling that "
+         "this book was made unto.", 1, True)]
+    assert first.content.split("\n\n")[2].startswith("Ghostly friend in God")
+    # The file leaves chapter 56's title paragraph empty; its div title names it.
+    assert ("Chapter 56. How they be deceived that follow the fervour of spirit in "
+            "condemning of some without discretion") in labels
+    text = _text(doc)
+    for gone in ("little family of mystical treatises", "Regard, consideration.",
+                 "Here Beginneth a Table of the Chapters"):
+        assert gone not in text
+    assert text.rstrip().endswith("HERE ENDETH THE CLOUD OF UNKNOWING.")
+    assert (doc.author, doc.translation) == ("Anonymous", T.UNDERHILL_1922)
+
+
+def test_scale_is_its_two_books_with_their_printed_headings():
+    doc = _scale()
+    labels = _labels(doc)
+    assert labels[0] == ("Book I, Part I · Chapter I. That the inward State of the Soul "
+                         "should be like the outward")
+    assert ("Book I, Part I · Chapter XVII. Of a firm and resolute Intent and Purpose "
+            "necessary hereto") in labels                        # printed "XV"; its place
+    assert any(l.startswith("Book II, Part I · Chapter I, Section I.") for l in labels)
+    first = doc.passages[0]
+    assert [t for t, _, _ in _heads(first)] == [
+        "BOOK I", "PART I", "CHAPTER I: That the inward State of the Soul should be like "
+        "the outward"]
+    assert "CHAPTER XVII: Of a firm and resolute Intent" in _text(doc)
+    text = _text(doc)
+    for gone in ("spiritual life of mediaeval England", "Moses plus profecit",
+                 "Infinite laud with thankings manifold", "colophon to Wynkyn"):
+        assert gone not in text
+    assert text.rstrip().endswith("for their souls’ health.")
+    assert doc.translation == T.CRESSY_1659
+
+
+def test_treatise_is_its_sixteen_chapters():
+    doc = _treatise()
+    labels = _labels(doc)
+    assert len(labels) == 16 and labels[0].startswith("Chapter I. That he who intends")
+    first = doc.passages[0]
+    assert [(t, lvl) for t, lvl, _ in _heads(first)][:1] == [("CHAPTER I", 1)]
+    assert "Dear Brother in Christ, —There be in the" in first.content
+    assert "Written by WALTER HILTON" not in _text(doc)

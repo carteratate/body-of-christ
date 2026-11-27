@@ -153,12 +153,15 @@
   "documents": [
    "0715be7b-c108-55c0-bad8-d989fb8cdd16",
    "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9",
+   "29c6659f-a7ce-51c1-a485-863b4160e457",
    "38b15a66-fbc3-560f-8a64-363a0ff24ced",
    "4451945f-fec4-5ab0-8d9e-5da62287ed24",
    "44b734e0-b056-5f8d-92e9-0e98e3509848",
+   "4e5b9787-4b81-50ef-8441-8991cc2ae804",
    "725a33d3-8e0c-5d4b-81e4-7c2dc5aefdf6",
    "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe",
    "96d72c6a-b005-5e96-9f7f-ceca57042078",
+   "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
    "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2",
    "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3"
   ],
@@ -189,6 +192,12 @@
     {
      "text": "Given in Rome at St. Peter's, November 21, 1964",
      "reason": "the promulgation's dating line, not a heading"
+    }
+   ],
+   "29c6659f-a7ce-51c1-a485-863b4160e457": [
+    {
+     "text": "HERE ENDETH THE CLOUD OF UNKNOWING.",
+     "reason": "the manuscript's explicit, the book's last line"
     }
    ],
    "44b734e0-b056-5f8d-92e9-0e98e3509848": [

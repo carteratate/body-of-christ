@@ -52,6 +52,11 @@ ANONYMOUS_1876 = "Anonymous translation (Rivingtons, 1876)"
 # The Counsels and Reminiscences are her words as others set them down.
 LAWRENCE_NOTE = ("Its Conversations are attributed to Joseph de Beaufort; the close of the "
                  "Fourth draws on other accounts.")
+# The Cloud and Hilton are edited Middle English, not translations: the card says whose
+# text it is.
+UNDERHILL_1922 = "Edited by Evelyn Underhill (1922)"
+CRESSY_1659 = "Edited by Serenus Cressy (1659)"
+ART_AND_BOOK_1901 = "Art and Book Company edition (1901)"
 ANONYMOUS_1852 = "Anonymous translation (Dunigan, 1852)"
 ANONYMOUS_1895 = "Anonymous translation (Revell, about 1895)"
 IGNATIUS_NOTE = ("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface "
@@ -253,7 +258,12 @@ NOT_BODY_PARAGRAPHS = {"teresa-life.xml": {"viii.xli-p58": "apparatus",
                        # Mullan's cross-reference in the Annotations, only his page numbers
                        # ("Consolation and desolation are spoken of on p. 170; the
                        # Additions on p. 22.").
-                       "ignatius-exercises.xml": {"ix-p23": "apparatus"}}
+                       "ignatius-exercises.xml": {"ix-p23": "apparatus"},
+                       # After the Scale's last chapter: the 1901 editor's line and Wynkyn de
+                       # Worde's colophon verses ("Infinite laud with thankings manifold"),
+                       # the printer's, not Hilton's.
+                       "hilton-ladder.xml": {f"ii_1.ii.iii.xv.ii-p{n}": "apparatus"
+                                             for n in (11, *range(13, 29))}}
 
 
 def not_body(source_file: str) -> tuple[dict[str, str], frozenset[str], dict[str, str]]:
@@ -326,8 +336,9 @@ class _WorkEditor(Editor):
             marked = without_page_refs(callers, marked)
             if block.get("class") in self.title_classes:
                 return marked, notes          # a title in capitals throughout stays so
-            if self.source_file.endswith(".txt"):
-                return marked, notes          # a Gutenberg text, as its edition prints it
+            if self.source_file.endswith(".txt") \
+                    or (self.source_file, block.get("id")) in _KEEP_CAPS:
+                return marked, notes          # as the edition prints it
             if self.source_file in _LETTER_FILES and _SALUTATION.match(marked):
                 return _SALUTATION.sub(lambda m: _title(m.group(1)) + ",—", marked,
                                        count=1), notes
@@ -364,6 +375,9 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
               # Latin after the English: the English stays (rule E).
               # Part I ch. II § 3's incipit prints its Latin before the English, as the
               # other incipits print it on a line of its own: the English stays (rule E).
+              # The Treatise's salutation, printed in capitals as a printer's opening.
+              ("hilton-treatise.xml", "iii.i-p2"): (("DEAR BROTHER IN CHRIST,",
+                                                     "Dear Brother in Christ,"),),
               ("pg72411.txt", "p249"): (("Dulcedo:—Sweetness.", "Sweetness."),),
               ("pg72411.txt", "p1241"): ((": Ora pro nobis, Virgo immaculata;", ";"),),
               ("pg72411.txt", "p1242"): ((": Ut digni officiamur promissionibus Christi.",
@@ -1060,6 +1074,132 @@ def _lawrence_chapters(root):
 
     return _text_chapters(_cut(paras, classify, "pg13871.txt"))
 
+# --------------------------------------------------------------------------- Cloud, Hilton
+
+# The Cloud of Unknowing (Underhill, 2nd ed., 1922, from British Museum MS. Harl. 674):
+# the prayer on the prologue (iv), the prologue (v) and the 75 chapters (vii to lxxxi).
+# Left out: the title page (i), Underhill's introduction and glossary (ii, iii), the
+# manuscript's table of the chapters (vi, a list of the titles the chapters print) and
+# CCEL's indexes. The manuscript's rubrics stay in the text, marked: the book's incipit
+# and "Here Beginneth the Prologue" (`<h2>`, `<h3>` lines), each chapter's "HERE BEGINNETH
+# THE FIRST CHAPTER" (level 1) and its title (`ChapterSummary`, level 1, which names the
+# label). "HERE ENDETH THE CLOUD OF UNKNOWING." after the last chapter stays as text: a
+# heading mark may not end a passage.
+_CLOUD_CHAPTER = re.compile(r"^Chapter (\d+):")
+_CLOUD_TITLES = frozenset({"ChapterSummary", "h3"})
+# Paragraphs printed in capitals throughout that are no printer's opening, by (file,
+# paragraph id): the Cloud's "HERE ENDETH THE CLOUD OF UNKNOWING."
+_KEEP_CAPS = frozenset({("anonymous2-cloud.xml", "lxxxi-p13")})
+
+
+def _cloud_chapters(root):
+    out = []
+    for div_id, label in (("iv", "Prayer on the Prologue"), ("v", "Prologue")):
+        div = _div(root, div_id)
+        lead = tuple((_text(h), 1) for h in div if h.tag in _HEAD_TAGS and _text(h))
+        own = tuple((p.get("id"), 2, False) for p in div
+                    if p.tag == "p" and p.get("class") == "h3" and _text(p))
+        out.append((None, div, ChapterPlan(label=label, lead=lead, headings=own)))
+    for div in root.iter("div1"):
+        m = _CLOUD_CHAPTER.match(div.get("title") or "")
+        if not m:
+            continue
+        rubric = next(_text(h) for h in div if h.tag in _HEAD_TAGS and _text(h))
+        summary = next(p for p in div if p.get("class") == "ChapterSummary")
+        # The file leaves chapters 56's and 66's title paragraphs empty; the div's title,
+        # as the manuscript's table of the chapters prints it, names them.
+        title = _text(summary) or (div.get("title") or "")[m.end():]
+        full = f"Chapter {m.group(1)}. {' '.join(title.split()).rstrip('. ')}"
+        label = _clip(full)
+        heads = [(summary.get("id"), 1, label == full)] if _text(summary) else []
+        out.append((None, div, ChapterPlan(label=label, lead=((rubric, 1),),
+                                           headings=tuple(heads))))
+    return out
+
+
+# The Scale (or Ladder) of Perfection (Art and Book Company, 1901; Serenus Cressy's text of
+# 1659, its publishers' note says): Books I and II, each in Parts, Chapters and sometimes
+# Sections. Left out: the title page (i), the publishers' note (ii), the contents (iii),
+# Dalgairns's essay on the spiritual life of mediaeval England (iv), the work's title line
+# over Book I (the document's title) and CCEL's indexes. The headings are printed lines
+# (`<h2>`-`<h5>`), not paragraphs, so each opens its first chapter's text, marked: the
+# book's, the part's, the chapter's ("CHAPTER I: That the inward State …") and the
+# section's, level 1. A chapter's number is its place (`n`); the file prints Book I
+# Part I's seventeenth as "CHAPTER XV", which its place corrects.
+_SCALE_HEAD = re.compile(r"^(CHAPTER|SECTION) ([IVXL]+)\b:?\s*(.*)$")
+
+
+def _scale_heading(h, n: str) -> tuple[str, str]:
+    """A chapter's or section's printed line with its number by place, and its title."""
+    text = _text(h)
+    m = _SCALE_HEAD.match(text)
+    if not m:
+        raise ValueError(f"hilton-ladder.xml: unexpected heading {text!r}")
+    kind, printed, title = m.groups()
+    if printed != n.upper():
+        text = f"{kind} {n.upper()}" + text[len(kind) + 1 + len(printed):]
+    return text, title.rstrip(". ")
+
+
+def _scale_chapters(root):
+    out = []
+    work = _div(root, "ii_1")
+    for b, book in enumerate(_child_divs(work), 1):
+        pending = [(_text(h), 1) for h in book if h.tag in _HEAD_TAGS and _text(h)]
+        for part in _child_divs(book):
+            pending += [(_text(h), 1) for h in part if h.tag in _HEAD_TAGS and _text(h)]
+            where = f"Book {'I' * b}, Part {part.get('n').upper()}"
+            for chapter in _child_divs(part):
+                n = chapter.get("n")
+                ch_line, ch_title = _scale_heading(chapter.find("h4"), n)
+                sections = _child_divs(chapter)
+                inner = chapter.find("h5")
+                if sections:
+                    pending.append((ch_line, 1))
+                    for section in sections:
+                        line, title = _scale_heading(section.find("h5"), section.get("n"))
+                        label = _clip(f"Chapter {n.upper()}, Section "
+                                      f"{section.get('n').upper()}. {title}")
+                        out.append((where, section, ChapterPlan(
+                            label=label, lead=tuple(pending) + ((line, 1, True),))))
+                        pending = []
+                    continue
+                if inner is not None:          # one section, printed in the chapter
+                    line, title = _scale_heading(inner, "i")
+                    label = _clip(f"Chapter {n.upper()}, Section I. {title}")
+                    lead = tuple(pending) + ((ch_line, 1), (line, 1, True))
+                else:
+                    label = _clip(f"Chapter {n.upper()}. {ch_title}")
+                    lead = tuple(pending) + ((ch_line, 1, True),)
+                out.append((where, chapter, ChapterPlan(label=label, lead=lead)))
+                pending = []
+    return out
+
+
+def _child_divs(parent):
+    return [d for d in parent if isinstance(d.tag, str) and d.tag.startswith("div")]
+
+
+# Treatise Written to a Devout Man (Art and Book Company, 1901): its sixteen chapters
+# (iii.i to iii.xvi). Left out: the title page (i), the contents (ii), the work's title
+# and byline over Chapter I (iii's own lines) and CCEL's indexes. Each chapter's "CHAPTER
+# I" line opens its text, level 1, and its title paragraph (`chtitle`) follows, level 1,
+# naming the label.
+def _treatise_chapters(root):
+    out = []
+    for chapter in _div2s(_div(root, "iii")):
+        number = next(_text(h) for h in chapter if h.tag in _HEAD_TAGS and _text(h))
+        m = re.fullmatch(r"CHAPTER ([IVXL]+)\.?", number)
+        title = next(p for p in chapter if p.get("class") == "chtitle")
+        if not m:
+            raise ValueError(f"hilton-treatise.xml: unexpected heading {number!r}")
+        full = f"Chapter {m.group(1)}. {_text(title).rstrip('. ')}"
+        label = _clip(full)
+        out.append((None, chapter, ChapterPlan(
+            label=label, lead=((number, 1),),
+            headings=((title.get("id"), 1, label == full),))))
+    return out
+
 # A paragraph the file closes mid-sentence: it ends on a lower-case word, a comma, a
 # semicolon, a dash or the word "I", or the next part starts in lower case. A next part
 # that opens with its section number ("25. The devils") is a paragraph of its own.
@@ -1234,6 +1374,17 @@ WORKS: tuple[ThmlWork, ...] = (
              year=1692, translation=ANONYMOUS_1895, chapters=_lawrence_chapters,
              genre="other", title_classes=frozenset({_HEADING_CLASS}), ebook=13871,
              notes_heading="NOTES:", notes=LAWRENCE_NOTE),
+    ThmlWork(file="anonymous2-cloud.xml", url="https://ccel.org/ccel/a/anonymous2/cloud.xml",
+             title="The Cloud of Unknowing", author="Anonymous", year=1375,
+             translation=UNDERHILL_1922, chapters=_cloud_chapters, genre="treatise",
+             title_classes=_CLOUD_TITLES),
+    ThmlWork(file="hilton-ladder.xml", url="https://ccel.org/ccel/h/hilton/ladder.xml",
+             title="The Scale (or Ladder) of Perfection", author="Walter Hilton", year=1390,
+             translation=CRESSY_1659, chapters=_scale_chapters, genre="treatise"),
+    ThmlWork(file="hilton-treatise.xml", url="https://ccel.org/ccel/h/hilton/treatise.xml",
+             title="Treatise Written to a Devout Man", author="Walter Hilton", year=1385,
+             translation=ART_AND_BOOK_1901, chapters=_treatise_chapters, genre="treatise",
+             title_classes=frozenset({"chtitle"})),
 )
 
 

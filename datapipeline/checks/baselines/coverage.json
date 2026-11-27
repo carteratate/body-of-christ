@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "feat/5.6b-alphonsus-lawrence e8120a79",
+  "medieval": "feat/5.6b-cloud-hilton 28a96abe",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1117,6 +1117,11 @@
    "covered_chars": 239555,
    "pct": 99.97
   },
+  "medieval/../theologians/anonymous2-cloud.xml": {
+   "body_chars": 186228,
+   "covered_chars": 186228,
+   "pct": 100.0
+  },
   "medieval/../theologians/desales-devout_life.xml": {
    "body_chars": 435448,
    "covered_chars": 435398,
@@ -1125,6 +1130,16 @@
   "medieval/../theologians/desales-love.xml": {
    "body_chars": 1141879,
    "covered_chars": 1141879,
+   "pct": 100.0
+  },
+  "medieval/../theologians/hilton-ladder.xml": {
+   "body_chars": 491990,
+   "covered_chars": 491990,
+   "pct": 100.0
+  },
+  "medieval/../theologians/hilton-treatise.xml": {
+   "body_chars": 66053,
+   "covered_chars": 66053,
    "pct": 100.0
   },
   "medieval/../theologians/ignatius-autobiography.xml": {
@@ -1144,13 +1159,13 @@
   },
   "medieval/../theologians/pg13871.txt": {
    "body_chars": 54995,
-   "covered_chars": 54995,
-   "pct": 100.0
+   "covered_chars": 54953,
+   "pct": 99.92
   },
   "medieval/../theologians/pg72411.txt": {
    "body_chars": 938316,
-   "covered_chars": 938316,
-   "pct": 100.0
+   "covered_chars": 938157,
+   "pct": 99.98
   },
   "medieval/../theologians/teresa-castle2.xml": {
    "body_chars": 337397,
@@ -1414,8 +1429,8 @@
    "collection": "medieval",
    "source_file": "../theologians/pg13871.txt",
    "body_chars": 54995,
-   "covered_chars": 54995,
-   "pct": 100.0
+   "covered_chars": 54953,
+   "pct": 99.92
   },
   "12e7199e-bef2-5a25-a705-e8b6d76f3c08": {
    "collection": "church-fathers",
@@ -1627,6 +1642,13 @@
    "covered_chars": 72996,
    "pct": 100.0
   },
+  "29c6659f-a7ce-51c1-a485-863b4160e457": {
+   "collection": "medieval",
+   "source_file": "../theologians/anonymous2-cloud.xml",
+   "body_chars": 186228,
+   "covered_chars": 186228,
+   "pct": 100.0
+  },
   "29e36b93-c859-56d0-9993-54c2fd175491": {
    "collection": "bible",
    "source_file": "eng-web-c_usfm/93-2JNeng-web-c.usfm",
@@ -1764,8 +1786,8 @@
    "collection": "medieval",
    "source_file": "../theologians/pg72411.txt",
    "body_chars": 938316,
-   "covered_chars": 938316,
-   "pct": 100.0
+   "covered_chars": 938157,
+   "pct": 99.98
   },
   "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38": {
    "collection": "church-fathers",
@@ -1955,6 +1977,13 @@
    "body_chars": 173198,
    "covered_chars": 172877,
    "pct": 99.81
+  },
+  "4e5b9787-4b81-50ef-8441-8991cc2ae804": {
+   "collection": "medieval",
+   "source_file": "../theologians/hilton-treatise.xml",
+   "body_chars": 66053,
+   "covered_chars": 66053,
+   "pct": 100.0
   },
   "5017df8e-c59c-5945-a5ec-c5a0b4ad1378": {
    "collection": "apostolic-exhortations",
@@ -2767,6 +2796,13 @@
    "body_chars": 76004,
    "covered_chars": 75973,
    "pct": 99.96
+  },
+  "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754": {
+   "collection": "medieval",
+   "source_file": "../theologians/hilton-ladder.xml",
+   "body_chars": 491990,
+   "covered_chars": 491990,
+   "pct": 100.0
   },
   "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2": {
    "collection": "medieval",

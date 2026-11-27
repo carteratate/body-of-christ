@@ -336,6 +336,10 @@ _TRANSLATIONS = {
     # The Glories of Mary's and Brother Lawrence's translations name no translator (R6).
     "Anonymous translation (Dunigan, 1852)": "Anonymous translation (Dunigan, 1852)",
     "Anonymous translation (Revell, about 1895)": "Anonymous translation (Revell, about 1895)",
+    # The Cloud's and Hilton's texts are edited Middle English, not translations (5.6b).
+    "Edited by Evelyn Underhill (1922)": "Edited by Evelyn Underhill (1922)",
+    "Edited by Serenus Cressy (1659)": "Edited by Serenus Cressy (1659)",
+    "Art and Book Company edition (1901)": "Art and Book Company edition (1901)",
 }
 _TAILS = re.compile(r"(?:\.\s+(?:Sourced via|Text:).*|;.*|,\s*(?:abridged|extract)\s*)$")
 _SENTENCE = re.compile(r"^(Translated by|Translation|Official English|From Hefele)")
