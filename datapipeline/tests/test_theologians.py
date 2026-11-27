@@ -613,6 +613,7 @@ def test_brother_lawrence_is_the_conversations_and_letters():
     assert not any(t.startswith("To the") for p in doc.passages for t, _, _ in _heads(p))
     # The Letters' numbers and the Eighth's caption are the editor's: labels only.
     assert "FIRST LETTER." not in text and "Concerning wandering thoughts" not in text
+    assert "LETTERS." not in text
     assert "FIRST CONVERSATION." in text
     assert doc.notes == T.LAWRENCE_NOTE and doc.metadata["gutenberg_ebook"] == 13871
     assert sum(p.metadata.get("editor_note_count", 0) for p in doc.passages) == 4

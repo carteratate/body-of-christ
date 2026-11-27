@@ -1026,7 +1026,7 @@ def _glories_chapters(root):
 # Letters. The Conversations' headings are Beaufort's, so they stay in the text; the
 # Letters' numbers and the Eighth's caption ("(Concerning wandering thoughts in
 # Prayer.)") are the editor's (the French edition orders and heads them otherwise), so
-# the numbers are labels only. Left out: the title page, the publishers' preface, that
+# the numbers and the "LETTERS." divider are labels only. Left out: the title page, the publishers' preface, that
 # caption and the translator's four notes (rule G).
 _LAWRENCE_PART = {"CONVERSATIONS.": "Conversations", "LETTERS.": "Letters"}
 _LAWRENCE_UNIT = re.compile(rf"^({_ORDINAL}) (CONVERSATION|LETTER)\.$")
@@ -1042,7 +1042,8 @@ def _lawrence_chapters(root):
             return "drop"
         if text in _LAWRENCE_PART:
             state["book"] = _LAWRENCE_PART[text]
-            return _Unit(state["book"], state["book"])
+            # The editor's gathering of the Letters names their book, a label only.
+            return _Unit(state["book"], state["book"], shown=text == "CONVERSATIONS.")
         if m := _LAWRENCE_UNIT.match(text):
             return _Unit(state["book"], f"{m.group(1).capitalize()} {m.group(2).capitalize()}",
                          shown=m.group(2) == "CONVERSATION")
