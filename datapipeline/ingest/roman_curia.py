@@ -470,7 +470,14 @@ def _source_facts(soup, start_after: str | None = None) -> dict:
             if m:
                 out["aas"] = m.group(0).strip()
                 break
-    closing = cut_notes([t for _, t in _texts(soup, start_after)])[-_CLOSING:]
+    body = cut_notes([t for _, t in _texts(soup, start_after)])
+    # A contents list printed at the foot of the page (Antiqua et Nova) and the
+    # signature block (A Journey of Hope) are not the closing text.
+    tocs = [i for i, t in enumerate(body) if _TOC.match(t)]
+    if tocs and tocs[-1] > len(body) // 2:
+        body = body[:tocs[-1]]
+    body = [t for t in body if not _is_signature(t) and len(t) >= _MIN_PARAGRAPH]
+    closing = body[-_CLOSING:]
     for text in reversed(closing):
         if "papal_approval" not in out and _APPROVED.search(text) and _APPROVAL.search(text):
             for sentence in re.split(r"(?<=[.;])\s+", text):
@@ -648,6 +655,7 @@ def build_document(entry: dict, source_dir: str | None = None) -> Document:
     pair_open = False
     section_level = 1
     numbered_top = not any(_tier(clean_text(t)) < 2 for k, _, t in toks if k == "section")
+    numbered_under_parent = False
     for kind, n, raw in toks:
         if kind == "title":
             continue
@@ -659,9 +667,13 @@ def build_document(entry: dict, source_dir: str | None = None) -> Document:
             flush_num()
             pair_open = False
             text = clean_text(raw)
-            # Under a level-1 heading printed just above it, it is a level below, as in
-            # any stack of headings ("The Council on the Devil" over "1. The text").
-            if numbered_top and not any(h.level == 1 for h in pending):
+            # Under a level-1 heading printed just above the first of them, the numbered
+            # titles of that run are a level below it, as in any stack of headings ("The
+            # Council on the Devil" over "1. The text", "2. The preparation", ...).
+            # The run lasts until its numbering starts again at 1.
+            if n == 1:
+                numbered_under_parent = any(h.level == 1 for h in pending)
+            if numbered_top and not numbered_under_parent:
                 sec_ord += 1
                 ckey, clabel = make_anchor(slug, f"sec-{sec_ord}"), _section_label(f"{n}. {text}")
                 group_ord = 0

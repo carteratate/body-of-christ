@@ -375,9 +375,20 @@ def test_numbered_titles_at_the_top_open_chapters_and_keep_their_numbers():
 
 
 @needs_sources
+def test_a_numbered_run_under_a_heading_stays_under_it():
+    d = next(d for d in build_documents() if d.title == "Christian Faith and Demonology")
+    labels = {p.chapter_label for p in d.passages}
+    assert "The Council on the Devil" in labels
+    assert not any(re.match(r"\d+\. ", label) for label in labels), labels
+
+
+@needs_sources
 @pytest.mark.parametrize("title, words", [
     ("Iura et Bona", "His Holiness Pope John Paul II approved"),
     ("Placuit Deo", "The Sovereign Pontiff Francis, on February 16, 2018, approved"),
+    # Before a contents list at the foot of the page, and before a signature block.
+    ("Antiqua et Nova", "The Supreme Pontiff, Francis, at the Audience granted on 14 January 2025"),
+    ("A Journey of Hope", "The Supreme Pontiff, Leo XIV, at the Audience granted on 22 June 2026"),
 ])
 def test_the_closing_approval_is_kept(title, words):
     by_title = {d.title: d for d in build_documents()}
