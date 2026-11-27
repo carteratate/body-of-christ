@@ -259,11 +259,12 @@ NOT_BODY_PARAGRAPHS = {"teresa-life.xml": {"viii.xli-p58": "apparatus",
                        # ("Consolation and desolation are spoken of on p. 170; the
                        # Additions on p. 22.").
                        "ignatius-exercises.xml": {"ix-p23": "apparatus"},
-                       # After the Scale's last chapter: the 1901 editor's line and Wynkyn de
-                       # Worde's colophon verses ("Infinite laud with thankings manifold"),
-                       # the printer's, not Hilton's.
+                       # After the Scale's last chapter: the printer's ending ("Thus finisheth
+                       # this present book … which to me seemeth right expedient"), the 1901
+                       # editor's line and Wynkyn de Worde's colophon verses ("Infinite laud
+                       # with thankings manifold"), not Hilton's.
                        "hilton-ladder.xml": {f"ii_1.ii.iii.xv.ii-p{n}": "apparatus"
-                                             for n in (11, *range(13, 29))},
+                                             for n in (9, 11, *range(13, 29))},
                        # "FINIS." after the Treatise's last "Amen": the printer's.
                        "hilton-treatise.xml": {"iii.xvi-p6": "apparatus"}}
 
@@ -1159,7 +1160,7 @@ def _scale_chapters(root):
             for chapter in _child_divs(part):
                 n = chapter.get("n")
                 ch_line, ch_title = _scale_heading(chapter.find("h4"), n)
-                sections = _child_divs(chapter)
+                sections = _child_divs(chapter) or _inline_sections(chapter)
                 inner = chapter.find("h5")
                 if sections:
                     pending.append((ch_line, 1))
@@ -1183,6 +1184,34 @@ def _scale_chapters(root):
                     lead = tuple(pending) + ((ch_line, 1, label == full),)
                 out.append((where, chapter, ChapterPlan(label=label, lead=lead)))
                 pending = []
+    return out
+
+
+_ROMAN_NUMERALS = ("i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x")
+
+
+def _inline_sections(chapter) -> list:
+    """A chapter that prints more than one section heading (`<h5>`) in its own body, with
+    no section divs (Book I Part I ch. XV, Part II chs. I and II, Book II Part I ch. I),
+    cut into a `<div5>` per section as the sectioned chapters have them: each from its
+    heading to the next, id `<chapter id>.<n>` and its paragraphs renamed to match. A
+    chapter with one section heading or none is left whole (empty list)."""
+    kids = list(chapter)
+    starts = [k for k, e in enumerate(kids) if e.tag == "h5" and _text(e)]
+    if len(starts) < 2:
+        return []
+    old = chapter.get("id")
+    out = []
+    for n, (a, b) in enumerate(zip(starts, starts[1:] + [len(kids)])):
+        sid = f"{old}.{_ROMAN_NUMERALS[n]}"
+        section = Element("div5", {"id": sid, "n": _ROMAN_NUMERALS[n]})
+        for e in kids[a:b]:
+            chapter.remove(e)
+            if e.get("id", "").startswith(old + "-"):
+                e.set("id", sid + e.get("id")[len(old):])
+            section.append(e)
+        chapter.append(section)
+        out.append(section)
     return out
 
 

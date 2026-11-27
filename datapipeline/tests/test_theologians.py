@@ -700,7 +700,18 @@ def test_scale_is_its_two_books_with_their_printed_headings():
     for gone in ("spiritual life of mediaeval England", "Moses plus profecit",
                  "Infinite laud with thankings manifold", "colophon to Wynkyn"):
         assert gone not in text
-    assert text.rstrip().endswith("for their souls’ health.")
+    # The printer's ending ("Thus finisheth this present book") is not Hilton's.
+    assert "Thus finisheth this present book" not in text
+    # Every chapter and section line the work prints is in the text, a section printed
+    # inside its chapter's body included ("SECTION II: How Hypocrites and Heretics …").
+    root = T._read_root(os.path.join(T._SRC, "hilton-ladder.xml"))
+    for h in T._div(root, "ii_1").iter():
+        if h.tag in ("h4", "h5") and T._text(h):
+            line = re.sub(r"^CHAPTER XV:", "CHAPTER XVII:", T._text(h)) \
+                if T._text(h).startswith("CHAPTER XV: Of a firm") else T._text(h)
+            assert line in text, line
+    assert ("Book I, Part I · Chapter XV, Section II. How Hypocrites and Heretics, for want "
+            "of Humility, exalt themselves in their Hearts above others") in labels
     assert doc.translation == T.CRESSY_1659
     # The 1901 printing's citations ("1 Cor. 13.", "St Matt. 5.") are footnotes: every
     # one a note opens with (one, after a Latin phrase, stays out, as everywhere).
