@@ -624,6 +624,6 @@ def test_gutenberg_works_keep_their_vulgate_scripture_references_as_footnotes():
         "Gal. i, 10; Eph. vi, 5, 6."
     assert scripture_reference("Serm. 18, de Sanct.", vulgate=True) is None
     glories = [f["text"] for p in _glories().passages for f in p.metadata.get("footnotes") or []]
-    assert "Eccli. xxiv. 19." in glories and len(glories) == 94
+    assert "Eccli. xxiv. 19." in glories and "Cant. 6, 9." in glories and len(glories) == 95
     assert [f["text"] for p in _lawrence().passages
             for f in p.metadata.get("footnotes") or []] == ["Gal. i, 10; Eph. vi, 5, 6."]
