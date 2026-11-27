@@ -7,6 +7,7 @@ import sys
 
 import pytest
 
+import card_notes
 import document_facts
 import papal_genres
 import registry
@@ -87,6 +88,8 @@ def test_documents_with_another_edition_name_it_in_their_credit():
 def test_translation_is_left_out_where_the_credit_names_it():
     for w in FILLED:
         if document_facts.credit_names_translation(w["source_credit"]):
+            assert w["translation"] == "", w["work_id"]
+        elif w["document_id"] in card_notes.WRITTEN_IN_ENGLISH:     # no translation
             assert w["translation"] == "", w["work_id"]
         elif w["source_credit"] != "Text: papalencyclicals.net":   # translator unknown
             assert w["translation"], w["work_id"]

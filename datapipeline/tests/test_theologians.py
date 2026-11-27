@@ -1,6 +1,6 @@
 """5.6b's theologians and spiritual writers (issue #207), from CCEL ThML: Teresa of Avila,
 Francis de Sales, Julian of Norwich, Thérèse of Lisieux and Ignatius of Loyola; and from
-Project Gutenberg text, Alphonsus Liguori and Brother Lawrence."""
+Project Gutenberg text, Alphonsus Liguori, Brother Lawrence and John Henry Newman."""
 import os, sys
 os.environ.setdefault("DATABASE_URL", "postgresql://test:test@localhost/test")
 os.environ.setdefault("OPENAI_API_KEY", "sk-test")
@@ -51,8 +51,12 @@ def _labels(doc) -> list[str]:
 
 def test_the_documents_under_the_collection_key():
     docs = _built()
-    assert sorted(docs) == ["Introduction to the Devout Life", "Revelations of Divine Love",
+    assert sorted(docs) == ["An Essay in Aid of a Grammar of Assent",
+                            "An Essay on the Development of Christian Doctrine",
+                            "Apologia pro Vita Sua",
+                            "Introduction to the Devout Life", "Revelations of Divine Love",
                             "The Autobiography of St. Ignatius", "The Glories of Mary",
+                            "The Idea of a University",
                             "The Interior Castle", "The Life of St. Teresa of Jesus",
                             "The Practice of the Presence of God",
                             "The Spiritual Exercises of St. Ignatius of Loyola",
@@ -61,7 +65,7 @@ def test_the_documents_under_the_collection_key():
         assert d.collection == T.COLLECTION
         assert d.author in ("Teresa of Avila", "Francis de Sales", "Julian of Norwich",
                             "Thérèse of Lisieux", "Ignatius of Loyola",
-                            "Alphonsus Liguori", "Brother Lawrence")
+                            "Alphonsus Liguori", "Brother Lawrence", "John Henry Newman")
         # The source key is the file's path under sources/.
         assert "../" + d.metadata["source_key"] == d.metadata["source_file"]
     assert (_castle().year, _life().year) == (1577, 1565)
@@ -638,3 +642,152 @@ def test_gutenberg_works_keep_their_vulgate_scripture_references_as_footnotes():
     assert not any(f.startswith("Rev.") for f in glories)
     assert [f["text"] for p in _lawrence().passages
             for f in p.metadata.get("footnotes") or []] == ["Gal. i, 10; Eph. vi, 5, 6."]
+
+
+# --------------------------------------------------------------------------- Newman
+
+def _apologia():
+    return _built()["Apologia pro Vita Sua"]
+
+
+def _development():
+    return _built()["An Essay on the Development of Christian Doctrine"]
+
+
+def _idea():
+    return _built()["The Idea of a University"]
+
+
+def _grammar():
+    return _built()["An Essay in Aid of a Grammar of Assent"]
+
+
+def _note_count(doc) -> int:
+    return sum(p.metadata.get("editor_note_count", 0) for p in doc.passages)
+
+
+def test_gutenberg_notes_inline_or_after_each_chapter_meet_their_callers_by_label():
+    from ingest import gutenberg_text as G
+    plain = [(t, False) for t in (
+        "First [1] and second [2].", "[1] One.", "[2] Two.", "Then (1) a list [1] again.",
+        "[1] Again one.")]
+    inline = G.NoteStyle(inline=True, note=re.compile(r"^\[(\d+)\]\s*(.*)$", re.S))
+    body, notes = G.split_notes(plain, inline)
+    assert [t for t, _ in body] == ["First [1] and second [2].", "Then (1) a list [1] again."]
+    assert notes == [("1", "One.", 1), ("2", "Two.", 1), ("1", "Again one.", 2)]
+    calls = G.match_notes([t for t, _ in body], notes, inline)
+    assert sorted(calls) == [(0, 6), (0, 21), (1, 16)]      # the restarted [1] is the second's
+    # Blocks after each chapter, each ended by the next heading in capitals.
+    blocks = [(t, False) for t in ("Text [1:1].", "FOOTNOTES:", "[1:1] A note.",
+                                   "its second paragraph.", "CHAPTER II.", "More [2:1].",
+                                   "FOOTNOTES:", "[2:1] Another.")]
+    style = G.NoteStyle(caller=re.compile(r"\[(\d+:\d+)\]"),
+                        note=re.compile(r"^\[(\d+:\d+)\]\s*(.*)$", re.S),
+                        heading="FOOTNOTES:", repeated=True)
+    body, notes = G.split_notes(blocks, style)
+    assert [t for t, _ in body] == ["Text [1:1].", "CHAPTER II.", "More [2:1]."]
+    assert notes == [("1:1", "A note. its second paragraph.", 1), ("2:1", "Another.", 3)]
+    with pytest.raises(ValueError, match="has no caller"):
+        G.match_notes(["No call here."], [("1", "Orphan.", 1)], style)
+
+
+def test_apologia_is_the_preface_five_chapters_and_notes_a_to_g():
+    doc = _apologia()
+    labels = _labels(doc)
+    assert labels[:2] == ["Preface",
+                          "Chapter I. History of My Religious Opinions to the Year 1833"]
+    assert labels[5] == "Chapter V. Position of My Mind Since 1845"
+    assert labels[6] == "Notes · Note A. Liberalism"
+    assert labels[-1] == "Notes · Note G. Lying and Equivocation" and len(labels) == 13
+    first = next(p for p in doc.passages if p.chapter_label == labels[1])
+    assert _heads(first) == [("MY RELIGIOUS OPINIONS.", 1, False), ("CHAPTER I.", 1, False),
+                             ("HISTORY OF MY RELIGIOUS OPINIONS TO THE YEAR 1833.", 1, True)]
+    text = _text(doc)
+    # Newman's own brackets stay; no editor printed any.
+    assert 'It made a great impression here [Oxford]; and' in text
+    # Note D's calendar of saints, a table, and the Supplemental Matter are left out.
+    assert "Elvan, B. and Medwyne" not in text and "Ninian, B. Apostle" not in text
+    assert "This List, originally made in 1865" not in text
+    assert "Project Gutenberg" not in text and "CONTENTS." not in text
+    assert _note_count(doc) == 21
+    assert [f["text"] for p in doc.passages for f in p.metadata.get("footnotes") or []] == \
+        ["Matt. xxiv. 15.", "Deut. xxxiii. 12."]
+    assert (doc.year, doc.translation, doc.notes) == (1864, None, T.APOLOGIA_NOTE)
+    assert doc.metadata["gutenberg_ebook"] == 22088
+
+
+def test_development_is_the_1878_text_with_its_dedication_and_prefaces():
+    doc = _development()
+    labels = _labels(doc)
+    assert labels[:5] == ["Dedication", "Preface to the Edition of 1878",
+                          "Advertisement to the First Edition", "Postscript",
+                          "Part I · Introduction"]
+    assert "Part II · Chapter V, Section II. Second Note. Continuity of Principles" in labels
+    assert labels[-1] == ("Part II · Chapter XII. Application of the Seventh Note of a True "
+                          "Development") and len(labels) == 36
+    text = _text(doc)
+    for gone in ("OCULI MEI DEFECERUNT", "NUNC DIMITTIS", "THE END.", "TRANSCRIBER",
+                 "+stêrigma+"):
+        assert gone not in text
+    assert "(stêrigma)" in text                       # Greek between plus signs, read out
+    assert "[315:3]" not in text                      # a note the edition calls twice
+    assert "Part II · Chapter VIII. Application of the Third Note of a True Development" \
+        in labels
+    marks = [(t, lvl) for p in doc.passages for t, lvl, _ in _heads(p)]
+    assert ("§ 1. The Arians of the Gothic Race.", 2) in marks
+    assert ("(1.) Canon of the New Testament.", 2) in marks
+    assert sum(t.startswith(("§", "(")) for t, _ in marks) == 26
+    assert _note_count(doc) == 400
+    assert (doc.year, doc.notes) == (1878, T.DEVELOPMENT_NOTE)
+
+
+def test_idea_is_the_discourses_and_the_lectures():
+    doc = _idea()
+    labels = _labels(doc)
+    assert labels[:2] == ["Preface", "University Teaching · Discourse I. Introductory"]
+    assert ("University Subjects · Lecture I. Christianity and Letters. A Lecture in the "
+            "School of Philosophy and Letters") in labels
+    assert labels[-1] == "University Subjects · Note on Page 478" and len(labels) == 23
+    first = next(p for p in doc.passages if p.chapter_label == labels[1])
+    assert _heads(first)[:4] == [("UNIVERSITY TEACHING.", 1, False), ("Discourse I.", 1, False),
+                                 ("Introductory.", 1, True), ("1.", 2, False)]
+    text = _text(doc)
+    assert "MY DEAR MONSELL," in text and "INDEX." not in text
+    marks = [t for p in doc.passages for t, _, _ in _heads(p)]
+    # A lecture's sections and their captions are marked; Lecture IV's stage directions
+    # and its letters' quoted salutations are text.
+    assert marks.count("§ 1.") == 3 and "In its relation to Religious Literature." in marks
+    assert "Composition." in marks and "Its Policy." in marks
+    assert "Mr. White’s view of Latin translation." in marks
+    assert "“FORTES FORTUNA ADJUVAT.”" in marks          # Mr. Brown's exercise
+    for line in ("A silence.", "A silence on both sides.", "“MY DEAR SIR,", "“ROBERT.”"):
+        assert line not in marks and line in text
+    assert _note_count(doc) == 51 and doc.notes == T.IDEA_NOTE
+
+
+def test_grammar_is_its_two_parts_and_closing_note():
+    doc = _grammar()
+    labels = _labels(doc)
+    assert labels[:2] == ["Part I · Chapter I, § 1. Modes of Holding Propositions",
+                          "Part I · Chapter I, § 2. Modes of Apprehending Propositions"]
+    assert "Part II · Chapter IX. The Illative Sense" in labels
+    assert labels[-1] == "Note" and len(labels) == 28
+    # "&c;" as printed, which the tag stripper would read as an entity.
+    assert "the \u201cJustum et tenacem,\u201d &c; nay further" in _text(doc)
+    assert "\u2010\u2010" not in _text(doc)             # its printer's rules, U+2010 hyphens
+    assert _note_count(doc) == 56 and (doc.year, doc.notes) == (1870, None)
+
+
+def test_newman_is_written_in_english_so_his_cards_name_no_translator():
+    import card_notes
+    import document_facts
+    ids = {d.id for d in (_apologia(), _development(), _idea(), _grammar())}
+    assert ids <= card_notes.WRITTEN_IN_ENGLISH
+    for i in ids:
+        assert document_facts.card_translator(
+            {"document_id": i, "translation": "", "source_credit": "Sourced via Project "
+                                                                   "Gutenberg"}) == ""
+    # Any other document with no translation still names none and is refused.
+    assert document_facts.card_translator(
+        {"document_id": "x", "translation": "",
+         "source_credit": "Sourced via Project Gutenberg"}) is None

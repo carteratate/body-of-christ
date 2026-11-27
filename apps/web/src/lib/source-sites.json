@@ -715,8 +715,28 @@
    "excerpt_bases": [],
    "documents": [
     {
+     "document_id": "055dab6a-725c-5a3a-96b1-474ff9a1bc52",
+     "title": "An Essay in Aid of a Grammar of Assent",
+     "collection": "medieval"
+    },
+    {
+     "document_id": "a510ccd1-2127-5472-830a-ed0d9263207f",
+     "title": "An Essay on the Development of Christian Doctrine",
+     "collection": "medieval"
+    },
+    {
+     "document_id": "dc1ce3df-36b5-53c0-a8d6-2f667dd900ec",
+     "title": "Apologia pro Vita Sua",
+     "collection": "medieval"
+    },
+    {
      "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
      "title": "The Glories of Mary",
+     "collection": "medieval"
+    },
+    {
+     "document_id": "95f2b6c0-0997-5555-8ba3-86dde970c3bc",
+     "title": "The Idea of a University",
      "collection": "medieval"
     },
     {

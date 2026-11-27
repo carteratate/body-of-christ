@@ -369,10 +369,13 @@ def gutenberg_units(path: str, source_file: str) -> list[SourceUnit]:
     work = next(w for w in theologians.WORKS if w.file == name)
     with open(path, encoding="utf-8", newline="") as f:
         raw = f.read().replace("\r\n", "\n")
+    style = work.note_style
     paras, notes = gutenberg_text.split_notes(
-        gutenberg_text.paragraphs(gutenberg_text.book_text(raw)), work.notes_heading)
-    texts = [gutenberg_text.CALLER.sub(
-        lambda m: "" if m.group(1) in notes else m.group(), t) for t, _ in paras]
+        gutenberg_text.paragraphs(gutenberg_text.book_text(raw)), style)
+    texts = [t for t, _ in paras]
+    calls = gutenberg_text.match_notes(texts, notes, style) if style else {}
+    for (k, start), (_, end, _) in sorted(calls.items(), reverse=True):
+        texts[k] = texts[k][:start] + texts[k][end:]
     apparatus = theologians.text_apparatus(name, texts)
     units = []
     for k, text in enumerate(texts):
@@ -381,7 +384,7 @@ def gutenberg_units(path: str, source_file: str) -> list[SourceUnit]:
                   else "heading" if letters and all(c.isupper() for c in letters)
                   else "withheld" if mostly_foreign(text) else "body")
         units.append(SourceUnit(source_file, f"p{k + 1}", text, region))
-    units += [SourceUnit(source_file, None, text, "note") for text in notes.values()]
+    units += [SourceUnit(source_file, None, text, "note") for _, text, _ in notes]
     return [u for u in units if u.text.strip()]
 
 

@@ -146,19 +146,7 @@
    "catechism"
   ],
   "documents": [
-   "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
-   "70347ebd-4832-59b6-813f-aeb2e120837b",
-   "75cc7965-7501-595d-af44-9997bb7498be",
-   "7f052676-7c0c-5904-b257-7ca10d489010",
-   "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
-   "9398a664-a690-5431-a2cc-46046a3be21a"
-  ],
-  "authors": {
-   "councils": [
-    "Second Vatican Council"
-   ]
-  },
-  "documents": [
+   "055dab6a-725c-5a3a-96b1-474ff9a1bc52",
    "0715be7b-c108-55c0-bad8-d989fb8cdd16",
    "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9",
    "38b15a66-fbc3-560f-8a64-363a0ff24ced",
@@ -166,10 +154,18 @@
    "44b734e0-b056-5f8d-92e9-0e98e3509848",
    "725a33d3-8e0c-5d4b-81e4-7c2dc5aefdf6",
    "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe",
+   "95f2b6c0-0997-5555-8ba3-86dde970c3bc",
    "96d72c6a-b005-5e96-9f7f-ceca57042078",
+   "a510ccd1-2127-5472-830a-ed0d9263207f",
    "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2",
+   "dc1ce3df-36b5-53c0-a8d6-2f667dd900ec",
    "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3"
   ],
+  "authors": {
+   "councils": [
+    "Second Vatican Council"
+   ]
+  },
   "not_headings": {
    "0715be7b-c108-55c0-bad8-d989fb8cdd16": [
     {
@@ -225,6 +221,36 @@
      "reason": "the address of the Christmas letter in the Counsels"
     }
    ],
+   "95f2b6c0-0997-5555-8ba3-86dde970c3bc": [
+    {
+     "text": "T. Well, then, what is a going down? Cat.. cat … C. Cat.…",
+     "reason": "a line of the dialogue between a tutor and a candidate (Lecture IV)"
+    },
+    {
+     "text": "T. Cata … C. Cata.…",
+     "reason": "a line of the dialogue between a tutor and a candidate (Lecture IV)"
+    },
+    {
+     "text": "T. No, no; think again; you know better than that. C. (objects) Φαίνω, Φανῶ?",
+     "reason": "a line of the dialogue between a tutor and a candidate (Lecture IV)"
+    },
+    {
+     "text": "T. Because … Persia … C. Because Persia …",
+     "reason": "a line of the dialogue between a tutor and a candidate (Lecture IV)"
+    },
+    {
+     "text": "T. Well, but why don’t you construe it? C. Et scripsisti, you both distinctly.…",
+     "reason": "a line of the dialogue between a tutor and a candidate (Lecture IV)"
+    },
+    {
+     "text": "T. Very good, still, you can express it; try. C. Also, with the second clause?",
+     "reason": "a line of the dialogue between a tutor and a candidate (Lecture IV)"
+    },
+    {
+     "text": "T. Who was Atticus? C. I didn’t think it came into the examination.…",
+     "reason": "a line of the dialogue between a tutor and a candidate (Lecture IV)"
+    }
+   ],
    "9679c400-d314-5394-b916-f6fc27b50104": [
     {
      "text": "You shall have no other gods before me …",
@@ -247,6 +273,20 @@
      "reason": "a row of the Decalogue table after CCC 2051 (Exodus, Deuteronomy, the catechetical formula), not a heading"
     }
    ],
+   "a510ccd1-2127-5472-830a-ed0d9263207f": [
+    {
+     "text": "So much was allowed by this writer; but then he added:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "In such passages as these we have",
+     "reason": "a sentence breaking off before the passage it introduces"
+    },
+    {
+     "text": "Such are some of the intellectual principles which are characteristic of Christianity. I observe,--",
+     "reason": "a sentence leading into the quotation that follows"
+    }
+   ],
    "c1b748c6-a250-5ca1-a087-4f6be5e75bbb": [
     {
      "text": "+ PERICLE FELICI Titular Archbishop of Samosata Secretary General of the Second Vatican Ecumenical Council",
@@ -257,6 +297,48 @@
     {
      "text": "By these, and similar arguments, the pastor will be able to instruct the faithful in this Article",
      "reason": "the closing sentence of a section, whose full stop the OCR lost; not a heading"
+    }
+   ],
+   "dc1ce3df-36b5-53c0-a8d6-2f667dd900ec": [
+    {
+     "text": "I acknowledged the receipt of this work in the following letter:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "I thus speak in the Introduction to my Volume:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "In the last words of my letter to the Bishop of Oxford I thus resigned my place in the Movement:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "Upon this occasion several Catholics wrote to me; I answered one of my correspondents in the same tone:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "I wrote in answer as follows:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "I said to a friend:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "There was a lady, now a nun of the Visitation, to whom at this time I wrote the following letters:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "On October the 8th I wrote to a number of friends the following letter:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "I wrote to a friend:--",
+     "reason": "a sentence leading into the quotation that follows"
+    },
+    {
+     "text": "The account of this remarkable occurrence is told us in his Life:--",
+     "reason": "a sentence leading into the quotation that follows"
     }
    ],
    "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3": [
@@ -282,7 +364,7 @@
   ]
  },
  "R12_note_caller": {
-  "_comment": "A footnote caller left in the text (C-17): Opus A-012's \"(N)\"/\"(N*)\" after a word and a digit glued after punctuation, Opus-2 B-005's number after sentence punctuation and a space (not before a Bible book), and \"[ N ]\". not_after skips a match whose preceding 16 characters end like a Scripture citation (\"Rom. i.\", \"3:16.\") or a reference (\"cf. 1 C,or. 3:7\", a misprint in vatican.va's Ad Gentes 40, 1.1) or the bracketed volume of an Acta Apostolicae Sedis citation (\"AAS [39] 1947\", The Catholic Mind's Menti Nostrae, 1.3d). A bracketed verse range after a Bible chapter (\"St. Luke writes in the second Chapter [21]\", \"Mark, Chapter 16 [9]\": the Spiritual Exercises' Mysteries, 5.6b) is a citation. Summa brackets are summa_bracket_numbers'.",
+  "_comment": "A footnote caller left in the text (C-17): Opus A-012's \"(N)\"/\"(N*)\" after a word and a digit glued after punctuation, Opus-2 B-005's number after sentence punctuation and a space (not before a Bible book), and \"[ N ]\". not_after skips a match whose preceding 16 characters end like a Scripture citation (\"Rom. i.\", \"3:16.\") or a reference (\"cf. 1 C,or. 3:7\", a misprint in vatican.va's Ad Gentes 40, 1.1) or the bracketed volume of an Acta Apostolicae Sedis citation (\"AAS [39] 1947\", The Catholic Mind's Menti Nostrae, 1.3d). A bracketed verse range after a Bible chapter (\"St. Luke writes in the second Chapter [21]\", \"Mark, Chapter 16 [9]\": the Spiritual Exercises' Mysteries, 5.6b) is a citation, and so is a psalm's Vulgate number after its ordinal (\"the forty-fifth [44]\", Newman's Development, 5.6b); \"No.\" may be capitalised (\"In No. 8 I say\", the Apologia's Tracts). Summa brackets are summa_bracket_numbers'.",
   "skip_collections": [
    "bible",
    "canon-law",
@@ -298,9 +380,10 @@
   "not_after": [
    "\\b[ivxlc]+[.,;]?[\"”’)]?$",
    "\\d[.:][\"”’)]?$",
-   "\\b(?:[Vv]er|[Bb]k|[Cc]f|sess|cap|constitut|ch|chap|c|p|pp|vol|n|no|nos|art|q|a|sect|sec|lib|ep|hom|serm|Trin)\\.[\"”’)]?$",
+   "\\b(?:[Vv]er|[Bb]k|[Cc]f|sess|cap|constitut|ch|chap|c|p|pp|vol|n|[Nn]o|[Nn]os|art|q|a|sect|sec|lib|ep|hom|serm|Trin)\\.[\"”’)]?$",
    "\\bAAS\\.? \\[$",
-   "\\b[Cc]hapter(?: \\d{1,3})? \\[$"
+   "\\b[Cc]hapter(?: \\d{1,3})? \\[$",
+   "\\b[a-z]+ty-(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth) \\[$"
   ]
  },
  "R13_lower_start": {

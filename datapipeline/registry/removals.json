@@ -47608,6 +47608,25 @@
   "added_on": "2026-11-12"
  },
  {
+  "id": "rm-10615",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "055dab6a-725c-5a3a-96b1-474ff9a1bc52",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Newman's notes, printed after the text (Project Gutenberg's (n) notes), called in the passages; only their count is kept, as editor_note_count, and their scripture references as footnotes.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 56
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-27"
+ },
+ {
   "id": "rm-10603",
   "scope": "class",
   "collection": "medieval",
@@ -47757,6 +47776,25 @@
   "added_on": "2026-11-23"
  },
  {
+  "id": "rm-10614",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "95f2b6c0-0997-5555-8ba3-86dde970c3bc",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Newman's notes, printed after the text (Project Gutenberg's (n) notes), called in the passages; only their count is kept, as editor_note_count, and their scripture references as footnotes.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 51
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-27"
+ },
+ {
   "id": "rm-10604",
   "scope": "class",
   "collection": "medieval",
@@ -47875,6 +47913,25 @@
   "added_on": "2026-11-13"
  },
  {
+  "id": "rm-10613",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "a510ccd1-2127-5472-830a-ed0d9263207f",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Newman's notes, printed in a block after each chapter (Project Gutenberg's [page:n] notes), called in the passages; only their count is kept, as editor_note_count, and their scripture references as footnotes.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 400
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-27"
+ },
+ {
   "id": "rm-10602",
   "scope": "class",
   "collection": "medieval",
@@ -47892,6 +47949,25 @@
   "judgment": null,
   "added_by": "5.6b",
   "added_on": "2026-11-22"
+ },
+ {
+  "id": "rm-10612",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "dc1ce3df-36b5-53c0-a8d6-2f667dd900ec",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Newman's notes, each printed as a paragraph after the one that calls it (Project Gutenberg's [n] notes), called in the passages; only their count is kept, as editor_note_count, and their scripture references as footnotes.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 21
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-27"
  },
  {
   "id": "rm-10605",

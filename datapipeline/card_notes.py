@@ -19,7 +19,8 @@ What this writes, in metadata keys as 2.4f did (no migration):
   `record` or `overview`; a `record` or `overview` entry may have no kind), and
   `metadata.card_translator`, the translator for the card (works.json's `card_translator`,
   written once by `scripts/document_facts_registry.py` from `card_translator()`; an empty
-  string where the card names none because the header's badge or the notice does);
+  string where the card names none because the header's badge or the notice does, or
+  because the work was written in English, `WRITTEN_IN_ENGLISH`);
 - a passage with a note: its note rewritten to the fixed wording and `metadata.note_kind`;
 - a passage from a second edition (a council's; Stromata III in Chadwick's English):
   `metadata.translator`, that edition's translator, so a document translated by two
@@ -173,6 +174,16 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "other accounts.": (
         overview("Its Conversations are attributed to Joseph de Beaufort; the close of the "
                  "Fourth draws on other accounts."),),
+    # The dates of 5.6b's Newman texts (`ingest.theologians.APOLOGIA_NOTE`,
+    # `DEVELOPMENT_NOTE` and `IDEA_NOTE`).
+    "First published in 1864; this is the revised text of 1865.": (
+        overview("First published in 1864; this is the revised text of 1865."),),
+    "First published in 1845; this is the revised text of 1878.": (
+        overview("First published in 1845; this is the revised text of 1878."),),
+    "Its discourses date from 1852; its lectures and essays on university subjects, from "
+    "1854 to 1858.": (
+        overview("Its discourses date from 1852; its lectures and essays on university "
+                 "subjects, from 1854 to 1858."),),
     # 5.6b's Autobiography of St. Ignatius (`ingest.theologians.IGNATIUS_NOTE`).
     "Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens it.": (
         overview("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens "
@@ -388,6 +399,15 @@ _SENTENCE = re.compile(r"^(Translated by|Translation|Official English|From Hefel
 _SERIES = ("Ante-Nicene Fathers", "Nicene and Post-Nicene Fathers")
 # Translators that are a community, read with "the": "the Benedictines of Stanbrook" (5.6b).
 _BODIES = ("Fathers of ", "Benedictines of ")
+
+
+# Documents written in English, whose card names no translator: Newman's works (5.6b).
+WRITTEN_IN_ENGLISH = frozenset({
+    "dc1ce3df-36b5-53c0-a8d6-2f667dd900ec",   # Apologia pro Vita Sua
+    "a510ccd1-2127-5472-830a-ed0d9263207f",   # An Essay on the Development of Christian Doctrine
+    "95f2b6c0-0997-5555-8ba3-86dde970c3bc",   # The Idea of a University
+    "055dab6a-725c-5a3a-96b1-474ff9a1bc52",   # An Essay in Aid of a Grammar of Assent
+})
 
 
 def card_translator(credit: str | None, translation: str | None) -> str | None:
