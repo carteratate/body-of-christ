@@ -351,7 +351,7 @@ class _WorkEditor(Editor):
 
 # A paragraph that is only a printer's rule or an omission mark ("* * * * * *", ". . . .
 # . ."), in the files that print them between items: never text.
-_SEPARATOR = re.compile(r"[*.\s]+")
+_SEPARATOR = re.compile(r"[*.\s\u2010]+")      # the Grammar's rules are U+2010 hyphens
 _SEPARATOR_FILES = frozenset({"therese-autobio.xml"})
 # A note's number printed in brackets just before the note (the Life, ch. xxvi and xxix):
 # "vision.[8]" with note 8 after it. The note leaves; so does its call.
@@ -1141,12 +1141,12 @@ def _caps_title(text: str) -> str:
 
 # Apologia pro Vita Sua (Longmans, 1890): the preface, the five chapters of "My Religious
 # Opinions" and Notes A to G. Left out: the title page, the contents, the separators,
-# and the Supplemental Matter and Additional Notes after the Notes (lists of letters and
-# of Newman's works, letters of approbation and extracts of others' letters, not his
+# Note D's calendar and chronological list of English saints (tables), and the
+# Supplemental Matter and Additional Notes after the Notes (lists of letters and of
+# Newman's works, letters of approbation and extracts of others' letters, not his
 # writing; a question in `NEEDS-CARTER.md`). Newman's footnotes (rule G).
 _APOLOGIA_CHAPTER = re.compile(rf"^CHAPTER ({_NEWMAN_ROMAN})\.$")
 _APOLOGIA_NOTE = re.compile(r"^NOTE ([A-G])\. ON PAGES? [\d-]+\.$")
-_APOLOGIA_PARTS = re.compile(r"^Part [IVX]+\.(?:--.+)?$")
 
 
 def _apologia_chapters(root):
@@ -1175,7 +1175,7 @@ def _apologia_chapters(root):
             unit.label = f"{state['names']}. {_caps_title(text)}"
             state["names"] = None
             return "heading"
-        if text == "PROTEST." or _APOLOGIA_PARTS.match(text):
+        if text == "PROTEST.":
             return "subheading"
         if _DATE_LINE.match(text):
             return "text"

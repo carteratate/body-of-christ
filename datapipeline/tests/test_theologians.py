@@ -774,6 +774,7 @@ def test_grammar_is_its_two_parts_and_closing_note():
     assert labels[-1] == "Note" and len(labels) == 28
     # "&c;" as printed, which the tag stripper would read as an entity.
     assert "the \u201cJustum et tenacem,\u201d &c; nay further" in _text(doc)
+    assert "\u2010\u2010" not in _text(doc)             # its printer's rules, U+2010 hyphens
     assert _note_count(doc) == 56 and (doc.year, doc.notes) == (1870, None)
 
 
