@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "feat/5.6b-ignatius f6a2cf1",
+  "medieval": "feat/5.6b-alphonsus-lawrence e8120a79",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1142,6 +1142,16 @@
    "covered_chars": 264660,
    "pct": 100.0
   },
+  "medieval/../theologians/pg13871.txt": {
+   "body_chars": 54995,
+   "covered_chars": 54995,
+   "pct": 100.0
+  },
+  "medieval/../theologians/pg72411.txt": {
+   "body_chars": 938316,
+   "covered_chars": 938316,
+   "pct": 100.0
+  },
   "medieval/../theologians/teresa-castle2.xml": {
    "body_chars": 337397,
    "covered_chars": 337397,
@@ -1398,6 +1408,13 @@
    "source_file": "apostolic fathers.xml",
    "body_chars": 65762,
    "covered_chars": 65762,
+   "pct": 100.0
+  },
+  "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9": {
+   "collection": "medieval",
+   "source_file": "../theologians/pg13871.txt",
+   "body_chars": 54995,
+   "covered_chars": 54995,
    "pct": 100.0
   },
   "12e7199e-bef2-5a25-a705-e8b6d76f3c08": {
@@ -1741,6 +1758,13 @@
    "source_file": "on-the-holy-trinity.xml",
    "body_chars": 101339,
    "covered_chars": 101339,
+   "pct": 100.0
+  },
+  "38b15a66-fbc3-560f-8a64-363a0ff24ced": {
+   "collection": "medieval",
+   "source_file": "../theologians/pg72411.txt",
+   "body_chars": 938316,
+   "covered_chars": 938316,
    "pct": 100.0
   },
   "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38": {
