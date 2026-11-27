@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "feat/5.6b-alphonsus-lawrence e8120a79",
+  "medieval": "feat/5.6b-newman 4d982249",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -762,6 +762,16 @@
    "covered_chars": 137092,
    "pct": 99.98
   },
+  "church-fathers/npnf207.xml": {
+   "body_chars": 1739439,
+   "covered_chars": 1736549,
+   "pct": 99.83
+  },
+  "church-fathers/npnf208.xml": {
+   "body_chars": 1304714,
+   "covered_chars": 1295490,
+   "pct": 99.29
+  },
   "church-fathers/on-the-holy-trinity.xml": {
    "body_chars": 2211805,
    "covered_chars": 2170350,
@@ -1144,13 +1154,33 @@
   },
   "medieval/../theologians/pg13871.txt": {
    "body_chars": 54995,
-   "covered_chars": 54995,
+   "covered_chars": 54953,
+   "pct": 99.92
+  },
+  "medieval/../theologians/pg22088.txt": {
+   "body_chars": 673985,
+   "covered_chars": 673985,
+   "pct": 100.0
+  },
+  "medieval/../theologians/pg24526.txt": {
+   "body_chars": 889535,
+   "covered_chars": 889535,
+   "pct": 100.0
+  },
+  "medieval/../theologians/pg34022.txt": {
+   "body_chars": 755113,
+   "covered_chars": 755113,
+   "pct": 100.0
+  },
+  "medieval/../theologians/pg35110.txt": {
+   "body_chars": 750416,
+   "covered_chars": 750416,
    "pct": 100.0
   },
   "medieval/../theologians/pg72411.txt": {
    "body_chars": 938316,
-   "covered_chars": 938316,
-   "pct": 100.0
+   "covered_chars": 938157,
+   "pct": 99.98
   },
   "medieval/../theologians/teresa-castle2.xml": {
    "body_chars": 337397,
@@ -1246,16 +1276,6 @@
    "body_chars": 14059391,
    "covered_chars": 14048828,
    "pct": 99.92
-  },
-  "church-fathers/npnf208.xml": {
-   "body_chars": 1304714,
-   "covered_chars": 1295490,
-   "pct": 99.29
-  },
-  "church-fathers/npnf207.xml": {
-   "body_chars": 1739439,
-   "covered_chars": 1736549,
-   "pct": 99.83
   }
  },
  "documents": {
@@ -1313,6 +1333,13 @@
    "source_file": "eng-web-c_usfm/32-OBAeng-web-c.usfm",
    "body_chars": 3091,
    "covered_chars": 3091,
+   "pct": 100.0
+  },
+  "055dab6a-725c-5a3a-96b1-474ff9a1bc52": {
+   "collection": "medieval",
+   "source_file": "../theologians/pg34022.txt",
+   "body_chars": 755113,
+   "covered_chars": 755113,
    "pct": 100.0
   },
   "05ec835e-ea8f-581d-b94d-4b38bb4a8522": {
@@ -1424,8 +1451,8 @@
    "collection": "medieval",
    "source_file": "../theologians/pg13871.txt",
    "body_chars": 54995,
-   "covered_chars": 54995,
-   "pct": 100.0
+   "covered_chars": 54953,
+   "pct": 99.92
   },
   "12e7199e-bef2-5a25-a705-e8b6d76f3c08": {
    "collection": "church-fathers",
@@ -1774,8 +1801,8 @@
    "collection": "medieval",
    "source_file": "../theologians/pg72411.txt",
    "body_chars": 938316,
-   "covered_chars": 938316,
-   "pct": 100.0
+   "covered_chars": 938157,
+   "pct": 99.98
   },
   "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38": {
    "collection": "church-fathers",
@@ -2484,6 +2511,13 @@
    "covered_chars": 56339,
    "pct": 100.0
   },
+  "95f2b6c0-0997-5555-8ba3-86dde970c3bc": {
+   "collection": "medieval",
+   "source_file": "../theologians/pg24526.txt",
+   "body_chars": 889535,
+   "covered_chars": 889535,
+   "pct": 100.0
+  },
   "96584290-90c2-50bc-9d3d-c353b8969e1f": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
@@ -2615,6 +2649,13 @@
    "source_file": "eng-web-c_usfm/07-JOSeng-web-c.usfm",
    "body_chars": 92892,
    "covered_chars": 92892,
+   "pct": 100.0
+  },
+  "a510ccd1-2127-5472-830a-ed0d9263207f": {
+   "collection": "medieval",
+   "source_file": "../theologians/pg35110.txt",
+   "body_chars": 750416,
+   "covered_chars": 750416,
    "pct": 100.0
   },
   "a558e370-226c-5ac5-b01b-916adbe6b256": {
@@ -3077,6 +3118,13 @@
    "source_file": "city-of-god.xml",
    "body_chars": 2405465,
    "covered_chars": 2405409,
+   "pct": 100.0
+  },
+  "dc1ce3df-36b5-53c0-a8d6-2f667dd900ec": {
+   "collection": "medieval",
+   "source_file": "../theologians/pg22088.txt",
+   "body_chars": 673985,
+   "covered_chars": 673985,
    "pct": 100.0
   },
   "dc813ae3-8f50-5dde-b4b3-430e20eb1fd7": {

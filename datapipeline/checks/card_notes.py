@@ -12,7 +12,8 @@ has written. It refuses:
   `card_notes` entry, which may still show on every card;
 - a document whose card can name no translator: no `card_translator`, and an empty
   `translation` with no passage `translator` keys (an empty `card_translator` is the
-  decision that the header or the notice names it);
+  decision that the header or the notice names it, or that the work was written in
+  English);
 - a document without `card_version`.
 """
 from __future__ import annotations

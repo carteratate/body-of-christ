@@ -387,5 +387,8 @@ def derive(document: Document, row: dict | None, entry: dict) -> dict:
 def card_translator(facts: dict) -> str | None:
     """The translator the result card names (4.4), written once into works.json from the
     credit line or the translation (`card_notes.card_translator`), where the Library and
-    the overview keep reading `translation` and `source_credit` as 2.3 set them."""
+    the overview keep reading `translation` and `source_credit` as 2.3 set them. A work
+    written in English (`card_notes.WRITTEN_IN_ENGLISH`) names none: ""."""
+    if facts.get("document_id") in card_notes.WRITTEN_IN_ENGLISH:
+        return ""
     return card_notes.card_translator(facts.get("source_credit"), facts.get("translation"))

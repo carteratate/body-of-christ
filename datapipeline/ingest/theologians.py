@@ -50,10 +50,18 @@ ANONYMOUS_1876 = "Anonymous translation (Rivingtons, 1876)"
 # Teresa's headings of the Life's chapters are not Lewis's: he left them out, following
 # Bouix, and Zimmerman's introduction to the 1904 edition prints them before the book.
 # The Counsels and Reminiscences are her words as others set them down.
+NEWMAN = "John Henry Newman"
+_NOTE_NUMBER = re.compile(r"(?<=\S)\((\d+)\)")
+_NOTE_LINE = re.compile(r"^\s*(\d+)\s+(.*)$", re.S)
 LAWRENCE_NOTE = ("Its Conversations are attributed to Joseph de Beaufort; the close of the "
                  "Fourth draws on other accounts.")
 ANONYMOUS_1852 = "Anonymous translation (Dunigan, 1852)"
 ANONYMOUS_1895 = "Anonymous translation (Revell, about 1895)"
+# The dates of Newman's texts, which their year alone would not say (5.6b).
+APOLOGIA_NOTE = "First published in 1864; this is the revised text of 1865."
+DEVELOPMENT_NOTE = "First published in 1845; this is the revised text of 1878."
+IDEA_NOTE = ("Its discourses date from 1852; its lectures and essays on university "
+             "subjects, from 1854 to 1858.")
 IGNATIUS_NOTE = ("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface "
                  "opens it.")
 THERESE_NOTE = ("Its Counsels and Reminiscences are her sayings as her novices recorded "
@@ -69,7 +77,8 @@ class ThmlWork:
     title: str
     author: str
     year: int                  # when the author finished it
-    translation: str           # as the card reads it after "Translated by", or whole
+    translation: str | None    # as the card reads it after "Translated by", or whole;
+                               # None for a work written in English
     chapters: Callable         # root -> [(book, div, ChapterPlan)]
     genre: str                 # D5's writer value, or `other` (registry.genres)
     # Paragraph classes the work prints its own headings in (a chapter's title, Teresa's
@@ -78,9 +87,9 @@ class ThmlWork:
     title_classes: frozenset[str] = frozenset()
     notes: str | None = None   # the document's note (2.3's `notes`)
     # A Project Gutenberg text (`ingest.gutenberg_text`): its eBook number, recorded as
-    # provenance, and the heading its notes stand under.
+    # provenance, and how it prints its notes.
     ebook: int | None = None
-    notes_heading: str | None = None
+    note_style: gutenberg_text.NoteStyle | None = None
 
     @property
     def source_key(self) -> str:
@@ -316,13 +325,16 @@ class _WorkEditor(Editor):
         callers = f"../{SOURCE_DIR}/{self.source_file}"
 
         def opened(block, marked, notes):
-            marked, notes = inner(block, marked, notes)
+            if self.source_file not in _AUTHOR_BRACKET_FILES or id(block) in edit.dropped:
+                marked, notes = inner(block, marked, notes)
             marked = _NOTE_CALL.sub("", marked)
             marked = _GLUED_STEP.sub(r"\1 \2", marked)
             for printed, without in PLAIN_CALLERS.get((callers, block.get("id")), ()):
                 marked = marked.replace(printed, without)
             for printed, read in TEXT_FIXES.get((self.source_file, block.get("id")), ()):
                 marked = marked.replace(printed, read)
+            if self.source_file in _PLUS_GREEK_FILES:
+                marked = _PLUS_GREEK.sub(r"\1", marked)
             marked = without_page_refs(callers, marked)
             if block.get("class") in self.title_classes:
                 return marked, notes          # a title in capitals throughout stays so
@@ -367,7 +379,11 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
               ("pg72411.txt", "p249"): (("Dulcedo:—Sweetness.", "Sweetness."),),
               ("pg72411.txt", "p1241"): ((": Ora pro nobis, Virgo immaculata;", ";"),),
               ("pg72411.txt", "p1242"): ((": Ut digni officiamur promissionibus Christi.",
-                                          "."),)}
+                                          "."),),
+              # The Grammar of Assent's "&c;" (ch. 4 § 1), which `common._strip_tags`
+              # reads as an entity and blanks once the tree escapes its "&".
+              ("pg34022.txt", "p111"): (("\u201cJustum et tenacem,\u201d nay",
+                                         "\u201cJustum et tenacem,\u201d &c; nay"),)}
 # Mullan's references to pages of his edition, in the files that print them: the
 # edition's, not the text. In brackets ("They sent the Angel … (p. 133)."; "(P. 154)";
 # "(p. 152); and it contains"), or after a comma ("the Particular Examen, p. 21, and";
@@ -377,6 +393,13 @@ _PAGE_REF = re.compile(r"\s*\([Pp]\. \d+\)(?:;\s*)?")
 _PAGE_REF_AFTER_STOP = re.compile(r"(?<=[.!?])\s*\([Pp]\. \d+\)\.")
 _PAGE_REF_AFTER_COMMA = re.compile(r",\s*pp?\. \d+(?:,\s*\d+)*(?=[.,;])")
 _PAGE_REF_FILES = frozenset({"ignatius-exercises.xml"})
+# Greek the transcriber wrote in Latin letters between plus signs ("+theotokos+",
+# Development): the words stay, the signs go.
+_PLUS_GREEK = re.compile(r"\+([^+\s][^+]{0,40}?)\+")
+_PLUS_GREEK_FILES = frozenset({"pg35110.txt"})
+# Newman's works, printed with no editor: every bracket in them is his own ("It made a
+# great impression here [Oxford]"), so none is cut as an editor's.
+_AUTHOR_BRACKET_FILES = frozenset({"pg22088.txt", "pg35110.txt", "pg24526.txt", "pg34022.txt"})
 
 
 def without_page_refs(source_file: str, text: str) -> str:
@@ -799,21 +822,44 @@ _TITLE_LINE = re.compile(rf"^Prayer (?:of|to) .{{3,{_TITLE_LINE_MAX - 10}}}$")
 
 # Paragraphs of a Gutenberg text that are the edition's, not the work's, as ranges by the
 # paragraphs that open and end them (end not included): the title page, approbation and
-# publishers' preface before the work's first line, and the Glories' contents. The plans
-# and the checks' extractor (`checks.source_text.gutenberg_units`) both read them.
+# publishers' preface before the work's first line, contents, indexes and transcribers'
+# notes. Two of the Apologia's ranges are Newman's but no running text: Note D's
+# calendar and chronological list of English saints (tables, whose lines a paragraph
+# would run together) and the Supplemental Matter (mostly others' letters and lists).
+# The plans and the checks' extractor (`checks.source_text.gutenberg_units`) both read
+# them.
 TEXT_APPARATUS = {
     "pg72411.txt": ((None, "PROTEST OF THE AUTHOR."),
                     ("CONTENTS.", "PETITION OF THE AUTHOR TO JESUS AND MARY.")),
     "pg13871.txt": ((None, "CONVERSATIONS."),),
+    "pg22088.txt": ((None, "PREFACE."), ("CONTENTS.", "MY RELIGIOUS OPINIONS."),
+                    ("CALENDAR OF ENGLISH SAINTS.", "NOTE E. ON PAGE 227."),
+                    ("SUPPLEMENTAL MATTER.", None)),
+    "pg35110.txt": ((None, "TO THE"),
+                    ("CONTENTS.", ("PART I.", "DOCTRINAL DEVELOPMENTS VIEWED IN THEMSELVES.")),
+                    ("TRANSCRIBER'S NOTES:", None)),
+    "pg24526.txt": ((None, "PREFACE."), ("INDEX.", None)),
+    "pg34022.txt": ((None, "PART I. ASSENT AND APPREHENSION."),),
 }
 
 
 def text_apparatus(file: str, texts: list[str]) -> set[int]:
-    """The indices of `texts` (a Gutenberg text's paragraphs) in `TEXT_APPARATUS`."""
+    """The indices of `texts` (a Gutenberg text's paragraphs) in `TEXT_APPARATUS`. The
+    ranges are found in order, each after the last: a start of None is where the last
+    range ended (the book's first paragraph for the first), an end of None the book's
+    last, and an end given as several paragraphs the first place they stand together."""
     out: set[int] = set()
+    at = 0
     for start, end in TEXT_APPARATUS.get(file, ()):
-        a = 0 if start is None else texts.index(start)
-        out.update(range(a, texts.index(end)))
+        a = at if start is None else texts.index(start, at)
+        if end is None:
+            b = len(texts)
+        else:
+            run = (end,) if isinstance(end, str) else tuple(end)
+            b = next(k for k in range(a + 1, len(texts))
+                     if tuple(texts[k:k + len(run)]) == run)
+        out.update(range(a, b))
+        at = b
     return out
 
 
@@ -833,12 +879,14 @@ class _Unit:
     body: int = 0              # text paragraphs so far
 
 
-def _cut(paras, classify, file: str) -> list[_Unit]:
+def _cut(paras, classify, file: str, loose: bool = True) -> list[_Unit]:
     """Cut the paragraphs into units. `classify(k, text, unit)` returns "drop" (no text:
     a repeated title, a Latin incipit), "heading" (a heading line, whatever it looks
-    like), "subheading" (one at level 2 wherever it stands), "text" (text, whatever it
+    like), "title" (a title line the label names, level 1 before the chapter's text),
+    "subheading" (one at level 2 wherever it stands), "text" (text, whatever it
     looks like), a `_Unit` the paragraph opens, or None (text, or a heading by its look).
-    A unit with no more text than its `keep` (only its headings, or a part's line of
+    Without `loose`, only a line in capitals or italics is a heading by its look (the
+    Newman works). A unit with no more text than its `keep` (only its headings, or a part's line of
     description) takes the headings of the unit after it instead of ending. A paragraph
     is read with `TEXT_FIXES`, as the editor reads it."""
     units: list[_Unit] = []
@@ -861,10 +909,10 @@ def _cut(paras, classify, file: str) -> list[_Unit]:
                 unit = kind
             heading = True
         else:
-            heading = kind in ("heading", "subheading") or kind != "text" and (
+            heading = kind in ("heading", "subheading", "title") or kind != "text" and (
                 _caps(text) or p.get("class") == "italic"
-                or headings.looks_like_heading(text) and len(text) <= _TITLE_LINE_MAX
-                or _TITLE_LINE.match(text) is not None)
+                or loose and (headings.looks_like_heading(text) and len(text) <= _TITLE_LINE_MAX
+                              or _TITLE_LINE.match(text) is not None))
         if unit is None:
             raise ValueError(f"text before the first chapter: {text[:60]!r}")
         if isinstance(kind, _Unit) and not kind.shown:
@@ -872,7 +920,7 @@ def _cut(paras, classify, file: str) -> list[_Unit]:
         unit.paras.append(p)
         if heading:
             opening = unit.body <= unit.keep and kind != "subheading" and (
-                _caps(text) or isinstance(kind, _Unit))       # a chapter's own title
+                _caps(text) or isinstance(kind, _Unit) or kind == "title")  # its title
             unit.heads.append((p, 1 if opening else 2, text))
         else:
             unit.body += 1
@@ -1060,6 +1108,204 @@ def _lawrence_chapters(root):
 
     return _text_chapters(_cut(paras, classify, "pg13871.txt"))
 
+# --------------------------------------------------------------------------- Newman
+
+# Newman's Catholic works from Project Gutenberg text. Their headings are lines in
+# capitals, a work's own heading forms (named below) and a section's number alone on its
+# line ("2."), marked level 2; no other line is read as a heading (the Idea's dialogue,
+# "T. Well, then, what is a going down?", is text). A dedication written as a letter
+# stays; one set as an inscription in capitals is left out with the title page.
+_SECTION_NUMBER = re.compile(r"^\d+\.$")
+_DATE_LINE = re.compile(r"^(?:\[?[A-Z][a-z]+\.? \d{1,2}[.,]?\s*\d{4}\.?\]?|"
+                        r"[A-Z][a-z]+,? \d{4}\.?|[A-Z]+, [A-Z][a-z]+ \d{1,2}, \d{4}\.)$")
+_SALUTATION_LINE = re.compile(r"^(?:MY DEAR [A-Z ]+|Yours [a-z ]+),$")
+_NEWMAN_ROMAN = r"[IVXL]+"
+
+
+def _numbered(text: str, unit) -> str | None:
+    """"subheading" for a section's number alone; None otherwise."""
+    return "subheading" if _SECTION_NUMBER.match(text) else None
+
+
+def _caps_title(text: str) -> str:
+    """A Newman heading as a label, in title case; a word after a full stop opens a
+    sentence ("Christianity and Letters. A Lecture in the School of Philosophy")."""
+    out = _MINOR_WORDS.sub(lambda m: m.group().lower(), _title(text.rstrip(". ")))
+    return re.sub(r"(?<=\. )[a-z]", lambda m: m.group().upper(), out)
+
+
+# Apologia pro Vita Sua (Longmans, 1890): the preface, the five chapters of "My Religious
+# Opinions" and Notes A to G. Left out: the title page, the contents, the separators,
+# and the Supplemental Matter and Additional Notes after the Notes (lists of letters and
+# of Newman's works, letters of approbation and extracts of others' letters, not his
+# writing; a question in `NEEDS-CARTER.md`). Newman's footnotes (rule G).
+_APOLOGIA_CHAPTER = re.compile(rf"^CHAPTER ({_NEWMAN_ROMAN})\.$")
+_APOLOGIA_NOTE = re.compile(r"^NOTE ([A-G])\. ON PAGES? [\d-]+\.$")
+_APOLOGIA_PARTS = re.compile(r"^Part [IVX]+\.(?:--.+)?$")
+
+
+def _apologia_chapters(root):
+    paras = list(root[0])
+    apparatus = text_apparatus("pg22088.txt", [_text(p) for p in paras])
+    state = {"names": None, "book": None}
+
+    def classify(k, text, unit):
+        if k in apparatus:
+            return "drop"
+        if text == "PREFACE.":
+            return _Unit(None, "Preface")
+        if text == "MY RELIGIOUS OPINIONS.":
+            state["book"] = None
+            return _Unit(None, "My Religious Opinions")
+        if m := _APOLOGIA_CHAPTER.match(text):
+            state["names"] = f"Chapter {m.group(1)}"
+            return _Unit(state["book"], state["names"])
+        if text == "NOTES.":
+            state["book"] = "Notes"
+            return _Unit("Notes", "Notes")
+        if m := _APOLOGIA_NOTE.match(text):
+            state["names"] = f"Note {m.group(1)}"
+            return _Unit("Notes", state["names"])
+        if state["names"] and unit is not None and _caps(text):
+            unit.label = f"{state['names']}. {_caps_title(text)}"
+            state["names"] = None
+            return "heading"
+        if text == "PROTEST." or _APOLOGIA_PARTS.match(text):
+            return "subheading"
+        if _DATE_LINE.match(text):
+            return "text"
+        return _numbered(text, unit)
+
+    return _text_chapters(_cut(paras, classify, "pg22088.txt", loose=False))
+
+
+# An Essay on the Development of Christian Doctrine (sixth edition, the 1878 revision):
+# the dedication to Wayte, the preface of 1878, the advertisement to the first edition
+# with its postscript, and Parts I and II with their introduction, chapters, sections and
+# conclusion (which runs on, unheaded, at the end of Chapter XII). Left out: Gutenberg's
+# transcriber's notes (before the title page and after "THE END."), the title page, the
+# contents, the Latin of the advertisement's motto and of the closing Nunc Dimittis (rule
+# E) and Newman's footnotes (rule G). The transcriber writes Greek in Latin letters between plus
+# signs ("+theotokos+"); the signs go (`_PLUS_GREEK`).
+_DEV_PART = re.compile(r"^PART (I|II)\.$")
+_DEV_NUMBER = re.compile(rf"^(CHAPTER|SECTION) ({_NEWMAN_ROMAN})\.$")
+_DEV_UNITS = {"TO THE": "Dedication", "PREFACE TO THE EDITION OF 1878.": "Preface to the Edition of 1878",
+              "ADVERTISEMENT TO THE FIRST EDITION.": "Advertisement to the First Edition",
+              "POSTSCRIPT.": "Postscript", "INTRODUCTION.": "Introduction",
+              "CONCLUSION.": "Conclusion"}
+_DEV_DROP = {"OCULI MEI DEFECERUNT IN SALUTARE TUUM.", "THE END.",
+             "NUNC DIMITTIS SERVUM TUUM, DOMINE, SECUNDUM VERBUM TUUM IN PACE: QUIA "
+             "VIDERUNT OCULI MEI SALUTARE TUUM."}
+
+
+def _development_chapters(root):
+    paras = list(root[0])
+    apparatus = text_apparatus("pg35110.txt", [_text(p) for p in paras])
+    state = {"book": None, "chapter": None, "names": None}
+
+    def classify(k, text, unit):
+        if k in apparatus or text in _DEV_DROP:
+            return "drop"
+        if text in _DEV_UNITS:
+            if text == "INTRODUCTION.":
+                return _Unit(state["book"], _DEV_UNITS[text])
+            if text == "CONCLUSION.":
+                return _Unit(state["book"], _DEV_UNITS[text])
+            return _Unit(None, _DEV_UNITS[text])
+        if m := _DEV_PART.match(text):
+            state["book"] = f"Part {m.group(1)}"
+            return _Unit(state["book"], state["book"], keep=0)
+        if m := _DEV_NUMBER.match(text):
+            kind, n = m.groups()
+            if kind == "CHAPTER":
+                state["chapter"] = n
+                state["names"] = f"Chapter {n}"
+            else:
+                state["names"] = f"Chapter {state['chapter']}, Section {n}"
+            return _Unit(state["book"], state["names"])
+        if state["names"] and unit is not None and _caps(text):
+            unit.label = f"{state['names']}. {_caps_title(text)}"
+            state["names"] = None
+            return "heading"
+        if _SALUTATION_LINE.match(text) or _DATE_LINE.match(text):
+            return "text"
+        return _numbered(text, unit)
+
+    return _text_chapters(_cut(paras, classify, "pg35110.txt", loose=False))
+
+
+# The Idea of a University (no title page in the file): the preface; the nine discourses
+# of University Teaching; and University Subjects, its introductory letter, advertisement
+# and ten lectures; and Newman's note on page 478. Left out: the title lines, contents,
+# motto and dedication (an inscription in capitals), the index and Newman's footnotes
+# (rule G). A discourse's or lecture's title is the line under its number.
+_IDEA_NUMBER = re.compile(rf"^(Discourse|Lecture) ({_NEWMAN_ROMAN})\.$")
+_IDEA_UNITS = {"PREFACE.": "Preface", "Introductory Letter.": "Introductory Letter",
+               "Advertisement.": "Advertisement", "NOTE ON PAGE 478.": "Note on Page 478"}
+_IDEA_BOOKS = {"UNIVERSITY TEACHING.": "University Teaching",
+               "UNIVERSITY SUBJECTS, DISCUSSED IN OCCASIONAL LECTURES AND ESSAYS.":
+                   "University Subjects"}
+
+
+def _idea_chapters(root):
+    paras = list(root[0])
+    apparatus = text_apparatus("pg24526.txt", [_text(p) for p in paras])
+    state = {"book": None, "names": None}
+
+    def classify(k, text, unit):
+        if k in apparatus:
+            return "drop"
+        if text in _IDEA_BOOKS:
+            state["book"] = _IDEA_BOOKS[text]
+            return _Unit(state["book"], state["book"])
+        if text in _IDEA_UNITS:
+            return _Unit(state["book"], _IDEA_UNITS[text])
+        if m := _IDEA_NUMBER.match(text):
+            state["names"] = f"{m.group(1)} {m.group(2)}"
+            return _Unit(state["book"], state["names"])
+        if state["names"] and unit is not None:
+            unit.label = f"{state['names']}. {_caps_title(text.upper())}"
+            state["names"] = None
+            return "title"
+        if _SALUTATION_LINE.match(text) or _DATE_LINE.match(text) \
+                or text.startswith(("To The Right Honourable", "[November 1858.]")):
+            return "text"
+        return _numbered(text, unit)
+
+    return _text_chapters(_cut(paras, classify, "pg24526.txt", loose=False))
+
+
+# An Essay in Aid of a Grammar of Assent (Burns, Oates, 1874): Parts I and II, their
+# chapters and sections (§), and Newman's closing note. Left out: the title page, motto,
+# contents and dedication (an inscription) and Newman's footnotes (rule G).
+_GRAMMAR_PART = re.compile(r"^PART (I|II)\. (.+)$")
+_GRAMMAR_CHAPTER = re.compile(rf"^Chapter ({_NEWMAN_ROMAN})\. (.+)$")
+_GRAMMAR_SECTION = re.compile(r"^§ (\d+)\. (.+)$")
+
+
+def _grammar_chapters(root):
+    paras = list(root[0])
+    apparatus = text_apparatus("pg34022.txt", [_text(p) for p in paras])
+    state = {"book": None, "chapter": None}
+
+    def classify(k, text, unit):
+        if k in apparatus:
+            return "drop"
+        if m := _GRAMMAR_PART.match(text):
+            state["book"] = f"Part {m.group(1)}"
+            return _Unit(state["book"], state["book"])
+        if m := _GRAMMAR_CHAPTER.match(text):
+            state["chapter"] = m.group(1)
+            return _Unit(state["book"], f"Chapter {m.group(1)}. {_caps_title(m.group(2))}")
+        if m := _GRAMMAR_SECTION.match(text):
+            return _Unit(state["book"], f"Chapter {state['chapter']}, § {m.group(1)}. "
+                                        f"{_caps_title(m.group(2))}")
+        if text == "NOTE.":
+            return _Unit(None, "Note")
+        return _numbered(text, unit)
+
+    return _text_chapters(_cut(paras, classify, "pg34022.txt", loose=False))
+
 # A paragraph the file closes mid-sentence: it ends on a lower-case word, a comma, a
 # semicolon, a dash or the word "I", or the next part starts in lower case. A next part
 # that opens with its section number ("25. The devils") is a paragraph of its own.
@@ -1228,18 +1474,46 @@ WORKS: tuple[ThmlWork, ...] = (
              title="The Glories of Mary", author="Alphonsus Liguori", year=1750,
              translation=ANONYMOUS_1852, chapters=_glories_chapters, genre="treatise",
              title_classes=frozenset({_HEADING_CLASS}), ebook=72411,
-             notes_heading="FOOTNOTES"),
+             note_style=gutenberg_text.NoteStyle(heading="FOOTNOTES")),
     ThmlWork(file="pg13871.txt", url="https://www.gutenberg.org/cache/epub/13871/pg13871.txt",
              title="The Practice of the Presence of God", author="Brother Lawrence",
              year=1692, translation=ANONYMOUS_1895, chapters=_lawrence_chapters,
              genre="other", title_classes=frozenset({_HEADING_CLASS}), ebook=13871,
-             notes_heading="NOTES:", notes=LAWRENCE_NOTE),
+             note_style=gutenberg_text.NoteStyle(heading="NOTES:"), notes=LAWRENCE_NOTE),
+    # Newman's Catholic works (Gutenberg text), each printing its notes its own way.
+    ThmlWork(file="pg22088.txt", url="https://www.gutenberg.org/cache/epub/22088/pg22088.txt",
+             title="Apologia pro Vita Sua", author=NEWMAN, year=1864,
+             translation=None, chapters=_apologia_chapters, genre="other",
+             title_classes=frozenset({_HEADING_CLASS}), ebook=22088,
+             note_style=gutenberg_text.NoteStyle(
+                 caller=re.compile(r"\[(\d+)\]"), note=re.compile(r"^\[(\d+)\]\s*(.*)$", re.S),
+                 inline=True), notes=APOLOGIA_NOTE),
+    ThmlWork(file="pg35110.txt", url="https://www.gutenberg.org/cache/epub/35110/pg35110.txt",
+             title="An Essay on the Development of Christian Doctrine", author=NEWMAN,
+             year=1878, translation=None, chapters=_development_chapters, genre="treatise",
+             title_classes=frozenset({_HEADING_CLASS}), ebook=35110,
+             note_style=gutenberg_text.NoteStyle(
+                 caller=re.compile(r"\[([\divxlc]+[:-]\d+)\]"),
+                 note=re.compile(r"^\[([\divxlc]+[:-]\d+)\]\s*(.*)$", re.S),
+                 heading="FOOTNOTES:", repeated=True), notes=DEVELOPMENT_NOTE),
+    ThmlWork(file="pg24526.txt", url="https://www.gutenberg.org/cache/epub/24526/pg24526.txt",
+             title="The Idea of a University", author=NEWMAN, year=1852,
+             translation=None, chapters=_idea_chapters, genre="other", notes=IDEA_NOTE,
+             title_classes=frozenset({_HEADING_CLASS}), ebook=24526,
+             note_style=gutenberg_text.NoteStyle(caller=_NOTE_NUMBER, note=_NOTE_LINE,
+                                                 heading="FOOTNOTES")),
+    ThmlWork(file="pg34022.txt", url="https://www.gutenberg.org/cache/epub/34022/pg34022.txt",
+             title="An Essay in Aid of a Grammar of Assent", author=NEWMAN, year=1870,
+             translation=None, chapters=_grammar_chapters, genre="treatise",
+             title_classes=frozenset({_HEADING_CLASS}), ebook=34022,
+             note_style=gutenberg_text.NoteStyle(caller=_NOTE_NUMBER, note=_NOTE_LINE,
+                                                 heading="FOOTNOTES")),
 )
 
 
 def build_work(work: ThmlWork) -> Document:
     path = os.path.join(_SRC, work.file)
-    root = (gutenberg_text.read_root(path, work.notes_heading) if work.ebook
+    root = (gutenberg_text.read_root(path, work.note_style) if work.ebook
             else _read_root(path))
     chapters = work.chapters(root)
     _verse_blocks([div for _, div, _ in chapters], work)
