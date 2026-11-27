@@ -209,7 +209,9 @@ def withheld_chapters(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
     return _withheld_chapters[path]
 
 
-_EXCLUDING_REASONS = ("rule-a", "rule-b", "rule-c")
+# A duplicate (5.6a: Basil's Letter 167, kept as Gregory of Nazianzus's Letter 66 in his
+# own letters) is taken out on purpose too.
+_EXCLUDING_REASONS = ("rule-a", "rule-b", "rule-c", "duplicate")
 _excluded_divs: dict[str, frozenset[tuple[str, str]]] = {}
 
 
@@ -246,9 +248,11 @@ def excluded_divs(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
 
 
 # Volumes only some works of which are built, by file: the work divs measured. Text outside
-# them is not part of any built work (NPNF2-04's other works wait for 5.6a), so it is not
-# read. The adapter names the same divs (`ingest.church_fathers.VOLUME_WORKS`).
-VOLUME_SCOPE = {"npnf204.xml": ("vii.ii",)}
+# them is not part of any built work (NPNF2-04's other works wait for 5.6a; an NPNF volume
+# 5.6a adds has title pages, prolegomena and indexes around its works), so it is not read.
+# The adapter names the same divs (`ingest.church_fathers.VOLUME_WORKS` and `NPNF_WORKS`).
+VOLUME_SCOPE = {"npnf204.xml": ("vii.ii",), "npnf207.xml": ("ii", "iii", "iv"),
+                "npnf208.xml": ("vii", "viii", "ix")}
 
 
 def _in_scope(div_id: str | None, scope: tuple[str, ...] | None) -> bool:

@@ -133,6 +133,11 @@ PASSAGE_NOTES: dict[str, Note | None] = {
     "which the English translation does not print.": caution(
         "incomplete", "The Latin text ends this article with a short reply to all the "
                       "objections together, which the English translation does not print."),
+    # 5.6a: Basil's Letter 125, whose Greek creed is cut under rule E.
+    "The Creed of Nicaea, which this letter quotes in full, is omitted: the translator left "
+    "it in Greek.": caution(
+        "incomplete", "The Creed of Nicaea, which this letter quotes in full, is omitted: the "
+                      "translator left it in Greek."),
 }
 # `summa._missing_note`'s wordings, each exactly as built: a new one stops the build
 # until it is added here.
@@ -189,6 +194,7 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "Its attribution to Pamphilus is doubtful.": (),
     "Its attribution to Methodius is doubtful.": (),
     "Its attribution to Lactantius is doubtful.": (),
+    "Its attribution to Basil is doubtful.": (),
     "Not by Gregory Thaumaturgus.": (),
     "Written by Hegemonius; Archelaus is the bishop who debates Mani in it.": (
         overview("Archelaus is the bishop who debates Mani in it."),),
@@ -215,6 +221,33 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
                      "(canon 1).")),
     "Some passages are omitted: the translators left them in Latin and no public-domain "
     "English translation exists.": (LATIN_OMITTED,),
+    # 5.6a's labels on Basil's letters. The header names the writer and the certainty.
+    "Transmitted among Basil's letters, but not his.": (),
+    "Transmitted among Basil's letters; scholars now assign it to Gregory of Nyssa.": (
+        caution("authorship", "Transmitted among Basil's letters."),),
+    "Transmitted among Basil's letters; Fedwick (1981) assigns it to Gregory of Nazianzus.": (
+        caution("authorship", "Transmitted among Basil's letters."),),
+    "An extract from Gregory of Nyssa's Against Eunomius, transmitted among Basil's "
+    "letters.": (caution("authorship", "An extract from Against Eunomius, transmitted among "
+                                       "Basil's letters."),),
+    "Transmitted among Basil's letters, but written about him; the Benedictine editors give "
+    "it to Gregory of Nazianzus's father, written in his son's hand.": (caution(
+        "authorship", "Transmitted among Basil's letters, but written about him; the "
+                      "Benedictine editors give it to Gregory's father, written in his son's "
+                      "hand."),),
+    # The header names Evagrius (rule 1), so the card says the rest.
+    "Scholars now give this letter to Evagrius Ponticus, whose teachings the Second Council "
+    "of Nicaea condemned.": (caution(
+        "authorship", "Long read as Basil's; scholars now give it to this writer, whose "
+                      "teachings the Second Council of Nicaea condemned."),),
+    "Some manuscripts give these lectures to Cyril's successor, John of Jerusalem; the "
+    "Catechism cites them as Cyril's.": (caution(
+        "authorship", "Some manuscripts give these lectures to Cyril's successor, John of "
+                      "Jerusalem; the Catechism cites them as Cyril's."),),
+    "A later addition to Basil's letter to Ambrose.": (
+        caution("authorship", "A later addition to Basil's letter to Ambrose."),),
+    "Not by Basil. The Second Council of Nicaea (787) quoted it as his.": (
+        caution("authority", "The Second Council of Nicaea (787) quoted it as Basil's."),),
     # 3.2's fragment collections: how the text survives, on the record line.
     **{text: (record(text.rstrip(".")),) for text in (
         "Preserved in quotations by later writers, chiefly Irenaeus (Against Heresies) and "
@@ -321,6 +354,19 @@ SCAN_TRANSLATORS = {
     "alexandrianchris012826mbp": "Translated by Henry Chadwick (1954)",
 }
 TRANSLATOR_COLLECTIONS = ("councils", "church-fathers")
+# Passages NPNF2-08 gives wholly or partly in Newman's translation (The Church of the
+# Fathers, 1840), as its notes say, by (document ID, passage anchor): each names both
+# translators (rule 3). 5.6a, Basil's Letters 2 (to paragraph 18, where "his translation
+# ends"), 14, 90 and 136 (their first paragraphs), 138 (section 1), 203 and 204 (the
+# bracketed passages).
+NEWMAN_AND_JACKSON = ("Translated by John Henry Newman (1840) and Blomfield Jackson "
+                      "(1895)")
+PASSAGE_TRANSLATORS = {
+    ("75cc7965-7501-595d-af44-9997bb7498be", anchor): NEWMAN_AND_JACKSON
+    for anchor in ("ix.iii", "ix.iii/from-p10", "ix.iii/from-p17", "ix.xv", "ix.xci",
+                   "ix.cxxxvii", "ix.cxxxix", "ix.cciv", "ix.cciv/from-p7", "ix.ccv",
+                   "ix.ccv/from-p14", "ix.ccv/from-p23", "ix.ccv/from-p26",
+                   "ix.ccv/from-p27")}
 
 
 # --------------------------------------------------------------------------- translator
@@ -425,7 +471,8 @@ def _passage(p: Passage, translator: str | None) -> Passage:
 def _passage_translator(document: Document, p: Passage, card: str) -> str | None:
     if document.collection not in TRANSLATOR_COLLECTIONS:
         return None
-    named = SCAN_TRANSLATORS.get((p.metadata or {}).get("scan_id") or "")
+    named = SCAN_TRANSLATORS.get((p.metadata or {}).get("scan_id") or "") \
+        or PASSAGE_TRANSLATORS.get((document.id, p.anchor))
     return named if named and named != card else None
 
 

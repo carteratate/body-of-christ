@@ -6156,6 +6156,158 @@
   "added_on": "2026-11-12"
  },
  {
+  "id": "rm-11663",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Heading lines above the text that repeat the chapter label: rule lines, number lines and title lines",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.editorial.classify_lines (heading)",
+   "count": 72
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11666",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 2126
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11552",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+  "anchor": "ii.xiii/from-p80",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaf28528708d4fd6ef6edc949a513f09b79a07af",
+   "excerpt": "————————————"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11553",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+  "anchor": "ii.xiii/from-p80",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eb592b0c062ccbe86877167e35f762169a4c21d7",
+   "excerpt": "Appendix to Lecture IX."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11554",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+  "anchor": "ii.xiii/from-p80",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "25371c46f56afc4b3ae6a5365567d16ddd81ff53",
+   "excerpt": "Note.—In the manuscripts which contain this discourse under the name of “A Homily of S. Basil on God as Incomprehensibl…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11555",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+  "anchor": "ii.xiii/from-p80",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "cb3c27c53077e673092e8d00eefab110a8c1d99d",
+   "excerpt": "“What is there to find fault with in the framing of the body? Come forth into the midst and speak. Control thine own wi…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11556",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+  "anchor": "ii.xiii/from-p80",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "19163039237bcf2abc3911459d5d3af7d119fe5b",
+   "excerpt": "Adam at first was without clothing, faring daintily in Paradise: and after he had received the commandment, but failed…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11557",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
+  "anchor": "ii.xiii/from-p80",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6855a9ae580dc25e7cb7a8d73317de8ca034ddf6",
+   "excerpt": "At the end of the same section, after the words “Wise Creator,” this is found: “Glorify Him in His unsearchable works,…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
   "id": "rm-0034",
   "scope": "class",
   "collection": "church-fathers",
@@ -12078,6 +12230,709 @@
   "added_on": "2026-11-10"
  },
  {
+  "id": "rm-11664",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Heading lines above the text that repeat the chapter label: rule lines, number lines and title lines",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.editorial.classify_lines (heading)",
+   "count": 52
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11667",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 2156
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11558",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "3f5fe7432d5cd8325f2eb5e42481dddf83a34472",
+   "excerpt": "It is generally agreed that this oration was not intended for oral delivery. Its object was to explain and defend S. Gr…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11564",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.ix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "661d82f5e61e876ab77d62f4866bc2496097d0d1",
+   "excerpt": "ThisOration belongs to the year a.d. 373. A series of disasters had befallen the people of Nazianzus. A deadly cattle p…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11559",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "2452e58fc8b0801b46423b4e97d65a83bf92dc02",
+   "excerpt": "(About Easter a.d. 362.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11560",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.vi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "750ef8640a74277b790aeb7b2e3962e847452dc3",
+   "excerpt": "The date of this Oration is probably the spring of a.d. 369. It is placed by S. Jerome first among S. Gregory’s Oration…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11561",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a0515e7e30a914382b34f350b09ef067dac027fc",
+   "excerpt": "The exact date of this Oration is uncertain. It is certainly (§23) later than the death of Cæsarius, a.d. 369, and prev…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11562",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "796547719aecc51ca77c8957aada98a0e3fed3c1",
+   "excerpt": "Funeral Oration on his Sister Gorgonia."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11563",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.viii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c935d3c8b0a5dbb803aef22851bf989fe64c85b3",
+   "excerpt": "ThisOration was delivered a.d. 372. Two years earlier Valens had divided Cappadocia into two provinces. Anthimus, Bisho…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11565",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.x",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b86abda6a3a565cfe8b0a72988f6b92836ec4fd1",
+   "excerpt": "ThisOration was delivered a.d. 374. S. Gregory the elder died early in that year, according to the Greek Menæa on the 1…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11566",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.x",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "78bd36df29e1aabd02e5770fa59ac1a0ab8396d7",
+   "excerpt": "Funeral Oration on His Father, in the Presence of S. Basil."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11567",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "97d6dc379833601f59a1dea051af933188eade2f",
+   "excerpt": "The reference in §22 to “the Council which sat first at Seleucia…and afterwards at this mighty city,” leaves no room fo…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11569",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eb59cc1c0eb71c5c239a47bce052cbdb82c512b7",
+   "excerpt": "This Oration was preached at Constantinople in 380, under the following circumstances: Peter, Patriarch of Alexandria,…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11568",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xviii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "311543267cce11380aa54130fa8e1c16c805e4ec",
+   "excerpt": "Delivered at Constantinople about the middle of the year 380."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11570",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0fb52df3517fa567d807e9f74ed8f6cadf3a1d5c",
+   "excerpt": "The Title of this Oration has given rise to a doubt whether it was preached on Dec. 25, 380, or on Jan. 6, 381. The wor…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11571",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "34afbd6fa2628b0a491621b2e255da17523941ad",
+   "excerpt": "The Oration is thus analysed by Abbe Benoît:"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11572",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e9ee56a44aac7aebc3e3e26d628382e2c157db9f",
+   "excerpt": "“After an exordium which is full of the enthusiasm and joy which such a subject naturally inspires the Orator recommend…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11573",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ac55439cb9e966fa2278868b0db22cf4cd4dba9b",
+   "excerpt": "It is considered one of the best of Gregory’s discourses. “By the grandeur of the plan,” says Benoît, “the elevation of…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11574",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "2d453beb09fa940b1886257b03177fe963ec1f11",
+   "excerpt": "The Oration on the Holy Lights was preached on the Festival of the Epiphany 381, and was followed the next day by that…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11575",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f3fbfb8eba4bfeee25289685f450862ea41e46dd",
+   "excerpt": "1. The figurative Baptism of Israel by Moses in the cloud and in the Sea."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11576",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1e9593f1a6defd878da6416b160c0f2d8ed96dbe",
+   "excerpt": "2. The preparatory Baptism of repentance ministered by S. John the Baptist."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11577",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1d0992aa401e86cbfe2e22ba44f569e302e6c4a9",
+   "excerpt": "3. The spiritual Baptism of water and the Holy Ghost given us by our Lord."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11578",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c34a6c5d6d89cfc6998b320260eeb09e0065ba19",
+   "excerpt": "4. The glorious Baptism of Martyrdom."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11579",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e30d05524b6c91182e0a6b24e978ab312d97d7cd",
+   "excerpt": "5. The painful Baptism of Penance."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11580",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ad42eabb3771675d0b35d8503d3f97dbbfb31dee",
+   "excerpt": "In speaking of this last he takes occasion to refute the extreme rigorism of the followers of Novatus, who denied absol…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11581",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "11435235849e597a009b531f893ecb938e8e3cc4",
+   "excerpt": "In the second Oration, delivered next day, he dwells on the Sacrament of Baptism and its spiritual effects; and takes o…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11582",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxiii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a1aa31bdb9b81e531bbd7c770df8786e508a858e",
+   "excerpt": "Preached at Constantinople Jan. 6, 381, being the day following the delivery of that on the Holy Lights."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11583",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e4885317a8c52915cb832d8e05f08019082dd4a8",
+   "excerpt": "It is uncertain to what year the following Oration belongs. It was, however, certainly delivered at Constantinople; the…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11584",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6fe2675b210a81fddccadb90693837cc1e5a5da4",
+   "excerpt": "The Oration deals again with the subject of the Fifth Theological Oration, the question of the Deity of the Holy Ghost,…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11585",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "37624bd4a6846106e4e6c4ebc9f5de0f69500312",
+   "excerpt": "The Preacher begins by commenting on the various ways in which Festivals are kept by Jews, by Heathen and by Christians…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11586",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "588c2e73fc5339849f1f4f5ed60b59edfd28ae06",
+   "excerpt": "God the Holy Ghost, he says, completes the work of Christ. Those who regard Him as a Created Being, as did the follower…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11587",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b2aaf7ef75b5b2a9364ab6dd386667087469abd3",
+   "excerpt": "It would seem from some expressions in c. 8 that this Discourse was not delivered to his usual audience, but to an Asse…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11588",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5c10aa1db8c430a5cded85672beaec39c1dc3373",
+   "excerpt": "The Title of the Oration varies in different mss. Thus some have it “Of The Same On Pentecost,” to which one adds “And…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11589",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "7ddaa7f667775281214c84d38d94ac7d197aaeef",
+   "excerpt": "ThisOration was delivered during the Second Œcumenical Council, held at Constantinople a.d. 381. Historical as well as…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11590",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxvi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "43186d729834f07e739d911158a924996cb551ee",
+   "excerpt": "S. Basil died January 1, a.d. 379. A serious illness, in addition to other causes, prevented S. Gregory from being pres…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11591",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "470d8da070e547e5c1eaa682f25b7f9fa50e5eda",
+   "excerpt": "ThisOration was not, as its title would perhaps lead us to suppose, delivered immediately after the first; but an inter…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11592",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "70347ebd-4832-59b6-813f-aeb2e120837b",
+  "anchor": "iii.xxvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a2bb3f4e98000457b9a935deecfecc557ed48010",
+   "excerpt": "The Benedictine Editors profess themselves unable to determine whether this repetition is due to S. Gregory himself—or…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
   "id": "rm-5024",
   "scope": "document",
   "anchor": null,
@@ -12113,6 +12968,468 @@
   "added_on": "2026-11-01",
   "closed_by": "3.1",
   "closed_on": "2026-11-15"
+ },
+ {
+  "id": "rm-11519",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Heading lines above the text that repeat the chapter label: rule lines, number lines and title lines",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.editorial.classify_lines (heading)",
+   "count": 652
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11550",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 1088
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11545",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccl",
+  "passage_id": "e4018ed8-624d-5e82-a52a-f05f3cb71ed2",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11546",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.ccclii",
+  "passage_id": "c0af4e44-520e-53c6-b743-fa22ac5f399d",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11547",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccliii",
+  "passage_id": "b7ab770b-d48c-5437-a603-a8a7f309cd63",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11539",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxl",
+  "passage_id": "a526d51f-ab76-56e5-b20c-07723459ef0c",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11540",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxli",
+  "passage_id": "4f9d3b62-e36a-56e1-9a12-30571bcd9ccc",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11541",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxlii",
+  "passage_id": "36da47cf-1465-5c2f-ad25-c70238fe09b5",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11542",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxliv",
+  "passage_id": "1e52a2bc-396e-5a02-9f2c-e63b9589b061",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11544",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxlix",
+  "passage_id": "fe488530-e776-5379-9004-cf115446c3a7",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11543",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxlvii",
+  "passage_id": "3d9c1296-de65-59fa-b419-eea422046c5b",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11534",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxxxi",
+  "passage_id": "524c38c6-1807-5567-bdfe-dbc78d3e1047",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11535",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxxxiii",
+  "passage_id": "f83fb73a-3f0e-5dbb-a3ac-c5701ffc99fd",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11536",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxxxv",
+  "passage_id": "97bd1af3-9a1d-5d88-af48-bf145a904196",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11537",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxxxvi",
+  "passage_id": "add7b2a6-0aef-5931-b74b-fe0c6b8d2ef3",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11538",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cccxxxviii",
+  "passage_id": "31ccf424-71be-585b-a173-2d35584ce021",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter of Libanius, the pagan sophist, to Basil; its author was not a Christian (Quasten, p. 245: \"un pagano declarado\").",
+  "tombstone": "Removed because its author was not a Christian.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11551",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.clxviii",
+  "passage_id": "48169f5d-50f1-5acf-8d0b-61e4bd488089",
+  "reason": "duplicate",
+  "detail": "Basil's Letter 167 is Gregory of Nazianzus's Letter 66 to Eusebius of Samosata, given from his own Select Letters (NPNF2-07, Browne and Swallow, document Select Letters, letter iv.iv.iii.v); this copy in Jackson's translation is retired (Carter, 24 Nov 2026).",
+  "tombstone": "Removed because this letter is Gregory of Nazianzus's Letter 66, which TheoCorpus gives in his own Select Letters.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11511",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cxxvi/from-p19",
+  "passage_id": null,
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: a paragraph the translator left in Greek, cut from a chapter whose English stays (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.church_fathers.NOT_ENGLISH",
+   "sha1": "ea0d9b08b078984a3e8f0dbecea96054280e7a02"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11512",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cxxvi/from-p19",
+  "passage_id": null,
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: a paragraph the translator left in Greek, cut from a chapter whose English stays (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.church_fathers.NOT_ENGLISH",
+   "sha1": "e40f497fe5532ff2912ab84a5903489ff1b484c6"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11513",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cxxvi/from-p19",
+  "passage_id": null,
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: a paragraph the translator left in Greek, cut from a chapter whose English stays (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.church_fathers.NOT_ENGLISH",
+   "sha1": "fa01c65840b37a60b4f216538a3382742ad5287b"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11514",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cxxvi/from-p19",
+  "passage_id": null,
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: a paragraph the translator left in Greek, cut from a chapter whose English stays (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.church_fathers.NOT_ENGLISH",
+   "sha1": "17b2e62402c4a612c300a7955db433d313d45a91"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11515",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cxxvi/from-p19",
+  "passage_id": null,
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: a paragraph the translator left in Greek, cut from a chapter whose English stays (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.church_fathers.NOT_ENGLISH",
+   "sha1": "fbaa9a65ac57db6ed2d4cf0bf0de1379b03bf538"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11516",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cxxvi/from-p19",
+  "passage_id": null,
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: a paragraph the translator left in Greek, cut from a chapter whose English stays (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.church_fathers.NOT_ENGLISH",
+   "sha1": "dff9be04901f0d288ba214de3e9316fa4dc8859e"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11517",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cxxvi/from-p19",
+  "passage_id": null,
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: a paragraph the translator left in Greek, cut from a chapter whose English stays (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.church_fathers.NOT_ENGLISH",
+   "sha1": "d0bebb268f8129d0195001f0966b1e21a4021cbf"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11518",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.cxxvi/from-p19",
+  "passage_id": null,
+  "reason": "translation-in-preparation",
+  "detail": "Rule E: a paragraph the translator left in Greek, cut from a chapter whose English stays (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.church_fathers.NOT_ENGLISH",
+   "sha1": "143dd979110a5557598a3cde26f6bb0823b886f5"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11532",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.xl",
+  "passage_id": "f639327e-70c7-509c-90e8-246f35ac8a8f",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter in the name of the emperor Julian, who had abandoned the faith, by the testimony of the Fathers; Quasten calls the correspondence spurious (Quasten, Patrología II (BAC 1978), p. 248), and errors fall toward exclusion (R1).",
+  "tombstone": "Removed because this letter is in the name of the emperor Julian, who had abandoned the faith.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11533",
+  "scope": "passage",
+  "collection": "church-fathers",
+  "document_id": "75cc7965-7501-595d-af44-9997bb7498be",
+  "anchor": "ix.xli",
+  "passage_id": "a9fc61e3-eb8d-5f02-99e1-8fcc27a47d70",
+  "reason": "rule-a",
+  "detail": "Rule A: a letter in the name of the emperor Julian, who had abandoned the faith, by the testimony of the Fathers; Quasten calls the correspondence spurious (Quasten, Patrología II (BAC 1978), p. 248), and errors fall toward exclusion (R1).",
+  "tombstone": "Removed because this letter is in the name of the emperor Julian, who had abandoned the faith.",
+  "church_act": null,
+  "span": null,
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
  },
  {
   "id": "rm-0061",
@@ -12188,6 +13505,234 @@
   "judgment": null,
   "added_by": "1.8b",
   "added_on": "2026-11-12"
+ },
+ {
+  "id": "rm-11520",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Heading lines above the text that repeat the chapter label: rule lines, number lines and title lines",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.editorial.classify_lines (heading)",
+   "count": 60
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11548",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 654
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11505",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.ix/from-p37",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "ac51ea795b9d871c3c17ac238125aa25390b36ab",
+   "excerpt": "[“by” A.V.]"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11506",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.ix/from-p55",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c54224c45f0b53ae9d4bf6d9f2968bb5d72d9fd0",
+   "excerpt": "[by, A.V.]"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11507",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.ix/from-p55",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "23e60d30b68264c3ed9b3cd8f0e2bb71651d48ba",
+   "excerpt": "[can, A.V.]"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11508",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.ix/from-p55",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a63defec30891bf5e9170162362a34b03e9ebc16",
+   "excerpt": "[by whom, A.V.]"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11509",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.ix/from-p55",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c54224c45f0b53ae9d4bf6d9f2968bb5d72d9fd0",
+   "excerpt": "[by, A.V.]"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11510",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.ix/from-p55",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c54224c45f0b53ae9d4bf6d9f2968bb5d72d9fd0",
+   "excerpt": "[by, A.V.]"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11501",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.vi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "14b7414009bd545df8b266b594254fc1fc23e086",
+   "excerpt": "[lxx., known]"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11502",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.vi/from-p48",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "7a183cc02956cb944a0dcf3ca04747bb38446758",
+   "excerpt": "(A.V., “of” instead of “through a woman”)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11503",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.vi/from-p48",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b6d54bbb2ebd8496b177770f3d6a505511a52196",
+   "excerpt": "[A.V., of]"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11504",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "7f052676-7c0c-5904-b257-7ca10d489010",
+  "anchor": "vii.vi/from-p48",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "bc40417ca00dfb24fa92467362fabe0ccc2bb258",
+   "excerpt": "[A.V., by]"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
  },
  {
   "id": "rm-0063",
@@ -12806,6 +14351,1374 @@
   "added_on": "2026-11-11"
  },
  {
+  "id": "rm-11665",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Heading lines above the text that repeat the chapter label: rule lines, number lines and title lines",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.editorial.classify_lines (heading)",
+   "count": 108
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11668",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 89
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11593",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c3a2d6ba42b79903dee80990475f3eeaa0c16e06",
+   "excerpt": "(Perhaps about a.d. 357 or 358; in answer to a letter which is not now extant.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11594",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "2c60087c01ec254a6b0e458a089b27610de459e8",
+   "excerpt": "(Written about the same time, in reply to another letter now lost.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11595",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f80b47fa77ec45178b8e052489cdc237308c3a1c",
+   "excerpt": "(In answer to Ep. XIV., of Basil, about 361.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11596",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "01f515ebc7b90c5cbefd9eb59ae38ca72b886901",
+   "excerpt": "(Circa a.d. 361.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11597",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "A bracketed comment by the editor inside the text",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f1c1c92f2dd0e21302ca80f364d579c7b4e52709",
+   "excerpt": "—Od. viii. 492."
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11598",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "eaed1dc51424789d7930ff276d1c8aa3e755f96e",
+   "excerpt": "(Written about the same time, in a more serious vein.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11599",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.vi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "875126c25e2fea5644b6b324dbf32c34098a154b",
+   "excerpt": "(Written to S. Basil shortly after his Ordination as Priest, probably toward the end of a.d. 362.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11600",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5d97aefa452de4b1f6e9e240bc068c6d64eb3ed7",
+   "excerpt": "(This Epistle should be read in connection with the three addressed to Eusebius of Cæsarea, to which it refers. For the…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11601",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1bdd0543ed070c8a811eeeeaf03272be960c6500",
+   "excerpt": "(We insert here the three letters to Eusebius, which are so closely connected with the above as not to seem out of plac…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11602",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1fc3a16a2a366ff1059a22118b1e985bf073d438",
+   "excerpt": "(About the middle of the year 370. On the death of Eusebius Basil seems to have formed a desire that his friend Gregory…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11603",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xiii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "14dfac26837f3fccba6d908b856b10ed747e5215",
+   "excerpt": "(The comprovincial Bishops had notified the elder Gregory of their Synod, but without mentioning its date or purpose or…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11604",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xiv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "bf95e3fcaffbd84c1367edd0587b3a70cc34e4bd",
+   "excerpt": "(There still seemed a probability that intrigues and party spirit would carry the day, and so the two Gregories determi…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11605",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "565578aecb5843534061fcd903a9ed0cd24c601f",
+   "excerpt": "(After the Consecration every one thought that Gregory would at once join his friend; and Basil himself much wished for…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11606",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xvi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a341192e37e53ec45c4b463a28fae5659b04032b",
+   "excerpt": "(The new Archbishop seems not to have been satisfied with the reasons given in Gregory’s last letter; so the latter wri…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11607",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xvii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "542c57ec51496d3789d21e29fe716912ae54c9b2",
+   "excerpt": "(The division of the civil Province of Cappadocia into two Provinces in the year 372 was followed by ecclesiastical tro…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11608",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xviii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "76880754e7ab322b0dbb0064b5f2b53ccfa3fdb3",
+   "excerpt": "(Shortly after the events described above, Basil determined to strengthen his own hands by creating a number of new Bis…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11609",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xx",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e596748c6ad5b731a212892c8bf0c6b463e5f9fa",
+   "excerpt": "(At the request of Anthimus it would appear that S. Gregory wrote to S. Basil a letter, not now extant, proposing a con…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11610",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xxi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "703757c08ca6d2c12975c6bb12cae72c6351ffcc",
+   "excerpt": "(An attack had been made in Gregory’s presence on the orthodoxy of Basil in respect of the Deity of God the Holy Ghost;…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11611",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xxii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "55f287e9b987351470051dab9634506787aac6ac",
+   "excerpt": "(The reply to Basil’s somewhat angry answer to the last.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11612",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iii.xxiii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "cbfad2086d754c08a92cf4f652585bafb9f0ee26",
+   "excerpt": "(Gregory was not able, owing to the serious illness of his Mother, to carry out the promise at the end of Ep. LIX.; so…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11613",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.i.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "d69fccf81acfe127d6544ed78dfce5b8de0e4b4b",
+   "excerpt": "(On the death of the Emperor Constantius the undisputed succession devolved on his cousin Julian the Apostate, who at o…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11614",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.i.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "cf12a84b1a45f689f457bd98388bf4254013081b",
+   "excerpt": "(Under the Emperor Valens Cæsarius returned to public life and was made Quæstor of Bithynia. While he was in this offic…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11615",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.i.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b2e0d9836954fdd66b303ce832845d6309c59081",
+   "excerpt": "(In a.d. 368 the City of Nicæa in Bithynia was almost entirely destroyed by a terrible earthquake. Cæsarius lost his ho…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11616",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "38e109fa59c3b2a295d68144518634050067af1c",
+   "excerpt": "(Gregory, Bishop of Nyssa, was a younger brother of Basil the Great. Ordained a Reader at an early age he grew tired of…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11617",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ii.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f8b305f78dca86e19e6eaf3162f118de69b18e8c",
+   "excerpt": "(When S. Gregory was consecrated Bishop of Nyssa the Imperial Throne was occupied by Valens, an ardent Arian, whose min…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11618",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ii.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f6b65bfc6a1958df67fc36ce99bd17a6d36fcbe1",
+   "excerpt": "(Basil the Great died Jan. 1, a.d. 379. Gregory of Nazianzus was prevented by very serious illness from attending his f…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11619",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ii.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "593d4b4df08564ed5f04e3e490fb42f19ee1db3e",
+   "excerpt": "(Gregory after his resignation of the Patriarchal See of Constantinople had retired to Nazianzus, and had been persuade…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11620",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ii.viii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "acd2df3f4077c6c78dd2f31708fb592065e6a616",
+   "excerpt": "(The writer of the article on Gregory Nyssen in the Dict. Biogr. supposes her to have been his wife, but produces no ev…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11621",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iii.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9ec3c6f9fb374208a869f67d099a142af6e46238",
+   "excerpt": "(Eusebius, having in response to the appeal referred to above, betaken himself to Cæsarea, the Elder Gregory, though in…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11622",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iii.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "647847687651aa3255a16032b93127a29b32a4f6",
+   "excerpt": "(In the year 374 Eusebius and other orthodox Bishops of the East were banished by Valens and their thrones filled with…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11623",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iii.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6159d5a47c35c307b3265a49dde9817bf5adecbf",
+   "excerpt": "(Eusebius having replied to the former letter Gregory wrote again, having an opportunity of communicating with his frie…"
+  },
+  "judgment": "This letter is sometimes attributed to Basil.)",
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11624",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iii.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c6675c2af5f8c5edd11a5bccb9511dab83e6df93",
+   "excerpt": "(The following letter is sometimes attributed to Basil, and is found in his works as well as in those of Gregory. The m…"
+  },
+  "judgment": "(The following letter is sometimes attributed to Basil, and is found in his works as well as in those of Gregory.",
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11625",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iv.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1bd3589ce8e6a5e3e8be32d8840ad3672b37710a",
+   "excerpt": "(Sophronius, a native of the Cappadocian Cæsarea, was an early friend and fellow-student of Gregory and Basil. He enter…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11626",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iv.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "f4abe1476096ed65320dfaf2756d3eb4207a33f9",
+   "excerpt": "(Is for Amphilochius, written at the same time and in consequence of the same trouble as that which we have placed seco…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11627",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iv.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0c4ce61d950e857f07c9a17ce0ee59bed96ef6b4",
+   "excerpt": "(Of the same year. Here Cæsarius had bequeathed all his property to the poor; but his house had been looted by his serv…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11628",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iv.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "09d4a74e0cec1f1aa16ea8ed7d9521454c7e8f29",
+   "excerpt": "(A letter of recommendation for Eudoxius a Rhetorician for whom Gregory had a warm regard.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11629",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iv.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6e8e2a3ba515446f9c6477364cf5c4adc790a9ca",
+   "excerpt": "(About the same date. A recommendation of one Amazonius, whose learning was much respected by Gregory.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11630",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iv.vi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5c912c16eb31090c3574baa781d62dfe8735820c",
+   "excerpt": "(Written soon after Gregory’s resignation of the Archbishopric.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11631",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.iv.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "4f819386ca730dff1a84e3728f5752b09e632a3c",
+   "excerpt": "(About the middle of a.d. 382 Theodosius, on the recommendation of S. Damasus, summoned a new Synod of Eastern Bishops…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11658",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ix.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1860d79cfcd4d40edb92b081b10968d8a30ce1b6",
+   "excerpt": "(Olympius was Prefect of Cappadocia Secunda in 382. One letter to him against the Apollinarians, has already been given…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11659",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ix.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "77c19ad63bf9319c8e9b6b5548a67687d1116265",
+   "excerpt": "(While Gregory was at Xantharis an opportunity presented itself for seeing Olympius, but a return of illness prevented…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11660",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ix.vi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "02aaaa3e547efef8d194681db210d2f27cd95782",
+   "excerpt": "(In 382 Gregory was summoned to a Synod at Constantinople; he wrote to Procopius, the Prefectus Urbi, and declined to g…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11661",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ix.viii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "36ce56248697e022083faa6b7961104570e96584",
+   "excerpt": "(The people of Nazianzus had in some way incurred the loss of civic rights; and the Order for the forfeiture of the tit…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11662",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.ix.xi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "56b1ad515f758b318fee608e091650d877a38730",
+   "excerpt": "(Verianus, a citizen of Nazianzus, had been offended by his son-in-law, and on this account wished his daughter to sue…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11632",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.v.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "45f0fde698dca76460af4f6e3676bc770d8f2cc7",
+   "excerpt": "(Constantine and Constantius had granted exemption from the military tax to all clerics. This privilege was, however, a…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11633",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.v.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "8cf8e2cf64894a2c823f2a0db3f74de48fbea609",
+   "excerpt": "(See the first letter to Sophronius. The nature of the trouble here alluded to is unknown. There are several letters to…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11634",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.v.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "5a4989859743aae2d217bcbf94d3e269db2a2a2c",
+   "excerpt": "(Amphilochius was acquitted of the charges made against him, referred to in former letters; but the result of the accus…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11635",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.v.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b7e93567eb94eaf0dc4b0202b04d94b2b64f1c33",
+   "excerpt": "(The Armenian referred to is probably Eustathius Bishop of Sebaste, the capital of Armenia Minor. He had been a discipl…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11636",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.v.viii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "1b9dea0509c2945ae9e341bcb3cf5f924d2b33fb",
+   "excerpt": "(In a.d. 374 Amphilochius was made Bishop of Iconium; and his father, a man of the same name, was deeply aggrieved at b…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11637",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.v.x",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "a1ca7b2b12aabb8d2dbec15331454fb5f10a4cf9",
+   "excerpt": "(Bosporius, Bishop of Colonia in Cappadocia Secunda, who had apparently taken a prominent part in the election and cons…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11638",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vi.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "b242bed049e134ba3c582f5b8fd47ce9a5416f84",
+   "excerpt": "(Gregory, having failed to persuade the Council of a.d. 381 to end the schism at Antioch by recognizing Paulinus as suc…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11639",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vi.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "0bef5eef7c23840bd29791729f7cf881f440572d",
+   "excerpt": "(A letter of no great importance, except as shewing the friendly feelings which Gregory continued to maintain towards h…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11640",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vi.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "2ab4cb283daa2fbee87fd6eabaa27ba6651b0703",
+   "excerpt": "(Written about a.d. 382, commending his friend George, a deacon of Nazianzus, to the good offices of the Archbishop and…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11641",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vi.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "6d6447a2a92de5a3f824eca056c18fd31303da5a",
+   "excerpt": "(See Introduction to Ep. CLXXXIV. above, p. 469. Bosporius was to be sent to Constantinople that his cause might there…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11642",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vi.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "fe2a3389eb9f4d48b576ef212edd4dbc99584f12",
+   "excerpt": "(A letter of introduction for a relative.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11643",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "e18cf8cda5fc58df444fa070809a11649bed7263",
+   "excerpt": "(Theodore, a native of Arianzus, and an intimate friend of Gregory, accompanied him to Constantinople a.d. 379, and sha…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11644",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "168b4be6ea601219189b42d6fc6f03896b69e25b",
+   "excerpt": "(Sent about Easter a.d. 382 with a copy of the Philocalia, or Chrestomathy of Origen’s works edited by himself and S. B…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11645",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "011074b6349012887ece21fa10949bba8642d9e0",
+   "excerpt": "(Written a little later, as a letter of thanks for an Easter Gift. Theodore had quite recently been made Archbishop of…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11650",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.ix",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "cdef5e0b93dd7169610b9eb2bdb9044c0b87053f",
+   "excerpt": "(S. Gregory succeeded at the end of a.d. 382 in convincing the Metropolitan and his Comprovincials of his sincerity in…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11646",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.v",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "59aac27d03721432917c47203600a0d7f7374aa9",
+   "excerpt": "(To excuse himself for postponing his acceptance of an invitation.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11647",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.vi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "196ee6d0bfbbfa5eb1938bd68ec1773c7a6b0773",
+   "excerpt": "(A little later on, when the weather was more settled, Gregory accepts the invitation and proposes to come at once, but…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11648",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.vii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "52c0bd96d2ffd446943a810b69c0a8ec92e76d4d",
+   "excerpt": "(On his retirement from Constantinople Gregory had at the request of the Bishops of the Province, and especially of The…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11649",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.viii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "af327308d962f34f8ab993fd4121eaccd378bb91",
+   "excerpt": "(S. Gregory had to carry out his threat. He resigned the care of Nazianzus, and nothing would induce him to withdraw hi…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11651",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.x",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "927e27a85f95fcd612d1f48be091ace34bd82065",
+   "excerpt": "(George a layman of Paspasus, was sent by Theodore of Tyana to Saint Gregory that the latter might convince him of his…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11652",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.xi",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "56859d070f5cf39098e792f0c7214f195aa5cdb6",
+   "excerpt": "(Helladius, Archbishop of Cæsarea, contested the validity of the election of Eulalius to the Bishopric of Nazianzus, an…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11653",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.vii.xii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "984bbdf9d9e51509e428b07fec4ff616b798d497",
+   "excerpt": "(This letter is written at a somewhat earlier date in reference to the consent he had been induced to give to remaining…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11654",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.viii.i",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c4e5943fc898ff5dfab8344875969d5c2e37a85e",
+   "excerpt": "(See the introduction to the first letter to Sophronius above.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11655",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.viii.ii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c38b9493a6fa6a8c157ac5155c66c12e9181f55d",
+   "excerpt": "(An answer to a request made by Nicobulus for a treatise on the art of writing letters. Benoît thinks this and the foll…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11656",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.viii.iii",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "9522fc7c893ef68e0fbca8a63ed4768c4c65a502",
+   "excerpt": "(Nicobulus asked Gregory to publish a collection of his letters. Gregory forwards a copy.)"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
+  "id": "rm-11657",
+  "scope": "span",
+  "collection": "church-fathers",
+  "document_id": "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
+  "anchor": "iv.iv.viii.iv",
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "The editor's note above or after the text (an introduction, a date, an analysis), not the author's (5.6a)",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "sha1": "c74773a2a3eb9e2ec125ee70dde713205fc17293",
+   "excerpt": "(Gregory put a collection of Basil’s letters with his own, and gave them the first place. Nicobulus seems to have been…"
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-24"
+ },
+ {
   "id": "rm-0071",
   "scope": "class",
   "collection": "church-fathers",
@@ -13078,6 +15991,44 @@
   "judgment": "600.) I have been unable to get a copy of the work of John de Soynes on Montanism, which possibly throws some light upon the Dialogue with Proclus, attributed to him by Photius.",
   "added_by": "1.8a",
   "added_on": "2026-11-10"
+ },
+ {
+  "id": "rm-11521",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "9398a664-a690-5431-a2cc-46046a3be21a",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Heading lines above the text that repeat the chapter label: rule lines, number lines and title lines",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "ingest.editorial.classify_lines (heading)",
+   "count": 18
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
+ },
+ {
+  "id": "rm-11549",
+  "scope": "class",
+  "collection": "church-fathers",
+  "document_id": "9398a664-a690-5431-a2cc-46046a3be21a",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 368
+  },
+  "judgment": null,
+  "added_by": "5.6a",
+  "added_on": "2026-11-23"
  },
  {
   "id": "rm-0074",

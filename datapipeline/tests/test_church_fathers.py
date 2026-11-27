@@ -89,8 +89,9 @@ def test_split_passages_have_complete_reader_boundaries():
     # 127 after 1.8a, whose rule G took Asterius Urbanus's only passage, his Elucidation;
     # 128 since 1.8c parses his text and brings the document back; 142 since 1.8b splits
     # the two Augustine treatise volumes into their 16 works; 109 since 3.1 removes 33
-    # works under rules A to C.
-    assert len(docs) == 109
+    # works under rules A to C; 112 since 5.6a adds Basil's three works (NPNF2-08); 115
+    # with Cyril's and Gregory of Nazianzus's (NPNF2-07).
+    assert len(docs) == 115
     for doc in docs:
         groups = defaultdict(list)
         for passage in doc.passages:
@@ -475,7 +476,9 @@ def test_incarnation_removals_recorded():
 
 
 def test_volume_scope_matches_the_adapter():
-    assert source_text.VOLUME_SCOPE == {f: tuple(works) for f, works in cf.VOLUME_WORKS.items()}
+    assert source_text.VOLUME_SCOPE == {
+        **{f: tuple(works) for f, works in cf.VOLUME_WORKS.items()},
+        **{f: tuple(w.div for w in works) for f, works in cf.NPNF_WORKS.items()}}
 
 
 def test_incarnation_coverage_reads_only_its_work():
@@ -536,3 +539,249 @@ def test_hippolytus_keeps_his_datable_works(fathers):
     assert [k for k in dict.fromkeys(p.work_key for p in d.passages)] == \
         ["iii.iv.i.x", "iii.iv.ii.i"]
     assert not [x for x in fathers if x.title == "The Refutation of All Heresies"]
+
+
+# ------------------------------------------------------------------ 5.6a: Basil (NPNF2-08)
+
+_BASIL = {"npnf208.xml#vii": ("On the Holy Spirit", 30),
+          "npnf208.xml#viii": ("The Hexaemeron", 9),
+          "npnf208.xml#ix": ("Letters", None)}
+
+
+@pytest.fixture(scope="module")
+def basil():
+    return {d.metadata["source_key"].split("/", 1)[1]: d
+            for d in build_documents(os.path.join(_SRC, "npnf208.xml"))}
+
+
+def test_basil_volume_builds_its_three_works(basil):
+    assert set(basil) == set(_BASIL)
+    for key, (title, chapters) in _BASIL.items():
+        d = basil[key]
+        assert (d.title, d.author) == (title, "Basil")
+        if chapters:
+            assert len({p.chapter_key for p in d.passages}) == chapters
+
+
+def test_basil_head_lines_go_to_the_label(basil):
+    for d in basil.values():
+        for p in d.passages:
+            for para in p.content.split("\n\n"):
+                assert not cf._NPNF_NUMBER.match(para), (p.anchor, para)
+                assert not cf._CANONICA.match(para), (p.anchor, para)
+    sp = basil["npnf208.xml#vii"]
+    # The div's title attribute is garbled here; the label reads the printed line.
+    label = next(p.chapter_label for p in sp.passages if p.chapter_key == "vii.vi")
+    assert label.startswith("Chapter V. That “through whom” is said also")
+    letters = basil["npnf208.xml#ix"]
+    first = next(p for p in letters.passages if p.chapter_key == "ix.clxxxix")
+    assert first.chapter_label == "Letter CLXXXVIII · To Amphilochius, concerning the Canons"
+    assert first.content.startswith("“Even a fool,”")
+
+
+def test_basil_summaries_and_notes_are_not_built(basil):
+    built = {p.chapter_key for p in basil["npnf208.xml#ix"].passages}
+    skipped = next(w for w in cf.NPNF_WORKS["npnf208.xml"] if w.letters).skip
+    assert not built & skipped
+    for p in basil["npnf208.xml#ix"].passages:
+        assert not any(para.startswith("[") and para.endswith("]") and len(para) < 200
+                       for para in p.content.split("\n\n")), p.anchor
+
+
+def test_basil_letter_197_second_section_is_its_own_work(basil):
+    letters = basil["npnf208.xml#ix"]
+    part = [p for p in letters.passages if p.chapter_key == "ix.cxcviii/2"]
+    assert part and part[0].content.startswith("2. By your earnestness")
+    assert all(p.work_key == "ix.cxcviii/2" for p in part)
+    head = [p for p in letters.passages if p.chapter_key == "ix.cxcviii"]
+    assert head and not any("Dionysius" in p.content for p in head)
+    assert {w.work_key for w in letters.works} >= {"ix.cxcviii", "ix.cxcviii/2"}
+
+
+def test_basil_letter_125_loses_only_its_greek_creed(basil):
+    text = "\n\n".join(p.content for p in basil["npnf208.xml#ix"].passages
+                      if p.chapter_key == "ix.cxxvi")
+    assert "πιστεύομεν" not in text
+    assert text.startswith("1. Both men") and "3. Here then all points" in text
+
+
+def test_basil_editor_brackets(basil):
+    text = "\n".join(p.content for d in basil.values() for p in d.passages)
+    assert "A.V." not in text and "[lxx" not in text
+    assert "[the Spirit]" in text                       # supplied by the translator
+    letter_2 = next(p.content for p in basil["npnf208.xml#ix"].passages
+                    if p.chapter_key == "ix.iii")
+    assert "[I recognised your letter" in letter_2      # Newman's bracketed passages
+
+
+def test_basil_rule_a_letters_are_not_built(fathers):
+    from scripts.npnf_registry import EXCLUDED
+    letters = _doc(fathers, "npnf208.xml#ix")
+    built = {p.chapter_key.split("/")[0] for p in letters.passages}
+    assert not built & set(EXCLUDED["npnf208.xml"])
+    assert {"ix.ii", "ix.iii", "ix.ccclv"} <= built     # Letters 1, 2; 360 under rule D
+    # Letter 8 stays, labelled Evagrius's (Carter, 24 Nov 2026); Letter 167 is Gregory of
+    # Nazianzus's Letter 66, kept in his own letters only.
+    assert "ix.ix" in built and "ix.clxviii" not in built
+    # Basil is a Doctor: limit 2 keeps his own letters to Libanius; Libanius's leave.
+    assert "ix.cccxxx" in built and "ix.cccxxxi" not in built
+    # The reader lists only the letters the document holds.
+    assert {w.work_key for w in letters.works} == {p.work_key for p in letters.passages}
+
+
+def test_basil_letter_8_is_credited_to_evagrius_and_its_ids_are_retired():
+    import json
+    from scripts.npnf_registry import RETIRED_IDS
+    reg = registry.current()
+    assert not {e["id"] for e in reg.removals} & RETIRED_IDS
+    entry = next(w for w in json.load(open(os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "registry", "works.json")))
+        if w["work_id"] == "church-fathers/npnf208/ix")
+    work = next(x for x in entry["works"] if x["work_key"] == "ix.ix")
+    assert work["author"] == "Evagrius Ponticus"
+    assert "Second Council of Nicaea" in work["attribution_note"]
+
+
+def test_basil_letter_from_antipater_is_credited_to_him(basil):
+    work = next(w for w in basil["npnf208.xml#ix"].works if w.work_key == "ix.clxxxviii")
+    assert work.author == "Antipater"
+
+
+def test_basil_newman_letters_name_both_translators(fathers):
+    import card_notes
+    letters = _doc(fathers, "npnf208.xml#ix")
+    done = card_notes.apply(letters, {"card_translator": "Translated by Blomfield Jackson (1895)"})
+    by_anchor = {p.anchor: (p.metadata or {}).get("translator") for p in done.passages}
+    assert by_anchor["ix.xv"] == card_notes.NEWMAN_AND_JACKSON       # Letter 14
+    assert by_anchor["ix.iii/from-p17"] == card_notes.NEWMAN_AND_JACKSON
+    assert by_anchor["ix.iii/from-p25"] is None      # Letter 2 after Newman's version ends
+    assert by_anchor["ix.iv"] is None                                # Letter 3: Jackson's
+    assert {k for _, k in card_notes.PASSAGE_TRANSLATORS} <= set(by_anchor)
+
+
+def test_npnf_registry_lifting_an_exclusion_restores_the_letter(monkeypatch):
+    from scripts import npnf_registry
+    npnf_registry_excluded = npnf_registry.EXCLUDED
+    excluded = {f: dict(divs) for f, divs in npnf_registry.EXCLUDED.items()}
+    del excluded["npnf208.xml"]["ix.xl"]
+    monkeypatch.setattr(npnf_registry, "EXCLUDED", excluded)
+    staged, _, _, problems = npnf_registry.plan(registry.current(), "2026-11-24")
+    assert problems == []
+    # A second run keeps the closed record.
+    staged, _, _, problems = npnf_registry.plan(staged, "2026-11-25")
+    assert problems == []
+    closed = [e for e in staged.removals if e.get("closed_by") == "5.6a"]
+    assert {e["anchor"].split("/")[0] for e in closed} == {"ix.xl"}
+    ids = {e["passage_id"] for e in closed}
+    assert {r["status"] for r in staged.passages if r["passage_id"] in ids} == {"active"}
+    # Excluded again: a new entry under a new ID, and the closed one kept as it was.
+    monkeypatch.setattr(npnf_registry, "EXCLUDED", npnf_registry_excluded)
+    again, _, _, problems = npnf_registry.plan(staged, "2026-11-26")
+    assert problems == []
+    assert {e["id"] for e in again.removals if e.get("closed_by")} >= {e["id"] for e in closed}
+    reopened = [e for e in again.removals if e["passage_id"] in ids and not e.get("closed_by")]
+    assert reopened and not {e["id"] for e in reopened} & {e["id"] for e in closed}
+
+
+def test_basil_rule_a_removals_cover_every_excluded_passage(basil):
+    from scripts.npnf_registry import EXCLUDED
+    letters = basil["npnf208.xml#ix"]
+    reg = registry.current()
+    entries = {e["passage_id"]: e for e in reg.removals
+               if e["document_id"] == letters.id and e["scope"] == "passage"}
+    for p in letters.passages:
+        if p.chapter_key.split("/")[0] in EXCLUDED["npnf208.xml"]:
+            pid = reg.row_by_anchor[(letters.id, p.anchor)]["passage_id"]
+            assert entries[pid]["reason"] == EXCLUDED["npnf208.xml"][
+                p.chapter_key.split("/")[0]][0], p.anchor
+            assert 11501 <= int(entries[pid]["id"].split("-")[1]) <= 11999
+
+
+def test_basil_letter_labels_name_built_letters(basil):
+    from attributions import BASIL_LETTER_LABELS
+    keys = {w.work_key for w in basil["npnf208.xml#ix"].works}
+    assert set(BASIL_LETTER_LABELS) <= keys
+
+
+def test_basil_judgments_quote_their_notes():
+    from ingest.common import _strip_tags
+    from scripts.npnf_registry import JUDGMENTS
+    from xml.etree.ElementTree import tostring
+    def flat(t):
+        return " ".join(t.replace("’", "'").replace("“", '"').replace("”", '"').split())
+
+    for work_id, rows in JUDGMENTS.items():
+        file = work_id.split("/")[1] + ".xml"            # church-fathers/npnf208/ix
+        root = cf._read_root(os.path.join(_SRC, file))
+        divs = {e.get("id"): e for e in root.iter() if e.get("id")}
+        for element, quote, _, _ in rows:
+            assert flat(quote) in flat(_strip_tags(tostring(divs[element], encoding="unicode")))
+
+
+# ------------------------------------------------------------------ 5.6a: NPNF2-07
+
+@pytest.fixture(scope="module")
+def npnf207():
+    return {d.metadata["source_key"].split("#")[1]: d
+            for d in build_documents(os.path.join(_SRC, "npnf207.xml"))}
+
+
+def test_npnf207_builds_cyril_and_gregorys_works(npnf207):
+    assert {k: (d.title, d.author) for k, d in npnf207.items()} == {
+        "ii": ("Catechetical Lectures", "Cyril of Jerusalem"),
+        "iii": ("Select Orations", "Gregory of Nazianzus"),
+        "iv": ("Select Letters", "Gregory of Nazianzus")}
+    assert len({p.chapter_key for p in npnf207["ii"].passages}) == 24
+    assert len({p.chapter_key for p in npnf207["iii"].passages}) == 24
+    assert [w.title for w in npnf207["ii"].works] == [
+        "Lectures to the Candidates for Baptism", "Mystagogical Lectures"]
+
+
+def test_cyril_reading_is_an_epigraph_and_his_headings_are_marked(npnf207):
+    cyril = npnf207["ii"]
+    first = next(p for p in cyril.passages if p.chapter_key == "ii.vi")
+    assert first.chapter_label.startswith("Lecture II. On Repentance")
+    marks = first.metadata["headings"]
+    assert [m["role"] for m in marks[:2]] == ["epigraph", "epigraph"]
+    assert first.content.startswith("Ezekiel xviii. 20–23")
+    inner = [(m, p) for p in cyril.passages if p.chapter_key == "ii.viii"
+             for m in (p.metadata or {}).get("headings", []) if m["role"] == "heading"]
+    assert len(inner) == 16 and all(m["level"] == 2 for m, _ in inner)
+    assert any(p.content[m["at"]:m["end"]] == "I. Of God." for m, p in inner)
+
+
+def test_npnf207_editors_matter_is_cut(npnf207):
+    text = "\n".join(p.content for d in npnf207.values() for p in d.passages)
+    for editor in ("It is generally agreed that this oration",      # Oration II's intro
+                   "Appendix to Lecture IX",                           # Gifford's variants
+                   "The Oration is thus analysed by Abbe Benoît",
+                   "(Perhaps about a.d. 357 or 358",                   # a letter's dating
+                   "(We insert here the three letters",
+                   "Division III.", "Gregory Nazianzen.\n"):
+        assert editor not in text, editor
+    assert "(To the Reader.)" in text          # the manuscripts' note, kept
+
+
+def test_gregory_letters_are_numbered_works(npnf207):
+    letters = npnf207["iv"]
+    titles = {w.work_key: w.title for w in letters.works}
+    assert titles["iv.ii.iii"] == "Letter CI"
+    assert titles["iv.iv.ii.i"] == "Letter XI"          # printed "Ep. I."
+    assert len(set(titles.values())) == len(titles)
+    text = "\n".join(p.content for p in letters.passages)
+    assert "Od. viii. 492" not in text
+    label = next(p.chapter_label for p in letters.passages if p.chapter_key == "iv.iii.ii")
+    assert label == "Letter II · To Basil"
+    # The editor's pointers to letters printed above are not built.
+    assert not {"iv.iv.iii.i", "iv.iv.vi.vi", "iv.iv.ix.iv"} & {
+        p.chapter_key for p in letters.passages}
+
+
+def test_mystagogical_lectures_do_not_take_the_lectures_date():
+    import json
+    entry = next(w for w in json.load(open(os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), "registry", "works.json")))
+        if w["work_id"] == "church-fathers/npnf207/ii")
+    assert entry["date_display"] == "347 or 348"
+    work = next(x for x in entry["works"] if x["work_key"] == "ii.xxiii")
+    assert work["date_display"] == "date disputed" and work["certainty"] == "disputed"
