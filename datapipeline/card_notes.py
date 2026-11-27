@@ -133,6 +133,23 @@ PASSAGE_NOTES: dict[str, Note | None] = {
     "which the English translation does not print.": caution(
         "incomplete", "The Latin text ends this article with a short reply to all the "
                       "objections together, which the English translation does not print."),
+    # 5.6a: Gregory's Register I, 25, whose passages shared with the Pastoral Rule NPNF2-12
+    # prints only there.
+    "Parts of this letter repeat the Book of Pastoral Rule (Part II, chapters 2 to 7) and "
+    "are given only there.": caution(
+        "incomplete", "Parts of this letter repeat the Book of Pastoral Rule (Part II, "
+                      "chapters 2 to 7) and are given only there."),
+    # 5.6a: letters NPNF2-12 and NPNF2-13 print only in part, the rest under another.
+    "Only chapter III of this letter is translated in this edition.": caution("incomplete", "Only chapter III of this letter is translated in this edition."),
+    "This letter opens as Book I, Letter VII does, and its opening is given only there.": caution("incomplete", "This letter opens as Book I, Letter VII does, and its opening is given only there."),
+    "Two passages of this letter repeat Book II, Letter XIX almost word for word and are given only there.": caution("incomplete", "Two passages of this letter repeat Book II, Letter XIX almost word for word and are given only there."),
+    "Most of this letter is the same as Book XIII, Letter IX, and is given only there.": caution("incomplete", "Most of this letter is the same as Book XIII, Letter IX, and is given only there."),
+    # 5.6a: Gregory's Register XI, 64 (Barmby's note).
+    "The request for Saint Sixtus's relics and its grant, in this passage, may be a later "
+    "addition: Bede's copy and the Lucca manuscript lack them.": caution(
+        "authorship", "The request for Saint Sixtus's relics and its grant, in this passage, "
+                      "may be a later addition: Bede's copy and the Lucca manuscript lack "
+                      "them."),
     # 5.6a: Basil's Letter 125, whose Greek creed is cut under rule E.
     "The Creed of Nicaea, which this letter quotes in full, is omitted: the translator left "
     "it in Greek.": caution(
@@ -244,6 +261,16 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "Catechism cites them as Cyril's.": (caution(
         "authorship", "Some manuscripts give these lectures to Cyril's successor, John of "
                       "Jerusalem; the Catechism cites them as Cyril's."),),
+    # 5.6a: Gregory the Great's Register (Barmby's notes). The header names Recared.
+    "Its genuineness is doubted: it may be a forgery based on Gregory's letter to Recared.": (
+        caution("authorship", "Its genuineness is doubted: it may be a forgery based on "
+                              "Gregory's letter to the king."),),
+    "Its genuineness, or at least its freedom from later additions, is disputed; the "
+    "Benedictine editors defend it.": (caution(
+        "authorship", "Its genuineness, or at least its freedom from later additions, is "
+                      "disputed; the Benedictine editors defend it."),),
+    "Not by Gregory: an imitation of his style, judged spurious.": (
+        caution("authorship", "An imitation of Gregory's style, judged spurious."),),
     "A later addition to Basil's letter to Ambrose.": (
         caution("authorship", "A later addition to Basil's letter to Ambrose."),),
     "Not by Basil. The Second Council of Nicaea (787) quoted it as his.": (

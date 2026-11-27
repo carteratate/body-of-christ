@@ -145,14 +145,6 @@
   "collections": [
    "catechism"
   ],
-  "documents": [
-   "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
-   "70347ebd-4832-59b6-813f-aeb2e120837b",
-   "75cc7965-7501-595d-af44-9997bb7498be",
-   "7f052676-7c0c-5904-b257-7ca10d489010",
-   "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
-   "9398a664-a690-5431-a2cc-46046a3be21a"
-  ],
   "authors": {
    "councils": [
     "Second Vatican Council"
@@ -161,14 +153,25 @@
   "documents": [
    "0715be7b-c108-55c0-bad8-d989fb8cdd16",
    "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9",
+   "37ca126c-d7ad-5dd4-b81d-4b73a1794951",
    "38b15a66-fbc3-560f-8a64-363a0ff24ced",
    "4451945f-fec4-5ab0-8d9e-5da62287ed24",
    "44b734e0-b056-5f8d-92e9-0e98e3509848",
+   "619bfcf9-8ae3-590c-94dd-bdb9be431c11",
+   "70347ebd-4832-59b6-813f-aeb2e120837b",
    "725a33d3-8e0c-5d4b-81e4-7c2dc5aefdf6",
+   "75cc7965-7501-595d-af44-9997bb7498be",
+   "7f052676-7c0c-5904-b257-7ca10d489010",
+   "89c72d94-efdd-5fe2-8e09-52e24d8c5322",
    "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe",
+   "9398a664-a690-5431-a2cc-46046a3be21a",
    "96d72c6a-b005-5e96-9f7f-ceca57042078",
+   "a6627b58-1917-5f58-ab91-8054f951ff9b",
+   "b7c98b46-5298-5307-9324-c8b2d9802b6b",
    "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2",
-   "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3"
+   "e7750a2a-ddc8-53f5-9a88-c34ba73acd90",
+   "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3",
+   "fd809b86-2e8b-585d-943f-9a2f389eb28e"
   ],
   "not_headings": {
    "0715be7b-c108-55c0-bad8-d989fb8cdd16": [
@@ -263,6 +266,22 @@
     {
      "text": "And to the understanding of this He shewed this open example.—",
      "reason": "a sentence leading into the example that follows, ending in a dash"
+    }
+   ],
+   "619bfcf9-8ae3-590c-94dd-bdb9be431c11": [
+    {
+     "text": "Gregory to Fantinus, &c",
+     "reason": "Gregory's salutation, the letter's opening line"
+    }
+   ],
+   "e7750a2a-ddc8-53f5-9a88-c34ba73acd90": [
+    {
+     "text": "Gregory to Maximianus, bishop of Syracuse",
+     "reason": "Gregory's salutation, the letter's opening line"
+    },
+    {
+     "text": "Gregory to John, Bishop of the Corinthians",
+     "reason": "Gregory's salutation, the letter's opening line"
     }
    ]
   }

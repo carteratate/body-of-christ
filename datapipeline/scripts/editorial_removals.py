@@ -54,7 +54,8 @@ COLLECTION = "church-fathers"
 # rule G's editor (the Confessions has none), 1.8d's Robertson's On the Incarnation in
 # NPNF2-04, 1.8a's every other.
 NPNF_FILES = frozenset({"city-of-god.xml", "on-the-holy-trinity.xml"})
-ITEM_FILES = {"npnf204.xml": "1.8d", "npnf207.xml": "5.6a", "npnf208.xml": "5.6a"}
+ITEM_FILES = {"npnf204.xml": "1.8d", "npnf207.xml": "5.6a", "npnf208.xml": "5.6a",
+              "npnf212.xml": "5.6a", "npnf213.xml": "5.6a"}
 ITEMS = ("1.8a", "1.8b", "1.8d", "5.6a")
 REASON = "rule-g-editorial"
 TOMBSTONE = ("This passage was an editor's note and was removed because TheoCorpus shows "
@@ -94,6 +95,11 @@ EXCERPT = 120
 # Sentences the judgment scan flags that were read and are not about who wrote a work
 # (sha1 of the sentence -> why). Filled from the review of the flagged list.
 NOT_JUDGMENTS: dict[str, str] = {
+    "172ad2f05720": "forgiving",
+    "6fc2bd910f27": "forgiveness",
+    "a95e90edd239": "forgiveness",
+    "efd6b3b75815": "forgiveness",
+    "c5836e27cff3": "forgetting",
     "015f2991ff63": "a letter's Argument: a faction is blamed",
     "0c03db0441f3": "an Octavius Argument: things are doubtful",
     "ced306be9204": "an Octavius Argument: doubtful matters",
@@ -501,19 +507,33 @@ def _entry_key(e: dict) -> tuple:
 
 
 def plan(reg: registry.WorkRegistry, entries: list[dict], found: list, item: str = ITEM,
-         id_block: tuple[int, int] | None = None):
+         id_block: tuple | None = None):
     """The registry with `entries` in place of the item's earlier ones and the judgments
     copied into works.json, and the judgments not yet reviewed (nothing is planned while
     any are). `id_block`, when given, is the (first, last) the item's new IDs come from,
-    so items working at once never take the same one."""
+    so items working at once never take the same one, or several such blocks, used in
+    order (an item given a second block when its first ran out)."""
     kept = [e for e in reg.removals if e.get("added_by") != item
             or e.get("collection") != COLLECTION]
     numbers = [int(e["id"].split("-")[1]) for e in reg.removals]
-    if id_block is None:
+    blocks = None if id_block is None else (
+        (id_block,) if isinstance(id_block[0], int) else tuple(id_block))
+    if blocks is None:
         number = max(numbers) + 1
     else:
-        first, last = id_block
-        number = max((n for n in numbers if first <= n <= last), default=first - 1) + 1
+        used = [n for n in numbers if any(a <= n <= b for a, b in blocks)]
+        number = max(used, default=blocks[0][0] - 1) + 1
+
+    def take() -> str:
+        """The next free ID, past the end of a full block into the next one."""
+        nonlocal number
+        if blocks is not None and not any(a <= number <= b for a, b in blocks):
+            later = [a for a, _ in blocks if a > number]
+            if not later:
+                raise ValueError(f"{item}: removal IDs run past rm-{blocks[-1][1]}")
+            number = min(later)
+        number += 1
+        return f"rm-{number - 1:04d}"
     # An entry keeps its ID across runs: the same scope, anchor and span, counted in
     # order, since one passage can lose the same text twice (two rule lines).
     previous: dict[tuple, list[str]] = defaultdict(list)
@@ -523,11 +543,7 @@ def plan(reg: registry.WorkRegistry, entries: list[dict], found: list, item: str
             previous[_entry_key(e)].append(e["id"])
     for e in entries:
         ids = previous.get(_entry_key(e))
-        if ids:
-            e["id"] = ids.pop(0)
-        else:
-            e["id"] = f"rm-{number:04d}"
-            number += 1
+        e["id"] = ids.pop(0) if ids else take()
     # A retired piece may be where an earlier recut redirected another piece of the same
     # editorial div (1.10's merges). That redirect closes, and its old ID is retired too.
     retiring = {e["passage_id"] for e in entries if e["scope"] == "passage"}
@@ -543,15 +559,9 @@ def plan(reg: registry.WorkRegistry, entries: list[dict], found: list, item: str
                  "anchor": old["live_anchor"], "passage_id": old["passage_id"],
                  "judgment": None}
             ids = previous.get(_entry_key(e))
-            if ids:
-                e["id"] = ids.pop(0)
-            else:
-                e["id"] = f"rm-{number:04d}"
-                number += 1
+            e["id"] = ids.pop(0) if ids else take()
             entries.append(e)
             retiring.add(old["passage_id"])
-    if id_block is not None and number - 1 > id_block[1]:
-        raise ValueError(f"{item}: removal IDs run past rm-{id_block[1]}")
     passages = [dict(r) for r in reg.passages]
     for r in passages:
         if r["passage_id"] in retiring:

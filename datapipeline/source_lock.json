@@ -100,28 +100,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/church-fathers/npnf212.xml",
-  "sha256": "f701b4ce5196bc5890e50adabce4900cd07b803f3221115a7cce526ae0a95570",
-  "bytes": 3461929,
-  "url": "https://ccel.org/ccel/s/schaff/npnf212.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/church-fathers/npnf213.xml",
-  "sha256": "323ecfb6470854de378fdf47375b2e15b108e72559bbe3167da9c37500bbf2ae",
-  "bytes": 2246124,
-  "url": "https://ccel.org/ccel/s/schaff/npnf213.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/church-law/de-aliquibus-mutationibus.html",
   "sha256": "c4b5de0d1e8b45eebc0c0d0832befd6d307bab89ac009c04a44a3ef19e716649",
   "bytes": 37052,
@@ -3185,11 +3163,11 @@
  {
   "collection": "church-fathers",
   "path": "church-fathers/manifest.json",
-  "sha256": "89d5e9cf72d49b7c88ebfd60d0af82e0929a1756f5f4546703bfd0b7d9aebe67",
-  "bytes": 3070,
+  "sha256": "ff80f7142b4f4cbb7ff71ee1972a84c85011ac9c4927f1f96d352ed2a354e9c5",
+  "bytes": 3595,
   "url": null,
   "acquired": "unknown-before-2026-11-13",
-  "hashed_on": "2026-11-23",
+  "hashed_on": "2026-11-24",
   "role": "adapter-auxiliary"
  },
  {
@@ -3218,6 +3196,26 @@
   "sha256": "95cf3dafefccec80e0949a03c7f1f605da293302d0dc7a8bd62a4e711a0c5532",
   "bytes": 3303323,
   "url": "https://ccel.org/ccel/s/schaff/npnf208.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "church-fathers",
+  "path": "church-fathers/npnf212.xml",
+  "sha256": "f701b4ce5196bc5890e50adabce4900cd07b803f3221115a7cce526ae0a95570",
+  "bytes": 3461929,
+  "url": "https://ccel.org/ccel/s/schaff/npnf212.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "church-fathers",
+  "path": "church-fathers/npnf213.xml",
+  "sha256": "323ecfb6470854de378fdf47375b2e15b108e72559bbe3167da9c37500bbf2ae",
+  "bytes": 2246124,
+  "url": "https://ccel.org/ccel/s/schaff/npnf213.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "adapter-input"

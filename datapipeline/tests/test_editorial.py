@@ -201,6 +201,13 @@ def test_removed_units_logged_with_judgment(built, monkeypatch):
     assert next(r for r in updated.passages if r["passage_id"] == pid)["status"] == "retired"
     assert {e["id"] for e in updated.removals if e["added_by"] == "1.8a"} == {
         f"rm-{n:04d}" for n in range(2, 2 + len(entries))}
+    # Given two blocks, an item's IDs fill the first and go on in the second (5.6a's).
+    blocked, _ = editorial_removals.plan(reg, entries, found, id_block=((10, 11), (20, 99)))
+    assert sorted(e["id"] for e in blocked.removals if e["added_by"] == "1.8a") == [
+        f"rm-{n:04d}" for n in (10, 11, *range(20, 18 + len(entries)))]
+    with pytest.raises(ValueError, match="removal IDs run past"):     # one ID short
+        editorial_removals.plan(reg, entries, found,
+                                id_block=((10, 11), (17, 13 + len(entries))))
 
 
 def test_trailing_removal_names_the_last_piece():

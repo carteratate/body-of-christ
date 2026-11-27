@@ -383,6 +383,50 @@ def test_letter_sender():
                   title="The Epistles of Cyprian.", author="Cyprian.",
                   works=[Work(work_key="w", ordinal=1, title="To Cyprian", author="Firmilian of Caesarea")])
     assert content.letter_senders("church-fathers", [worked]) == {}
+    # Leo's collection (5.6a): a title line with words before the sender's name, and one
+    # naming the senders together, whose greeting names them.
+    leo = [_letter("XXII", "The first from Flavian, Bp. of Constantinople to Pope Leo.",
+                   "To the most holy father Leo, Flavian", "f1",
+                   passage_author="Flavian of Constantinople"),
+           _letter("LXVIII", "From Three Gallic Bishops to St. Leo.",
+                   "Ceretius, Salonius and Veranus to Leo,", "g1",
+                   passage_author="Ceretius, Salonius and Veranus")]
+    leo_letters = _doc(*leo, collection="church-fathers", title="Letters", author="Leo the Great")
+    assert content.letter_senders("church-fathers", [leo_letters]) == {}
+    leo[0].passage_author = "Anatolius of Constantinople"     # the same see, another man
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["f1"]}
+    leo[0].passage_author = "Flavian of Constantinople"
+    leo.append(_letter("XCVIII", "From the Synod of Chalcedon to Leo.",
+                       "The great and holy and universal Synod", "c1",
+                       passage_author="Cyril of Chalcedon"))   # a man of the council's see
+    leo_letters = _doc(*leo, collection="church-fathers", title="Letters", author="Leo the Great")
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["c1"]}
+    leo[2].passage_author = "Council of Constantinople"     # another council
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["c1"]}
+    leo[2].passage_author = "Council of Chalcedon"
+    assert content.letter_senders("church-fathers", [leo_letters]) == {}
+    leo[1].passage_author = "Ceretius"          # the greeting names three
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["g1"]}
+    leo[1].passage_author = None                # credited to Leo, as it would be by default
+    assert content.letter_senders("church-fathers", [leo_letters]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["g1"]}
+
+    # Letter LVI stands below Feltoe's summary of four letters, under a title line in
+    # parentheses.
+    galla = _p("Letters LV. to LVIII.\n\nA series of Letters.\n\n(1) From Valentinian the "
+               "Emperor to Theodosius Augustus.\n\nLetter LVI.\n\n(From Galla Placidia "
+               "Augusta to Theodosius).\n\nTo the Lord Theodosius, Galla Placidia. " + PROSE,
+               anchor="lvi", chapter_key="lvi", chapter_label="Letter LVI",
+               passage_author="Galla Placidia")
+    series = _doc(galla, collection="church-fathers", title="Letters", author="Leo the Great")
+    assert content.letter_senders("church-fathers", [series]) == {}
+    galla.passage_author = None
+    assert content.letter_senders("church-fathers", [series]) == {
+        "attribution.letter_sender:church-fathers/doc-1": ["lvi"]}
 
 
 def test_narrative_of_author_death():

@@ -100,6 +100,27 @@ _BASIL_SUMMARIES = frozenset(f"ix.{n}" for n in (
 # and CXXV).
 _NPNF207_SKIP = frozenset({"ii.i", "ii.ii", "ii.iii", "iii.i", "iii.ii", "iii.xii", "iv.i",
                            "iv.ii.i", "iv.iv.iii.i", "iv.iv.vi.vi", "iv.iv.ix.iv"})
+# Leo's letters that NPNF2-12 gives only as Feltoe's summary ("(Congratulating him on being
+# present at the synod of Ephesus.)", or in brackets, as the "Second Tome", Letter CLXV,
+# whose text he leaves to the Councils), or by a pointer to another letter ("See Letter
+# CLVIII."), or only his note on it ("Much shorter than, but to nearly the same effect as,
+# xxxi."), by div id. The two divs that print several letters' numbers (CXXI and CXXII;
+# LXII to LXIV) are summaries too.
+_LEO_SUMMARIES = frozenset(f"ii.iv.{n}" for n in (
+    "ii", "iii", "v", "viii", "xi", "xiii", "xxv", "xxx", "xxxvi", "xli", "xlvi", "xlvii",
+    "xlviii", "xlix", "l", "li", "liii", "liv", "lvii", "lviii", "lix", "lx", "lxv",
+    "lxvi", "lxvii", "lxviii", "lxix", "lxx", "lxxi", "lxxii", "lxxiii", "lxxvi",
+    "lxxviii", "lxxix", "lxxxi", "lxxxii", "lxxxiv", "lxxxv", "lxxxvi", "lxxxvii",
+    "lxxxix", "xci", "xcii", "xciv", "xcv", "xcvii", "xcviii", "cii", "cv", "cvi",
+    "cvii", "cix", "cx", "cxi", "cxiii", "cxvi", "cxix", "cxx", "cxxi", "cxxii",
+    "cxxiv", "cxxv", "cxxvi", "cxxvii", "cxxviii", "cxxix", "cxxx", "cxxxi", "cxxxii",
+    "cxxxiv", "cxxxv", "cxxxvi", "cxxxvii", "cxxxviii", "cxxxix", "cxl", "cxli",
+    "cxlii", "cxliii", "cxliv", "cxlv", "cxlvi", "cxlvii", "cxlviii", "cxlix", "cli",
+    "cliv", "clv", "clvii", "clix", "clxii", "clxiv", "clxvi", "clxvii"))
+# Gregory's Register letters that NPNF2-13 gives by a pointer to an identical one ("For
+# the rest of this epistle see preceding Epistle IX."), and NPNF2-13's editors' divs
+# (title page, Barmby's literature list and his notes to the Pastoral Rule and Register).
+_NPNF213_SKIP = frozenset({"ii.i", "ii.ii", "ii.iii", "ii.iv", "ii.ix.vii"})
 NPNF_WORKS = {
     "npnf207.xml": (
         NpnfWork("ii", "Cyril of Jerusalem", "Catechetical Lectures", skip=_NPNF207_SKIP,
@@ -117,16 +138,50 @@ NPNF_WORKS = {
         NpnfWork("ix", "Basil", "Letters", skip=frozenset({"ix.i"}) | _BASIL_SUMMARIES,
                  letters=True),
     ),
+    "npnf212.xml": (
+        # Named for him here, so Basil's Letters keep their title (`distinct_titles`).
+        NpnfWork("ii.iv", "Leo the Great", "Letters of Leo the Great", skip=_LEO_SUMMARIES,
+                 letters=True, style="leo"),
+        NpnfWork("ii.v", "Leo the Great", "Sermons", style="leo", works=True),
+        # Barmby's preface on the title (iii.iv.i) is the editor's.
+        NpnfWork("iii.iv", "Gregory the Great", "The Book of Pastoral Rule",
+                 skip=frozenset({"iii.iv.i"}), style="pastoral"),
+        NpnfWork("iii.v", "Gregory the Great", "Register of Letters, Books I to VIII",
+                 letters=True, style="register"),
+    ),
+    "npnf213.xml": (
+        NpnfWork("ii", "Gregory the Great", "Register of Letters, Books IX to XIV",
+                 skip=_NPNF213_SKIP, letters=True, style="register"),
+    ),
 }
 # A letter part of which is another writer's, cut into a work of its own at the paragraph
 # that opens that part, by (file, letter div): (first paragraph id, the part's label).
 # Letter 197's second section, on the relics of Dionysius of Milan, is not Basil's
 # (Cavallin 1945, in Quasten; Fedwick 1981, "De reliquis Dionysii").
-_LETTER_PARTS = {("npnf208.xml", "ix.cxcviii"): ("ix.cxcviii-p9", "Section 2")}
+_LETTER_PARTS = {("npnf208.xml", "ix.cxcviii"): ("ix.cxcviii-p9", "Section 2"),
+                 # Gregory's Register II, 41: some manuscripts give the letter in another
+                 # form, with a paper on monasteries' privileges, which Barmby prints after
+                 # it under a note (cut, rule G).
+                 ("npnf212.xml", "iii.v.ii.xxii"): ("iii.v.ii.xxii-p6", "Second version")}
+# The headings inside such a part, by paragraph id: level. The paper the second version of
+# Register II, 41 appends opens "Of the privileges of Monasteries."
+_PART_HEADINGS = {"iii.v.ii.xxii-p8": 2}
 # Letters in a collection that another writer sent, by (file, letter div): the sender,
 # from the letter's title line, as 1.8c credits Cyprian's correspondents ("Antipater to
 # Basil."). 3.2's labels (`attributions`) add the rest.
-_NPNF_SENDERS = {("npnf208.xml", "ix.clxxxviii"): "Antipater"}
+_NPNF_SENDERS = {
+    ("npnf208.xml", "ix.clxxxviii"): "Antipater",
+    # NPNF2-12: the letters to Leo his collection keeps, and two to Gregory in his Register.
+    **{("npnf212.xml", div): sender for div, sender in (
+        ("ii.iv.xxi", "Eutyches"), ("ii.iv.xxii", "Flavian of Constantinople"),
+        ("ii.iv.xxvi", "Flavian of Constantinople"), ("ii.iv.lii", "Theodoret of Cyrus"),
+        ("ii.iv.lv", "Galla Placidia"), ("ii.iv.lxiii", "Ceretius, Salonius and Veranus"),
+        ("ii.iv.xciii", "Council of Chalcedon"), ("ii.iv.xcvi", "Anatolius of Constantinople"),
+        ("iii.v.ii.xxx", "Licinianus of Cartagena"), ("iii.v.iii.xxix", "John of Ravenna"))},
+    # NPNF2-13: three letters to Gregory.
+    **{("npnf213.xml", div): sender for div, sender in (
+        ("ii.v.xxx", "Recared"), ("ii.v.lx", "Columbanus"), ("ii.x.vii", "Felix of Messana"))},
+}
 # The line over a chapter, homily or letter that numbers it: "Chapter I.", "Homily IX.",
 # "Letter CCCLX.".
 # Rule E (3.3's way): paragraphs a translator left in Greek, cut from the chapter, by
@@ -143,11 +198,19 @@ NOT_ENGLISH = {("npnf208.xml", "ix.cxxvi"): frozenset({
 # Spirit]") and the passages Newman's version marks in brackets (Letters 2, 71, 203, 204)
 # are the translation's and stay.
 _NPNF_EDITOR_BRACKET = re.compile(r"\bA\.\s?V\.|\blxx\b", re.IGNORECASE)
+# The editors' notes in brackets inside a paragraph: Barmby's pointers to the Pastoral Rule
+# ("[See Reg. Past., Pt. II. ch. 6…]") and his notes on the manuscripts ("[N.B. This date is
+# absent…]", "[al., … So Bede.]"), and Feltoe's to the editors' chapters ("[as we said
+# above, chap. viii.]"). Their glosses ("[i.e. monks of St. Theodore]") and supplied words
+# stay, as Jackson's do.
+_NPNF_NOTE_BRACKET = re.compile(r"^\[(?:See |N\.B\.|A long passage|al\.,|as we said above)")
 # The same comparison printed in parentheses, by (file, paragraph id): the span as printed.
 _NPNF_EDITOR_SPANS = {
     ("npnf208.xml", "vii.vi-p56"): (" (A.V., “of” instead of “through a woman”)",),
     # The translator's source line under Gregory's quotation of Homer (Letter V).
-    ("npnf207.xml", "iv.iii.iv-p6"): ("—Od. viii. 492.",)}
+    ("npnf207.xml", "iv.iii.iv-p6"): ("—Od. viii. 492.",),
+    # Barmby's reading from Bede, in Augustine's tenth question (Register XI, 64).
+    ("npnf213.xml", "ii.vii.xxx-p54"): (" (ministerium: in Bede, mysterium)",)}
 _NPNF_NUMBER = re.compile(r"^(Chapter|Homily|Letter) ([IVXLC]+)\.$")
 _CANONICA = re.compile(r"^\(?Canonica \w+\.?\)?$")
 # NPNF2-07: Cyril's number lines ("Lecture IV.", "FIRST CATECHETICAL LECTURE"), Gregory's
@@ -678,7 +741,8 @@ class _NpnfEditor(Editor):
                 read.add(id(block))
                 return marked, notes
             out, spans, cuts = _cut_brackets(
-                marked, lambda span: bool(_NPNF_EDITOR_BRACKET.search(span)))
+                marked, lambda span: bool(_NPNF_EDITOR_BRACKET.search(span)
+                                          or _NPNF_NOTE_BRACKET.match(span)))
             if id(block) not in read:           # paragraph_segments reads it again
                 read.add(id(block))
                 edit.removed += [Removed(edit.locators[id(block)], "bracket", t)
@@ -837,13 +901,146 @@ def _npnf_head(elem) -> tuple[str, str, str, list]:
     return kind, n, titles[0].rstrip(" ."), head
 
 
+# NPNF2-12: Leo's "Letter I." or "Sermon I." and the address or title under it.
+_LEO_NUMBER = re.compile(r"^(Letter|Sermon) ([IVXLC]+)\.$")
+# Where a Leo div's own letter starts, when the div opens with Feltoe's summary of the
+# letters around it (Letters LV to LVIII: four summarized, LVI printed).
+_LEO_FROM = {("npnf212.xml", "ii.iv.lv"): "ii.iv.lv-p7"}
+# The classes Feltoe prints the editors' chapter summaries in ("I. Through the negligence
+# of the authorities…", "He thanks him for his information…"): the Ballerini's and
+# Quesnel's, not Leo's (rule G). Leo's salutations and the questions Rusticus put to him
+# (Letter CLXVII) are printed in the same classes, and stay.
+_LEO_SUMMARY_CLASSES = frozenset({"c27", "c30", "c31", "c33"})
+# A salutation in parentheses is Leo's own only when it opens with his name (Letter CLIX);
+# "(To Marcian Augustus, about…)" is Feltoe's summary (Letter CIV).
+_LEO_SALUTATION = re.compile(r"^(?:\(?Leo\b|To )")
+_LEO_QUESTION = re.compile(r"^Question [IVXL]+\.")
+
+
+def _wholly_editorial(t: str) -> bool:
+    """A paragraph that is all the editor's summary: in parentheses or brackets."""
+    t = t.rstrip(".")
+    return (t.startswith("(") and t.endswith(")")) or (t.startswith("[") and t.endswith("]"))
+
+
+def _leo_head(filename, elem, parent_map=None) -> _Head:
+    """A letter's or sermon's head in NPNF2-12's Leo: the series lines over the first
+    ("Letters.", a rule), "Letter N." or "Sermon N.", and the address or title. The
+    editors' chapter summaries and Feltoe's summaries in parentheses, wherever they
+    stand, are notes (rule G)."""
+    blocks = [b for b in direct_blocks(elem) if _text(b)]
+    start = _LEO_FROM.get((filename, elem.get("id")))
+    k0 = [b.get("id") for b in blocks].index(start) if start else 0
+    at = next((k for k in range(k0, len(blocks)) if _LEO_NUMBER.match(_text(blocks[k]))),
+              None)
+    if at is None:
+        raise ValueError(f"{elem.get('id')}: no number line")
+    kind, n = _LEO_NUMBER.match(_text(blocks[at])).groups()
+    # Feltoe's pointer to another volume ("(See vol. iii. of this Series, p. 293.)") and a
+    # period inside the closing quotation mark are not the title's.
+    title = re.sub(r"\s*\(See vol\. [^)]*\)$", "", _attr_title(elem))
+    title = re.sub(r"\.(”)$", r"\1", title).rstrip(" .")
+    lines = blocks[:at + 1]
+    if at + 1 < len(blocks) and blocks[at + 1].get("class") in ("c26", "c32"):
+        lines.append(blocks[at + 1])
+    rest = blocks[len(lines):]
+    notes = [b for b in rest if (b.get("class") in _LEO_SUMMARY_CLASSES
+                                 or _wholly_editorial(_text(b)))
+             and not _LEO_SALUTATION.match(_text(b)) and not _LEO_QUESTION.match(_text(b))]
+    headings = [(b, 2) for b in rest if _LEO_QUESTION.match(_text(b))]
+    if start:
+        notes = blocks[:k0] + notes
+        lines = [b for b in lines if b not in notes]
+        title = _text(blocks[at + 1]).strip("().") if at + 1 < len(blocks) else title
+    return _Head(f"{kind} {n}", title, lines, notes, headings=headings)
+
+
+# NPNF2-12: the Pastoral Rule's four Parts, by div.
+_PASTORAL_PARTS = {"iii.iv.ii": "I", "iii.iv.iii": "II", "iii.iv.iv": "III", "iii.iv.v": "IV"}
+_PASTORAL_LINE_CLASSES = frozenset({"c25", "c23", "c37", "c39", "Centered"})
+_CHAPTER_LINE = re.compile(r"^(?:Chapter ([IVXLC]+)|Prologue)\.$")
+
+
+def _pastoral_head(filename, elem, parent_map=None) -> _Head:
+    """A chapter's head in the Pastoral Rule: the book's title lines over the first, the
+    Part's number and title over each Part's first, "Chapter N." and the chapter's title.
+    Gregory's letter to John that opens the book stays, and so does his own list heading
+    in Part III ("Differently to be admonished are these that follow:—")."""
+    blocks = [b for b in direct_blocks(elem) if _text(b)]
+    lines, number, after_number = [], None, False
+    for b in blocks:
+        t = _text(b)
+        m = _CHAPTER_LINE.match(t)
+        if m:
+            number = f"Chapter {m.group(1)}" if m.group(1) else "Prologue"
+            after_number = True
+        elif b.get("class") in _PASTORAL_LINE_CLASSES or (after_number
+                                                          and b.get("class") == "c30"):
+            after_number = False
+        else:
+            break
+        lines.append(b)
+    part = _PASTORAL_PARTS.get(elem.get("id")) or _PASTORAL_PARTS[parent_map[elem].get("id")]
+    title = "" if number == "Prologue" else _attr_title(elem)
+    if number is None and elem.get("id") != "iii.iv.v":
+        number = _attr_title(elem)
+        title = ""
+    label = f"Part {part}, {number}" if number else f"Part {part}"
+    return _Head(label, title, lines)
+
+
+_EPISTLE = re.compile(r"^Epistle ([IVXLC]+)\.?$")
+_BOOK = re.compile(r"^Book ([IVXLC]+)\b")
+# The Register's first book prints its number on the letter's head, not on its div, whose
+# title is the indiction line.
+_REGISTER_BOOKS = {("npnf212.xml", "iii.v.i"): "I"}
+# The headings of the Book of Answers (Book XI, 64): Augustine of Canterbury's questions
+# and requests, and the answers and grant that follow each ("Augustine's first question",
+# "Answer of the blessed pope Gregory."), level 2.
+_AUGUSTINE_QUESTION = re.compile(r"^(?:Augustine[’']s (?:\w+ )?(?:question|request)|Answer of "
+                                 r"(?:Saint|the blessed) [Pp]ope Gregory|Answer of Saint "
+                                 r"Gregory|The grant of Gregory)\b")
+# A manuscript's title line over a letter ("Here begins the epistle of the blessed
+# Gregory…"), which the label's address says (Book XI, 64).
+_INCIPIT = re.compile(r"^Here (?:begins|follows) the (?i:epistle)\b")
+
+
+def _register_head(filename, elem, parent_map=None) -> _Head:
+    """A letter's head in Gregory's Register (NPNF2-12 and NPNF2-13): the Register's and
+    the Book's lines over the first letter of each Book, with the Book's indiction line,
+    "Epistle N." and the address. Gregory's own salutation under it stays."""
+    blocks = [b for b in direct_blocks(elem) if _text(b)]
+    at = next((k for k, b in enumerate(blocks) if _EPISTLE.match(_text(b))), None)
+    if at is None:
+        raise ValueError(f"{elem.get('id')}: no Epistle line")
+    n = _EPISTLE.match(_text(blocks[at])).group(1)
+    lines = blocks[:at + 2]
+    while len(lines) < len(blocks) and _INCIPIT.match(_text(blocks[len(lines)])):
+        lines.append(blocks[len(lines)])
+    parent = parent_map[elem]
+    book = _REGISTER_BOOKS.get((filename, parent.get("id")))
+    if book is None:
+        m = _BOOK.match(_attr_title(parent))
+        if m is None:
+            raise ValueError(f"{elem.get('id')}: no Book")
+        book = m.group(1)
+    headings = [(b, 2) for b in blocks if _AUGUSTINE_QUESTION.match(_text(b))]
+    # Barmby's notes in brackets inside a letter: a manuscript's dating, a pointer to the
+    # same words in another letter (rule G).
+    notes = [b for b in blocks[len(lines):] if _wholly_editorial(_text(b))]
+    return _Head(f"Book {book}, Letter {n}", _attr_title(elem), lines, notes,
+                 headings=headings)
+
+
 _HEADS = {"basil": _basil_head, "lectures": _lecture_head, "orations": _oration_head,
-          "letters207": _letter207_head}
+          "letters207": _letter207_head, "leo": _leo_head, "pastoral": _pastoral_head,
+          "register": _register_head}
 
 
 def _letter_part(filename, letter, parent_map):
-    """The part of `letter` another writer wrote (`_LETTER_PARTS`), moved out of it into a
-    chapter div of its own, `<letter>/<n>`, or None."""
+    """The part of `letter` another writer wrote, or another version of it
+    (`_LETTER_PARTS`), moved out of it into a chapter div of its own, `<letter>/<n>`, or
+    None."""
     part = _LETTER_PARTS.get((filename, letter.get("id")))
     if part is None:
         return None
@@ -887,7 +1084,8 @@ def _npnf_document(filename, w: NpnfWork, work, parent_map):
                 headings=marks)))
             continue
         if not w.letters:
-            label = f"{head.number}. {title}" if head.number else title
+            label = f"{head.number}. {title}" if head.number and title \
+                else head.number or title
             chapters.append((None, elem, ChapterPlan(
                 label=label, work_key=group[0] if group else None, headings=marks)))
             continue
@@ -904,7 +1102,9 @@ def _npnf_document(filename, w: NpnfWork, work, parent_map):
                               title=f"{number}, {label}", author=w.author))
             chapters.append((None, div, ChapterPlan(
                 label=f"{title}: {label}", work_key=div.get("id"), work_label=number,
-                any_length=True)))
+                any_length=True, headings=tuple(
+                    (b.get("id"), _PART_HEADINGS[b.get("id")], False)
+                    for b in direct_blocks(div) if b.get("id") in _PART_HEADINGS))))
     return _make_doc(filename, w.author, w.title, chapters, work=work, editor=editor,
                      works=works)
 

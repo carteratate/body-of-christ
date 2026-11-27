@@ -104,7 +104,9 @@ def generate_passages(reg: registry.WorkRegistry, documents: list) -> list[dict]
         p = built.get((r["document_id"], r["anchor"]))
         if p is not None:
             r = {**r, "work_key": p.work_key}
-            note = attributions.PASSAGE_NOTES.get((work_id[r["document_id"]], p.chapter_key))
+            key = work_id[r["document_id"]]
+            note = attributions.PASSAGE_NOTES.get((key, p.chapter_key)) \
+                or attributions.PASSAGE_NOTES.get((key, p.anchor))
             if note:
                 if r.get("note") not in (None, note):
                     raise ValueError(f"{r['passage_id']}: already has another note")

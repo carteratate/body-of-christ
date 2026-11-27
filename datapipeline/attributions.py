@@ -15,7 +15,8 @@ work the build no longer emits (3.1's removals) loses them on the rerun.
 - `WORKS`, by (`work_id`, `work_key`): the same for a work inside a container (D6),
   written onto the entry's `works` row; `author` replaces the adapter's.
 - `PASSAGE_NOTES`, by (`work_id`, chapter key): a note on every passage of one chapter,
-  written onto the passage registry rows (`note`, one of the registry's overrides).
+  written onto the passage registry rows (`note`, one of the registry's overrides); or by
+  (`work_id`, passage anchor), on that passage alone.
 """
 from __future__ import annotations
 
@@ -353,6 +354,40 @@ WORKS[("church-fathers/npnf207/ii", "ii.xxiii")] = {
     "basis": f"Quasten, Patrología II (BAC 1978), pp. 404-407; CCC, footnotes citing "
              f"\"Catech. myst.\"; {R1_NPNF207}"}
 
+# ---------------------------------------------------------- 5.6a: Leo and Gregory the Great
+
+# NPNF2-12 and NPNF2-13 (5.6a, #205). Both are Doctors. The letters to them that their
+# collections keep are credited to their senders in the build (`_NPNF_SENDERS`); Barmby's
+# notes judge four of Gregory's Register doubtful or spurious, labelled here.
+R1_LEO_GREGORY = f"{R1}, 5.6a addendum (Leo and Gregory the Great)"
+for _work_id, _clavis in (("church-fathers/npnf212/ii.iv", "CPL 1656"),
+                          ("church-fathers/npnf212/ii.v", "CPL 1657"),
+                          ("church-fathers/npnf212/iii.iv", "CPL 1712"),
+                          ("church-fathers/npnf212/iii.v", "CPL 1714"),
+                          ("church-fathers/npnf213/ii", "CPL 1714")):
+    DOCUMENTS[_work_id] = {"certainty": "genuine", "clavis": _clavis, "basis": R1_LEO_GREGORY}
+_BARMBY = "Barmby, NPNF2-13, note to the letter"
+_AUTUN = ("Its genuineness, or at least its freedom from later additions, is disputed; the "
+          "Benedictine editors defend it.")
+WORKS.update({
+    # Book IX, 61: Recared's letter, which may be a forgery built on Gregory's to him (IX, 122).
+    ("church-fathers/npnf213/ii", "ii.v.xxx"): {
+        "author": "Recared", "certainty": "disputed",
+        "attribution_note": "Its genuineness is doubted: it may be a forgery based on "
+                            "Gregory's letter to Recared.",
+        "basis": _BARMBY},
+    # Book XIII, 8 and 9: privileges for Queen Brunhild's foundations at Autun.
+    **{("church-fathers/npnf213/ii", div): {
+        "author": "Gregory the Great", "certainty": "disputed", "attribution_note": _AUTUN,
+        "basis": f"{_BARMBY} (Book XIII, 10, on all three)"}
+       for div in ("ii.ix.v", "ii.ix.vi")},
+    # Book XIV, 17: the reply to Felix of Messana, which Jaffé lists among the spurious.
+    ("church-fathers/npnf213/ii", "ii.x.viii"): {
+        "author": "Pseudo-Gregory the Great", "certainty": "pseudonymous",
+        "attribution_note": "Not by Gregory: an imitation of his style, judged spurious.",
+        "basis": f"{_BARMBY}; Jaffé, Regesta Pontificum Romanorum, spuria"},
+})
+
 # The Creed of Nicaea Letter 125 quotes in Greek is cut under rule E
 # (`ingest.church_fathers.NOT_ENGLISH`).
 _CREED_NOTE = ("The Creed of Nicaea, which this letter quotes in full, is omitted: the "
@@ -366,6 +401,30 @@ PASSAGE_NOTES: dict[tuple[str, str], str] = {
     ("church-fathers/third-century-3/iii.iii", "iii.iii.iii.xi"):
         "This canon is a later addition.",
     (_BASIL_LETTERS, "ix.cxxvi"): _CREED_NOTE,
+    # Register I, 25 (to John of Constantinople and the other patriarchs): Barmby prints
+    # only the openings of the passages it shares with the Pastoral Rule, pointing to
+    # them there (his "III., 4" is Part II, chapter 4); his pointers are cut (rule G).
+    ("church-fathers/npnf212/iii.v", "iii.v.i.xviii"):
+        "Parts of this letter repeat the Book of Pastoral Rule (Part II, chapters 2 to 7) "
+        "and are given only there.",
+    # Leo's Letter CI: NPNF prints only part of it (rule G cuts the editor's pointer).
+    ("church-fathers/npnf212/ii.iv", "ii.iv.xcvi"):
+        "Only chapter III of this letter is translated in this edition.",
+    # Register I, 26: NPNF prints only part of it (rule G cuts the editor's pointer).
+    ("church-fathers/npnf212/iii.v", "iii.v.i.xix"):
+        "This letter opens as Book I, Letter VII does, and its opening is given only there.",
+    # Register II, 20: NPNF prints only part of it (rule G cuts the editor's pointer).
+    ("church-fathers/npnf212/iii.v", "iii.v.ii.x"):
+        "Two passages of this letter repeat Book II, Letter XIX almost word for word and are given only there.",
+    # Register XIII, 8: NPNF prints only part of it (rule G cuts the editor's pointer).
+    ("church-fathers/npnf213/ii", "ii.ix.v"):
+        "Most of this letter is the same as Book XIII, Letter IX, and is given only there.",
+    # Register XI, 64: the request for Saint Sixtus's relics and its grant, which Barmby
+    # (after Bede's copy and the Lucca manuscript) takes for an interpolation; the passage
+    # that holds them, by anchor.
+    ("church-fathers/npnf213/ii", "ii.vii.xxx/from-p45"):
+        "The request for Saint Sixtus's relics and its grant, in this passage, may be a "
+        "later addition: Bede's copy and the Lucca manuscript lack them.",
 }
 
 # Fields the registry's `attribution` object takes from DOCUMENTS; the rest are facts.
