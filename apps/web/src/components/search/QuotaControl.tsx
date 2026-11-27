@@ -53,7 +53,10 @@ export function QuotaControl({ value, onChange, focusedCollection }: QuotaContro
 
   return (
     <div className="relative shrink-0">
-      <span className="absolute right-full top-1/2 mr-2 -translate-y-1/2 whitespace-nowrap text-[10px] font-medium uppercase tracking-widest text-brand-muted">
+      {/* On phones the bar is the screen's width: the label may use what lies between
+          the bar's 16px padding and the selector (74px half-width with 10, 8px gap),
+          wrapping onto two lines on the narrowest screens rather than running off. */}
+      <span className="absolute right-full top-1/2 mr-2 w-max -translate-y-1/2 text-right text-[10px] font-medium uppercase leading-tight tracking-widest text-brand-muted max-md:max-w-[calc(50vw-98px)]">
         Per source:
       </span>
       <div
