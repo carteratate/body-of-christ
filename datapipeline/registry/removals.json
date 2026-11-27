@@ -44950,7 +44950,7 @@
   "anchor": null,
   "passage_id": null,
   "reason": "rule-g-editorial",
-  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count. Three more notes stand in chapter heading lines (Book II Part III ch. V, VII, VIII), read as headings, not paragraphs; they leave with them uncounted.",
   "tombstone": null,
   "church_act": null,
   "span": {
