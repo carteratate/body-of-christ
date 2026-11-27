@@ -701,6 +701,16 @@ def test_scale_is_its_two_books_with_their_printed_headings():
         assert gone not in text
     assert text.rstrip().endswith("for their souls’ health.")
     assert doc.translation == T.CRESSY_1659
+    # The 1901 printing's citations ("1 Cor. 13.", "St Matt. 5.") are footnotes: 185 of
+    # the 186 notes the file tags as Scripture (one follows a Latin phrase).
+    refs = [f["text"] for p in doc.passages for f in p.metadata.get("footnotes") or []]
+    assert len(refs) == 185 and "1 Cor. 13." in refs and "S. Matt. 5." in refs
+    # A title the label cuts is not hidden as a repeat of it.
+    for p in doc.passages:
+        for m in p.metadata.get("headings") or []:
+            if m.get("chapter_title"):
+                assert p.chapter_label.endswith(p.content[m["at"]:m["end"]].split(": ", 1)[-1]
+                                                .rstrip(". "))
 
 
 def test_treatise_is_its_sixteen_chapters():

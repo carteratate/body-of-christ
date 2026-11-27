@@ -1124,8 +1124,11 @@ def _cloud_chapters(root):
 # over Book I (the document's title) and CCEL's indexes. The headings are printed lines
 # (`<h2>`-`<h5>`), not paragraphs, so each opens its first chapter's text, marked: the
 # book's, the part's, the chapter's ("CHAPTER I: That the inward State …") and the
-# section's, level 1. A chapter's number is its place (`n`); the file prints Book I
+# section's, level 1 (`chapter_title` where the label holds the title whole). A chapter's number is its place (`n`); the file prints Book I
 # Part I's seventeenth as "CHAPTER XV", which its place corrects.
+# Hilton's 1901 printing cites a whole chapter in Arabic numerals and "St" without its stop
+# ("1 Cor. 13.", "St Matt. 5."), which `scripture_reference(vulgate=True)` reads.
+_EDITION_REFERENCES = frozenset({"hilton-ladder.xml", "hilton-treatise.xml"})
 _SCALE_HEAD = re.compile(r"^(CHAPTER|SECTION) ([IVXL]+)\b:?\s*(.*)$")
 
 
@@ -1158,19 +1161,22 @@ def _scale_chapters(root):
                     pending.append((ch_line, 1))
                     for section in sections:
                         line, title = _scale_heading(section.find("h5"), section.get("n"))
-                        label = _clip(f"Chapter {n.upper()}, Section "
-                                      f"{section.get('n').upper()}. {title}")
+                        full = (f"Chapter {n.upper()}, Section {section.get('n').upper()}. "
+                                f"{title}")
+                        label = _clip(full)
                         out.append((where, section, ChapterPlan(
-                            label=label, lead=tuple(pending) + ((line, 1, True),))))
+                            label=label, lead=tuple(pending) + ((line, 1, label == full),))))
                         pending = []
                     continue
                 if inner is not None:          # one section, printed in the chapter
                     line, title = _scale_heading(inner, "i")
-                    label = _clip(f"Chapter {n.upper()}, Section I. {title}")
-                    lead = tuple(pending) + ((ch_line, 1), (line, 1, True))
+                    full = f"Chapter {n.upper()}, Section I. {title}"
+                    label = _clip(full)
+                    lead = tuple(pending) + ((ch_line, 1), (line, 1, label == full))
                 else:
-                    label = _clip(f"Chapter {n.upper()}. {ch_title}")
-                    lead = tuple(pending) + ((ch_line, 1, True),)
+                    full = f"Chapter {n.upper()}. {ch_title}"
+                    label = _clip(full)
+                    lead = tuple(pending) + ((ch_line, 1, label == full),)
                 out.append((where, chapter, ChapterPlan(label=label, lead=lead)))
                 pending = []
     return out
@@ -1402,7 +1408,8 @@ def build_work(work: ThmlWork) -> Document:
     doc = make_doc(collection=COLLECTION, filename=f"../{SOURCE_DIR}/{work.file}",
                    author=work.author, title=work.title,
                    chapters=chapters, source_key=work.source_key,
-                   year=work.year, editor=editor, vulgate_references=bool(work.ebook),
+                   year=work.year, editor=editor,
+                   vulgate_references=bool(work.ebook) or work.file in _EDITION_REFERENCES,
                    extra_meta={"source_url": work.url,
                                **({"gutenberg_ebook": work.ebook} if work.ebook else {})})
     if doc is None:
