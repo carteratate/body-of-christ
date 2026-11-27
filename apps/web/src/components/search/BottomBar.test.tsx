@@ -37,37 +37,37 @@ describe("BottomBar layout", () => {
     expect(pills.className).toContain("max-md:justify-center");
   });
 
-  it("draws the top edge's rule between pills, selector and search box", () => {
+  it("on phones only, draws the top edge's rule between pills, selector and search box", () => {
     const { container } = renderBar(["bible"]);
     const bar = container.firstElementChild as HTMLElement;
-    const rules = [...bar.children].filter((child) => child.getAttribute("aria-hidden") === "true");
+    const rules = [...bar.querySelectorAll('[aria-hidden="true"]')]
+      .filter((element) => element.classList.contains("-mx-4"));
 
     expect(rules).toHaveLength(2);
     for (const element of [bar, ...rules]) {
       for (const token of RULE) expect(element.classList).toContain(token);
     }
-    // The inner rules bleed through the bar's px-4 to span its width, as its top edge does.
-    for (const rule of rules) expect(rule.classList).toContain("-mx-4");
+    // Laptops keep today's single row: the rules exist only below the md breakpoint.
+    for (const rule of rules) expect(rule.classList).toContain("md:hidden");
 
     const [first, second] = rules;
-    const selectorRow = screen.getByRole("group", { name: "Results per source" }).closest(".py-3");
-    expect(first.nextElementSibling).toBe(selectorRow);
-    expect(selectorRow?.nextElementSibling).toBe(second);
+    const selectorColumn = screen.getByRole("group", { name: "Results per source" }).closest(".max-md\\:py-3");
+    expect(first.nextElementSibling).toBe(selectorColumn);
+    expect(selectorColumn?.nextElementSibling).toBe(second);
   });
 
-  it("centres the selector alone, with its label and save notice out of the flow", () => {
+  it("on phones, centres the selector alone, with its label and save notice out of the flow", () => {
     renderBar(["bible"], "saved");
     const group = screen.getByRole("group", { name: "Results per source" });
-    const row = group.closest(".py-3") as HTMLElement;
-    expect(row.className).toContain("justify-center");
+    const column = group.closest(".max-md\\:py-3") as HTMLElement;
+    // Laptops keep the selector at the row's end; phones centre it.
+    expect(column.className).toContain("items-end");
+    expect(column.className).toContain("max-md:items-center");
 
-    const label = screen.getByText("Per source:");
-    expect(label.className).toContain("absolute");
+    expect(screen.getByText("Per source:").className).toContain("max-md:absolute");
     const status = screen.getByRole("status");
     expect(status.textContent).toBe("Default saved");
-    expect(status.className).toContain("absolute");
-    // Only the selector takes up room in the row, so it is what gets centred.
-    expect([...row.children].filter((child) => !child.className.includes("absolute"))).toHaveLength(1);
+    expect(status.className).toContain("max-md:absolute");
     expect(screen.getByRole("button", { name: "10 passages per source" })).toBeTruthy();
   });
 });

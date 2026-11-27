@@ -1,15 +1,22 @@
-/* As wide as the buttons shown: 3·4·5, then 10 as well. */
 .viewport {
   position: relative;
-  width: 111px;
+  width: 148px;
   height: 32px;
   flex: none;
   overflow: visible;
-  transition: width 250ms ease-out;
 }
 
-.viewportWide {
-  width: 148px;
+/* Phones (Tailwind's md breakpoint): as wide as the buttons shown, 3·4·5 then 10 too,
+   so the bar can centre the buttons themselves. */
+@media (width < 48rem) {
+  .viewport {
+    width: 111px;
+    transition: width 250ms ease-out;
+  }
+
+  .viewportWide {
+    width: 148px;
+  }
 }
 
 .standardChoices {

@@ -17,9 +17,9 @@ interface QuotaControlProps {
 }
 
 /**
- * The box is only as wide as the buttons shown (3·4·5, widening as 10 slides in), so
- * a parent that centres it centres the buttons. The "Per source:" label hangs off its
- * left side, out of the flow, and never moves them.
+ * On phones the box is only as wide as the buttons shown (3·4·5, widening as 10 slides
+ * in), so a parent that centres it centres the buttons, and the "Per source:" label
+ * hangs off its left side, out of the flow. On wider screens it is laid out as before.
  */
 export function QuotaControl({ value, onChange, focusedCollection }: QuotaControlProps) {
   const collection = focusedCollection ? getCollectionMeta(focusedCollection) : undefined;
@@ -52,12 +52,12 @@ export function QuotaControl({ value, onChange, focusedCollection }: QuotaContro
     : undefined;
 
   return (
-    <div className="relative shrink-0">
+    <div className="relative flex shrink-0 items-center gap-2">
       {/* On phones the bar is the screen's width: the label may use what lies between
           the bar's 16px padding and the selector (half its width, plus the 8px gap),
           wrapping onto two lines on the narrowest screens rather than running off. */}
       <span
-        className={`absolute right-full top-1/2 mr-2 w-max -translate-y-1/2 text-right text-[10px] font-medium uppercase leading-tight tracking-widest text-brand-muted ${
+        className={`text-[10px] font-medium uppercase tracking-widest text-brand-muted max-md:absolute max-md:right-full max-md:top-1/2 max-md:mr-2 max-md:w-max max-md:-translate-y-1/2 max-md:text-right max-md:leading-tight ${
           focusedEligible ? "max-md:max-w-[calc(50vw-98px)]" : "max-md:max-w-[calc(50vw-79.5px)]"}`}
       >
         Per source:
