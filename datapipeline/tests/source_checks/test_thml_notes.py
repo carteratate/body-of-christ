@@ -50,7 +50,10 @@ def _by_file(built) -> dict:
     for collection in THML:
         for d in built[collection]:
             for p in d.passages:
-                out[(collection, p.metadata["source_file"])].append(p)
+                # A Project Gutenberg text (5.6b) is no ThML file; its notes leave by the
+                # same rule, which the coverage check's note leakage measures.
+                if p.metadata["source_file"].endswith(".xml"):
+                    out[(collection, p.metadata["source_file"])].append(p)
     return out
 
 
@@ -126,8 +129,10 @@ def test_footnotes_are_scripture_references_after_a_word(built):
                 total[c] += len(notes)
                 if [n["n"] for n in notes] != list(range(1, len(notes) + 1)):
                     bad.append((p.anchor, "numbering"))
+                # A Gutenberg text's references are read with the Vulgate's names (5.6b).
+                vulgate = p.metadata.get("source_file", "").endswith(".txt")
                 for n in notes:
-                    if scripture_reference(n["text"]) != n["text"] \
+                    if scripture_reference(n["text"], vulgate) != n["text"] \
                             or not 0 < n["at"] <= len(p.content) \
                             or p.content[n["at"] - 1].isspace():
                         bad.append((p.anchor, n))

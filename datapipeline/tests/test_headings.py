@@ -332,6 +332,19 @@ def test_a_pairs_title_cannot_open_another_pair():
     assert any("cannot open another pair" in f for f in headings.problems(content, marks))
 
 
+def test_a_document_can_opt_in_before_its_collection(monkeypatch):
+    """5.6b's works join H7 and H8 one document at a time: a listed document is checked,
+    the rest of its collection is not."""
+    patterns = copy.deepcopy(health.load_patterns())
+    patterns["H7_unmarked_heading"]["documents"] = ["doc-1"]
+    monkeypatch.setattr(health, "load_patterns", lambda path=None: patterns)
+    content = "Chapter 1\n\nLegitimate defense\n\n" + BODY
+    assert _rules(_doc(_passage(content), collection="medieval")) == ["H7_unmarked_heading"]
+    other = Document(id="doc-2", collection="medieval", title="Another",
+                     passages=[_passage(content)])
+    assert _rules(other) == []
+
+
 def test_a_bare_section_number_may_be_dropped_but_not_a_word():
     assert headings.repeats_label("Christian Education", "2. Christian Education")
     assert not headings.repeats_label("Society", "Civil Society")

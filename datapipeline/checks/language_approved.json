@@ -170,6 +170,476 @@
   "sha1": "cf6e354b511d25c529280a2c3ace800957964800"
  },
  {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u12/from-p256",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 7,
+  "starts": "die non putabam tam dulce esse",
+  "sha1": "3aec18de63adc0d9af4bac57d3c7f02bfe8d2869"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u20/from-p418",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 7,
+  "starts": "defending us non est satietas defensionis",
+  "sha1": "5067fdf361c25ec23d058c62ff1f286575ba7b1a"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u23",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 9,
+  "starts": "perish gens quae non servierit tibi",
+  "sha1": "1de647c83f293e8e0e4d374c053eb297b73eea3c"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u23/from-p472",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 8,
+  "starts": "wishes quod quaerit invenit et frustrari",
+  "sha1": "fdfec771c60eba92e44ca3bf386fd85a95155ee5"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u29/from-p644",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 11,
+  "starts": "god o quam pulchra es amica",
+  "sha1": "0f017e98e1261c1d9268c7d9255f1406a01715b6"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u29/from-p644",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 8,
+  "starts": "thee tota pulchra es et macula",
+  "sha1": "bb45cf73b54b0f8c4963102c935fdb7ff437208a"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u31/from-p677",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 13,
+  "starts": "thy steps oh prince’s daughter quam",
+  "sha1": "9fe2eaa03032984d115e6ca8520766f9f9d310cc"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u32/from-p711",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 6,
+  "starts": "fecit mihi magna qui potens est",
+  "sha1": "fde09fe6d776b954212f53456c9f2e5225ad45b3"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u32/from-p713",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 9,
+  "starts": "things cum eo eram cuncta componens",
+  "sha1": "6a3470794c7e96876bfa6b1351cacdca2a486d05"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u32/from-p714",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 8,
+  "starts": "wanting nec facultas nec voluntas illi",
+  "sha1": "faefac51bb29f6e824bf4343ecbbca00fe06e7d9"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u33/from-p730",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 6,
+  "starts": "mecum sunt divitiae ut ditem diligentes",
+  "sha1": "7a26beef278abe220f3e83af4580defc5cade43c"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u34/from-p755",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 7,
+  "starts": "done non mea voluntas sed tua",
+  "sha1": "7d268ee11d335bce21215d9d514e099f4996a8e9"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u35/from-p778",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 10,
+  "starts": "thee tota pulchra es amica mea",
+  "sha1": "2d4b17e336f6515554d3c8be6c79f6bf57b3709d"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u36",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 8,
+  "starts": "exult plangendum nobis quam plaudendum magis",
+  "sha1": "ac63efbdd790d4fff8039e5515754ecc59413ef8"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u36/from-p808",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 5,
+  "starts": "non est inventus similis illi",
+  "sha1": "f95dac00b00b0e31959f5f8eae34a56b7ee0e81d"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u37/from-p822",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 9,
+  "starts": "thy destruction magna est enim velut",
+  "sha1": "32d1defc6e522a15367b6454595220d45fde61bf"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u37/from-p829",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 9,
+  "starts": "lives anima magis est ubi amat",
+  "sha1": "22c957f1711565ca530ea1b7700cfbfada98247b"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u37/from-p831",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 6,
+  "starts": "speak alius videbatur pati alius loqui",
+  "sha1": "fcd3bb00a01857a64456558d9bedb6546e2875b6"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u39",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 7,
+  "starts": "men debet fugere qui salvator est",
+  "sha1": "2d2f512a25bbf1f7def8cb307bbb422fad9d45b4"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u40",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 8,
+  "starts": "go puer non comparet et ego",
+  "sha1": "3c29d829595f36fe9419d5fa5744eae2e5ffb2a4"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u40/from-p872",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 9,
+  "starts": "loving complaint non erat increpatio sed",
+  "sha1": "f83be162ce0a237466f3974e7ddafbf61a7f44e2"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u40/from-p874",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 12,
+  "starts": "god himself perdiderat illa quae dederat",
+  "sha1": "d1c69f7496e0a49f0442a4bb55505fc133c530d1"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u42",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 11,
+  "starts": "suffering non considerabat cor tuum horrorem",
+  "sha1": "595d6a3aa5556f768232ecb3ab3268f0135f0fd3"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u42",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 5,
+  "starts": "blunt non acutis sed obtusis",
+  "sha1": "5d82b7db7b382e8b52fe3f8638b07ba558426e0b"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u42/from-p895",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 7,
+  "starts": "tears fili non habeo nisi aquam",
+  "sha1": "258518238a81302b80a04b8f261db796c4daaa94"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u43/from-p906",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 7,
+  "starts": "divided ita ut ambae partes essent",
+  "sha1": "35dd1959bc9bd41d6e5fbc3f6f941be674083776"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u45",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 13,
+  "starts": "makes like amor aut pares invenit",
+  "sha1": "c4da3b126a4cfcb9c6b3bd09d2d5c741282cc0ad"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u46/from-p937",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 6,
+  "starts": "si quis est parvulus veniat ad",
+  "sha1": "ca42dd329fa2d8766bd04688f4674405c6789b0e"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u47/from-p942",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 10,
+  "starts": "god nihil nisi deum cogitabam nulla",
+  "sha1": "229fe65d85c56ceb0ffa9320e4accf6fa34823ed"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u49/from-p954",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 6,
+  "starts": "conduct aut nomen aut mores muta",
+  "sha1": "1731285b63de1eff58584fb57edac6efd430c5f0"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u50",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 8,
+  "starts": "away privately joseph autem voluit occulte",
+  "sha1": "49c67f0b37e2e1cc1d6df53ec3745cff565bc139"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u51/from-p966",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 12,
+  "starts": "secure qui autem cavet laqueos securus",
+  "sha1": "b8fbaff796f07ddb9bd44249ebd7d8d650734d83"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u52/from-p971",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 12,
+  "starts": "loving poverty non paupertas sed amor",
+  "sha1": "bc687beef3569d1ab43a3db50df98c435d7f8c9f"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u53",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 11,
+  "starts": "spoke anima mea liquefacta est ut",
+  "sha1": "e86adba5f984d7da980afa9a1286a1c96499dfe2"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u55",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 11,
+  "starts": "smoke quae est ista quae ascendit",
+  "sha1": "4f78b238dd46c07e62e612567299672df53ad6ee"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u56",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 9,
+  "starts": "constant quidquid minimum dum modo sit",
+  "sha1": "256cef8aba71c310f4d19cb575d90e292834f20a"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u68/from-p1125",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 13,
+  "starts": "always graciously heard quia mater est",
+  "sha1": "0b34fc5842991bdd7d189a8eca6386c20fca6042"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u68/from-p1125",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 10,
+  "starts": "impossibile est deiparam non exaudiri therefore",
+  "sha1": "bf91501955405df31ddae8f810599ff111670b8e"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u69",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 10,
+  "starts": "spotless tota pulchra es amica mea",
+  "sha1": "bbb12b930238fb2c52126405285832a6a2173e35"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u70",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 12,
+  "starts": "becoming god magis deo conjungi non",
+  "sha1": "46408a473f24f887022e4cebec9e878c9d8d9aeb"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u70",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 12,
+  "starts": "beautiful art thou quam pulchra es",
+  "sha1": "96c13ebb0225769e3b536b829aa668d26218b927"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u70",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 9,
+  "starts": "one una est columba mea una",
+  "sha1": "eadc320c5a6ac66048d0c9b9b10bc50104ad8f95"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u71",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 10,
+  "starts": "st bernard says nec facultas nec",
+  "sha1": "12bae45a9c7d95b629468cdd4f6c0ec26a544832"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u71",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 8,
+  "starts": "non potest miserias scire et non",
+  "sha1": "9d630bf5d592e7c13ab541cba78d5e45f8ea9a87"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u75",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 5,
+  "starts": "salus firma recurrentium ad eam",
+  "sha1": "7c0f7e3138a42330108cda415b4b7b45807be9ec"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u87",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "la",
+  "words": 7,
+  "starts": "pure virgin non nobis est alia",
+  "sha1": "a0c1b6c82a343c856b53128bd2fac22ca462a55d"
+ },
+ {
+  "document_id": "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+  "anchor": "u88",
+  "collection": "theologians",
+  "title": "The Glories of Mary",
+  "language": "it",
+  "words": 15,
+  "starts": "god si formam dei te appellem",
+  "sha1": "1c87eba77e9624225a10bd6e12f298871eeb3674"
+ },
+ {
   "document_id": "433cf2af-194e-549f-b45d-85562d5b8b19",
   "anchor": "pastores-gregis/1",
   "collection": "apostolic-exhortations",
@@ -608,6 +1078,16 @@
   "words": 8,
   "starts": "christ himself virtute ac persona ipsius",
   "sha1": "a1562a61a2cc7e8f9bb401712b4b16fd363f97ae"
+ },
+ {
+  "document_id": "96d72c6a-b005-5e96-9f7f-ceca57042078",
+  "anchor": "vi.ii/from-p6",
+  "collection": "medieval",
+  "title": "Treatise on the Love of God",
+  "language": "fr",
+  "words": 5,
+  "starts": "ne leve pas mais releve",
+  "sha1": "ab689b2d7b24f8564a7b7f4c8f4c7d1aef48eb9e"
  },
  {
   "document_id": "9a3661e6-dc89-509f-b191-ec2adbf5c695",

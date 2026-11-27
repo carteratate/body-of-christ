@@ -96,6 +96,7 @@
  {"broken": "twelve- year", "corrected": "twelve-year", "collections": ["apostolic-exhortations", "encyclicals"]},
  {"broken": "Twenty- fifth", "corrected": "Twenty-fifth", "collections": ["encyclicals"]},
  {"broken": "twenty- fifth", "corrected": "twenty-fifth", "collections": ["papal-documents"]},
+ {"broken": "vain- glory", "corrected": "vain-glory", "collections": ["medieval"]},
  {"broken": "wedding- feast", "corrected": "wedding-feast", "collections": ["apostolic-exhortations"]},
  {"broken": "well- being", "corrected": "well-being", "collections": ["encyclicals"]},
  {"broken": "well- nigh", "corrected": "well-nigh", "collections": ["encyclicals"]},
