@@ -22,6 +22,7 @@ data").
 | **canon-law** | local `sources/canon-law/*.html` (vendored from vatican.va) | ✅ | single doc; one passage per canon (1,747); Book by canon-range; Book/Title/Chapter chapters (233) |
 | **councils** | local `sources/councils/*.html` (vendored from papalencyclicals.net / vatican.va) | ✅ | one doc per council / Vatican II document (36); canon + §-paragraph passages |
 | **medieval** | local `sources/medieval/*.xml` (vendored from ccel.org ThML) | ✅ | one doc per (author, work) (6); reuses the church-fathers ThML builder |
+| **roman-curia** | local `sources/roman-curia/*.html` with `manifest.json` (vendored from vatican.va by `scripts/vendor_sources.py --collection roman-curia`) | not yet | the Dicastery for the Doctrine of the Faith's doctrinal documents, 1966–2026 (60; 5.3a); real paragraph numbers kept, unnumbered text grouped by section; headings marked in the text (#445); endnotes, title blocks and signatures left out; the Professio Fidei commentary page's opening texts left out |
 
 **Vendoring:** web-sourced collections are vendored to `sources/<collection>/`
 (gitignored, with a `manifest.json` recording provenance) via

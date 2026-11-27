@@ -143,7 +143,8 @@
  "H7_unmarked_heading": {
   "_comment": "Block rules H7 and H8 (issue #445) run in these collections only, and in `authors`' documents of a collection (Vatican II among the councils): a heading-like paragraph (headings.looks_like_heading) with no mark in metadata.headings, and a level-1 heading that opens its chapter and repeats the chapter label without chapter_title. A collection joins when its adapter marks its headings. not_headings lists, by document ID, paragraphs the classifier takes for headings that are text (a signature, a dating line, a quotation lead-in), each with its reason; they are matched without case or punctuation.",
   "collections": [
-   "catechism"
+   "catechism",
+   "roman-curia"
   ],
   "authors": {
    "councils": [
@@ -202,6 +203,12 @@
      "text": "For this reason God “wrote on the tables of the Law what men did not read in their hearts.” (Saint Augustine)",
      "reason": "Augustine's saying printed under answer 417, ending in its attribution; not a heading"
     }
+   ],
+   "35ac3c73-de91-513a-acd4-718f67794c1e": [
+    {
+     "text": "Vatican City, 10 July 2023",
+     "reason": "the dating line closing the Holy Father's responses (5.3a), not a heading"
+    }
    ]
   }
  },
@@ -220,7 +227,7 @@
   ]
  },
  "R12_note_caller": {
-  "_comment": "A footnote caller left in the text (C-17): Opus A-012's \"(N)\"/\"(N*)\" after a word and a digit glued after punctuation, Opus-2 B-005's number after sentence punctuation and a space (not before a Bible book), and \"[ N ]\". not_after skips a match whose preceding 16 characters end like a Scripture citation (\"Rom. i.\", \"3:16.\") or a reference (\"cf. 1 C,or. 3:7\", a misprint in vatican.va's Ad Gentes 40, 1.1) or the bracketed volume of an Acta Apostolicae Sedis citation (\"AAS [39] 1947\", The Catholic Mind's Menti Nostrae, 1.3d). Summa brackets are summa_bracket_numbers'.",
+  "_comment": "A footnote caller left in the text (C-17): Opus A-012's \"(N)\"/\"(N*)\" after a word and a digit glued after punctuation, Opus-2 B-005's number after sentence punctuation and a space (not before a Bible book), and \"[ N ]\". not_after skips a match whose preceding 16 characters end like a Scripture citation (\"Rom. i.\", \"3:16.\") or a reference (\"cf. 1 C,or. 3:7\", a misprint in vatican.va's Ad Gentes 40, 1.1) or the bracketed volume of an Acta Apostolicae Sedis citation (\"AAS [39] 1947\", The Catholic Mind's Menti Nostrae, 1.3d), or a canon (\"can. 823 CIC\", the Roman Curia's Norms, 5.3a). Summa brackets are summa_bracket_numbers'.",
   "skip_collections": [
    "bible",
    "canon-law",
@@ -236,7 +243,7 @@
   "not_after": [
    "\\b[ivxlc]+[.,;]?[\"”’)]?$",
    "\\d[.:][\"”’)]?$",
-   "\\b(?:[Vv]er|[Bb]k|[Cc]f|sess|cap|constitut|ch|chap|c|p|pp|vol|n|no|nos|art|q|a|sect|sec|lib|ep|hom|serm|Trin)\\.[\"”’)]?$",
+   "\\b(?:[Vv]er|[Bb]k|[Cc]f|sess|cap|constitut|ch|chap|c|p|pp|vol|n|no|nos|art|q|a|sect|sec|lib|ep|hom|serm|Trin|can|cann)\\.[\"”’)]?$",
    "\\bAAS\\.? \\[$"
   ]
  },

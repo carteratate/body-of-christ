@@ -28,6 +28,7 @@ from typing import Any
 
 from app.models.corpus import (CardCaution, CardLink, DocumentFacts, OverviewNote,
                                PassageCard)
+from app.rag.constants import CURIA_GENRES, CURIA_ISSUERS
 
 CARD_VERSION = 1
 CAUTION_KINDS = ("incomplete", "wording", "authorship", "authority")
@@ -119,11 +120,22 @@ PAPAL_GENRES = ("encyclical", "apostolic-exhortation", "apostolic-letter",
                 "apostolic-constitution", "motu-proprio", "letter")
 
 
+def _kind(facts: DocumentFacts) -> str | None:
+    """The genre a card names: a papal kind, or a Roman Curia document's own kind
+    ("Instruction", 5.3a), which only an office of the Curia issues; `commentary` is also
+    a writer's genre, which no card shows."""
+    if facts.genre in PAPAL_GENRES:
+        return facts.genre
+    if facts.issuer in CURIA_ISSUERS and facts.genre in CURIA_GENRES:
+        return facts.genre
+    return None
+
+
 def kind_and_form(facts: DocumentFacts) -> str | None:
-    """"Apostolic constitution, issued as a bull"; "Encyclical". A writer's genre is not
-    shown."""
+    """"Apostolic constitution, issued as a bull"; "Encyclical"; "Instruction". A
+    writer's genre is not shown."""
     form = _FORMS.get(facts.form or "")
-    genre = facts.genre if facts.genre in PAPAL_GENRES else None
+    genre = _kind(facts)
     if not genre:
         return f"Issued as {form}" if form else None
     words = genre.replace("-", " ")

@@ -3,6 +3,10 @@
 # The old keys were removed in 5.1b.4, after 5.1b.3 rewrote every stored value; the web
 # still reads them from a browser's own storage (`LEGACY_COLLECTIONS` in
 # apps/web/src/lib/collections.ts), so it never sends them.
+#
+# `roman-curia` (5.3a) is accepted before its documents are published, so a search of it
+# finds nothing until then; the web lists it in `UNRELEASED_COLLECTIONS`, offering it
+# only once its release PR moves it into `COLLECTIONS`.
 CANONICAL_COLLECTIONS: frozenset[str] = frozenset({
     "bible",
     "catechism",
@@ -12,6 +16,7 @@ CANONICAL_COLLECTIONS: frozenset[str] = frozenset({
     "summa",
     "theologians",
     "councils",
+    "roman-curia",
 })
 
 VALID_COLLECTIONS: frozenset[str] = CANONICAL_COLLECTIONS
@@ -44,12 +49,19 @@ PAPAL_ISSUERS: tuple[str, ...] = (
     "pope-leo-xiv",
 )
 
-# Only these collections can be narrowed; a scope for any other is refused.
+# The Roman Curia's offices, by the slug in `documents.issuer` (5.3a): the Dicastery for
+# the Doctrine of the Faith, under all three names it has printed. 5.3b adds others.
+CURIA_ISSUERS: tuple[str, ...] = ("ddf",)
+
+# Only these collections can be narrowed; a scope for any other is refused. A Roman Curia
+# document's genre is its own kind (a declaration, an instruction), or `letter`.
 GENRES_BY_COLLECTION: dict[str, frozenset[str]] = {
     "papal": frozenset(PAPAL_GENRES + (OTHER_GENRE,)),
+    "roman-curia": frozenset(CURIA_GENRES + ("letter", OTHER_GENRE)),
 }
 ISSUERS_BY_COLLECTION: dict[str, frozenset[str]] = {
     "papal": frozenset(PAPAL_ISSUERS),
+    "roman-curia": frozenset(CURIA_ISSUERS),
 }
 # The work filter: the documents a search of these collections can be narrowed to, by
 # document ID (the registry's frozen `document_id`). By document, not genre, because

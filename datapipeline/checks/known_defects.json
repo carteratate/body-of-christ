@@ -195,5 +195,29 @@
  "health.H7_unmarked_heading:catechism/c6d78d5e-5f23-5f86-b0ca-97a741e186bf#lords-prayer/amen/6": {
   "fixed_by": "5.5",
   "description": "Roman Catechism: the translators' sub-heading 'Meaning of the Word “Amen”' ends this passage instead of opening the next one (a trailing heading), so it cannot be marked; moving it changes two passages' text (issue #445)."
+ },
+ "coverage.roman-curia.considerations-regarding-proposals-to-give-legal-recognition-to-unions-between-homosexual-persons.html": {
+  "fixed_by": "5.3a",
+  "description": "76.86% covered: the page prints its note callers as plain \"(N)\" text, which the build removes and the coverage extractor keeps, so the sentences holding them do not match; the build holds every one of them, and leaves out only the signature line"
+ },
+ "coverage.roman-curia.doctrinal-commentary-on-the-concluding-formula-of-the-professio-fidei.html": {
+  "fixed_by": "5.3a",
+  "description": "3.33% covered: the page prints the Profession of Faith, the Oath of Fidelity and John Paul II's motu proprio Ad Tuendam Fidem before the commentary; the build takes only the commentary, from the \"***\" that follows them (ingest/roman_curia._START_AFTER, as the parked branch's review decided), and the coverage extractor measures the texts before it as the body and the commentary as notes"
+ },
+ "coverage.roman-curia.mysterium-filii-dei.html": {
+  "fixed_by": "5.3a",
+  "description": "86.86% covered: the endnotes, numbered \"4) Cfr. ...\", which the coverage extractor reads as body text, and the subtitle, signature and L'Osservatore Romano source line; the build leaves all of them out"
+ },
+ "coverage.roman-curia.response-on-the-validity-of-baptism-conferred-by-the-church-of-jesus-christ-of-latter-day-saints.html": {
+  "fixed_by": "5.3a",
+  "description": "93.28% covered: a one-page response: the build leaves out its signature line, which is a large share of so short a page"
+ },
+ "coverage.roman-curia.response-on-the-validity-of-baptism.html": {
+  "fixed_by": "5.3a",
+  "description": "88.65% covered: a one-page response: the build leaves out its subtitle and signature lines, which are a large share of so short a page"
+ },
+ "coverage.roman-curia.response-to-bishop-cortes-on-catholic-membership-in-freemasonry.html": {
+  "fixed_by": "5.3a",
+  "description": "91.66% covered: a one-page response: the build leaves out its subtitle (\"The Request of His Excellency, the Most Rev. Julito Cortes ...\"), part of the title block, which is a large share of so short a page"
  }
 }

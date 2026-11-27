@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   ALL_COLLECTION_KEYS, canonicalCollectionKey, canonicalDocuments, getCollectionMeta, LEGACY_COLLECTIONS,
+  UNRELEASED_COLLECTIONS,
 } from "./collections";
 
 const CONSTANTS = fileURLToPath(new URL("../../../../services/api/app/rag/constants.py", import.meta.url));
@@ -14,7 +15,15 @@ describe("collection keys after 5.1b", () => {
     const source = readFileSync(CONSTANTS, "utf8");
     const block = source.slice(source.indexOf("CANONICAL_COLLECTIONS"), source.indexOf("})"));
     const api = [...block.matchAll(/"([a-z-]+)"/g)].map((m) => m[1]);
-    expect([...ALL_COLLECTION_KEYS].sort()).toEqual(api.sort());
+    const unreleased = UNRELEASED_COLLECTIONS.map((c) => c.key);
+    expect([...ALL_COLLECTION_KEYS, ...unreleased].sort()).toEqual(api.sort());
+  });
+
+  it("labels Roman Curia wherever a stored result names it, without offering it (5.3a)", () => {
+    expect(ALL_COLLECTION_KEYS).not.toContain("roman-curia");
+    expect(getCollectionMeta("roman-curia")).toMatchObject({
+      label: "Roman Curia", color: "var(--color-collection-roman-curia)",
+    });
   });
 
   it("maps each old key a browser may hold to its new collection", () => {

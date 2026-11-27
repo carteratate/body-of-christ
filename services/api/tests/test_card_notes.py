@@ -179,6 +179,15 @@ def test_kind_and_form_name_a_papal_kind():
     assert kf(DocumentFacts(genre="other", form="bull")) == "Issued as a bull"
 
 
+def test_kind_and_form_name_a_roman_curia_kind_but_not_a_writers():
+    kf = card_notes.kind_and_form
+    assert kf(DocumentFacts(genre="instruction", issuer="ddf")) == "Instruction"
+    assert kf(DocumentFacts(genre="doctrinal-note", issuer="ddf")) == "Doctrinal note"
+    assert kf(DocumentFacts(genre="commentary", issuer="ddf")) == "Commentary"
+    # A theologian's commentary, which shares the genre, shows no kind.
+    assert kf(DocumentFacts(genre="commentary")) is None
+
+
 def test_the_facts_query_reads_only_the_card_keys_of_either_metadata():
     sql = document_facts._sql(works=True)
     for column in ("c.metadata->>'note_kind'", "c.metadata->>'translator'",

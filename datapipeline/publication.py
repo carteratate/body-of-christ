@@ -63,6 +63,8 @@ SOURCE_BUILDS: dict[str, SourceAdapter] = {
     "encyclicals": lambda: _build_from("encyclicals", "build_documents"),
     "medieval": lambda: _build_from("medieval", "build_documents"),
     "papal-documents": lambda: _build_from("papal_documents", "build_documents"),
+    # The Dicastery for the Doctrine of the Faith's documents (5.3a).
+    "roman-curia": lambda: _build_from("roman_curia", "build_documents"),
     "summa": lambda: _build_from("summa", "build_document", single=True),
 }
 
@@ -119,6 +121,7 @@ SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
     "church-law": lambda: _published_as("church-law", SOURCE_BUILDS["canon-law"]()),
     "councils": SOURCE_BUILDS["councils"],
     "papal": _papal,
+    "roman-curia": SOURCE_BUILDS["roman-curia"],
     "summa": SOURCE_BUILDS["summa"],
     "theologians": _theologians,
 }
