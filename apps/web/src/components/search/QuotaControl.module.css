@@ -6,6 +6,19 @@
   overflow: visible;
 }
 
+/* Phones (Tailwind's md breakpoint): as wide as the buttons shown, 3·4·5 then 10 too,
+   so the bar can centre the buttons themselves. */
+@media (width < 48rem) {
+  .viewport {
+    width: 111px;
+    transition: width 250ms ease-out;
+  }
+
+  .viewportWide {
+    width: 148px;
+  }
+}
+
 .standardChoices {
   position: absolute;
   inset-block-start: 0;
@@ -80,6 +93,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .viewport,
   .standardButton,
   .standardChoices,
   .tenButton {
