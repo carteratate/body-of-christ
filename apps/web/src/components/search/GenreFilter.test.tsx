@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 
+import { COLLECTION_SCOPES } from "@/lib/collection-scopes";
 import { createSearchDraft, transitionSearchDraft, type SearchDraftEvent } from "@/lib/search-draft";
 import { CollectionToggles } from "./CollectionToggles";
 
@@ -16,8 +17,6 @@ function Harness({ collections }: { collections: string[] }) {
       <CollectionToggles
         activeCollections={draft.collections}
         onToggle={(collection) => setDraft((d) => transitionSearchDraft(d, { type: "collection-toggled", collection }))}
-        translation={draft.translation}
-        onTranslationChange={() => {}}
         excluded={draft.excluded}
         onScopeEvent={(event: SearchDraftEvent) => setDraft((d) => transitionSearchDraft(d, event))}
       />
@@ -37,6 +36,12 @@ const cue = (name: string) => {
 
 describe("genre and issuer filter (5.1a)", () => {
   afterEach(cleanup);
+
+  it("draws the Bible as a plain toggle, with no translation dropdown", () => {
+    render(<Harness collections={["bible"]} />);
+    expect(screen.getByRole("button", { name: "Bible" }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.queryByRole("button", { name: /translation/i })).toBeNull();
+  });
 
   it("offers the caret only on a selected collection that can be narrowed", () => {
     const { unmount } = render(<Harness collections={["bible"]} />);
@@ -76,14 +81,22 @@ describe("genre and issuer filter (5.1a)", () => {
     const kinds = () => screen.getAllByRole("checkbox")
       .filter((box) => box.closest('[role="group"]')?.getAttribute("aria-label") === "Kind")
       .map((box) => box.textContent);
-    // The three old papal collections' kinds together (5.1b.2).
+    // The three old papal collections' kinds together (5.1b.2), each with its number of
+    // documents. The numbers are read from the generated scope list, which grows with the
+    // corpus (collection-scopes.test.ts holds it equal to works.json).
+    const documents = COLLECTION_SCOPES.papal.counts;
+    const count = (genre: string, issuer?: string) => Object.entries(documents[genre] ?? {})
+      .filter(([pope]) => issuer === undefined || pope === issuer)
+      .reduce((n, [, k]) => n + k, 0);
     expect(kinds()).toEqual([
-      "Encyclical71", "Apostolic exhortation32", "Apostolic letter14",
-      "Apostolic constitution4", "Motu proprio1", "Other1",
-    ]);
+      ["Encyclical", "encyclical"], ["Apostolic exhortation", "apostolic-exhortation"],
+      ["Apostolic letter", "apostolic-letter"], ["Apostolic constitution", "apostolic-constitution"],
+      ["Motu proprio", "motu-proprio"], ["Other", "other"],
+    ].map(([label, genre]) => `${label}${count(genre)}`));
 
     fireEvent.click(screen.getByRole("button", { name: "Only Boniface VIII" }));
-    expect(kinds()).toEqual(["Apostolic constitution1"]);
+    expect(kinds()).toEqual(
+      [`Apostolic constitution${count("apostolic-constitution", "pope-boniface-viii")}`]);
     const constitution = screen.getByRole("checkbox", { name: /^Apostolic constitution/ });
     expect(constitution.getAttribute("aria-disabled")).toBe("true");
     fireEvent.click(constitution);
@@ -139,8 +152,6 @@ describe("genre and issuer filter while searching and near the top (5.1a)", () =
       <CollectionToggles
         activeCollections={["papal"]}
         onToggle={() => {}}
-        translation="CPDV"
-        onTranslationChange={() => {}}
         excluded={{}}
         onScopeEvent={() => {}}
         scopesLocked={locked}
@@ -173,5 +184,48 @@ describe("genre and issuer filter while searching and near the top (5.1a)", () =
     const panel = screen.getByRole("dialog");
     expect(panel.style[side as "top" | "bottom"]).not.toBe("");
     expect(panel.hasAttribute("data-below")).toBe(side === "top");
+  });
+});
+
+describe("work filter (Catechism)", () => {
+  afterEach(cleanup);
+  const CCC = "9679c400-d314-5394-b916-f6fc27b50104";
+  const COMPENDIUM = "800373b1-d6c8-5a26-8910-8d1485b224c2";
+  const ROMAN = "c6d78d5e-5f23-5f86-b0ca-97a741e186bf";
+  const workCue = () => {
+    const element = document.querySelector<HTMLButtonElement>('[aria-label="Filter Catechism by work"]');
+    if (!element) throw new Error("no caret for Catechism");
+    return element;
+  };
+
+  it("lists the three works, all ticked, with no Kind or Pope list and no counts", () => {
+    render(<Harness collections={["catechism"]} />);
+    fireEvent.click(workCue());
+    const dialog = screen.getByRole("dialog", { name: "Search within Catechism" });
+    expect(dialog.textContent).toContain("Work");
+    expect(dialog.textContent).not.toContain("Kind");
+    expect(dialog.textContent).not.toContain("Pope");
+    const boxes = screen.getAllByRole("checkbox");
+    expect(boxes.map((box) => box.textContent)).toEqual([
+      "Catechism of the Catholic Church1992",
+      "Compendium of the Catechism2005",
+      "Roman CatechismCouncil of Trent, 1566 · McHugh and Callan, 1923",
+    ]);
+    expect(boxes.every((box) => box.getAttribute("aria-checked") === "true")).toBe(true);
+    expect(dialog.querySelector('[aria-label$=" documents"]')).toBeNull();
+  });
+
+  it("narrows by document, keeps one ticked, and All returns to every work", () => {
+    render(<Harness collections={["catechism", "bible"]} />);
+    fireEvent.click(workCue());
+    fireEvent.click(screen.getByRole("checkbox", { name: /^Roman Catechism/ }));
+    expect(scopes()).toEqual({ catechism: { documents: [CCC, COMPENDIUM] } });
+
+    fireEvent.click(screen.getByRole("button", { name: "Only Roman Catechism" }));
+    expect(scopes()).toEqual({ catechism: { documents: [ROMAN] } });
+    expect(screen.getByRole("checkbox", { name: /^Roman Catechism/ }).getAttribute("aria-disabled")).toBe("true");
+
+    fireEvent.click(screen.getByRole("button", { name: "All works" }));
+    expect(scopes()).toBeNull();
   });
 });

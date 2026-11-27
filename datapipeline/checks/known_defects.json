@@ -1,4 +1,8 @@
 {
+ "coverage.catechism.compendium-ccc.html": {
+  "fixed_by": "5.5",
+  "description": "84.64% covered: the build takes the 598 questions with their answers (5.5) and leaves out the motu proprio, the introduction, the appendix of prayers and formulas, and the texts printed between sections (the Creeds, the seven sacraments, the Decalogue, the Lord's Prayer, Augustine's saying before question 2), until Carter decides whether they join (NEEDS-CARTER.md, 5.5)"
+ },
  "coverage.church-fathers.third-century.xml": {
   "fixed_by": "1.8e",
   "description": "66.0% covered since 3.1 took the works rules A to C remove (Tertullian's seven and Origen's three, in this volume) out of the measure; it was 95.04%, and its uncovered text is unchanged: the Appendix's pseudo-Tertullian poems (iii.xi, about 101,000 characters) and Origen's Letter to Africanus (vi.vii, 34,000), whole works the adapter drops (1.8e)"
@@ -183,5 +187,13 @@
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.x": {
   "fixed_by": "5.6b",
   "description": "\"Chapter X\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
+ },
+ "health.H7_unmarked_heading:catechism/c6d78d5e-5f23-5f86-b0ca-97a741e186bf#lords-prayer/opening-words/9": {
+  "fixed_by": "5.5",
+  "description": "Roman Catechism: the translators' sub-heading “Our” reads '66 Our”' in the OCR text (a page number run into it). It stays unmarked until the OCR fix repairs the line, which changes the passage text (issue #445)."
+ },
+ "health.H7_unmarked_heading:catechism/c6d78d5e-5f23-5f86-b0ca-97a741e186bf#lords-prayer/amen/6": {
+  "fixed_by": "5.5",
+  "description": "Roman Catechism: the translators' sub-heading 'Meaning of the Word “Amen”' ends this passage instead of opening the next one (a trailing heading), so it cannot be marked; moving it changes two passages' text (issue #445)."
  }
 }

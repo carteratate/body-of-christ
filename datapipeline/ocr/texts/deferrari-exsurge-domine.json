@@ -1,0 +1,21 @@
+{
+ "work": "deferrari-exsurge-domine",
+ "title": "Exsurge Domine, the censure after the 41 propositions, n. 781, from Deferrari, The Sources of Catholic Dogma (1957), p. 243, Loreto reprint",
+ "metadata": {
+  "text_source": "ocr",
+  "scan_id": "sources-of-catholic-dogma-loreto-reprint"
+ },
+ "gate": "pass",
+ "passages": [
+  {
+   "id": "exsurge-domine-censure",
+   "pages": [
+    "243"
+   ],
+   "leaves": [
+    274
+   ],
+   "text": "All and each of the above mentioned articles or errors, so to speak, as set before you, we condemn, disapprove, and entirely reject as respectively heretical, or scandalous, or false, or offensive to pious ears, or seductive of simple minds, and in opposition to Catholic truth."
+  }
+ ]
+}

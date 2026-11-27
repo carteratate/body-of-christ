@@ -343,3 +343,8 @@ def test_a_document_can_opt_in_before_its_collection(monkeypatch):
     other = Document(id="doc-2", collection="medieval", title="Another",
                      passages=[_passage(content)])
     assert _rules(other) == []
+
+
+def test_a_bare_section_number_may_be_dropped_but_not_a_word():
+    assert headings.repeats_label("Christian Education", "2. Christian Education")
+    assert not headings.repeats_label("Society", "Civil Society")

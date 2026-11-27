@@ -13,7 +13,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, replace
 
-from xml.etree.ElementTree import tostring as et_tostring  # serialization only
 
 import headings
 from config import settings

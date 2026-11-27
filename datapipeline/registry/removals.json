@@ -1746,7 +1746,9 @@
   "span": null,
   "judgment": null,
   "added_by": "1.5b",
-  "added_on": "2026-11-11"
+  "added_on": "2026-11-11",
+  "closed_by": "400",
+  "closed_on": "2026-11-22"
  },
  {
   "id": "rm-0001",

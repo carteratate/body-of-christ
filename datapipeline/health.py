@@ -177,9 +177,11 @@ def _heading_rules(collection: str, document: Document, add) -> list[Violation]:
     """H6 on every passage that carries marks; H7 and H8 in the collections that opt in.
     Calls `add` and returns [] so it reads like the rules above."""
     rule = load_patterns()["H7_unmarked_heading"]
-    # A collection opts in whole, or one document at a time (a new work in a collection
-    # whose other documents are not marked yet; 5.6b).
-    opted_in = collection in rule["collections"] or document.id in rule.get("documents", [])
+    # A whole collection, its documents by one author (Vatican II among the councils), or
+    # one document at a time (a new work in a collection whose others are not marked; 5.6b).
+    opted_in = (collection in rule["collections"]
+                or document.author in rule.get("authors", {}).get(collection, ())
+                or document.id in rule.get("documents", []))
     not_headings = {headings.normalized(entry["text"])
                     for entry in rule["not_headings"].get(document.id, [])}
     seen_chapters: set[str] = set()
@@ -205,30 +207,12 @@ def _heading_rules(collection: str, document: Document, add) -> list[Violation]:
             add("H7_unmarked_heading", p, f"{len(unmarked)} unmarked heading-like "
                 f"paragraph{'s' * (len(unmarked) != 1)}, first {unmarked[0][:60]!r}")
         if opens_chapter:
-            title = _opening_level1(p.content, marks)
-            if title is not None and not title[1] \
-                    and headings.repeats_label(title[0], p.chapter_label or ""):
-                add("H8_chapter_title", p, "opening level-1 heading repeats the chapter "
-                    "label without chapter_title")
+            for group, words in headings.opening_titles(p.content, marks):
+                if not any(marks[i].get("chapter_title") for i in group) \
+                        and headings.repeats_label(words, p.chapter_label or ""):
+                    add("H8_chapter_title", p, f"opening level-1 heading {words[:60]!r} "
+                        "repeats the chapter label without chapter_title")
     return []
-
-
-def _opening_level1(content: str, marks: list[dict]) -> tuple[str, bool] | None:
-    """The level-1 heading a passage opens with, a pair joined into one, and whether it
-    carries `chapter_title`; None when it opens otherwise."""
-    ordered = sorted(marks, key=lambda m: m["at"])
-    if not ordered or ordered[0]["at"] != headings.paragraphs(content)[0][0] \
-            or ordered[0].get("level") != 1:
-        return None
-    first = ordered[0]
-    text = content[first["at"]:first["end"]]
-    flagged = bool(first.get("chapter_title"))
-    if first.get("pairs_next") and len(ordered) > 1:
-        text += " " + content[ordered[1]["at"]:ordered[1]["end"]]
-        flagged = flagged or bool(ordered[1].get("chapter_title"))
-    return text, flagged
-
-
 
 
 # --------------------------------------------------------------------------- report rules

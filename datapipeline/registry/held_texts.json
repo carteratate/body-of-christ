@@ -1548,9 +1548,9 @@
  {
   "id": "ht-0091",
   "document_id": "616dfaea-6099-593e-951f-2b017a7ec938",
-  "label": "After proposition 41",
-  "heading": "The rest of the bull, after the 41 propositions",
-  "after_anchor": "exsurge-domine/41",
+  "label": "After the censure",
+  "heading": "The rest of the bull, after the censure",
+  "after_anchor": "exsurge-domine/censure",
   "removal_ids": [
    "rm-2279",
    "rm-2280",

@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildCollectionScopes,
+  canonicalSearchFilters,
   parseScopeSelections,
   visibleScopeValues,
   type CollectionScopeOptions,
@@ -41,9 +42,37 @@ describe("collection scopes", () => {
       { value: "pope-leo-xiii", label: "Leo XIII" },
       { value: "pope-francis", label: "Francis" },
     ]);
-    expect(scopes.papal.documents).toEqual({
+    expect(scopes.papal.counts).toEqual({
       encyclical: { "pope-leo-xiii": 2 }, other: { "pope-francis": 1 },
     });
+  });
+});
+
+describe("the work filter (Catechism)", () => {
+  it("lists only the collections' own published works, named ones first, then others by year", () => {
+    const scopes = buildCollectionScopes([
+      { collection: "catechism", status: "active", document_id: "c6d78d5e-5f23-5f86-b0ca-97a741e186bf", title: "Catechism of the Council of Trent", year: 1566 },
+      { collection: "catechism", status: "active", document_id: "x-later", title: "A later catechism", year: 2030 },
+      { collection: "catechism", status: "active", document_id: "x-earlier", title: "An earlier catechism", year: 1600 },
+      { collection: "catechism", status: "retired", document_id: "x-gone", title: "Retired", year: 1500 },
+      { collection: "catechism", status: "active", document_id: "9679c400-d314-5394-b916-f6fc27b50104", title: "Catechism of the Catholic Church", year: 1992 },
+    ]);
+    expect(scopes.catechism.documents.map((d) => d.label)).toEqual([
+      "Catechism of the Catholic Church", "Roman Catechism", "An earlier catechism", "A later catechism",
+    ]);
+    expect(scopes.catechism.genres).toEqual([]);
+    expect(scopes.papal.documents).toEqual([]);
+  });
+
+  it("reads a saved work selection back, for the Catechism only", () => {
+    expect(parseScopeSelections({ catechism: { documents: ["a", 3, "a"] } }, ["catechism"]))
+      .toEqual({ catechism: { documents: ["a"] } });
+    expect(parseScopeSelections({ catechism: { documents: ["a"] } }, ["papal"])).toBeUndefined();
+  });
+
+  it("keeps a saved work selection through canonicalSearchFilters", () => {
+    expect(canonicalSearchFilters(["catechism"], { catechism: { documents: ["a", "b"] } }))
+      .toEqual({ collections: ["catechism"], scopes: { catechism: { documents: ["a", "b"] } } });
   });
 });
 
@@ -82,7 +111,8 @@ describe("the lists follow each other's ticks", () => {
       { value: "pope-leo-xiii", label: "Leo XIII" },
       { value: "pope-francis", label: "Francis" },
     ],
-    documents: {
+    documents: [],
+    counts: {
       encyclical: { "pope-leo-xiii": 7, "pope-francis": 4 },
       "apostolic-letter": { "pope-francis": 2 },
       "motu-proprio": { "pope-francis": 1 },

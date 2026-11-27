@@ -610,10 +610,10 @@ def _in_brief_fixture(tmp_path):
     }}
     us = {"items": [
         {"kind": "paragraph", "n": 1, "text": "First teaching.", "footnotes": []},
-        {"kind": "heading", "text": "IN BRIEF", "footnotes": []},
+        {"kind": "heading", "style": "subhead", "text": "IN BRIEF", "footnotes": []},
         {"kind": "paragraph", "n": 2, "text": "A first summary.", "footnotes": []},
         {"kind": "paragraph", "n": 3, "text": "Second teaching.", "footnotes": []},
-        {"kind": "heading", "text": "IN BRIEF", "footnotes": []},
+        {"kind": "heading", "style": "subhead", "text": "IN BRIEF", "footnotes": []},
         {"kind": "paragraph", "n": 4, "text": "A second summary.", "footnotes": []},
     ]}
     (tmp_path / "src.json").write_text(json.dumps(src))
@@ -702,7 +702,9 @@ def _para(n, text, notes=()):
 
 
 def _head(text, kind="heading"):
-    return {"kind": kind, "text": text, "footnotes": []}
+    # A US heading always carries its style, which sets its mark's level (issue #445).
+    style = {"style": "head"} if kind == "heading" else {}
+    return {"kind": kind, "text": text, "footnotes": [], **style}
 
 
 def test_two_headings_on_one_source_line_split_at_the_dash(tmp_path):

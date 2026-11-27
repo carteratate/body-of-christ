@@ -1,9 +1,8 @@
-from typing import NamedTuple
-
-# The collections after corpus cleanup 5.1b, and the only keys the web will send once
-# 5.1b.2 ships. `papal` merges the three papal collections; `church-law` is `canon-law`
-# and `theologians` is `medieval`, renamed (Carter confirmed the keys and labels,
-# 22 Nov 2026).
+# The collections (corpus cleanup 5.1b): `papal` merged the three papal collections,
+# `church-law` was `canon-law` and `theologians` was `medieval` (Carter, 22 Nov 2026).
+# The old keys were removed in 5.1b.4, after 5.1b.3 rewrote every stored value; the web
+# still reads them from a browser's own storage (`LEGACY_COLLECTIONS` in
+# apps/web/src/lib/collections.ts), so it never sends them.
 CANONICAL_COLLECTIONS: frozenset[str] = frozenset({
     "bible",
     "catechism",
@@ -15,32 +14,7 @@ CANONICAL_COLLECTIONS: frozenset[str] = frozenset({
     "councils",
 })
 
-
-class LegacyCollection(NamedTuple):
-    """What an old key means in the new vocabulary: its canonical collection, read
-    whole, or only some of that collection's genres. `genres` reads those genres;
-    `without_genres` reads every other genre and documents with none."""
-    canonical: str
-    genres: frozenset[str] | None = None
-    without_genres: frozenset[str] | None = None
-
-
-# The old keys (5.1b.1 to 5.1b.4). The API accepts them with today's meaning until
-# 5.1b.4 removes them, whether or not 5.1b.3 has rewritten the stored values
-# (`collection_scope.reads`). `papal-documents` takes the papal documents that are
-# neither encyclicals nor exhortations, so the three old keys still split the merged
-# collection between them.
-_ENCYCLICAL = frozenset({"encyclical"})
-_EXHORTATION = frozenset({"apostolic-exhortation"})
-LEGACY_COLLECTIONS: dict[str, LegacyCollection] = {
-    "encyclicals": LegacyCollection("papal", genres=_ENCYCLICAL),
-    "apostolic-exhortations": LegacyCollection("papal", genres=_EXHORTATION),
-    "papal-documents": LegacyCollection("papal", without_genres=_ENCYCLICAL | _EXHORTATION),
-    "canon-law": LegacyCollection("church-law"),
-    "medieval": LegacyCollection("theologians"),
-}
-
-VALID_COLLECTIONS: frozenset[str] = CANONICAL_COLLECTIONS | frozenset(LEGACY_COLLECTIONS)
+VALID_COLLECTIONS: frozenset[str] = CANONICAL_COLLECTIONS
 
 
 # Genre and issuer filters (corpus cleanup 5.1a). The genre values are a copy of the
@@ -62,7 +36,7 @@ WRITER_GENRES: tuple[str, ...] = ("treatise", "manual", "sermon", "commentary", 
 OTHER_GENRE = "other"
 
 PAPAL_ISSUERS: tuple[str, ...] = (
-    "pope-boniface-viii", "pope-leo-x", "pope-paul-iii", "pope-benedict-xiv",
+    "pope-boniface-viii", "pope-martin-v", "pope-leo-x", "pope-paul-iii", "pope-benedict-xiv",
     "pope-clement-xiv", "pope-pius-vii", "pope-leo-xii", "pope-pius-viii",
     "pope-gregory-xvi", "pope-pius-ix", "pope-leo-xiii", "pope-pius-x",
     "pope-benedict-xv", "pope-pius-xi", "pope-pius-xii", "pope-john-xxiii",
@@ -70,12 +44,22 @@ PAPAL_ISSUERS: tuple[str, ...] = (
     "pope-leo-xiv",
 )
 
-_PAPAL_COLLECTIONS = ("papal", "encyclicals", "apostolic-exhortations", "papal-documents")
-
 # Only these collections can be narrowed; a scope for any other is refused.
 GENRES_BY_COLLECTION: dict[str, frozenset[str]] = {
-    collection: frozenset(PAPAL_GENRES + (OTHER_GENRE,)) for collection in _PAPAL_COLLECTIONS
+    "papal": frozenset(PAPAL_GENRES + (OTHER_GENRE,)),
 }
 ISSUERS_BY_COLLECTION: dict[str, frozenset[str]] = {
-    collection: frozenset(PAPAL_ISSUERS) for collection in _PAPAL_COLLECTIONS
+    "papal": frozenset(PAPAL_ISSUERS),
+}
+# The work filter: the documents a search of these collections can be narrowed to, by
+# document ID (the registry's frozen `document_id`). By document, not genre, because
+# the Catechism of the Catholic Church and the Roman Catechism share a genre. Another
+# collection (Councils, Church Fathers) turns it on by gaining an entry here and in
+# `SCOPED_COLLECTIONS` in apps/web/src/lib/collection-scopes.ts.
+DOCUMENTS_BY_COLLECTION: dict[str, frozenset[str]] = {
+    "catechism": frozenset({
+        "9679c400-d314-5394-b916-f6fc27b50104",  # Catechism of the Catholic Church
+        "800373b1-d6c8-5a26-8910-8d1485b224c2",  # Compendium of the Catechism
+        "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",  # Roman Catechism (Council of Trent)
+    }),
 }

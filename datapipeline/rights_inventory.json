@@ -1882,7 +1882,7 @@
   "author": null,
   "collection": "catechism",
   "source_path": "catechism/catechismofcounc0000jose/",
-  "document_id": null,
+  "document_id": "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",
   "edition": "Catechism of the Council of Trent for Parish Priests, tr. John A. McHugh and Charles J. Callan (New York: Joseph F. Wagner; London: B. Herder, 1923; copyright 1923 by Joseph F. Wagner). Internet Archive scan catechismofcounc0000jose",
   "translator": "John A. McHugh and Charles J. Callan",
   "first_published": 1923,
@@ -1893,7 +1893,7 @@
   "credit_line": "Translated by John A. McHugh and Charles J. Callan (1923)",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.5"
+  "planned_for": null
  },
  {
   "work": "Catechism of the Catholic Church",
@@ -1918,7 +1918,7 @@
   "author": null,
   "collection": "catechism",
   "source_path": "catechism/compendium-ccc.html",
-  "document_id": null,
+  "document_id": "800373b1-d6c8-5a26-8910-8d1485b224c2",
   "edition": "English text published on vatican.va",
   "translator": null,
   "first_published": null,
@@ -1929,7 +1929,7 @@
   "credit_line": "© Dicastery for Communication – Libreria Editrice Vaticana",
   "checked_by": null,
   "checked_on": null,
-  "planned_for": "5.5",
+  "planned_for": null,
   "excerpt_basis": {
    "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
    "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
@@ -9064,6 +9064,29 @@
   }
  },
  {
+  "work": "Inter Cunctas",
+  "author": "Pope Martin V",
+  "collection": "papal-documents",
+  "source_path": "councils/sources-of-catholic-dogma/",
+  "document_id": "9d7bcb10-5f20-5e83-a592-b237eed5b8e8",
+  "edition": "'Questions to be Proposed to the Wycliffites and Hussites', n. 657-689, pp. 215-218: questions 5-8 and 11-39, in The Sources of Catholic Dogma, translated by Roy J. Deferrari from the thirtieth edition of Henry Denzinger's Enchiridion Symbolorum, revised by Karl Rahner, S.J. (St. Louis and London: B. Herder Book Co., 1957; copyright 1957 B. Herder Book Co., printed in the United States of America by the Vail-Ballou Press, Binghamton, New York; imprimatur 25 April 1955; LCCN 57-5963; registered 8 January 1957, A265753); title and copyright pages read in the Internet Archive's public preview of scans sourcesofcatholi00denz and sourcesofcatholi0000royj, whose full text is lending-only; text taken from a scan of the Loreto Publications reprint, ISBN 1-930278-22-5. Only this extract is published; the book leaves out questions 1-4, 9 and 10 and the rest of the bull, which have no English on TheoCorpus (5.9). Rights as for the book, recorded in the Council of Constance row's also_from (no renewal found, checked by Carter 4 Nov 2026).",
+  "translator": "Roy J. Deferrari",
+  "first_published": 1957,
+  "source_url": "https://archive.org/details/sourcesofcatholi00denz",
+  "status": "pd-us-non-renewal",
+  "rights_holder": null,
+  "renewal_search": {
+   "date": "2026-11-04",
+   "where": "Catalog of Copyright Entries renewal records 1950-2001 as transcribed by NYPL (github.com/NYPL/cce-renewals, data/ at commit ebb6156); the 1984 and 1985 files, which cover the 28th-year renewal window for a 1957 copyright, are complete (renewals dated in all twelve months of each year; 20,302 renewals of 1957 originals in the 1985 file). Also the US Copyright Office public records search (publicrecords.copyright.gov), keyword searches. The Stanford Copyright Renewal Database refuses automated access and was not searched.",
+   "query": "every year file, case-insensitive: registration number A265753; titles 'sources of catholic dogma', 'catholic dogma', 'sources of cath', 'symbolorum', 'enchiridion', 'dogma'; names 'denzinger' and variants, 'deferrari' and variants, 'rahner'; claimants 'herder', 'b. herder', 'herder book', 'loreto'. Copyright Office: 'sources of catholic dogma', 'Denzinger', 'Enchiridion symbolorum', 'B. Herder Book Co.', 'Loreto Publications'",
+   "result": "no renewal found for the 1957 translation. 'deferrari' matches 7 entries, all other titles; 'enchiridion' matches 4, all Epictetus or Erasmus; 'rahner' matches 3, all unrelated; 'herder' matches no B. Herder Book Co. claim. Controls found: Atlas Shrugged (1957, renewed 7 January 1985), The Cat in the Hat (1957), and a 1957 Catholic title, On the Truth of the Catholic Faith (A272705, renewed 4 January 1985, also found at the Copyright Office as RE0000242700). 48 originals dated 8 January 1957 and neighbouring A2655xx-A2660xx numbers are present in the data."
+  },
+  "credit_line": "Translated by Roy J. Deferrari (1957)",
+  "checked_by": "Carter",
+  "checked_on": "2026-11-04",
+  "planned_for": null
+ },
+ {
   "work": "Sublimis Deus",
   "author": "Pope Paul III",
   "collection": "papal-documents",
@@ -9105,7 +9128,7 @@
   "collection": "papal-documents",
   "source_path": "papal-documents/exsurge-domine.html",
   "document_id": "616dfaea-6099-593e-951f-2b017a7ec938",
-  "edition": "The 41 condemned propositions on papalencyclicals.net's page are Roy J. Deferrari's translation, 'Errors of Martin Luther', n. 741-781, pp. 240-243, in The Sources of Catholic Dogma, translated by Roy J. Deferrari from the thirtieth edition of Henry Denzinger's Enchiridion Symbolorum, revised by Karl Rahner, S.J. (St. Louis and London: B. Herder Book Co., 1957; copyright 1957 B. Herder Book Co., printed in the United States of America by the Vail-Ballou Press, Binghamton, New York; imprimatur 25 April 1955; LCCN 57-5963; registered 8 January 1957, A265753); title and copyright pages read in the Internet Archive's public preview of scans sourcesofcatholi00denz and sourcesofcatholi0000royj, whose full text is lending-only; text taken from a scan of the Loreto Publications reprint, ISBN 1-930278-22-5 (R9: all 41 match the book). Only the propositions are published; the rest of the page, another translation, is held for permission (1.3d step 6). Rights as for the book, recorded in the Council of Constance row's also_from (no renewal found, checked by Carter 4 Nov 2026).",
+  "edition": "The 41 condemned propositions on papalencyclicals.net's page are Roy J. Deferrari's translation, 'Errors of Martin Luther', n. 741-781, pp. 240-243, in The Sources of Catholic Dogma, translated by Roy J. Deferrari from the thirtieth edition of Henry Denzinger's Enchiridion Symbolorum, revised by Karl Rahner, S.J. (St. Louis and London: B. Herder Book Co., 1957; copyright 1957 B. Herder Book Co., printed in the United States of America by the Vail-Ballou Press, Binghamton, New York; imprimatur 25 April 1955; LCCN 57-5963; registered 8 January 1957, A265753); title and copyright pages read in the Internet Archive's public preview of scans sourcesofcatholi00denz and sourcesofcatholi0000royj, whose full text is lending-only; text taken from a scan of the Loreto Publications reprint, ISBN 1-930278-22-5 (R9: all 41 match the book). Only the propositions are published from the page, and the censure after them from the book (also_from, 5.9); the rest of the page, another translation, is held for permission (1.3d step 6). Rights as for the book, recorded in the Council of Constance row's also_from (no renewal found, checked by Carter 4 Nov 2026).",
   "translator": "Roy J. Deferrari",
   "first_published": 1957,
   "source_url": "https://www.papalencyclicals.net/leo10/l10exdom.htm",
@@ -9120,7 +9143,27 @@
   "credit_line": "Translated by Roy J. Deferrari (1957)",
   "checked_by": "Carter",
   "checked_on": "2026-11-04",
-  "planned_for": null
+  "planned_for": null,
+  "also_from": [
+   {
+    "texts": "The bull's censure of the 41 propositions, which Deferrari prints after proposition 41 ('Censure of the Holy Pontiff', n. 781, p. 243), without his heading",
+    "edition": "The Sources of Catholic Dogma, translated by Roy J. Deferrari from the thirtieth edition of Henry Denzinger's Enchiridion Symbolorum, revised by Karl Rahner, S.J. (St. Louis and London: B. Herder Book Co., 1957; copyright 1957 B. Herder Book Co., printed in the United States of America by the Vail-Ballou Press, Binghamton, New York; imprimatur 25 April 1955; LCCN 57-5963; registered 8 January 1957, A265753); title and copyright pages read in the Internet Archive's public preview of scans sourcesofcatholi00denz and sourcesofcatholi0000royj, whose full text is lending-only; text taken from a scan of the Loreto Publications reprint, ISBN 1-930278-22-5",
+    "translator": "Roy J. Deferrari",
+    "first_published": 1957,
+    "source_path": "councils/sources-of-catholic-dogma/",
+    "source_url": "https://archive.org/details/sourcesofcatholi00denz",
+    "status": "pd-us-non-renewal",
+    "renewal_search": {
+     "date": "2026-11-04",
+     "where": "Catalog of Copyright Entries renewal records 1950-2001 as transcribed by NYPL (github.com/NYPL/cce-renewals, data/ at commit ebb6156); the 1984 and 1985 files, which cover the 28th-year renewal window for a 1957 copyright, are complete (renewals dated in all twelve months of each year; 20,302 renewals of 1957 originals in the 1985 file). Also the US Copyright Office public records search (publicrecords.copyright.gov), keyword searches. The Stanford Copyright Renewal Database refuses automated access and was not searched.",
+     "query": "every year file, case-insensitive: registration number A265753; titles 'sources of catholic dogma', 'catholic dogma', 'sources of cath', 'symbolorum', 'enchiridion', 'dogma'; names 'denzinger' and variants, 'deferrari' and variants, 'rahner'; claimants 'herder', 'b. herder', 'herder book', 'loreto'. Copyright Office: 'sources of catholic dogma', 'Denzinger', 'Enchiridion symbolorum', 'B. Herder Book Co.', 'Loreto Publications'",
+     "result": "no renewal found for the 1957 translation. 'deferrari' matches 7 entries, all other titles; 'enchiridion' matches 4, all Epictetus or Erasmus; 'rahner' matches 3, all unrelated; 'herder' matches no B. Herder Book Co. claim. Controls found: Atlas Shrugged (1957, renewed 7 January 1985), The Cat in the Hat (1957), and a 1957 Catholic title, On the Truth of the Catholic Faith (A272705, renewed 4 January 1985, also found at the Copyright Office as RE0000242700). 48 originals dated 8 January 1957 and neighbouring A2655xx-A2660xx numbers are present in the data."
+    },
+    "credit_line": "Translated by Roy J. Deferrari (1957)",
+    "checked_by": "Carter",
+    "checked_on": "2026-11-04"
+   }
+  ]
  },
  {
   "work": "Misericordia et Misera",

@@ -377,6 +377,27 @@ def looks_like_heading(paragraph: str) -> bool:
             and not _ENDS_AS_SENTENCE.search(text))
 
 
+def opening_titles(content: str, marks: Sequence[dict]) -> list[tuple[list[int], str]]:
+    """The level-1 titles a passage opens with, each a pair read as one: (indices into
+    `marks` sorted by offset, the words). A stack can print several (Part Two's title,
+    then its Chapter's, then its Article's); it ends at the first paragraph that is not
+    a level-1 heading."""
+    ordered = sorted(range(len(marks)), key=lambda i: marks[i]["at"])
+    paras = paragraphs(content)
+    out: list[tuple[list[int], str]] = []
+    k = 0
+    while k < len(ordered) and k < len(paras):
+        m = marks[ordered[k]]
+        if (m["at"], m["end"]) != paras[k] or m.get("level") != 1:
+            break
+        group = [ordered[k]]
+        if m.get("pairs_next") and k + 1 < len(ordered):
+            group.append(ordered[k + 1])
+        out.append((group, " ".join(content[marks[i]["at"]:marks[i]["end"]] for i in group)))
+        k += len(group)
+    return out
+
+
 def normalized(text: str) -> str:
     """Text compared without case, punctuation or spacing: a chapter label against the
     heading that repeats it."""
@@ -386,20 +407,29 @@ def normalized(text: str) -> str:
 _DIVISION_PREFIX = re.compile(
     r"^(?:part|section|chapter|article|book|question|title|paragraph)\s+"
     r"(?:[0-9]+|[ivxlc]+|one|two|three|four|five|six|seven|eight|nine|ten)\b\s*")
+# A section number printed bare before a title ("2. Christian Education"): dropped only at
+# the very start of a label or heading, never inside a breadcrumb.
+_LEADING_NUMBER = re.compile(r"^[0-9]+\b\s*")
 
 
 def repeats_label(heading: str, label: str) -> bool:
     """Whether a heading says what its chapter label says, one of them allowed to drop
     a leading division and number the other prints ("Chapter One What is ..." and "What
-    is ...", "Article 1 The Revelation of God" and "The Revelation of God"). Two
+    is ...", "Article 1 The Revelation of God" and "The Revelation of God"), or a bare
+    number at its very start ("2. Christian Education" and "Christian Education"). Two
     different numbers never match ("Article 1 The Church", "Article 2 The Church")."""
     heading, label = normalized(heading), normalized(label)
     if not heading or not label:
         return False
+
+    def bare(text: str) -> str:
+        return _LEADING_NUMBER.sub("", text)
+
     # A breadcrumb label ("Part Three Section Two Chapter Two Article 5 The Fifth
     # Commandment") is compared from each division it names.
     words = label.split()
-    labels = {label} | {" ".join(words[k:]) for k in range(1, len(words))
-                        if _DIVISION_PREFIX.match(" ".join(words[k:]))}
+    tails = {" ".join(words[k:]) for k in range(1, len(words))
+             if _DIVISION_PREFIX.match(" ".join(words[k:]))}
     return any(heading == form or _DIVISION_PREFIX.sub("", heading) == form
-               or heading == _DIVISION_PREFIX.sub("", form) for form in labels)
+               or heading == _DIVISION_PREFIX.sub("", form) for form in {label} | tails) \
+        or bare(heading) == label or heading == bare(label)

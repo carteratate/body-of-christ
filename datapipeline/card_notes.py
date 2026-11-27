@@ -106,10 +106,13 @@ PASSAGE_NOTES: dict[str, Note | None] = {
         ANASTASIUS,
     "From Hefele's account of the session, in W. R. Clark's translation (1896).": HEFELE,
     "Translated from another recension of this canon.": RECENSION,
-    # The rejected-voice label says "condemned"; the sentence's absence is the caution.
+    # The rejected-voice label says "condemned"; the sentence's absence is the caution,
+    # and the caution names the bull that states the council's verdict (5.9).
     "Articles the council condemned, not its teaching. Its sentence is not available on "
-    "TheoCorpus at present. Translated by R. J. Deferrari (1957).": caution(
-        "incomplete", f"The council's sentence on these articles is {NOT_AVAILABLE}."),
+    "TheoCorpus; Martin V's Inter Cunctas (1418) states its verdict. Translated by R. J. "
+    "Deferrari (1957).": caution(
+        "incomplete", "The council's sentence is not available on TheoCorpus; Martin V's "
+                      "Inter Cunctas (1418) states its verdict."),
     # Every passage of Exsurge Domine: the label says it, the overview says the rest.
     "Propositions of Martin Luther that the bull condemned, not its teaching. The rest of "
     "the bull is not available on TheoCorpus at present. Translated by R. J. Deferrari "
@@ -141,10 +144,15 @@ for _units in ("ad 2, ad 3", "sc 2"):
 # notes the card and the overview show. An empty tuple drops it: the header already says
 # it, with the author's label and its certainty tag (rule 1).
 FACT_NOTES: dict[str, tuple[Note, ...]] = {
+    # The Roman Catechism (5.5): read with care on every card; the header names the work.
+    "Catechism of the Council of Trent, a historical catechism; for current teaching see "
+    "the Catechism of the Catholic Church": (caution(
+        "authority", "A historical catechism; for current teaching see the Catechism of the "
+                     "Catholic Church."),),
     # The Code of Canon Law: excerpt-only, so its Library row shows it.
-    "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no "
+    "Canons 295, 296, 579, 695 and 700 are not shown: their current text has no "
     "English translation. The official Latin is on vatican.va.": (overview(
-        "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no "
+        "Canons 295, 296, 579, 695 and 700 are not shown: their current text has no "
         "English translation. The official Latin is on vatican.va.", "incomplete"),),
     # 5.6b's Life of St. Teresa (`ingest.theologians.LIFE_NOTE`): a document-wide fact.
     "Teresa's chapter headings, left out of the original translation, follow Benedict "
@@ -238,6 +246,13 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "rest is not available on TheoCorpus at present.": (overview(
         f"Only extracts are given: paragraph 7, the first part of paragraph 8, and "
         f"paragraph 9. The rest is {NOT_AVAILABLE}.", "incomplete"),),
+    # 5.9's Inter Cunctas: no site page, so nothing is held; the overview names the rest.
+    "Only extracts of this bull are given, in R. J. Deferrari's translation of Denzinger "
+    "(1957): questions 5–8 and 11–39 of those to be put to followers of Wyclif and Hus. "
+    "Questions 1–4, 9 and 10, and the rest of the bull, are not available on TheoCorpus at "
+    "present.": (overview(
+        f"Only extracts are given: questions 5–8 and 11–39. Questions 1–4, 9 and 10, and "
+        f"the rest of the bull, are {NOT_AVAILABLE}.", "incomplete"),),
     "This English printing (Interesting Letters of Clement XIV, 1777, translated from the "
     "French) omits paragraph 9; it is not available on TheoCorpus at present.": (
         FROM_FRENCH,
@@ -283,8 +298,8 @@ DOCUMENT_NOTES: dict[str, tuple[Note, ...]] = {
     "encyclicals/levate": (caution("incomplete", "This printing gives only part of each "
                                                  "paragraph."),),
     "papal-documents/exsurge-domine": (overview(
-        f"Only the condemned propositions are given; the rest of the bull is "
-        f"{NOT_AVAILABLE}.", "incomplete"),),
+        f"Only the condemned propositions and the censure are given; the rest of the bull "
+        f"is {NOT_AVAILABLE}.", "incomplete"),),
 }
 
 # The translator of each scanned edition a council takes passages from (the passage's

@@ -31,7 +31,6 @@ RESTRICTED_CODE = "reader_restricted"
 # Catechism's is the USCCB's own online edition: the USCCB holds the US English text.
 _COLLECTION_SOURCE_URLS = {
     "catechism": catechism_pages.COVER_URL,
-    "canon-law": "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.html",
     "church-law": "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.html",
 }
 
