@@ -164,8 +164,10 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
         overview("Its Counsels and Reminiscences are her sayings as her novices recorded "
                  "them."),),
     # 5.6b's Practice of the Presence of God (`ingest.theologians.LAWRENCE_NOTE`).
-    "Its Conversations are attributed to Joseph de Beaufort.": (
-        overview("Its Conversations are attributed to Joseph de Beaufort."),),
+    "Its Conversations are attributed to Joseph de Beaufort; the close of the Fourth draws on "
+    "other accounts.": (
+        overview("Its Conversations are attributed to Joseph de Beaufort; the close of the "
+                 "Fourth draws on other accounts."),),
     # 5.6b's Autobiography of St. Ignatius (`ingest.theologians.IGNATIUS_NOTE`).
     "Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens it.": (
         overview("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens "

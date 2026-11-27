@@ -179,7 +179,8 @@ def test_no_heading_or_note_leaks_and_passages_are_not_empty():
         for p in doc.passages:
             assert p.content.strip() and p.chapter_label and p.chapter_key
             # A chapter line opens a passage only as a marked heading.
-            marked = any(m["at"] == 0 for m in p.metadata.get("headings") or [])
+            marked = p.metadata["source_file"].endswith(".txt") and any(
+                m["at"] == 0 for m in p.metadata.get("headings") or [])   # Gutenberg
             assert marked or not p.content.startswith(("CHAPTER", "Chapter ")), p.anchor
 
 
@@ -614,6 +615,7 @@ def test_brother_lawrence_is_the_conversations_and_letters():
     # The Letters' numbers and the Eighth's caption are the editor's: labels only.
     assert "FIRST LETTER." not in text and "Concerning wandering thoughts" not in text
     assert "LETTERS." not in text
+    assert "Letters · Eighth Letter. Concerning Wandering Thoughts in Prayer" in labels
     assert "FIRST CONVERSATION." in text
     assert doc.notes == T.LAWRENCE_NOTE and doc.metadata["gutenberg_ebook"] == 13871
     assert sum(p.metadata.get("editor_note_count", 0) for p in doc.passages) == 4

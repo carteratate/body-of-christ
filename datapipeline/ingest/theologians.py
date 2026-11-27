@@ -50,7 +50,8 @@ ANONYMOUS_1876 = "Anonymous translation (Rivingtons, 1876)"
 # Teresa's headings of the Life's chapters are not Lewis's: he left them out, following
 # Bouix, and Zimmerman's introduction to the 1904 edition prints them before the book.
 # The Counsels and Reminiscences are her words as others set them down.
-LAWRENCE_NOTE = "Its Conversations are attributed to Joseph de Beaufort."
+LAWRENCE_NOTE = ("Its Conversations are attributed to Joseph de Beaufort; the close of the "
+                 "Fourth draws on other accounts.")
 ANONYMOUS_1852 = "Anonymous translation (Dunigan, 1852)"
 ANONYMOUS_1895 = "Anonymous translation (Revell, about 1895)"
 IGNATIUS_NOTE = ("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface "
@@ -361,6 +362,9 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
                                           "MARY, THE HOPE OF SINNERS."),),
               # The Little Rosary of the Immaculate Mary's versicle and response print the
               # Latin after the English: the English stays (rule E).
+              # Part I ch. II § 3's incipit prints its Latin before the English, as the
+              # other incipits print it on a line of its own: the English stays (rule E).
+              ("pg72411.txt", "p249"): (("Dulcedo:—Sweetness.", "Sweetness."),),
               ("pg72411.txt", "p1241"): ((": Ora pro nobis, Virgo immaculata;", ";"),),
               ("pg72411.txt", "p1242"): ((": Ut digni officiamur promissionibus Christi.",
                                           "."),)}
@@ -925,7 +929,7 @@ _GLORIES_LABELS = {"INTRODUCTION": "Introduction",
                    "PRAYERS TO THE DIVINE MOTHER":
                        "Prayers to the Divine Mother for Every Day of the Week"}
 # Titles inside the closing prayers that no rule above reads as headings.
-_GLORIES_TITLES = {"Dedication of oneself to Mary.", "Dedication of a Family to Mary.",
+_GLORIES_TITLES = {"Sweetness.", "Dedication of oneself to Mary.", "Dedication of a Family to Mary.",
                    "Another Prayer.", "Ejaculations to the Most Holy Mary.",
                    "Which is recited in some Churches."}
 _GLORIES_DROP = {"THE GLORIES OF MARY.", "END OF THE FIRST PART.",
@@ -1048,6 +1052,7 @@ def _lawrence_chapters(root):
             return _Unit(state["book"], f"{m.group(1).capitalize()} {m.group(2).capitalize()}",
                          shown=m.group(2) == "CONVERSATION")
         if text == "(Concerning wandering thoughts in Prayer.)":
+            unit.label += ". Concerning Wandering Thoughts in Prayer"   # the editor's caption
             return "drop"
         if text.startswith("To "):
             return "text"                     # a letter's address ("To the Reverend--")
