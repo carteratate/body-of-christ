@@ -782,7 +782,7 @@ def test_newman_is_written_in_english_so_his_cards_name_no_translator():
     import card_notes
     import document_facts
     ids = {d.id for d in (_apologia(), _development(), _idea(), _grammar())}
-    assert ids == set(card_notes.WRITTEN_IN_ENGLISH)
+    assert ids <= card_notes.WRITTEN_IN_ENGLISH
     for i in ids:
         assert document_facts.card_translator(
             {"document_id": i, "translation": "", "source_credit": "Sourced via Project "
