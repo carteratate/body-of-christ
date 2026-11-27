@@ -1077,6 +1077,7 @@ A fresh key `papal` is proposed rather than reusing `papal-documents`. Reusing i
   - Checks: health passes with H7 and H8; coverage 98.4%, seven files below 95% each with a known-defect entry (endnotes, subtitles and signatures the extractor counts as body, and the Professio Fidei page's preliminaries); R12 skips canon citations ("can. 823 CIC").
   - Registry: 60 works (`scripts/roman_curia_registry.py`), 1,593 passage rows (`reconcile_registry.py --item 5.3a`), facts by `document_facts_registry.py`; the 60 rights rows carry their document IDs.
   - No removal entries were needed (nothing of this collection is live); the range rm-16001 to rm-16999 stays unused.
+  - Migration 0049 approved by Carter and applied on 26 Nov 2026 (ledger `20261127022446`); `documents_collection_check` allows `roman-curia` and is validated.
   - The accuracy checks (4.2) gain Roman Curia's ordinary and citation questions and the four targeted questions above; they fail until its publish, so this PR merges just before its batch.
 
 ### 5.3b. Roman Curia: Pontifical Biblical Commission, social doctrine Compendium, liturgical norms
