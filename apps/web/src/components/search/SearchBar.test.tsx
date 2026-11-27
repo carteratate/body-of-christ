@@ -3,11 +3,11 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { SearchBar, searchPlaceholder } from "./SearchBar";
+import { SearchBar } from "./SearchBar";
 
 afterEach(() => {
   cleanup();
-  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 function renderBar(loading: boolean) {
@@ -37,37 +37,32 @@ describe("SearchBar submit button", () => {
 });
 
 describe("SearchBar placeholder", () => {
-  it("uses one-line hints on narrow screens and the full wording on wider ones", () => {
-    expect(searchPlaceholder(false, true)).toBe("What's on your mind?");
-    expect(searchPlaceholder(true, true)).toBe("Select a source to search.");
-    expect(searchPlaceholder(false, false)).toBe("A question, a thought, a doubt: what's on your mind?");
-    expect(searchPlaceholder(true, false)).toBe("Select at least one source to search.");
-  });
-
-  function stubViewport(narrow: boolean) {
-    vi.stubGlobal("matchMedia", (query: string) => ({
-      matches: narrow && query === "(max-width: 767px)",
-      media: query,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    }));
-  }
-
-  it("shows the short hints on a phone, keeping the button's full disabled title", () => {
-    stubViewport(true);
-    render(<SearchBar value="" onChange={vi.fn()} onSubmit={vi.fn()} loading={false} disabled />);
-
-    expect(screen.getByRole("textbox").getAttribute("placeholder")).toBe("Select a source to search.");
-    expect(screen.getByRole("button").getAttribute("title")).toBe("Select at least one source to search.");
-  });
-
-  it("shows the full hint on a wider screen", () => {
-    stubViewport(false);
-    render(<SearchBar value="" onChange={vi.fn()} onSubmit={vi.fn()} loading={false} disabled={false} />);
-
+  it("shows the full hints, and the button keeps its full disabled title", () => {
+    const { rerender } = render(
+      <SearchBar value="" onChange={vi.fn()} onSubmit={vi.fn()} loading={false} disabled={false} />,
+    );
     expect(screen.getByRole("textbox").getAttribute("placeholder")).toBe(
       "A question, a thought, a doubt: what's on your mind?",
     );
+
+    rerender(<SearchBar value="" onChange={vi.fn()} onSubmit={vi.fn()} loading={false} disabled />);
+    expect(screen.getByRole("textbox").getAttribute("placeholder")).toBe("Select at least one source to search.");
+    expect(screen.getByRole("button").getAttribute("title")).toBe("Select at least one source to search.");
+  });
+
+  it("sizes an empty box to its hint, since Safari leaves a wrapped placeholder out of scrollHeight", () => {
+    // jsdom has no layout: report two lines for any text, one line for an empty value.
+    vi.spyOn(HTMLTextAreaElement.prototype, "scrollHeight", "get").mockImplementation(function (
+      this: HTMLTextAreaElement,
+    ) {
+      return this.value === "" ? 42 : 64;
+    });
+    render(<SearchBar value="" onChange={vi.fn()} onSubmit={vi.fn()} loading={false} disabled={false} />);
+
+    const box = screen.getByRole("textbox") as HTMLTextAreaElement;
+    expect(box.style.height).toBe("64px");
+    expect(box.value).toBe("");
+    expect(document.querySelectorAll("textarea")).toHaveLength(1);
   });
 });
 
