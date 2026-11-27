@@ -1257,7 +1257,8 @@ _IDEA_UNITS = {"PREFACE.": "Preface", "Introductory Letter.": "Introductory Lett
 _IDEA_SECTION = re.compile(r"^§ \d+\.$")
 # Lecture IV's dialogue and letters: its stage directions, set in italics, and the
 # letters' salutations and signature, quoted in capitals, are text.
-_IDEA_TEXT = {"A silence.", "A silence on both sides."}
+_IDEA_TEXT = {"A silence.", "A silence on both sides.", "\u201cMY DEAR SIR,", "\u201cSIR,",
+              "\u201cROBERT.\u201d"}
 _IDEA_BOOKS = {"UNIVERSITY TEACHING.": "University Teaching",
                "UNIVERSITY SUBJECTS, DISCUSSED IN OCCASIONAL LECTURES AND ESSAYS.":
                    "University Subjects"}
@@ -1277,7 +1278,7 @@ def _idea_chapters(root):
         if _IDEA_SECTION.match(text):
             state["caption"] = True
             return "subheading"
-        if text in _IDEA_TEXT or text.startswith("\u201c"):
+        if text in _IDEA_TEXT:
             return "text"
         if text in _IDEA_BOOKS:
             state["book"] = _IDEA_BOOKS[text]

@@ -759,6 +759,7 @@ def test_idea_is_the_discourses_and_the_lectures():
     assert marks.count("§ 1.") == 3 and "In its relation to Religious Literature." in marks
     assert "Composition." in marks and "Its Policy." in marks
     assert "Mr. White’s view of Latin translation." in marks
+    assert "“FORTES FORTUNA ADJUVAT.”" in marks          # Mr. Brown's exercise
     for line in ("A silence.", "A silence on both sides.", "“MY DEAR SIR,", "“ROBERT.”"):
         assert line not in marks and line in text
     assert _note_count(doc) == 51 and doc.notes == T.IDEA_NOTE
