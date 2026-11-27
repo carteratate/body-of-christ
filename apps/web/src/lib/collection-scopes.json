@@ -211,12 +211,12 @@
     "label": "Instruction"
    },
    {
-    "value": "doctrinal-note",
-    "label": "Doctrinal note"
-   },
-   {
     "value": "note",
     "label": "Note"
+   },
+   {
+    "value": "doctrinal-note",
+    "label": "Doctrinal note"
    },
    {
     "value": "considerations",
@@ -253,7 +253,7 @@
     "ddf": 10
    },
    "doctrinal-note": {
-    "ddf": 6
+    "ddf": 5
    },
    "instruction": {
     "ddf": 7
@@ -265,7 +265,7 @@
     "ddf": 1
    },
    "note": {
-    "ddf": 5
+    "ddf": 6
    },
    "other": {
     "ddf": 2

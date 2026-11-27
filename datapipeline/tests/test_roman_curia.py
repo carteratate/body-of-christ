@@ -363,3 +363,22 @@ def test_the_reviewed_documents_build_as_their_pages_print_them():
     unit = next(p for p in dv.passages if p.unit_label == "I, 2")
     first = unit.metadata["headings"][0]
     assert unit.content[first["at"]:first["end"]] == "IS PRENATAL DIAGNOSIS MORALLY LICIT?"
+
+
+@needs_sources
+def test_numbered_titles_at_the_top_open_chapters_and_keep_their_numbers():
+    by_title = {d.title: d for d in build_documents()}
+    for title in ("Mysterium Ecclesiae", "Inter Insigniores"):
+        d = by_title[title]
+        assert len({p.chapter_key for p in d.passages}) == 7, title
+        assert "§1" in [p.unit_label for p in d.passages], title
+
+
+@needs_sources
+@pytest.mark.parametrize("title, words", [
+    ("Iura et Bona", "His Holiness Pope John Paul II approved"),
+    ("Placuit Deo", "The Sovereign Pontiff Francis, on February 16, 2018, approved"),
+])
+def test_the_closing_approval_is_kept(title, words):
+    by_title = {d.title: d for d in build_documents()}
+    assert words in by_title[title].metadata["papal_approval"]

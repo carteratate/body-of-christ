@@ -76,10 +76,14 @@ _AAS = re.compile(r"\bAAS\s+\d+\s*\(\d{4}\)[^.;]*")
 # The approval formula: "The Sovereign Pontiff John Paul II, in the Audience granted to
 # the undersigned Prefect, approved this Declaration ... and ordered its publication."
 _APPROVAL = re.compile(
-    r"(?:Supreme|Sovereign|Roman) Pontiff|Holy Father|Pope [A-Z][a-z]+ [IVXL]+",
+    r"(?:Supreme|Sovereign|Roman) Pontiff|Holy Father|Pope (?:[A-Z][a-z]+ )+[IVXL]+",
 )
+# Or a sentence whose subject is the Pope ("The Sovereign Pontiff Francis, on 16
+# February 2018, approved ...", Placuit Deo), with or without an audience named.
+_POPE_SUBJECT = re.compile(r"^(?:The\s+)?(?:(?:Supreme|Sovereign|Roman) Pontiff|Holy Father|His Holiness|Pope)\b")
 _APPROVED = re.compile(r"\b(?:approved|confirmed|ratified|gave (?:his )?(?:approval|assent))\b")
 _AUDIENCE = re.compile(r"\b[Aa]udience\b")
+_CLOSING = 6
 
 # Pages that print other texts ahead of the document itself. Each entry names the last
 # line before the document starts; everything up to and including it is skipped.
@@ -454,19 +458,25 @@ def printed_office(lines: list[str]) -> str | None:
     return None
 
 
-def _source_facts(soup) -> dict:
-    """The AAS citation and the papal approval sentence a page prints, where it does."""
+def _source_facts(soup, start_after: str | None = None) -> dict:
+    """The AAS citation and the papal approval sentence a page prints, where it does.
+    The approval is looked for only in the page's closing paragraphs, before its notes,
+    where the formula stands, so a sentence about an earlier papal act is not taken."""
     out: dict = {}
     for p in soup.find_all("p"):
         text = re.sub(r"\s+", " ", p.get_text(" ", strip=True))
-        if "aas" not in out and text.startswith("*"):
+        if text.startswith("*"):
             m = _AAS.search(text)
             if m:
                 out["aas"] = m.group(0).strip()
+                break
+    closing = cut_notes([t for _, t in _texts(soup, start_after)])[-_CLOSING:]
+    for text in reversed(closing):
         if "papal_approval" not in out and _APPROVED.search(text) and _APPROVAL.search(text):
             for sentence in re.split(r"(?<=[.;])\s+", text):
                 if _APPROVED.search(sentence) and _APPROVAL.search(sentence) \
-                        and _AUDIENCE.search(sentence) and len(sentence) < 500:
+                        and (_AUDIENCE.search(sentence) or _POPE_SUBJECT.match(sentence)) \
+                        and len(sentence) < 500:
                     out["papal_approval"] = clean_text(sentence)
                     break
     return out
@@ -537,7 +547,7 @@ def build_document(entry: dict, source_dir: str | None = None) -> Document:
     slug, title = entry["slug"], entry["title"]
     with open(os.path.join(source_dir or _SRC, entry["file"]), "rb") as f:
         soup = BeautifulSoup(f.read(), "lxml")
-    facts = _source_facts(BeautifulSoup(str(soup), "lxml"))
+    facts = _source_facts(BeautifulSoup(str(soup), "lxml"), _START_AFTER.get(slug))
     lines = [t for _, t in _texts(BeautifulSoup(str(soup), "lxml"), _START_AFTER.get(slug))]
     toks = tokens(soup, _START_AFTER.get(slug))
     source_key = f"{COLLECTION}/{entry['file']}"
@@ -637,15 +647,28 @@ def build_document(entry: dict, source_dir: str | None = None) -> Document:
     # A level-1 heading opens a chapter; a pair's title joins its label to the chapter's.
     pair_open = False
     section_level = 1
+    numbered_top = not any(_tier(clean_text(t)) < 2 for k, _, t in toks if k == "section")
     for kind, n, raw in toks:
         if kind == "title":
             continue
         if kind == "numhead":
-            # A numbered unit opened by its heading, one level below the section it is in.
+            # A numbered unit opened by its heading: one level below the section it is in,
+            # or, in a document with no Part, Chapter or roman section above it, a
+            # chapter of its own ("1. The Oneness of the Church", Mysterium Ecclesiae).
             flush_group()
             flush_num()
             pair_open = False
-            pending.append(headings.Heading(clean_text(raw), level=min(3, section_level + 1)))
+            text = clean_text(raw)
+            # Under a level-1 heading printed just above it, it is a level below, as in
+            # any stack of headings ("The Council on the Devil" over "1. The text").
+            if numbered_top and not any(h.level == 1 for h in pending):
+                sec_ord += 1
+                ckey, clabel = make_anchor(slug, f"sec-{sec_ord}"), _section_label(f"{n}. {text}")
+                group_ord = 0
+                pending.append(headings.Heading(text, level=1, chapter_title=True))
+            else:
+                level = 2 if numbered_top else min(3, section_level + 1)
+                pending.append(headings.Heading(text, level=level))
             cur_num, cur_parts = n, []
             continue
         if kind == "section":
