@@ -609,8 +609,11 @@ def test_brother_lawrence_is_the_conversations_and_letters():
     assert "Publishers of Evangelical Literature" not in text
     assert "This book consists of notes" not in text            # Revell's preface
     assert "I suppose he means" not in text                     # a translator's note
-    assert "SECOND LETTER.\n\nTo the Reverend--\n\nNot finding" in text
+    assert "To the Reverend--\n\nNot finding" in text
     assert not any(t.startswith("To the") for p in doc.passages for t, _, _ in _heads(p))
+    # The Letters' numbers and the Eighth's caption are the editor's: labels only.
+    assert "FIRST LETTER." not in text and "Concerning wandering thoughts" not in text
+    assert "FIRST CONVERSATION." in text
     assert doc.notes == T.LAWRENCE_NOTE and doc.metadata["gutenberg_ebook"] == 13871
     assert sum(p.metadata.get("editor_note_count", 0) for p in doc.passages) == 4
 
@@ -624,6 +627,11 @@ def test_gutenberg_works_keep_their_vulgate_scripture_references_as_footnotes():
         "Gal. i, 10; Eph. vi, 5, 6."
     assert scripture_reference("Serm. 18, de Sanct.", vulgate=True) is None
     glories = [f["text"] for p in _glories().passages for f in p.metadata.get("footnotes") or []]
-    assert "Eccli. xxiv. 19." in glories and "Cant. 6, 9." in glories and len(glories) == 95
+    assert "Eccli. xxiv. 19." in glories and "Cant. 6, 9." in glories and len(glories) == 87
+    # St Bridget's Revelations, cited by book and chapter, is no Apocalypse ("Psal. l." is).
+    assert scripture_reference("Rev. l. 4, c. 53.", vulgate=True) is None
+    assert scripture_reference("Rev. l. 1. c. 46.", vulgate=True) is None
+    assert scripture_reference("Psal. l. 19.", vulgate=True) == "Psal. l. 19."
+    assert not any(f.startswith("Rev.") for f in glories)
     assert [f["text"] for p in _lawrence().passages
             for f in p.metadata.get("footnotes") or []] == ["Gal. i, 10; Eph. vi, 5, 6."]

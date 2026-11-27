@@ -50,8 +50,7 @@ ANONYMOUS_1876 = "Anonymous translation (Rivingtons, 1876)"
 # Teresa's headings of the Life's chapters are not Lewis's: he left them out, following
 # Bouix, and Zimmerman's introduction to the 1904 edition prints them before the book.
 # The Counsels and Reminiscences are her words as others set them down.
-LAWRENCE_NOTE = ("Its Conversations are Joseph de Beaufort's record of what Brother "
-                 "Lawrence told him.")
+LAWRENCE_NOTE = "Its Conversations are attributed to Joseph de Beaufort."
 ANONYMOUS_1852 = "Anonymous translation (Dunigan, 1852)"
 ANONYMOUS_1895 = "Anonymous translation (Revell, about 1895)"
 IGNATIUS_NOTE = ("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface "
@@ -824,6 +823,7 @@ class _Unit:
     book: str | None
     label: str
     keep: int = 0              # text paragraphs it may hold and still take the next's
+    shown: bool = True         # whether the paragraph that opens it stays in the text
     paras: list = field(default_factory=list)
     heads: list = field(default_factory=list)       # (paragraph, level, text as read)
     body: int = 0              # text paragraphs so far
@@ -863,6 +863,8 @@ def _cut(paras, classify, file: str) -> list[_Unit]:
                 or _TITLE_LINE.match(text) is not None)
         if unit is None:
             raise ValueError(f"text before the first chapter: {text[:60]!r}")
+        if isinstance(kind, _Unit) and not kind.shown:
+            continue                          # an editor's numbering, a label only
         unit.paras.append(p)
         if heading:
             opening = unit.body <= unit.keep and kind != "subheading" and (
@@ -1020,9 +1022,12 @@ def _glories_chapters(root):
 
 
 # The Practice of the Presence of God (Revell, about 1895): the four Conversations, which
-# Joseph de Beaufort wrote down (the document's note says so), and the fifteen Letters.
-# Left out: the title page, the publishers' preface and the translator's four notes
-# (rule G).
+# are attributed to Joseph de Beaufort (the document's note says so), and the fifteen
+# Letters. The Conversations' headings are Beaufort's, so they stay in the text; the
+# Letters' numbers and the Eighth's caption ("(Concerning wandering thoughts in
+# Prayer.)") are the editor's (the French edition orders and heads them otherwise), so
+# the numbers are labels only. Left out: the title page, the publishers' preface, that
+# caption and the translator's four notes (rule G).
 _LAWRENCE_PART = {"CONVERSATIONS.": "Conversations", "LETTERS.": "Letters"}
 _LAWRENCE_UNIT = re.compile(rf"^({_ORDINAL}) (CONVERSATION|LETTER)\.$")
 
@@ -1039,7 +1044,10 @@ def _lawrence_chapters(root):
             state["book"] = _LAWRENCE_PART[text]
             return _Unit(state["book"], state["book"])
         if m := _LAWRENCE_UNIT.match(text):
-            return _Unit(state["book"], f"{m.group(1).capitalize()} {m.group(2).capitalize()}")
+            return _Unit(state["book"], f"{m.group(1).capitalize()} {m.group(2).capitalize()}",
+                         shown=m.group(2) == "CONVERSATION")
+        if text == "(Concerning wandering thoughts in Prayer.)":
+            return "drop"
         if text.startswith("To "):
             return "text"                     # a letter's address ("To the Reverend--")
         return None

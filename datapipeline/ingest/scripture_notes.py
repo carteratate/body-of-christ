@@ -48,7 +48,9 @@ _REFERENCE = re.compile(rf"^\[?{_LEAD}{_BOOK}\s{_CHAPTER_VERSES}{_TAG}"
 # works that ask for them (`vulgate=True`), so no other collection's footnotes change.
 _VULGATE_BOOKS = "Joan|Psal|Luc|Eccli|Matth|Mach|Zacc|Thren|Thr|Ezech|Jac|Sap|Colos"
 _V_BOOK = rf"(?:(?:[1-4]|I{{1,3}})\s?)?(?:St\.\s)?(?:{_VULGATE_BOOKS}|{_BOOKS})\.?"
-_V_CHAPTER_VERSES = (rf"(?:{_ROMAN}[.,](?:\s?{_VERSES}{_MORE_VERSES})?"
+# "l. 1, c. 10" is a book and chapter of another work ("Rev. l. 1, c. 10": St Bridget's
+# Revelations, liber 1, caput 10), not chapter fifty ("Psal. l. 19" is).
+_V_CHAPTER_VERSES = (rf"(?:(?!l\.\s?\d+[.,]\s?c\.){_ROMAN}[.,](?:\s?{_VERSES}{_MORE_VERSES})?"
                      rf"|\d+[:,]\s?{_VERSES}{_MORE_VERSES})")
 _V_ONE = rf"(?:{_V_BOOK}\s{_V_CHAPTER_VERSES}|{_V_CHAPTER_VERSES}|ver\.\s{_VERSES}){_TAG}"
 _VULGATE_REFERENCE = re.compile(rf"^\[?{_LEAD}{_V_BOOK}\s{_V_CHAPTER_VERSES}{_TAG}"
