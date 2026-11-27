@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "feat/5.6b-newman 4d982249",
+  "medieval": "feat/5.6b-newman 5014d710",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1174,8 +1174,8 @@
   },
   "medieval/../theologians/pg35110.txt": {
    "body_chars": 750416,
-   "covered_chars": 750416,
-   "pct": 100.0
+   "covered_chars": 749948,
+   "pct": 99.94
   },
   "medieval/../theologians/pg72411.txt": {
    "body_chars": 938316,
@@ -2655,8 +2655,8 @@
    "collection": "medieval",
    "source_file": "../theologians/pg35110.txt",
    "body_chars": 750416,
-   "covered_chars": 750416,
-   "pct": 100.0
+   "covered_chars": 749948,
+   "pct": 99.94
   },
   "a558e370-226c-5ac5-b01b-916adbe6b256": {
    "collection": "church-fathers",
