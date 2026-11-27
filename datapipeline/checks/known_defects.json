@@ -219,5 +219,9 @@
  "coverage.roman-curia.response-to-bishop-cortes-on-catholic-membership-in-freemasonry.html": {
   "fixed_by": "5.3a",
   "description": "91.66% covered: a one-page response: the build leaves out its subtitle (\"The Request of His Excellency, the Most Rev. Julito Cortes ...\"), part of the title block, which is a large share of so short a page"
+ },
+ "coverage.roman-curia.letter-on-the-collaboration-of-men-and-women-in-the-church-and-in-the-world.html": {
+  "fixed_by": "5.3a",
+  "description": "90.94% covered: the page's endnotes, which the build cuts and the coverage extractor reads as body text, and the signature line"
  }
 }

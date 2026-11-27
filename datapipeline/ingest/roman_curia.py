@@ -78,7 +78,7 @@ _AAS = re.compile(r"\bAAS\s+\d+\s*\(\d{4}\)[^.;]*")
 _APPROVAL = re.compile(
     r"(?:Supreme|Sovereign|Roman) Pontiff|Holy Father|Pope [A-Z][a-z]+ [IVXL]+",
 )
-_APPROVED = re.compile(r"\b(?:approved|confirmed|ratified)\b")
+_APPROVED = re.compile(r"\b(?:approved|confirmed|ratified|gave (?:his )?(?:approval|assent))\b")
 _AUDIENCE = re.compile(r"\b[Aa]udience\b")
 
 # Pages that print other texts ahead of the document itself. Each entry names the last
@@ -139,8 +139,15 @@ def _texts(soup, start_after: str | None = None) -> list[tuple[object, str]]:
     for tag in soup.find_all(["script", "style", "nav", "header", "footer", "form"]):
         tag.decompose()
     for sup in soup.find_all("sup"):
-        if re.fullmatch(r"\s*[\[(]?\d{1,3}[\])]?\s*", sup.get_text()):
-            sup.decompose()  # a note marker; left in, it reads as a stray number
+        m = re.fullmatch(r"\s*[\[(]?(\d{1,3})[\])]?\s*", sup.get_text())
+        if not m:
+            continue
+        if _opens_paragraph(sup):
+            # An endnote's own number ("<sup>6</sup> Vatican Council II, ..."): kept as
+            # "[6]" so cut_notes knows the line for a note.
+            sup.replace_with(f"[{m[1]}] ")
+        else:
+            sup.decompose()  # a note caller; left in, it reads as a stray number
     out = []
     for p in soup.find_all("p"):
         t = re.sub(r"\s+", " ", p.get_text(" ", strip=True)).strip()
@@ -153,6 +160,19 @@ def _texts(soup, start_after: str | None = None) -> list[tuple[object, str]]:
         if idx:
             out = out[idx[-1] + 1:]
     return out
+
+
+def _opens_paragraph(tag) -> bool:
+    """Whether `tag` is the first text of its paragraph."""
+    p = tag.find_parent("p")
+    if p is None:
+        return False
+    for node in p.descendants:
+        if node is tag:
+            return True
+        if isinstance(node, str) and node.strip():
+            return False
+    return False
 
 
 def _note_number(text: str) -> int | None:
@@ -260,7 +280,8 @@ def _is_signature(t: str) -> bool:
 
 
 def tokens(soup, start_after: str | None = None) -> list[tuple[str, int | None, str]]:
-    """Return ("title"|"section"|"para", number, text) tokens for one page.
+    """Return ("title"|"section"|"numhead"|"para", number, text) tokens for one page;
+    a "numhead" is a numbered unit's heading line, its number the unit's.
 
     Before the first sentence of body text, lines are the title block (office name,
     genre, title, subtitle) and are dropped: the manifest carries the title.
@@ -277,15 +298,33 @@ def tokens(soup, start_after: str | None = None) -> list[tuple[str, int | None, 
     toks: list[tuple[str, int | None, str]] = []
     body_started = False
     answer_next = False
+    last_number = 0
+    section_since_number = False
     for t in lines:
         m = _NUM.match(t)
-        if m and body_started and _numbered_heading(m.group(2).strip()):
+        rest = m.group(2).strip() if m else ""
+        heading_like = m is not None and (_numbered_heading(rest) or _is_shouting(rest))
+        # Numbering that starts over under a new section (Donum Vitae's Part II).
+        restart = m is not None and int(m.group(1)) == 1 and section_since_number
+        if heading_like and (int(m.group(1)) == last_number + 1 or restart):
+            # A numbered heading that continues the paragraph numbering opens that
+            # numbered unit ("2. IS PRENATAL DIAGNOSIS MORALLY LICIT?", Donum Vitae): the
+            # unit keeps its number, and the line is its heading.
+            body_started = True
+            last_number = int(m.group(1))
+            toks.append(("numhead", last_number, rest))
+            section_since_number = False
+        elif heading_like and body_started:
             toks.append(("section", None, t))
+            section_since_number = True
         elif m:
             body_started = True
-            toks.append(("para", int(m.group(1)), m.group(2).strip()))
+            last_number = int(m.group(1))
+            section_since_number = False
+            toks.append(("para", last_number, rest))
         elif _ROMAN.match(t) or (_ROMAN_TITLE.match(t) and len(t) <= 120):
             toks.append(("section", None, t))
+            section_since_number = True
         elif _DATELINE.match(t) and len(t) < 250:
             if toks and toks[-1][0] == "para":
                 k, n, prev = toks[-1]
@@ -294,10 +333,12 @@ def tokens(soup, start_after: str | None = None) -> list[tuple[str, int | None, 
             answer_next = True
         elif _QUESTION_HEADING.match(t):
             toks.append(("section", None, t))
+            section_since_number = True
         elif not body_started and (_is_shouting(t) or not t.endswith(_SENTENCE_END)):
             toks.append(("title", None, t))
         elif _is_heading(t):
             toks.append(("section", None, t))
+            section_since_number = True
         else:
             body_started = True
             if answer_next:
@@ -338,7 +379,7 @@ def _restarts(toks: list[tuple[str, int | None, str]]) -> bool:
     """True when paragraph numbering starts over in a later part (Libertatis Nuntius)."""
     last = 0
     for k, n, _ in toks:
-        if k == "para" and n is not None:
+        if k in ("para", "numhead") and n is not None:
             if n <= last:
                 return True
             last = n
@@ -387,8 +428,30 @@ def date_display(day: date | None) -> str | None:
     return f"{day.day} {day:%B} {day.year}" if day else None
 
 
+# Pages whose own heading names another kind than the manifest's: A Journey of Hope
+# prints "Note".
+KINDS = {"a-journey-of-hope": "Note"}
+
+
 def genre(entry: dict) -> str:
-    return GENRES[entry["genre"]]
+    return GENRES[KINDS.get(entry["slug"], entry["genre"])]
+
+
+_OFFICE = re.compile(
+    r"(sacred\s+)?congregation\s+for\s+the\s+doctrine\s+of\s+the\s+faith"
+    r"|(dicastery\s+for\s+the\s+doctrine\s+of\s+the\s+faith|dicasterium\s+pro\s+doctrina\s+fidei)",
+    re.IGNORECASE)
+
+
+def printed_office(lines: list[str]) -> str | None:
+    """The office's name as the page's title block prints it, in English, or None."""
+    for line in lines[:8]:
+        m = _OFFICE.search(line)
+        if m and len(line) < 80:
+            if m[2]:
+                return "Dicastery for the Doctrine of the Faith"
+            return ("Sacred " if m[1] else "") + "Congregation for the Doctrine of the Faith"
+    return None
 
 
 def _source_facts(soup) -> dict:
@@ -480,6 +543,7 @@ def build_document(entry: dict, source_dir: str | None = None) -> Document:
     source_key = f"{COLLECTION}/{entry['file']}"
     did = resolve_document_id(COLLECTION, source_key, (COLLECTION, slug))
     day = document_date(entry, lines)
+    office = printed_office(lines) or entry["author"]
     # Where numbering restarts by part, a bare "§3" is ambiguous, so each number is
     # qualified by its part: "VIII, 3", the form the document itself is cited by.
     qualify = _restarts(toks)
@@ -572,14 +636,24 @@ def build_document(entry: dict, source_dir: str | None = None) -> Document:
 
     # A level-1 heading opens a chapter; a pair's title joins its label to the chapter's.
     pair_open = False
+    section_level = 1
     for kind, n, raw in toks:
         if kind == "title":
+            continue
+        if kind == "numhead":
+            # A numbered unit opened by its heading, one level below the section it is in.
+            flush_group()
+            flush_num()
+            pair_open = False
+            pending.append(headings.Heading(clean_text(raw), level=min(3, section_level + 1)))
+            cur_num, cur_parts = n, []
             continue
         if kind == "section":
             flush_num()
             flush_group()
             text = clean_text(raw)
             level, pairs_next = next(levels)
+            section_level = level
             if level == 1:
                 if pair_open:
                     clabel = f"{clabel}: {_section_label(text)}"
@@ -621,8 +695,8 @@ def build_document(entry: dict, source_dir: str | None = None) -> Document:
     metadata = {"source": "vatican.va (English)", "source_key": source_key,
                 "source_file": entry["file"], "url": entry["url"],
                 "anchor_scheme": ANCHOR_SCHEME, "genre": genre(entry),
-                "issuer_label": entry["author"], **facts}
-    return Document(id=did, collection=COLLECTION, title=title, author=entry["author"],
+                "issuer_label": office, **facts}
+    return Document(id=did, collection=COLLECTION, title=title, author=office,
                     year=day.year if day else entry["year"], metadata=metadata,
                     passages=passages, date_display=date_display(day))
 

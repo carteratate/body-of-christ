@@ -201,8 +201,6 @@ def test_every_page_kind_maps_to_a_registered_genre():
 
 
 def test_the_issuer_is_the_office_under_the_name_it_printed():
-    doc = RC.build_document.__wrapped__ if hasattr(RC.build_document, "__wrapped__") else None
-    assert doc is None  # build_document is a plain function
     from model import Document
     built = Document(id="d", collection="roman-curia", title="T",
                      metadata={"genre": "instruction",
@@ -309,3 +307,59 @@ def test_every_reference_is_unique_within_its_document():
     for d in build_documents():
         refs = [p.reference for p in d.passages]
         assert len(refs) == len(set(refs)), d.title
+
+
+# --------------------------------------------------------------------------- review (Sol, r1)
+
+def test_an_endnote_numbered_by_a_superscript_is_cut():
+    html = ("<html><body>"
+            + "".join(f"<p>{n}. {LONG}</p>" for n in range(1, 4))
+            + "".join(f"<p><sup>{n}</sup> Cf. Vatican Council II, Lumen Gentium, {n}.</p>"
+                      for n in range(1, 5))
+            + "<p>Inside a sentence<sup>2</sup> a caller goes.</p>"
+            + "</body></html>")
+    text = " ".join(t for _, _, t in tokens(BeautifulSoup(html, "lxml")))
+    assert "Lumen Gentium" not in text
+
+
+def test_a_numbered_question_heading_opens_its_numbered_unit():
+    toks = _toks(f"1. {LONG}", "2. IS PRENATAL DIAGNOSIS MORALLY LICIT?", LONG,
+                 "I. INTERVENTIONS", LONG, "1. WHY MUST PROCREATION TAKE PLACE IN MARRIAGE?",
+                 LONG * 10)
+    assert [(k, n) for k, n, _ in toks] == [
+        ("para", 1), ("numhead", 2), ("para", None),
+        ("section", None), ("para", None), ("numhead", 1), ("para", None)]
+
+
+def test_a_section_title_that_breaks_the_numbering_stays_a_section():
+    toks = _toks(f"9. {LONG}", "1. A Growing Awareness of Human Dignity", f"10. {LONG}")
+    assert [(k, n) for k, n, _ in toks] == [("para", 9), ("section", None), ("para", 10)]
+
+
+@pytest.mark.parametrize("lines, office", [
+    (["SACRED CONGREGATION FOR THE DOCTRINE OF THE FAITH", "LETTER"],
+     "Sacred Congregation for the Doctrine of the Faith"),
+    (["CONGREGATION FOR THE DOCTRINE OF THE FAITH"], "Congregation for the Doctrine of the Faith"),
+    (["DICASTERIUM PRO DOCTRINA FIDEI"], "Dicastery for the Doctrine of the Faith"),
+    (["A Journey of Hope"], None),
+])
+def test_the_office_is_named_as_the_page_prints_it(lines, office):
+    assert RC.printed_office(lines) == office
+
+
+@needs_sources
+def test_the_reviewed_documents_build_as_their_pages_print_them():
+    by_title = {d.title: d for d in build_documents()}
+    for title in ("Libertatis Conscientia", "Homosexualitatis Problema"):
+        assert by_title[title].metadata["issuer_label"] == \
+            "Congregation for the Doctrine of the Faith", title
+    assert by_title["A Journey of Hope"].metadata["genre"] == "note"
+    assert "gave his approval" in by_title["Sacerdotium Ministeriale"].metadata["papal_approval"]
+    sacerdotium = "\n".join(p.content for p in by_title["Sacerdotium Ministeriale"].passages)
+    assert "Lumen Gentium, 28." not in sacerdotium
+    dv = by_title["Donum Vitae"]
+    refs = [p.unit_label for p in dv.passages if p.unit_label]
+    assert "I, 2" in refs and "II, 8" in refs
+    unit = next(p for p in dv.passages if p.unit_label == "I, 2")
+    first = unit.metadata["headings"][0]
+    assert unit.content[first["at"]:first["end"]] == "IS PRENATAL DIAGNOSIS MORALLY LICIT?"

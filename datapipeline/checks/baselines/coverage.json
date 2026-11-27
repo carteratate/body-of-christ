@@ -9,7 +9,7 @@
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
   "medieval": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
-  "roman-curia": "feat/5.3a-roman-curia 1800a36d",
+  "roman-curia": "feat/5.3a-roman-curia 664a972e",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
  "files": {
@@ -1330,8 +1330,8 @@
   },
   "roman-curia/letter-on-the-collaboration-of-men-and-women-in-the-church-and-in-the-world.html": {
    "body_chars": 41557,
-   "covered_chars": 40547,
-   "pct": 97.57
+   "covered_chars": 37792,
+   "pct": 90.94
   },
   "roman-curia/letter-to-the-bishops-on-the-revision-of-catechism-2267-on-the-death-penalty.html": {
    "body_chars": 7470,
@@ -2680,8 +2680,8 @@
    "collection": "roman-curia",
    "source_file": "letter-on-the-collaboration-of-men-and-women-in-the-church-and-in-the-world.html",
    "body_chars": 41557,
-   "covered_chars": 40547,
-   "pct": 97.57
+   "covered_chars": 37792,
+   "pct": 90.94
   },
   "7855cbe8-58e5-544b-a6f9-628cc22ba212": {
    "collection": "encyclicals",
