@@ -5,7 +5,7 @@
 
 Adds a works.json entry for each of the 60 documents, freezing its document ID under its
 source key (`roman-curia/<file>`), and marks each one's rights-inventory row built: the
-document ID filled in and `planned_for` cleared. Rows are found by source path and title.
+document ID filled in, `planned_for` cleared, and the author the office the page prints. Rows are found by source path and title.
 Idempotent. Then, as for any adapter change:
 
     python3 scripts/reconcile_registry.py --item 5.3a --collection roman-curia
@@ -40,8 +40,10 @@ def register(reg: registry.WorkRegistry, documents, today: str) -> int:
 
 
 def mark_built(rows: list[dict], documents) -> int:
-    """Fill each document's ID into its rights row and clear `planned_for`; the number of
-    rows changed. Raises when a row names another document or is missing."""
+    """Fill each document's ID into its rights row and clear `planned_for`, and set the
+    row's author to the office the page prints (5 rows named the Sacred Congregation for
+    pages that print the Congregation); the number of rows changed. Raises when a row
+    names another document or is missing."""
     changed = 0
     for document in documents:
         path = document.metadata["source_key"]
@@ -51,9 +53,10 @@ def mark_built(rows: list[dict], documents) -> int:
         row = matches[0]
         if row["document_id"] not in (None, document.id):
             raise ValueError(f"{path}: its row names document {row['document_id']}")
-        if row["document_id"] == document.id and row["planned_for"] is None:
+        if (row["document_id"], row["planned_for"], row["author"]) == \
+                (document.id, None, document.author):
             continue
-        row["document_id"], row["planned_for"] = document.id, None
+        row["document_id"], row["planned_for"], row["author"] = document.id, None, document.author
         changed += 1
     return changed
 
