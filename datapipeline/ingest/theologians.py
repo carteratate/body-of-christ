@@ -359,7 +359,12 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
               # Part I ch. III § 2's title; the edition's contents prints "Mary, the hope
               # of sinners".
               ("pg72411.txt", "p287"): (("HAST THE HOPE OF SINNERS.",
-                                          "MARY, THE HOPE OF SINNERS."),)}
+                                          "MARY, THE HOPE OF SINNERS."),),
+              # The Little Rosary of the Immaculate Mary's versicle and response print the
+              # Latin after the English: the English stays (rule E).
+              ("pg72411.txt", "p1241"): ((": Ora pro nobis, Virgo immaculata;", ";"),),
+              ("pg72411.txt", "p1242"): ((": Ut digni officiamur promissionibus Christi.",
+                                          "."),)}
 # Mullan's references to pages of his edition, in the files that print them: the
 # edition's, not the text. In brackets ("They sent the Angel … (p. 133)."; "(P. 154)";
 # "(p. 152); and it contains"), or after a comma ("the Particular Examen, p. 21, and";
@@ -776,8 +781,9 @@ def _autobiography_chapters(root):
 # A Gutenberg work is one div of paragraphs (`ingest.gutenberg_text`), which its plan
 # cuts into chapter divs at the work's own headings. A heading paragraph (printed in
 # capitals, set in italics throughout, or a title line `headings.looks_like_heading`
-# takes for one) stays in the text, marked: in capitals before the chapter's first text,
-# level 1 (with `chapter_title` where the label repeats it); otherwise level 2.
+# takes for one) stays in the text, marked: before the chapter's first text, the
+# chapter's own title and any line in capitals at level 1 (with `chapter_title` where
+# the label repeats it); otherwise level 2.
 _ORDINALS = ("FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH", "EIGHTH",
              "NINTH", "TENTH", "ELEVENTH", "TWELFTH", "THIRTEENTH", "FOURTEENTH",
              "FIFTEENTH")
@@ -837,7 +843,8 @@ def _cut(paras, classify, file: str) -> list[_Unit]:
         for printed, read in TEXT_FIXES.get((file, p.get("id")), ()):
             text = text.replace(printed, read)
         unit = units[-1] if units else None
-        kind = classify(k, text, unit) if text else "drop"
+        # A printer's rule ("*       *       *") is no text.
+        kind = classify(k, text, unit) if text and not _SEPARATOR.fullmatch(text) else "drop"
         if kind == "drop":
             continue
         if isinstance(kind, _Unit):
@@ -858,7 +865,8 @@ def _cut(paras, classify, file: str) -> list[_Unit]:
             raise ValueError(f"text before the first chapter: {text[:60]!r}")
         unit.paras.append(p)
         if heading:
-            opening = unit.body <= unit.keep and _caps(text) and kind != "subheading"
+            opening = unit.body <= unit.keep and kind != "subheading" and (
+                _caps(text) or isinstance(kind, _Unit))       # a chapter's own title
             unit.heads.append((p, 1 if opening else 2, text))
         else:
             unit.body += 1
@@ -906,11 +914,18 @@ _GLORIES_OWN = {"PROTEST OF THE AUTHOR.": None, "PETITION OF THE AUTHOR TO JESUS
                 "NOVENA OF MEDITATIONS": None,
                 "PRAYERS TO THE DIVINE MOTHER": None,
                 "LITTLE ROSARY OF THE SEVEN DOLORS OF MARY.": None,
+                "A Little Rosary of the Immaculate Mary,": None,
                 "VARIOUS PRAYERS TO MARY.": None, "ACCLAMATIONS IN PRAISE OF MARY.": None}
 _GLORIES_LABELS = {"INTRODUCTION": "Introduction",
+                   "A Little Rosary of the Immaculate Mary,":
+                       "A Little Rosary of the Immaculate Mary",
                    "NOVENA OF MEDITATIONS": "Novena of Meditations for the Purification",
                    "PRAYERS TO THE DIVINE MOTHER":
                        "Prayers to the Divine Mother for Every Day of the Week"}
+# Titles inside the closing prayers that no rule above reads as headings.
+_GLORIES_TITLES = {"Dedication of oneself to Mary.", "Dedication of a Family to Mary.",
+                   "Another Prayer.", "Ejaculations to the Most Holy Mary.",
+                   "Which is recited in some Churches."}
 _GLORIES_DROP = {"THE GLORIES OF MARY.", "END OF THE FIRST PART.",
                  "MEDITATIONS FOR VARIOUS FESTIVALS, AND DIFFERENT DEVOTIONS IN HER HONOR."}
 _GLORIES_PART = re.compile(r"^PART (FIRST|SECOND)\b")
@@ -953,6 +968,8 @@ def _glories_chapters(root):
                 state["virtues"] = False
             state["names"] = (kind, n)
             return _Unit(state["part"], f"{kind.capitalize()} {n}")
+        if text in _GLORIES_TITLES:
+            return "subheading"
         if text == _GLORIES_DOLORS:
             return _Unit(state["part"], "On the Seven Dolors")
         if text in _WEEKDAYS:

@@ -50,7 +50,10 @@ def _by_file(built) -> dict:
     for collection in THML:
         for d in built[collection]:
             for p in d.passages:
-                out[(collection, p.metadata["source_file"])].append(p)
+                # A Project Gutenberg text (5.6b) is no ThML file; its notes leave by the
+                # same rule, which the coverage check's note leakage measures.
+                if p.metadata["source_file"].endswith(".xml"):
+                    out[(collection, p.metadata["source_file"])].append(p)
     return out
 
 

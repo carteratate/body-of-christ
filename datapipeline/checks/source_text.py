@@ -1105,7 +1105,9 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
         return summa_units(path, source_file)
     if source_file.endswith(".xml"):
         return thml_units(path, source_file)
-    if source_file.endswith(".txt"):
+    if source_file.endswith(".txt") and any(
+            w.ebook and source_file == f"../{theologians.SOURCE_DIR}/{w.file}"
+            for w in theologians.WORKS):
         return gutenberg_units(path, source_file)
     if collection == "catechism" and source_file.endswith(".html"):
         return compendium_units(path, source_file)
