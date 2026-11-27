@@ -117,13 +117,14 @@ def notes_per_piece(raw: str, parts: list[str], notes: list[tuple[int, str]]
     return out
 
 
-def footnotes(part: str, content: str, notes: list[tuple[int, str]]) -> list[dict]:
+def footnotes(part: str, content: str, notes: list[tuple[int, str]],
+              vulgate: bool = False) -> list[dict]:
     """The scripture references among a piece's removed notes, as the Catechism stores
     its footnotes (#279): `{n, text, at}`, numbered from 1 in the piece, `at` the
     offset in the cleaned `content` just after the word the note followed."""
     out = []
     for at, text in notes:
-        ref = scripture_reference(text)
+        ref = scripture_reference(text, vulgate)
         if ref is None:
             continue
         x = min(len(clean_text(part[:at]).rstrip()), len(content))
@@ -182,7 +183,8 @@ def _reference(title: str, label: str) -> str:
 def make_doc(*, collection: str, filename: str, author: str, title: str,
              chapters: list, source_key: str, year: int | None = None,
              extra_meta: dict | None = None, editor=None,
-             works: list[Work] | None = None) -> Document | None:
+             works: list[Work] | None = None,
+             vulgate_references: bool = False) -> Document | None:
     """Build one Document from (book|None, chapter_elem) pairs, or (book, elem,
     `ChapterPlan`) triples. Returns None if empty.
     `source_key` names the work in the source (file, plus the work div's id when the
@@ -262,7 +264,7 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             piece_meta = meta
             if notes:
                 piece_meta = {**meta, "editor_note_count": len(notes)}
-                refs = footnotes(part, content, notes)
+                refs = footnotes(part, content, notes, vulgate_references)
                 if refs:
                     piece_meta["footnotes"] = refs
             if held:

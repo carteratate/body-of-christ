@@ -613,3 +613,17 @@ def test_brother_lawrence_is_the_conversations_and_letters():
     assert not any(t.startswith("To the") for p in doc.passages for t, _, _ in _heads(p))
     assert doc.notes == T.LAWRENCE_NOTE and doc.metadata["gutenberg_ebook"] == 13871
     assert sum(p.metadata.get("editor_note_count", 0) for p in doc.passages) == 4
+
+
+def test_gutenberg_works_keep_their_vulgate_scripture_references_as_footnotes():
+    from ingest.scripture_notes import scripture_reference
+    # Read only where a work asks: every other collection's footnotes stay as they were.
+    assert scripture_reference("Joan. xix. 26.") is None
+    assert scripture_reference("Joan. xix. 26.", vulgate=True) == "Joan. xix. 26."
+    assert scripture_reference("Gal. i, 10; Eph. vi, 5, 6.", vulgate=True) == \
+        "Gal. i, 10; Eph. vi, 5, 6."
+    assert scripture_reference("Serm. 18, de Sanct.", vulgate=True) is None
+    glories = [f["text"] for p in _glories().passages for f in p.metadata.get("footnotes") or []]
+    assert "Eccli. xxiv. 19." in glories and len(glories) == 94
+    assert [f["text"] for p in _lawrence().passages
+            for f in p.metadata.get("footnotes") or []] == ["Gal. i, 10; Eph. vi, 5, 6."]

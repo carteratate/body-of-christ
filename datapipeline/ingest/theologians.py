@@ -1237,7 +1237,7 @@ def build_work(work: ThmlWork) -> Document:
     doc = make_doc(collection=COLLECTION, filename=f"../{SOURCE_DIR}/{work.file}",
                    author=work.author, title=work.title,
                    chapters=chapters, source_key=work.source_key,
-                   year=work.year, editor=editor,
+                   year=work.year, editor=editor, vulgate_references=bool(work.ebook),
                    extra_meta={"source_url": work.url,
                                **({"gutenberg_ebook": work.ebook} if work.ebook else {})})
     if doc is None:
