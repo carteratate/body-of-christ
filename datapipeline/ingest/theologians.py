@@ -383,7 +383,12 @@ TEXT_FIXES = {("desales-devout_life.xml", "iii.xvii-p2"): (("upon to you", "open
               # The Grammar of Assent's "&c;" (ch. 4 § 1), which `common._strip_tags`
               # reads as an entity and blanks once the tree escapes its "&".
               ("pg34022.txt", "p111"): (("\u201cJustum et tenacem,\u201d nay",
-                                         "\u201cJustum et tenacem,\u201d &c; nay"),)}
+                                         "\u201cJustum et tenacem,\u201d &c; nay"),),
+              # The Development's Chapter VIII title, "OF" in the file's "THIRD NOTE Of";
+              # and its second call of note 315:3, a line after the first (the note
+              # stands once, at the first).
+              ("pg35110.txt", "p979"): (("THIRD NOTE Of A", "THIRD NOTE OF A"),),
+              ("pg35110.txt", "p865"): (("Anastasius,[315:3]", "Anastasius,"),)}
 # Mullan's references to pages of his edition, in the files that print them: the
 # edition's, not the text. In brackets ("They sent the Angel … (p. 133)."; "(P. 154)";
 # "(p. 152); and it contains"), or after a comma ("the Particular Examen, p. 21, and";
@@ -1193,6 +1198,9 @@ _DEV_UNITS = {"TO THE": "Dedication", "PREFACE TO THE EDITION OF 1878.": "Prefac
               "ADVERTISEMENT TO THE FIRST EDITION.": "Advertisement to the First Edition",
               "POSTSCRIPT.": "Postscript", "INTRODUCTION.": "Introduction",
               "CONCLUSION.": "Conclusion"}
+# A section's own headings inside a chapter, its words in italics: "§ 1. The Arians of
+# the Gothic Race." and "(1.) Canon of the New Testament.", level 2.
+_DEV_SUBSECTION = re.compile(r"^(?:§ \d+\.|\(\d+\.\)) [A-Z][^.]{0,60}\.$")
 _DEV_DROP = {"OCULI MEI DEFECERUNT IN SALUTARE TUUM.", "THE END.",
              "NUNC DIMITTIS SERVUM TUUM, DOMINE, SECUNDUM VERBUM TUUM IN PACE: QUIA "
              "VIDERUNT OCULI MEI SALUTARE TUUM."}
@@ -1227,6 +1235,8 @@ def _development_chapters(root):
             unit.label = f"{state['names']}. {_caps_title(text)}"
             state["names"] = None
             return "heading"
+        if _DEV_SUBSECTION.match(text):
+            return "subheading"
         if _SALUTATION_LINE.match(text) or _DATE_LINE.match(text):
             return "text"
         return _numbered(text, unit)
@@ -1242,6 +1252,12 @@ def _development_chapters(root):
 _IDEA_NUMBER = re.compile(rf"^(Discourse|Lecture) ({_NEWMAN_ROMAN})\.$")
 _IDEA_UNITS = {"PREFACE.": "Preface", "Introductory Letter.": "Introductory Letter",
                "Advertisement.": "Advertisement", "NOTE ON PAGE 478.": "Note on Page 478"}
+# A lecture's sections: "§ 1." on a line of its own, its caption on the next ("In its
+# relation to Religious Literature."), both level 2.
+_IDEA_SECTION = re.compile(r"^§ \d+\.$")
+# Lecture IV's dialogue and letters: its stage directions, set in italics, and the
+# letters' salutations and signature, quoted in capitals, are text.
+_IDEA_TEXT = {"A silence.", "A silence on both sides."}
 _IDEA_BOOKS = {"UNIVERSITY TEACHING.": "University Teaching",
                "UNIVERSITY SUBJECTS, DISCUSSED IN OCCASIONAL LECTURES AND ESSAYS.":
                    "University Subjects"}
@@ -1250,11 +1266,19 @@ _IDEA_BOOKS = {"UNIVERSITY TEACHING.": "University Teaching",
 def _idea_chapters(root):
     paras = list(root[0])
     apparatus = text_apparatus("pg24526.txt", [_text(p) for p in paras])
-    state = {"book": None, "names": None}
+    state = {"book": None, "names": None, "caption": False}
 
     def classify(k, text, unit):
         if k in apparatus:
             return "drop"
+        if state["caption"]:
+            state["caption"] = False
+            return "subheading"
+        if _IDEA_SECTION.match(text):
+            state["caption"] = True
+            return "subheading"
+        if text in _IDEA_TEXT or text.startswith("\u201c"):
+            return "text"
         if text in _IDEA_BOOKS:
             state["book"] = _IDEA_BOOKS[text]
             return _Unit(state["book"], state["book"])

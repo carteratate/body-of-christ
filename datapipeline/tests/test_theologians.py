@@ -730,6 +730,13 @@ def test_development_is_the_1878_text_with_its_dedication_and_prefaces():
                  "+stêrigma+"):
         assert gone not in text
     assert "(stêrigma)" in text                       # Greek between plus signs, read out
+    assert "[315:3]" not in text                      # a note the edition calls twice
+    assert "Part II · Chapter VIII. Application of the Third Note of a True Development" \
+        in labels
+    marks = [(t, lvl) for p in doc.passages for t, lvl, _ in _heads(p)]
+    assert ("§ 1. The Arians of the Gothic Race.", 2) in marks
+    assert ("(1.) Canon of the New Testament.", 2) in marks
+    assert sum(t.startswith(("§", "(")) for t, _ in marks) == 26
     assert _note_count(doc) == 400
     assert (doc.year, doc.notes) == (1878, T.DEVELOPMENT_NOTE)
 
@@ -746,6 +753,14 @@ def test_idea_is_the_discourses_and_the_lectures():
                                  ("Introductory.", 1, True), ("1.", 2, False)]
     text = _text(doc)
     assert "MY DEAR MONSELL," in text and "INDEX." not in text
+    marks = [t for p in doc.passages for t, _, _ in _heads(p)]
+    # A lecture's sections and their captions are marked; Lecture IV's stage directions
+    # and its letters' quoted salutations are text.
+    assert marks.count("§ 1.") == 3 and "In its relation to Religious Literature." in marks
+    assert "Composition." in marks and "Its Policy." in marks
+    assert "Mr. White’s view of Latin translation." in marks
+    for line in ("A silence.", "A silence on both sides.", "“MY DEAR SIR,", "“ROBERT.”"):
+        assert line not in marks and line in text
     assert _note_count(doc) == 51 and doc.notes == T.IDEA_NOTE
 
 

@@ -383,7 +383,7 @@
    "\\b(?:[Vv]er|[Bb]k|[Cc]f|sess|cap|constitut|ch|chap|c|p|pp|vol|n|[Nn]o|[Nn]os|art|q|a|sect|sec|lib|ep|hom|serm|Trin)\\.[\"”’)]?$",
    "\\bAAS\\.? \\[$",
    "\\b[Cc]hapter(?: \\d{1,3})? \\[$",
-   "\\b(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|[a-z]+teenth|[a-z]+tieth|hundredth) \\[$"
+   "\\b[a-z]+ty-(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth) \\[$"
   ]
  },
  "R13_lower_start": {
