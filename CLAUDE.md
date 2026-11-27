@@ -229,7 +229,9 @@ or deleting a migration already on `master` fails unless the file says
   refuses a malformed mark anywhere; H7 (heading-like paragraph unmarked) and H8 (chapter
   repeat without `chapter_title`) run only in collections listed under
   `H7_unmarked_heading` in `health_patterns.json`, which a collection joins when its adapter
-  marks. The API sends `headings` with chunk events (only when non-empty), restored
+  marks, and in the single documents listed there (`documents`; 5.6b's works join one at a
+  time). A ThML adapter marks a work's own headings with `ChapterPlan.headings` in
+  `ingest/thml_doc.py`. The API sends `headings` with chunk events (only when non-empty), restored
   results, bookmarks and reader passages (`app/headings.py`); the web draws them with
   `components/common/PassageBlocks.tsx` and draws an unmarked passage as before. The
   catechism collection (the CCC; the Compendium, whose bold question is a level-3 heading;

@@ -41,12 +41,28 @@ _LEAD = r"(?:(?:Cf|Comp|Compare|See|Vid)\.?\s)?"
 _REFERENCE = re.compile(rf"^\[?{_LEAD}{_BOOK}\s{_CHAPTER_VERSES}{_TAG}"
                         rf"(?:\s?(?:;|,|:|and)\s?{_LEAD}{_ONE})*")
 
+# The Vulgate's names as the Gutenberg editions print them (5.6b: the Glories of Mary's
+# "Joan. xix. 26.", "Eccli. xxiv. 19."; measured on the vendored files), and a chapter
+# set off by a comma (Brother Lawrence's "Gal. i, 10; Eph. vi, 5, 6.", the Glories'
+# "Cant. 6, 9."). Read only for the
+# works that ask for them (`vulgate=True`), so no other collection's footnotes change.
+_VULGATE_BOOKS = "Joan|Psal|Luc|Eccli|Matth|Mach|Zacc|Thren|Thr|Ezech|Jac|Sap|Colos"
+_V_BOOK = rf"(?:(?:[1-4]|I{{1,3}})\s?)?(?:St\.\s)?(?:{_VULGATE_BOOKS}|{_BOOKS})\.?"
+# "l. 1, c. 10" is a book and chapter of another work ("Rev. l. 1, c. 10": St Bridget's
+# Revelations, liber 1, caput 10), not chapter fifty ("Psal. l. 19" is).
+_V_CHAPTER_VERSES = (rf"(?:(?!l\.\s?\d+[.,]\s?c\.){_ROMAN}[.,](?:\s?{_VERSES}{_MORE_VERSES})?"
+                     rf"|\d+[:,]\s?{_VERSES}{_MORE_VERSES})")
+_V_ONE = rf"(?:{_V_BOOK}\s{_V_CHAPTER_VERSES}|{_V_CHAPTER_VERSES}|ver\.\s{_VERSES}){_TAG}"
+_VULGATE_REFERENCE = re.compile(rf"^\[?{_LEAD}{_V_BOOK}\s{_V_CHAPTER_VERSES}{_TAG}"
+                                rf"(?:\s?(?:;|,|:|and)\s?{_LEAD}{_V_ONE})*")
 
-def scripture_reference(note: str) -> str | None:
+
+def scripture_reference(note: str, vulgate: bool = False) -> str | None:
     """The scripture reference a translator's note opens with, as printed, or None when
-    the note is not a scripture reference."""
+    the note is not a scripture reference. With `vulgate`, the Vulgate's book names and a
+    chapter set off by a comma are read too."""
     text = " ".join(note.split())
-    m = _REFERENCE.match(text)
+    m = (_VULGATE_REFERENCE if vulgate else _REFERENCE).match(text)
     if not m:
         return None
     ref = m.group(0).rstrip(" ,;").lstrip("[")

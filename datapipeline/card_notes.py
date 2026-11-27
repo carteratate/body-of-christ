@@ -159,6 +159,24 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "English translation. The official Latin is on vatican.va.": (overview(
         "Canons 295, 296, 579, 695 and 700 are not shown: their current text has no "
         "English translation. The official Latin is on vatican.va.", "incomplete"),),
+    # 5.6b's Life of St. Teresa (`ingest.theologians.LIFE_NOTE`): a document-wide fact.
+    "Teresa's chapter headings, left out of the original translation, follow Benedict "
+    "Zimmerman's 1904 edition.": (overview(
+        "Teresa's chapter headings, left out of the original translation, follow Benedict "
+        "Zimmerman's 1904 edition."),),
+    # 5.6b's Story of a Soul (`ingest.theologians.THERESE_NOTE`): a document-wide fact.
+    "Its Counsels and Reminiscences are her sayings as her novices recorded them.": (
+        overview("Its Counsels and Reminiscences are her sayings as her novices recorded "
+                 "them."),),
+    # 5.6b's Practice of the Presence of God (`ingest.theologians.LAWRENCE_NOTE`).
+    "Its Conversations are attributed to Joseph de Beaufort; the close of the Fourth draws on "
+    "other accounts.": (
+        overview("Its Conversations are attributed to Joseph de Beaufort; the close of the "
+                 "Fourth draws on other accounts."),),
+    # 5.6b's Autobiography of St. Ignatius (`ingest.theologians.IGNATIUS_NOTE`).
+    "Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens it.": (
+        overview("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens "
+                 "it."),),
     # 3.2's labels.
     # The header names the Church of Smyrna.
     "A letter of the Church of Smyrna on Polycarp's death; its writer, Evarestus, is named "
@@ -359,10 +377,17 @@ _TRANSLATIONS = {
     # The Bible's badge names it (rule 1), and so does the Catechism's required notice.
     "WEB-C": "",
     "United States edition (1997)": "",
+    # The Devout Life's 1876 translation names no translator (5.6b; R6).
+    "Anonymous translation (Rivingtons, 1876)": "Anonymous translation (Rivingtons, 1876)",
+    # The Glories of Mary's and Brother Lawrence's translations name no translator (R6).
+    "Anonymous translation (Dunigan, 1852)": "Anonymous translation (Dunigan, 1852)",
+    "Anonymous translation (Revell, about 1895)": "Anonymous translation (Revell, about 1895)",
 }
 _TAILS = re.compile(r"(?:\.\s+(?:Sourced via|Text:).*|;.*|,\s*(?:abridged|extract)\s*)$")
 _SENTENCE = re.compile(r"^(Translated by|Translation|Official English|From Hefele)")
 _SERIES = ("Ante-Nicene Fathers", "Nicene and Post-Nicene Fathers")
+# Translators that are a community, read with "the": "the Benedictines of Stanbrook" (5.6b).
+_BODIES = ("Fathers of ", "Benedictines of ")
 
 
 def card_translator(credit: str | None, translation: str | None) -> str | None:
@@ -382,7 +407,7 @@ def card_translator(credit: str | None, translation: str | None) -> str | None:
         return None
     if value.startswith(_SERIES):
         return re.sub(r"(?<=\d)-(?=\d)", "–", value)  # a date range takes an en dash
-    if value.startswith("Fathers of "):
+    if value.startswith(_BODIES):
         return f"Translated by the {value}"
     return f"Translated by {value}"
 

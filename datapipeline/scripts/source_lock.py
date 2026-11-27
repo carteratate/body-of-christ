@@ -89,6 +89,22 @@ _DERIVED_INPUTS = {
         "https://www.ewtn.com/catholicism/library/de-concordia-inter-codices-7264",
 }
 
+
+def _theologians_inputs() -> dict[str, str]:
+    """The files 5.6b's adapter reads from `sources/theologians/`, with their URL. The
+    adapter publishes under another collection's key (`ingest.theologians.COLLECTION`,
+    `medieval` until 5.1b.3), so the directory is no registered collection's."""
+    sys.path.insert(0, str(DATAPIPELINE))
+    from ingest.theologians import SOURCE_DIR, WORKS
+
+    return {f"{SOURCE_DIR}/{w.file}": w.url for w in WORKS}
+
+
+# Source directories that are not a collection key but which an adapter reads, with the
+# files it reads (by path under sources/) and their URLs. Any other file there is
+# vendored-unregistered.
+_ADAPTER_DIRS = {"theologians": _theologians_inputs}
+
 # Vendored files no registered adapter publishes, with the reason on record.
 _UNREGISTERED_NOTES = {
     "apostolic-exhortations/a-new-hope-for-lebanon.html": "scheduled for PR 5.4",
@@ -163,7 +179,11 @@ def _manifest_index(sources: Path, collection: str) -> tuple[str | None, dict[st
 
 def _role_and_url(sources: Path, collection: str, rel: str,
                   manifest_name: str | None, named: dict[str, dict]) -> tuple[str, str | None]:
-    """Classify one file of a registered collection."""
+    """Classify one file of a registered collection or of an `_ADAPTER_DIRS` directory."""
+    if collection in _ADAPTER_DIRS:
+        inputs = _ADAPTER_DIRS[collection]()
+        return ("adapter-input", inputs[rel]) if rel in inputs \
+            else ("vendored-unregistered", None)
     file_in_collection = rel.split("/", 1)[1]
     if collection == "catechism" and rel in _UNREGISTERED_NOTES:
         return "vendored-unregistered", None     # the Roman Catechism's scan (5.5)
@@ -209,11 +229,12 @@ def build_entries(sources: Path, registered: list[str], scope: set[str],
         directory = sources / name
         if not directory.is_dir():
             continue
-        if name in registered:
+        read = name in registered or name in _ADAPTER_DIRS
+        if read:
             manifest_name, named = _manifest_index(sources, name)
         for path in _files(directory):
             rel = path.relative_to(sources).as_posix()
-            if name in registered:
+            if read:
                 role, url = _role_and_url(sources, name, rel, manifest_name, named)
                 entries.append(_entry(name, rel, path, role, url, previous, today, fetched))
             else:

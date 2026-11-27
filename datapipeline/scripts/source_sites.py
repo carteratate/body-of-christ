@@ -41,6 +41,9 @@ SITES = (
      "name": "Christian Classics Ethereal Library (CCEL)", "url": "https://www.ccel.org",
      "taken": "English translations in CCEL's digital editions: the Church Fathers, the "
               "Summa Theologiae, medieval writers and the canons of the early councils."},
+    {"key": "gutenberg", "hosts": ("www.gutenberg.org", "gutenberg.org"),
+     "name": "Project Gutenberg", "url": "https://www.gutenberg.org",
+     "taken": "Plain-text editions of older printed translations of spiritual writers."},
     {"key": "vatican", "hosts": ("www.vatican.va", "vatican.va"),
      "name": "The Holy See (vatican.va)", "url": "https://www.vatican.va",
      "taken": "The Holy See's English texts of papal documents, the Second Vatican Council "

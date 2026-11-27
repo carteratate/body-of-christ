@@ -178,7 +178,7 @@ def _heading_rules(collection: str, document: Document, add) -> list[Violation]:
     Calls `add` and returns [] so it reads like the rules above."""
     rule = load_patterns()["H7_unmarked_heading"]
     # A whole collection, its documents by one author (Vatican II among the councils), or
-    # one document at a time (a new work in a collection whose others are not marked; 5.6a).
+    # one document at a time (a new work in a collection whose others are not marked; 5.6a, 5.6b).
     opted_in = (collection in rule["collections"]
                 or document.id in rule.get("documents", [])
                 or document.author in rule.get("authors", {}).get(collection, ()))

@@ -39,13 +39,13 @@ class ChapterPlan:
     any_length: bool = False        # kept however short (a letter's greeting)
     meta: dict | None = None        # added to its passages' metadata (1.8b's quotations)
     # Paragraphs that are the work's own headings, by `<p>` id: (id, level, whether it
-    # repeats the chapter label), the level None for an epigraph. Each stays in the text,
-    # is marked (`headings.py`, #445) and is kept in one piece with what follows it.
+    # repeats the chapter label), level None for an epigraph. Each stays in the text, is
+    # marked (`headings.py`, #445) and is kept in one piece with what follows it.
     headings: tuple[tuple[str, int | None, bool], ...] = ()
-    # Headings the work prints before the chapter, outside its div (a book's or part's
-    # own title over its first chapter): (text, level). Each opens the chapter's text,
-    # marked, in the order given.
-    lead: tuple[tuple[str, int], ...] = ()
+    # Headings the work prints outside the chapter's paragraphs (a book's or part's own
+    # title over its first chapter, a prayer's title): (text, level), and whether it
+    # repeats the chapter label. Each opens the chapter's text, marked, in order.
+    lead: tuple[tuple[str, int] | tuple[str, int, bool], ...] = ()
 
 
 # The Panegyric's chapters carry the editor's "Argument I" as their short title (1.8c).
@@ -117,13 +117,14 @@ def notes_per_piece(raw: str, parts: list[str], notes: list[tuple[int, str]]
     return out
 
 
-def footnotes(part: str, content: str, notes: list[tuple[int, str]]) -> list[dict]:
+def footnotes(part: str, content: str, notes: list[tuple[int, str]],
+              vulgate: bool = False) -> list[dict]:
     """The scripture references among a piece's removed notes, as the Catechism stores
     its footnotes (#279): `{n, text, at}`, numbered from 1 in the piece, `at` the
     offset in the cleaned `content` just after the word the note followed."""
     out = []
     for at, text in notes:
-        ref = scripture_reference(text)
+        ref = scripture_reference(text, vulgate)
         if ref is None:
             continue
         x = min(len(clean_text(part[:at]).rstrip()), len(content))
@@ -152,9 +153,10 @@ def _heading_marks(raw: str, segments: list[Segment], headings_wanted: list,
     for (at, end), segment in zip(spans, segments):
         if segment.locator in wanted:
             level, repeats = wanted.pop(segment.locator)
-            # No level: an epigraph, the Scripture reading set under a title (5.6a).
-            out.append(headings.mark(at, end, level=level, chapter_title=repeats)
-                       if level is not None else headings.mark(at, end, role=headings.EPIGRAPH))
+            if level is None:              # an epigraph: a quotation set over the text
+                out.append(headings.mark(at, end, role=headings.EPIGRAPH))
+            else:
+                out.append(headings.mark(at, end, level=level, chapter_title=repeats))
     if wanted:
         raise ValueError(f"{filename}: headings {sorted(wanted)} are not paragraphs read")
     return out
@@ -181,7 +183,8 @@ def _reference(title: str, label: str) -> str:
 def make_doc(*, collection: str, filename: str, author: str, title: str,
              chapters: list, source_key: str, year: int | None = None,
              extra_meta: dict | None = None, editor=None,
-             works: list[Work] | None = None) -> Document | None:
+             works: list[Work] | None = None,
+             vulgate_references: bool = False) -> Document | None:
     """Build one Document from (book|None, chapter_elem) pairs, or (book, elem,
     `ChapterPlan`) triples. Returns None if empty.
     `source_key` names the work in the source (file, plus the work div's id when the
@@ -239,13 +242,13 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
         wanted = [(_locator(pid, ch_key), level, repeats)
                   for pid, level, repeats in plan.headings]
         if plan.lead:
-            prefix = "\n\n".join(text for text, _ in plan.lead)
+            prefix = "\n\n".join(lead[0] for lead in plan.lead)
             raw = f"{prefix}\n\n{raw}"
             removed = [(at + len(prefix) + 2, text) for at, text in removed]
-            leads = [Segment(f"lead-{k}", text) for k, (text, _) in enumerate(plan.lead, 1)]
+            leads = [Segment(f"lead-{k}", lead[0]) for k, lead in enumerate(plan.lead, 1)]
             segments = leads + segments
-            wanted = [(s.locator, level, False)
-                      for s, (_, level) in zip(leads, plan.lead)] + wanted
+            wanted = [(s.locator, lead[1], lead[2] if len(lead) > 2 else False)
+                      for s, lead in zip(leads, plan.lead)] + wanted
         # Pieces hold whole paragraphs and verse blocks (1.10c); `raw` joins them so.
         parts = [p.text for p in pack_units([(None, b) for b in raw.split("\n\n")], maxc)]
         marks = _heading_marks(raw, segments, wanted, filename) if wanted else []
@@ -261,7 +264,7 @@ def make_doc(*, collection: str, filename: str, author: str, title: str,
             piece_meta = meta
             if notes:
                 piece_meta = {**meta, "editor_note_count": len(notes)}
-                refs = footnotes(part, content, notes)
+                refs = footnotes(part, content, notes, vulgate_references)
                 if refs:
                     piece_meta["footnotes"] = refs
             if held:

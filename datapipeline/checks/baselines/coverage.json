@@ -7,7 +7,7 @@
   "church-fathers": "worktree-bridge-cse_01MzvQViEs9wBfe6rarDy8XB 7e34df7",
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
-  "medieval": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
+  "medieval": "feat/5.6b-alphonsus-lawrence e8120a79",
   "papal-documents": "feat/1.3d-6-extracts d276b44",
   "summa": "feat/1.7-summa-adapter 74b5329"
  },
@@ -1117,6 +1117,56 @@
    "covered_chars": 239555,
    "pct": 99.97
   },
+  "medieval/../theologians/desales-devout_life.xml": {
+   "body_chars": 435448,
+   "covered_chars": 435398,
+   "pct": 99.99
+  },
+  "medieval/../theologians/desales-love.xml": {
+   "body_chars": 1141879,
+   "covered_chars": 1141879,
+   "pct": 100.0
+  },
+  "medieval/../theologians/ignatius-autobiography.xml": {
+   "body_chars": 104153,
+   "covered_chars": 104153,
+   "pct": 100.0
+  },
+  "medieval/../theologians/ignatius-exercises.xml": {
+   "body_chars": 140191,
+   "covered_chars": 140191,
+   "pct": 100.0
+  },
+  "medieval/../theologians/julian-revelations.xml": {
+   "body_chars": 264660,
+   "covered_chars": 264660,
+   "pct": 100.0
+  },
+  "medieval/../theologians/pg13871.txt": {
+   "body_chars": 54995,
+   "covered_chars": 54995,
+   "pct": 100.0
+  },
+  "medieval/../theologians/pg72411.txt": {
+   "body_chars": 938316,
+   "covered_chars": 938316,
+   "pct": 100.0
+  },
+  "medieval/../theologians/teresa-castle2.xml": {
+   "body_chars": 337397,
+   "covered_chars": 337397,
+   "pct": 100.0
+  },
+  "medieval/../theologians/teresa-life.xml": {
+   "body_chars": 833249,
+   "covered_chars": 833249,
+   "pct": 100.0
+  },
+  "medieval/../theologians/therese-autobio.xml": {
+   "body_chars": 453762,
+   "covered_chars": 453762,
+   "pct": 100.0
+  },
   "medieval/consolation-of-philosophy.xml": {
    "body_chars": 218421,
    "covered_chars": 218421,
@@ -1272,6 +1322,13 @@
    "covered_chars": 357940,
    "pct": 100.0
   },
+  "0715be7b-c108-55c0-bad8-d989fb8cdd16": {
+   "collection": "medieval",
+   "source_file": "../theologians/desales-devout_life.xml",
+   "body_chars": 435448,
+   "covered_chars": 435398,
+   "pct": 99.99
+  },
   "083ada7e-352a-50c3-925f-6c51b2258230": {
    "collection": "papal-documents",
    "source_file": "tertio-millennio-adveniente.html",
@@ -1361,6 +1418,13 @@
    "source_file": "apostolic fathers.xml",
    "body_chars": 65762,
    "covered_chars": 65762,
+   "pct": 100.0
+  },
+  "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9": {
+   "collection": "medieval",
+   "source_file": "../theologians/pg13871.txt",
+   "body_chars": 54995,
+   "covered_chars": 54995,
    "pct": 100.0
   },
   "12e7199e-bef2-5a25-a705-e8b6d76f3c08": {
@@ -1706,6 +1770,13 @@
    "covered_chars": 101339,
    "pct": 100.0
   },
+  "38b15a66-fbc3-560f-8a64-363a0ff24ced": {
+   "collection": "medieval",
+   "source_file": "../theologians/pg72411.txt",
+   "body_chars": 938316,
+   "covered_chars": 938316,
+   "pct": 100.0
+  },
   "3a68ef3f-b829-5e95-9eeb-f1ef299c4a38": {
    "collection": "church-fathers",
    "source_file": "second-century.xml",
@@ -1790,11 +1861,25 @@
    "covered_chars": 237884,
    "pct": 100.0
   },
+  "4451945f-fec4-5ab0-8d9e-5da62287ed24": {
+   "collection": "medieval",
+   "source_file": "../theologians/teresa-castle2.xml",
+   "body_chars": 337397,
+   "covered_chars": 337397,
+   "pct": 100.0
+  },
   "4451c2f8-e836-58ab-a2eb-495a9cacef89": {
    "collection": "councils",
    "source_file": "vat2-dei-verbum.html",
    "body_chars": 28163,
    "covered_chars": 28163,
+   "pct": 100.0
+  },
+  "44b734e0-b056-5f8d-92e9-0e98e3509848": {
+   "collection": "medieval",
+   "source_file": "../theologians/ignatius-exercises.xml",
+   "body_chars": 140191,
+   "covered_chars": 140191,
    "pct": 100.0
   },
   "44fd52c3-fdef-518e-a463-a3273f39764c": {
@@ -2147,6 +2232,13 @@
    "covered_chars": 23290,
    "pct": 100.0
   },
+  "725a33d3-8e0c-5d4b-81e4-7c2dc5aefdf6": {
+   "collection": "medieval",
+   "source_file": "../theologians/ignatius-autobiography.xml",
+   "body_chars": 104153,
+   "covered_chars": 104153,
+   "pct": 100.0
+  },
   "73eb7fdd-b401-5a95-a21e-0b0e9ce72188": {
    "collection": "encyclicals",
    "source_file": "hf_l-xiii_enc_01111885_immortale-dei.html",
@@ -2343,6 +2435,13 @@
    "covered_chars": 33252,
    "pct": 99.75
   },
+  "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe": {
+   "collection": "medieval",
+   "source_file": "../theologians/therese-autobio.xml",
+   "body_chars": 453762,
+   "covered_chars": 453762,
+   "pct": 100.0
+  },
   "8e5fb9cb-352a-59c8-8449-07d673b3671c": {
    "collection": "church-fathers",
    "source_file": "third-century-2.xml",
@@ -2397,6 +2496,13 @@
    "source_file": "us-edition/ccc-us.json",
    "body_chars": 1220760,
    "covered_chars": 1220760,
+   "pct": 100.0
+  },
+  "96d72c6a-b005-5e96-9f7f-ceca57042078": {
+   "collection": "medieval",
+   "source_file": "../theologians/desales-love.xml",
+   "body_chars": 1141879,
+   "covered_chars": 1141879,
    "pct": 100.0
   },
   "973645b6-6110-5711-a635-6b84c2632fd8": {
@@ -2671,6 +2777,13 @@
    "body_chars": 76004,
    "covered_chars": 75973,
    "pct": 99.96
+  },
+  "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2": {
+   "collection": "medieval",
+   "source_file": "../theologians/teresa-life.xml",
+   "body_chars": 833249,
+   "covered_chars": 833249,
+   "pct": 100.0
   },
   "bb35c577-ee5b-546e-abb6-41a0764cd6a7": {
    "collection": "church-fathers",
@@ -3132,6 +3245,13 @@
    "source_file": "third-century-3.xml",
    "body_chars": 10114,
    "covered_chars": 10114,
+   "pct": 100.0
+  },
+  "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3": {
+   "collection": "medieval",
+   "source_file": "../theologians/julian-revelations.xml",
+   "body_chars": 264660,
+   "covered_chars": 264660,
    "pct": 100.0
   },
   "f23f311d-4aa4-5091-bb8a-91b174e8f3a2": {
