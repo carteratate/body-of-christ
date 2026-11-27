@@ -1500,7 +1500,7 @@ CHECKS: list[Check] = [
                           text_source="ocr")),
     ),
     SqlCheck(
-        id="2.4f.scanned-label-counts", items="2.4f, 1.2e, 1.3d, #399",
+        id="2.4f.scanned-label-counts", items="2.4f, 1.2e, 1.3d, #399, 5.5",
         proves="Scanned text is labelled in every collection that holds it.",
         sql=f"""
             SELECT d.collection AS key, count(*) AS n
@@ -1509,9 +1509,10 @@ CHECKS: list[Check] = [
             GROUP BY d.collection
         """,
         # Church Fathers: Stromata III in Chadwick's English, from page images (#399).
+        # Catechism: the Roman Catechism, McHugh and Callan through the OCR tool (5.5).
         # Papal documents: the encyclicals' 400, the exhortations' 150 and one other.
         expect=CountsBy({}, at_least={"councils": 300, "papal": 551,
-                                      "church-fathers": 33}),
+                                      "church-fathers": 33, "catechism": 1026}),
     ),
 
     # ---- the other items since the spec was written -------------------------------------

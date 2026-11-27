@@ -3,48 +3,38 @@
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
   "approved_applies": [
     {
-      "collection": "all",
-      "release": "collection-keys-2026-11",
-      "steps": [
-        "apply"
-      ],
-      "reason": "Only to delete the Qdrant collection 5.1b.3's publish replaced, chunks-stromata-iii-2026-11, with publish.py drop-old-collection --close-window-early, under Carter's standing decision (23 Nov 2026): the window closes once its smoke checks pass, which for 5.1b.3 were step 7's acceptance checks (passed 24 Nov 2026, #200). Its stage, apply, rollback and repair entries are removed here.",
-      "approved_by": "Carter",
-      "pr": 494
-    },
-    {
-      "collection": "catechism",
-      "release": "batch-1-2026-11",
+      "collection": "church-fathers",
+      "release": "batch-3-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "reason": "Batch 3 (Carter, 23 Nov 2026): 5.6b's spiritual classics in Theology & Spirituality (#447 Teresa, #460 de Sales, #469 Julian and Thérèse, #491 Ignatius, #511 Alphonsus and Brother Lawrence) and 5.6a's Fathers (#470 Basil, #493 Cyril and Gregory of Nazianzus), staged together as one release from master once #511 and #493 have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 494
+      "pr": 512
     },
     {
-      "collection": "church-law",
-      "release": "batch-1-2026-11",
+      "collection": "theologians",
+      "release": "batch-3-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "reason": "Batch 3 (Carter, 23 Nov 2026): 5.6b's spiritual classics in Theology & Spirituality (#447 Teresa, #460 de Sales, #469 Julian and Thérèse, #491 Ignatius, #511 Alphonsus and Brother Lawrence) and 5.6a's Fathers (#470 Basil, #493 Cyril and Gregory of Nazianzus), staged together as one release from master once #511 and #493 have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 494
+      "pr": 512
     },
     {
       "collection": "all",
-      "release": "batch-1-2026-11",
+      "release": "batch-3-2026-11",
       "steps": [
         "apply"
       ],
-      "reason": "Only to delete the Qdrant collection batch 1's publish replaces, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 1 (Carter, 23 Nov 2026): #431 the Compendium of the Catechism, #451 the Roman Catechism and #436 canon 868, staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "reason": "Only to delete the Qdrant collection batch 3's publish replaces, chunks-batch-2-2026-11, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 2's entries are removed here: its smoke checks were accepted and chunks-batch-1-2026-11 deleted on 27 Nov 2026 (#420). Batch 3 (Carter, 23 Nov 2026): 5.6b's spiritual classics in Theology & Spirituality (#447 Teresa, #460 de Sales, #469 Julian and Thérèse, #491 Ignatius, #511 Alphonsus and Brother Lawrence) and 5.6a's Fathers (#470 Basil, #493 Cyril and Gregory of Nazianzus), staged together as one release from master once #511 and #493 have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 494
+      "pr": 512
     }
   ]
 }

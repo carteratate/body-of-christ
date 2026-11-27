@@ -36,7 +36,7 @@ WRITER_GENRES: tuple[str, ...] = ("treatise", "manual", "sermon", "commentary", 
 OTHER_GENRE = "other"
 
 PAPAL_ISSUERS: tuple[str, ...] = (
-    "pope-boniface-viii", "pope-leo-x", "pope-paul-iii", "pope-benedict-xiv",
+    "pope-boniface-viii", "pope-martin-v", "pope-leo-x", "pope-paul-iii", "pope-benedict-xiv",
     "pope-clement-xiv", "pope-pius-vii", "pope-leo-xii", "pope-pius-viii",
     "pope-gregory-xvi", "pope-pius-ix", "pope-leo-xiii", "pope-pius-x",
     "pope-benedict-xv", "pope-pius-xi", "pope-pius-xii", "pope-john-xxiii",
@@ -50,4 +50,16 @@ GENRES_BY_COLLECTION: dict[str, frozenset[str]] = {
 }
 ISSUERS_BY_COLLECTION: dict[str, frozenset[str]] = {
     "papal": frozenset(PAPAL_ISSUERS),
+}
+# The work filter: the documents a search of these collections can be narrowed to, by
+# document ID (the registry's frozen `document_id`). By document, not genre, because
+# the Catechism of the Catholic Church and the Roman Catechism share a genre. Another
+# collection (Councils, Church Fathers) turns it on by gaining an entry here and in
+# `SCOPED_COLLECTIONS` in apps/web/src/lib/collection-scopes.ts.
+DOCUMENTS_BY_COLLECTION: dict[str, frozenset[str]] = {
+    "catechism": frozenset({
+        "9679c400-d314-5394-b916-f6fc27b50104",  # Catechism of the Catholic Church
+        "800373b1-d6c8-5a26-8910-8d1485b224c2",  # Compendium of the Catechism
+        "c6d78d5e-5f23-5f86-b0ca-97a741e186bf",  # Roman Catechism (Council of Trent)
+    }),
 }

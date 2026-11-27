@@ -13,7 +13,8 @@ credits for document facts (2.3)"):
 
 - `genre`: a papal document's `metadata["genre"]` (1.3b, `papal_genres.csv`); `catechism`
   and `code` for the Catechism and the Code, `compendium` for the Compendium (5.5); a Church Fathers work's from
-  `FATHERS_GENRES` (3.2); otherwise none.
+  `FATHERS_GENRES` (3.2); a 5.6b theologian's from its `ingest.theologians.WORKS` entry;
+  otherwise none.
 - `form`: how the papal chancery issued a papal document, `bull` or `brief`, from its
   `metadata["form"]` (1.3b, `papal_genres.csv`; issue #330); none where none is recorded,
   and for every other document.
@@ -42,6 +43,7 @@ import re
 import attributions
 import card_notes
 import identity
+from ingest import theologians
 from model import Document
 
 # The papal collection under its key since 5.1b.3, and the old keys it replaces.
@@ -321,6 +323,8 @@ def _genre(document: Document, work_id: str) -> str | None:
         return (document.metadata or {}).get("genre")
     if work_id in GENRES:
         return GENRES[work_id]
+    if (found := theologians.genre((document.metadata or {}).get("source_key"))):
+        return found
     return {"catechism": "catechism", "canon-law": "code", "church-law": "code"
             }.get(document.collection)
 

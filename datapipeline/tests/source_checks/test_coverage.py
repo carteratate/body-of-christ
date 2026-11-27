@@ -65,7 +65,7 @@ def test_no_passage_holds_a_ccel_description(built, collection):
 
     descriptions = {name: source_text.thml_description(
         os.path.join(source_text.SOURCES, collection, name))
-        for name in source_text.collection_files(collection)}
+        for name in source_text.collection_files(collection) if name.endswith(".xml")}
     assert sum(bool(t) for t in descriptions.values()) >= 4
     passages = [p for d in built[collection] for p in d.passages]
     assert source_text.description_leaks(descriptions, passages) == []

@@ -229,10 +229,16 @@ or deleting a migration already on `master` fails unless the file says
   refuses a malformed mark anywhere; H7 (heading-like paragraph unmarked) and H8 (chapter
   repeat without `chapter_title`) run only in collections listed under
   `H7_unmarked_heading` in `health_patterns.json`, which a collection joins when its adapter
-  marks. The API sends `headings` with chunk events (only when non-empty), restored
+  marks, and in the single documents listed there (`documents`; 5.6b's works join one at a
+  time). A ThML adapter marks a work's own headings with `ChapterPlan.headings` in
+  `ingest/thml_doc.py`. The API sends `headings` with chunk events (only when non-empty), restored
   results, bookmarks and reader passages (`app/headings.py`); the web draws them with
-  `components/common/PassageBlocks.tsx` and draws an unmarked passage as before. No live
-  passage carries marks yet.
+  `components/common/PassageBlocks.tsx` and draws an unmarked passage as before. The
+  catechism collection (the CCC; the Compendium, whose bold question is a level-3 heading;
+  the Roman Catechism, whose translators' sub-headings left in its text are marked) and
+  Vatican II (the councils' documents by "Second Vatican Council", opted in through
+  `authors`) mark theirs in the build (#445 part 2); no live passage carries marks
+  until their metadata publish. Snapshots from format 3 export the marks.
 - **Corpus-cleanup schema** (0042 schema, 0043 validation and staging; item 2.2a, #178;
   **applied to production 2 Nov 2026**).
   Places for what the cleanup decides. 2.2w's writer fills them, and every existing row
@@ -358,6 +364,14 @@ under every selection. Only the papal collections can be narrowed (`GENRES_BY_CO
 `ISSUERS_BY_COLLECTION` in `constants.py`, `papal` included, the genres a copy of `datapipeline/registry/genres.py`
 kept equal by a test). A search without scopes sends master's exact Qdrant filter and SQL
 (`tests/test_collection_scope.py`); keep it that way.
+
+**The work filter narrows a collection to some of its documents** (`documents`, by document ID,
+beside genres and issuers in the same `filters.scopes` entry; Qdrant `must_not` on
+`document_id`, SQL `d.id <> ALL(...)`). By document because the CCC and the Roman Catechism
+share a genre. Only the Catechism takes it (`DOCUMENTS_BY_COLLECTION` in `constants.py`, kept
+equal to `works.json`'s published Catechism documents by `tests/test_work_filter.py`); another
+collection turns it on with an entry there and in the web's `SCOPED_COLLECTIONS`
+(`lib/collection-scopes.ts`), whose `WORK_LABELS` names and orders the works.
 
 The registry also holds evaluation arms (no-HyDE, Cohere-only, Haiku instead of Luna, no-lexical, Luna 6 and reasoning effort, seat rules). **Every pipeline runs Cohere**, alone or followed by one listwise LLM call; the single-stage pointwise LLM reranker (`llm_only`) was removed in October 2026. Changing which pipeline is production is a one-line change to `_PRODUCTION_PIPELINE`; changing a *step* affects every config that uses it.
 
@@ -508,7 +522,7 @@ Authenticated pages live at the bare path; the guest mirror is a sibling under `
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/me` | Current user |
-| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. Optional `filters.scopes: {collection: {genres?, issuers?}}` narrows a papal collection (§5); `invalid_genre`/`invalid_issuer` are 422 with `detail.code` |
+| POST | `/search` | SSE stream; 5/min, 30/day. Quota 10 is focused — see §18. Optional `filters.scopes: {collection: {genres?, issuers?, documents?}}` narrows a papal collection by genre and issuer, or the Catechism by work (§5); `invalid_genre`/`invalid_issuer`/`invalid_document` are 422 with `detail.code` |
 | POST | `/search/guest` | SSE stream; guest session token, trial-limited; same optional `filters.scopes` |
 | POST | `/guest/claim` | Transfer guest work into a new account |
 | GET | `/searches`, `/searches/{id}/results` | History; restore a past search |
@@ -632,7 +646,7 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
 
 - Defined in `apps/web/next.config.ts`.
 - **`script-src` and `default-src` are intentionally omitted** — nonce-based CSP is deferred, and `unsafe-inline` is required for Next.js hydration in the interim, so these directives are excluded rather than creating a false sense of security.
-- **`connect-src` includes:** `'self'`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `https://app.posthog.com`, `https://eu.posthog.com`
+- **`connect-src` includes:** `'self'`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `https://us.i.posthog.com`, `https://us-assets.i.posthog.com` (PostHog's US hosts; the project is in the US region, and posthog-js rewrites `app.posthog.com` to `us.i.posthog.com`, so allowing only the legacy host blocks every event)
 - **NEVER add `unsafe-eval` to `script-src`.**
 
 ---
@@ -660,9 +674,10 @@ collection**, and it changes retrieval shape rather than just raising the result
 else; take `SearchPlan.focused`. `SearchPlanError.code` is stable and routes translate it:
 `no_valid_collections` → 400, everything else (`invalid_quota`, `duplicate_collections`,
 `invalid_collections`, `focused_collection_count`, and 5.1a's `invalid_genre` and
-`invalid_issuer`, whose detail is `{code, message}`) → 422. (The guest route answers 422 for
-all of them.) A genre or issuer selection is not a collection: it never changes focused
-eligibility, and a focused search may narrow its one collection.
+`invalid_issuer` and the work filter's `invalid_document`, whose detail is `{code, message}`)
+→ 422. (The guest route answers 422 for all of them.) A genre, issuer or work selection is not
+a collection: it never changes focused eligibility, and a focused search may narrow its one
+collection.
 
 What focused changes, all derived from the plan:
 
@@ -714,9 +729,10 @@ changing quota rules.
 
 **`lib/search-draft.ts` owns draft quota/collection state and focused eligibility** —
 `SearchQuota`, `StandardQuota`, `focusedEligible`, and the draft reducer. It also owns the
-genre and issuer selections (5.1a: `excluded`, `scopes`, and the `genre-toggled`,
-`issuer-toggled`, `scope-only` and `scope-all` events), which never change focused
-eligibility. `lib/collection-scopes.json`, the values each papal collection offers, is
+genre, issuer and work selections (5.1a and the work filter: `excluded`, `scopes`, and the
+`genre-toggled`, `issuer-toggled`, `document-toggled`, `scope-only` and `scope-all` events),
+which never change focused eligibility. `lib/collection-scopes.json`, the values each
+narrowable collection offers, is
 generated from `datapipeline/registry/works.json` by its test. This is the one
 exception to §12's "draft controls stay in the page": the page renders it, but the
 transition rules live here and are unit-tested directly. `QuotaControl.tsx` and

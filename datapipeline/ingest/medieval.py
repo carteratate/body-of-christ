@@ -20,6 +20,7 @@ from model import Document
 from normalize.caps import smart_title_case
 from ingest.common import _block_text, _build_parent_map, _cf_skippable, iter_chapters
 from ingest.editorial import ChapterEdit, Editor, Removed
+from ingest.keys import THEOLOGIANS as COLLECTION
 from ingest.thml_doc import ChapterPlan, distinct_titles, make_doc
 
 _SRC = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sources", "medieval")
@@ -126,7 +127,7 @@ def build_documents() -> list[Document]:
                 work = _WORK_TITLES.get(source_title, source_title) or entry["title"]
                 source_key = f"medieval/{filename}#{d1.get('id')}"
                 editor = _MedievalEditor(filename, source_key, parent_map)
-                d = make_doc(collection="medieval", filename=filename, author=author,
+                d = make_doc(collection=COLLECTION, filename=filename, author=author,
                              title=work,
                              chapters=_chapters(filename, d1, parent_map, editor,
                                                 _anselm_front_matter),
@@ -139,7 +140,7 @@ def build_documents() -> list[Document]:
         else:
             source_key = f"medieval/{filename}"
             editor = _MedievalEditor(filename, source_key, parent_map)
-            d = make_doc(collection="medieval", filename=filename, author=author,
+            d = make_doc(collection=COLLECTION, filename=filename, author=author,
                          title=entry["title"],
                          chapters=_chapters(filename, root, parent_map, editor),
                          source_key=source_key, year=year, extra_meta=extra, editor=editor)

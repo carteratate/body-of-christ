@@ -187,5 +187,13 @@
  "sequence.thml_chapters.missing:medieval/proslogium-monologium-and-cur-deus-homo.xml#v.ii.x": {
   "fixed_by": "5.6b",
   "description": "\"Chapter X\" (Gaunilo's reply or Anselm's answer) is excluded; it comes in with 5.6b (Carter, 4 Nov 2026)"
+ },
+ "health.H7_unmarked_heading:catechism/c6d78d5e-5f23-5f86-b0ca-97a741e186bf#lords-prayer/opening-words/9": {
+  "fixed_by": "5.5",
+  "description": "Roman Catechism: the translators' sub-heading “Our” reads '66 Our”' in the OCR text (a page number run into it). It stays unmarked until the OCR fix repairs the line, which changes the passage text (issue #445)."
+ },
+ "health.H7_unmarked_heading:catechism/c6d78d5e-5f23-5f86-b0ca-97a741e186bf#lords-prayer/amen/6": {
+  "fixed_by": "5.5",
+  "description": "Roman Catechism: the translators' sub-heading 'Meaning of the Word “Amen”' ends this passage instead of opening the next one (a trailing heading), so it cannot be marked; moving it changes two passages' text (issue #445)."
  }
 }
