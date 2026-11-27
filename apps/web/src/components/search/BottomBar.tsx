@@ -51,7 +51,7 @@ export function BottomBar({
 }: BottomBarProps) {
   if (isSearchActive) {
     return (
-      <div className={`shrink-0 ${BAR_RULE} bg-brand-bg px-4 py-4 pb-5 max-md:pb-[calc(1.25rem+env(safe-area-inset-bottom))]`}>
+      <div className="shrink-0 border-t border-brand-surface bg-brand-bg px-4 py-4 pb-5 max-md:pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
         <ResultFilterBar
           submittedCollections={submittedCollections}
           visibleCollections={visibleCollections}
