@@ -14,6 +14,7 @@ from typing import NamedTuple
 
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
+import headings
 from config import settings
 from identity import anchor as make_anchor, slugify
 from model import Document, Passage
@@ -55,27 +56,46 @@ class _Builder:
         self.clean = clean
 
     def add(self, *, body: str, ref: str, base_anchor: str, ckey: str,
-            clabel: str, unit: str | None, meta: dict, segments: list[Segment]) -> None:
+            clabel: str, unit: str | None, meta: dict, segments: list[Segment],
+            heads: dict[str, dict] | None = None) -> None:
+        """`heads` marks the segments that are headings (issue #445), by locator: the
+        keyword arguments of `headings.mark`."""
         body = self.clean(body)
         if len(body) < 1:
             return
+        # Each segment is one paragraph of the body, in order: a heading's mark is its own
+        # paragraph, never an earlier one with the same words.
+        paras = headings.paragraphs(body)
+        held = [seg for seg in segments if self.clean(seg.text)]
+        if len(paras) != len(held):
+            raise ValueError(f"{ref}: {len(paras)} paragraphs for {len(held)} segments")
+        marks = []
+        for seg, (a, b) in zip(held, paras):
+            if seg.locator in (heads or {}):
+                if body[a:b] != self.clean(seg.text):
+                    raise ValueError(f"{ref}: heading {seg.locator} {seg.text[:60]!r} is not "
+                                     "its paragraph")
+                marks.append(headings.mark(a, b, **heads[seg.locator]))
         pieces = pack_text(body, segments, settings.MAX_PASSAGE_CHARS)
-        self.units.append((body, pieces, ref, base_anchor, ckey, clabel, unit, meta, segments))
+        self.units.append((body, pieces, ref, base_anchor, ckey, clabel, unit, meta, segments,
+                           headings.split_marks(body, pieces, marks)))
 
     @property
     def passages(self) -> list[Passage]:
         out: list[Passage] = []
         anchors = unique_unit_anchors([u[3] for u in self.units],
                                       [len(u[1]) > 1 for u in self.units])
-        for (body, pieces, ref, _, ckey, clabel, unit, meta, segments), anc in zip(
+        for (body, pieces, ref, _, ckey, clabel, unit, meta, segments, marks), anc in zip(
                 self.units, anchors):
-            for k, (piece, (anchor, held)) in enumerate(
-                    zip(pieces, name_pieces(anc, body, pieces, segments)), 1):
+            for k, (piece, (anchor, held), piece_marks) in enumerate(
+                    zip(pieces, name_pieces(anc, body, pieces, segments), marks), 1):
                 out.append(Passage(content=piece,
                                    reference=piece_reference(ref, None, None, k, len(pieces)),
                                    anchor=anchor,
                                    chapter_key=ckey, chapter_label=clabel, position=len(out),
-                                   unit_label=unit, metadata=meta, source_units=held))
+                                   unit_label=unit,
+                                   metadata=headings.with_headings(meta, piece_marks),
+                                   source_units=held))
         return out
 
 
@@ -263,6 +283,26 @@ def _v2_clean(body: str) -> str:
     return clean_text(strip_boilerplate(body))
 
 
+# The level of a heading set inside a section (issue #445): the chapters are labels, so
+# a "SECTION", "ARTICLE" or Roman-numbered head is the tier below them (2), and a
+# lettered or numbered one ("A) General norms", "2. The diocesan curia") deeper (3).
+_V2_LEVEL_2 = re.compile(r"^(?:SECTION|ARTICLE)\b|^[IVXLC]+\.\s", re.IGNORECASE)
+# Heads the page numbers out of step with their siblings, by document and text: the
+# level their place gives them. Sacrosanctum Concilium's first section prints "1." where
+# the rest of its chapter prints "II.", "III.".
+_V2_LEVEL_FIXES = {
+    ("Sacrosanctum Concilium",
+     "1. The Nature of the Sacred Liturgy and Its Importance in the Church's Life"): 2,
+}
+
+
+def _v2_level(title: str, text: str) -> int:
+    fixed = _V2_LEVEL_FIXES.get((title, text))
+    if fixed is not None:
+        return fixed
+    return 2 if _V2_LEVEL_2.match(text) else 3
+
+
 class _Unit:
     def __init__(self, anchor: str, ref: str, label: str, ckey: str, clabel: str):
         self.anchor, self.ref, self.label = anchor, ref, label
@@ -296,6 +336,7 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
     units: list[_Unit] = []
     current: _Unit | None = None
     pending: list[Segment] = []                     # subheadings, for the next paragraph
+    heads: dict[str, dict] = {}                     # heading segments' marks, by locator
     expected = 1                                    # the next section number
     namespace, appendix = dslug, None
     chap_ord, ckey, clabel = 0, make_anchor(dslug, "chap-0"), "Preface"
@@ -316,6 +357,10 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
     def close_unit() -> None:
         nonlocal current
         if pending and current is not None:
+            # Lines left over at a unit's close introduce nothing (the Nota praevia's
+            # signature): they stay as text, unmarked.
+            for seg in pending:
+                heads.pop(seg.locator, None)
             current.paragraphs.extend(pending)
             pending.clear()
         current = None
@@ -378,6 +423,7 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
             body = m.group(2) if m else text
             if appendix is None and m and _v2_heading(el, body):
                 open_chapter(f"{number}. {body}")   # a numbered heading opens a chapter
+                heads[seg.locator] = {"level": 1, "chapter_title": True}
             if appendix is None:
                 anchor = make_anchor(dslug, _SECTION_ANCHORS.get((title, number), number))
                 open_unit(anchor, f"{title}, §{number}", f"§{number}")
@@ -417,6 +463,7 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
                     open_chapter(name)
                 continue
             pending.append(seg)                     # a subheading: the next section's
+            heads[seg.locator] = {"level": _v2_level(title, text)}
             continue
         if appendix is None and _V2_PROMULGATION.match(text):
             open_chapter("Promulgation", make_anchor(dslug, "promulgation"))
@@ -447,7 +494,8 @@ def build_vatican2(entry: dict, soup: BeautifulSoup) -> Document:
             ckey_ = make_anchor(dslug, f"bucket-{bk}")
             clabel_ = f"Paragraphs {bk * _BUCKET + 1}–{bk * _BUCKET + _BUCKET}"
         b.add(body="\n\n".join(s.text for s in u.paragraphs), ref=u.ref, base_anchor=u.anchor,
-              ckey=ckey_, clabel=clabel_, unit=u.label, meta=meta, segments=u.paragraphs)
+              ckey=ckey_, clabel=clabel_, unit=u.label, meta=meta, segments=u.paragraphs,
+              heads=heads)
     return Document(id=did, collection="councils", title=title,
                     author="Second Vatican Council", year=entry["year"],
                     metadata={**meta, "source_key": _source_key(entry),

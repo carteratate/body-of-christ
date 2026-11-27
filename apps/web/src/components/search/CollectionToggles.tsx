@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type CSSProperties } from "react";
-import { scopeOptions } from "@/lib/collection-scopes";
+import { SCOPED_COLLECTIONS, scopeOptions } from "@/lib/collection-scopes";
 import { COLLECTIONS, hexToRgb } from "@/lib/collections";
 import type { ScopeExclusions, SearchDraftEvent } from "@/lib/search-draft";
 import { GenreFilter } from "./GenreFilter";
@@ -41,10 +41,7 @@ export function CollectionToggles({
   if (scopesLocked && scopeOpen !== null) setScopeOpen(null);
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className="text-[10px] font-medium uppercase tracking-widest text-brand-muted">
-        Sources:
-      </span>
+    <div className="flex flex-wrap items-center gap-1.5 max-md:justify-center">
 
       {COLLECTIONS.map((col) => {
         const isActive = activeCollections.includes(col.key);
@@ -95,7 +92,8 @@ export function CollectionToggles({
                 }}
                 aria-haspopup="dialog"
                 aria-expanded={open}
-                aria-label={`Filter ${col.label} by kind and pope`}
+                aria-label={`Filter ${col.label} by ${
+                  (SCOPED_COLLECTIONS[col.key] ?? []).includes("documents") ? "work" : "kind and pope"}`}
                 aria-hidden={!isActive}
                 disabled={scopesLocked}
                 tabIndex={isActive ? 0 : -1}

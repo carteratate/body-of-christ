@@ -1,4 +1,5 @@
-"""What part of one collection a search reads: its genres and issuers (item 5.1a).
+"""What part of one collection a search reads: its genres and issuers (item 5.1a), and
+its documents (the work filter).
 
 A request names what to search inside a collection (`filters.scopes`), and the scope
 stores the complement: the values the user turned off. Retrieval excludes only those,
@@ -16,10 +17,11 @@ class CollectionScope:
     collection: str
     excluded_genres: frozenset[str] = field(default_factory=frozenset)
     excluded_issuers: frozenset[str] = field(default_factory=frozenset)
+    excluded_documents: frozenset[str] = field(default_factory=frozenset)
 
     @property
     def narrowed(self) -> bool:
-        return bool(self.excluded_genres or self.excluded_issuers)
+        return bool(self.excluded_genres or self.excluded_issuers or self.excluded_documents)
 
     def to_qdrant_filter(self, must_not: list | None = None):
         """The query filter for this collection. `must_not` carries conditions every
@@ -31,7 +33,8 @@ class CollectionScope:
         excluded = [
             FieldCondition(key=key, match=MatchAny(any=sorted(values)))
             for key, values in (("genre", self.excluded_genres),
-                                ("issuer", self.excluded_issuers))
+                                ("issuer", self.excluded_issuers),
+                                ("document_id", self.excluded_documents))
             if values
         ]
         if excluded:
@@ -56,5 +59,10 @@ class CollectionScope:
                     f" OR {alias}.{column} <> ALL(${n}::text[]))"
                 )
                 args.append(sorted(values))
+        if self.excluded_documents:
+            # A document always has an ID, so no NULL branch.
+            n = first_param + len(args)
+            clauses.append(f"\n      AND {alias}.id <> ALL(${n}::uuid[])")
+            args.append(sorted(self.excluded_documents))
         return "".join(clauses), args
 

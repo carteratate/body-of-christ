@@ -1,0 +1,32 @@
+[
+ {
+  "passage": "inter-cunctas-01",
+  "find": "that of CONSTANCE, represents",
+  "replace": "that of Constance, represents",
+  "why": "p. 215: the name set in small capitals, written in ordinary case"
+ },
+ {
+  "passage": "inter-cunctas-01",
+  "find": "general Council of CONSTANCE, concerning",
+  "replace": "general Council of Constance, concerning",
+  "why": "p. 215: the name set in small capitals, written in ordinary case"
+ },
+ {
+  "passage": "inter-cunctas-01",
+  "find": "heretics by the sacred Council of CONSTANCE.",
+  "replace": "heretics by the sacred Council of Constance.",
+  "why": "p. 216: the name set in small capitals, written in ordinary case"
+ },
+ {
+  "passage": "inter-cunctas-01",
+  "find": "Council of CONSTANCE passed",
+  "replace": "Council of Constance passed",
+  "why": "p. 216: the name set in small capitals, written in ordinary case"
+ },
+ {
+  "passage": "inter-cunctas-02",
+  "find": "Council of CONSTANCE, must",
+  "replace": "Council of Constance, must",
+  "why": "p. 216: the name set in small capitals (broken \"CON-\" / \"STANCE\" at the line end), written in ordinary case"
+ }
+]

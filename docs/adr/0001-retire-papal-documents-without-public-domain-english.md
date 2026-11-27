@@ -71,7 +71,7 @@ Outcomes: a public-domain printing (built from it in 1.3d); an extract only (pub
 | Year | Document | Pope | Slug | Outcome |
 |---|---|---|---|---|
 | 1302 | Unam Sanctam | Boniface VIII | `unam-sanctam` | Public-domain printing: Catholic Historical Review, 1927 |
-| 1520 | Exsurge Domine | Leo X | `exsurge-domine` | Partial only (Deferrari's *The Sources of Catholic Dogma*, 1957; R9): the 41 condemned propositions published; the introduction and closing held for permission |
+| 1520 | Exsurge Domine | Leo X | `exsurge-domine` | Partial only (Deferrari's *The Sources of Catholic Dogma*, 1957; R9): the 41 condemned propositions published, and the censure Deferrari prints after them (n. 781, from 5.9); the introduction and closing held for permission |
 | 1537 | Sublimis Deus | Paul III | `sublimis-deus` | Public-domain printing: MacNutt, 1909 |
 | 1740 | Ubi Primum | Benedict XIV | `ubi-primum` | **Held for permission** |
 | 1741 | Quanta Cura | Benedict XIV | `quanta-cura` | **Held for permission** |

@@ -1,6 +1,33 @@
 "use client";
 
-import { useLayoutEffect, useRef, type KeyboardEvent } from "react";
+import { useLayoutEffect, useRef, useSyncExternalStore, type KeyboardEvent } from "react";
+
+const subscribeNever = () => () => {};
+
+/** False in the server render and during hydration, true once the browser has the bar. */
+function useHydrated() {
+  return useSyncExternalStore(subscribeNever, () => true, () => false);
+}
+
+/** Size the box to its text, or to its hint when empty. */
+function fitToContent(el: HTMLTextAreaElement) {
+  el.style.height = "auto";
+  // Safari's scrollHeight leaves out a wrapped placeholder, so an empty box is
+  // measured from a hidden copy holding its hint (writing the hint into the
+  // box itself would cost the user's undo history).
+  let probe = el;
+  if (el.value === "") {
+    probe = el.cloneNode() as HTMLTextAreaElement;
+    probe.value = el.placeholder;
+    probe.setAttribute("aria-hidden", "true");
+    probe.style.cssText = `position:absolute;visibility:hidden;width:${el.offsetWidth}px;height:auto`;
+    el.after(probe);
+  }
+  // scrollHeight leaves out the borders, which a border-box height includes.
+  const height = probe.scrollHeight + probe.offsetHeight - probe.clientHeight;
+  if (probe !== el) probe.remove();
+  el.style.height = `${height}px`;
+}
 
 interface SearchBarProps {
   value: string;
@@ -18,16 +45,42 @@ export function SearchBar({
   disabled,
 }: SearchBarProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const hydrated = useHydrated();
+  const hint = disabled
+    ? "Select at least one source to search."
+    : "A question, a thought, a doubt: what's on your mind?";
+  // No hint in the server HTML: on a phone it wraps, and the box can't grow to fit
+  // it until the layout effect below runs.
+  const placeholder = hydrated ? hint : "";
 
   // useLayoutEffect (not useEffect) so the resize happens before paint —
   // prevents the cursor visually escaping below the textarea for one frame.
   useLayoutEffect(() => {
     const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = "auto";
-    // scrollHeight leaves out the borders, which a border-box height includes.
-    el.style.height = `${el.scrollHeight + el.offsetHeight - el.clientHeight}px`;
-  }, [value]);
+    if (el) fitToContent(el);
+  }, [value, placeholder]);
+
+  // Re-fit when the box's width changes (a phone rotating to portrait), since its
+  // text or hint can then wrap onto another line.
+  useLayoutEffect(() => {
+    const el = textareaRef.current;
+    if (!el || typeof ResizeObserver !== "function") return;
+    let width = el.offsetWidth;
+    let frame = 0;
+    const observer = new ResizeObserver(() => {
+      if (el.offsetWidth === width) return;
+      width = el.offsetWidth;
+      // Next frame: resizing an observed element inside its own callback raises a
+      // "ResizeObserver loop" error.
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => fitToContent(el));
+    });
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     // Enter submits; Shift+Enter is swallowed (search queries don't need newlines).
@@ -38,9 +91,6 @@ export function SearchBar({
   }
 
   const isDisabled = disabled || loading;
-  const placeholder = disabled
-    ? "Select at least one source to search."
-    : "A question, a thought, a doubt: what's on your mind?";
 
   return (
     <div className="flex gap-2 items-end">
