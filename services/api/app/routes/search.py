@@ -54,6 +54,7 @@ async def _resolve_search_plan(body: SearchRequest) -> SearchPlan:
             body.filters.collections, body.quota, body.filters.scope_filters(),
         )
     except SearchPlanError as exc:
+        logger.info("search refused: code=%s", exc.code)
         status_code = 400 if exc.code == "no_valid_collections" else 422
         raise HTTPException(status_code=status_code, detail=http_detail(exc)) from exc
 

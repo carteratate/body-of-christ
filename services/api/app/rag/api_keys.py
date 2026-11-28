@@ -47,11 +47,8 @@ def init_api_keys() -> None:
         _clients[letter] = anthropic.AsyncAnthropic(api_key=api_key, timeout=45.0)
         _semaphores[letter] = asyncio.Semaphore(semaphore_sizes[letter])
 
-    logger.info(
-        "api_keys: A=...%s B=...%s C=...%s D=...%s",
-        key_values["A"][-4:], key_values["B"][-4:],
-        key_values["C"][-4:], key_values["D"][-4:],
-    )
+    # A count, never key characters: B, C and D fall back to A when unset.
+    logger.info("api_keys: %d distinct key(s) for A-D", len(set(key_values.values())))
 
 
 def is_ready() -> bool:

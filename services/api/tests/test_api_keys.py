@@ -53,6 +53,14 @@ def test_get_semaphore_non_bible_has_value_3():
         assert get_semaphore("D")._value == 3
 
 
+def test_startup_log_counts_keys_without_their_characters(caplog):
+    settings = _mock_settings(key_a="sk-key-aaaa", key_b="sk-key-bbbb")
+    with patch("app.rag.api_keys.settings", settings), caplog.at_level("INFO", "app.rag.api_keys"):
+        init_api_keys()
+    assert "api_keys: 2 distinct key(s) for A-D" in caplog.text
+    assert "aaaa" not in caplog.text and "bbbb" not in caplog.text
+
+
 def test_single_key_fallback_when_bcd_not_configured():
     """All keys use the same underlying API key when B/C/D env vars are absent."""
     with patch("app.rag.api_keys.settings", _mock_settings(key_a="sk-only")):
