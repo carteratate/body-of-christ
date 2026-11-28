@@ -63,6 +63,7 @@ def test_source_adapter_registry_exactly_matches_production_collections():
         "church-law",
         "councils",
         "papal",
+        "roman-curia",
         "summa",
         "theologians",
     }

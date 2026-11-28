@@ -685,6 +685,11 @@ QUANTA_CURA_1864 = "9b41d623-88c4-5e59-9984-a7134ba900a9"
 MIRARI_VOS = "891ae0fa-5a7f-518c-9d1c-9ad4f180bc77"
 UBI_LUTETIAM = "ba74d920-a179-5c9e-a1a5-5d677116c82a"
 RERUM_NOVARUM = "c5faaf87-76a5-57f0-990f-ab3c646953a7"
+# The Roman Curia (5.3a).
+DIGNITAS_PERSONAE = "dea730ca-05c0-55c7-8980-faac0f48fe0d"
+DIGNITAS_INFINITA = "fb73c774-c012-5763-a308-d829820992e5"
+IURA_ET_BONA = "89ac8924-e7f0-5c15-8242-576c71d9db55"
+DOMINUS_IESUS = "d09c88a7-5862-5dcc-b58a-5b25ae34f07b"
 FAMILIARIS_CONSORTIO = "335e3467-a3fa-598d-892d-a75664ee4e77"
 ORDINATIO_SACERDOTALIS = "638693a3-342c-5614-9c9a-dd6817faf862"
 CONFESSIONS = "7f04ae49-2ffe-5cdf-acd9-2b7e8576b441"
@@ -892,6 +897,8 @@ ORDINARY: dict[str, tuple[str, str]] = {
                    "What does canon law require before a marriage can be celebrated?"),
     "summa": ("summa", "Is it ever lawful to tell a lie?"),
     "theologians": ("theologians", "How should a Christian love God?"),
+    "roman-curia": ("roman-curia",
+                    "What does the Church teach about in vitro fertilization?"),
 }
 
 # A reference-style question per collection, and the passage it names.
@@ -917,6 +924,8 @@ REFERENCES: dict[str, tuple[str, str, Match]] = {
                        Match(document=CONFESSIONS, anchor="xi.xxvii")),
     "theologians": ("theologians", "Anselm, Proslogium, chapter 2",
                     Match(document=PROSLOGIUM, anchor="iii.iii")),
+    "roman-curia": ("roman-curia", "Dignitas Personae 19",
+                    Match(document=DIGNITAS_PERSONAE, anchor="dignitas-personae/19")),
 }
 
 SEARCH_VECTOR_EXPRESSION = r"""
@@ -1300,6 +1309,35 @@ CHECKS: list[Check] = [
         collections=("papal",),
         expect=NoneOf(Removed("1.3d", reason="awaiting-permission",
                               what="held papal text")),
+    ),
+    # ---- 5.3a: the Roman Curia answers the questions it was added for ------------------
+    SearchCheck(
+        id="5.3a.embryo-adoption", items="5.3a",
+        proves="A question on adopting frozen embryos is answered from Dignitas Personae.",
+        question="Is it morally permissible to adopt frozen embryos?",
+        collections=("roman-curia",),
+        expect=Some(Match(document=DIGNITAS_PERSONAE)),
+    ),
+    SearchCheck(
+        id="5.3a.human-dignity", items="5.3a",
+        proves="A question on human dignity is answered from Dignitas Infinita.",
+        question="What is the basis of the infinite dignity of every human person?",
+        collections=("roman-curia",),
+        expect=Some(Match(document=DIGNITAS_INFINITA)),
+    ),
+    SearchCheck(
+        id="5.3a.end-of-life", items="5.3a",
+        proves="A question on euthanasia and end-of-life care is answered from Iura et Bona.",
+        question="Is euthanasia ever permissible, and must every means be used to prolong life?",
+        collections=("roman-curia",),
+        expect=Some(Match(document=IURA_ET_BONA)),
+    ),
+    SearchCheck(
+        id="5.3a.salvation-outside-the-church", items="5.3a",
+        proves="A question on salvation outside the Church is answered from Dominus Iesus.",
+        question="Can people who are not members of the Church be saved?",
+        collections=("roman-curia",),
+        expect=Some(Match(document=DOMINUS_IESUS)),
     ),
     SearchCheck(
         id="1.3d.ineffabilis-deus", items="1.3d, 2.4f",

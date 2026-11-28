@@ -23,6 +23,15 @@ export const COLLECTIONS: CollectionMeta[] = [
 export const ALL_COLLECTION_KEYS: string[] = COLLECTIONS.map((c) => c.key);
 
 /**
+ * Collections the API accepts but the app does not offer yet, because their documents
+ * are not published (Roman Curia, 5.3a). They get a label and colour wherever a stored
+ * result names them, and move into COLLECTIONS in the change that releases them.
+ */
+export const UNRELEASED_COLLECTIONS: CollectionMeta[] = [
+  { key: "roman-curia", label: "Roman Curia", color: "var(--color-collection-roman-curia)", hex: "#d4608c" },
+];
+
+/**
  * An old collection key and what it means now: its new collection, read whole or only
  * for some genres. 5.1b.3 rewrote every stored key and the API no longer accepts the old
  * ones (5.1b.4), but a browser can still hold one: a guest's saved draft or settings, or
@@ -52,7 +61,8 @@ export function canonicalCollectionKey(key: string): string {
 /** A collection's entry, for an old key too, so a stored old key shows its new name. */
 export function getCollectionMeta(key: string): CollectionMeta | undefined {
   const canonical = canonicalCollectionKey(key);
-  return COLLECTIONS.find((c) => c.key === canonical);
+  return COLLECTIONS.find((c) => c.key === canonical)
+    ?? UNRELEASED_COLLECTIONS.find((c) => c.key === canonical);
 }
 
 /** Keys in today's vocabulary, in order, each once; unknown keys are kept for the caller to drop. */

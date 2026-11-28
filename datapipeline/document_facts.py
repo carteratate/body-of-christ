@@ -14,12 +14,15 @@ credits for document facts (2.3)"):
 - `genre`: a papal document's `metadata["genre"]` (1.3b, `papal_genres.csv`); `catechism`
   and `code` for the Catechism and the Code, `compendium` for the Compendium (5.5); a Church Fathers work's from
   `FATHERS_GENRES` (3.2); a 5.6b theologian's from its `ingest.theologians.WORKS` entry;
-  otherwise none.
+  a Roman Curia document's `metadata["genre"]`, the page's own kind in D5's Curia values
+  (5.3a); otherwise none.
 - `form`: how the papal chancery issued a papal document, `bull` or `brief`, from its
   `metadata["form"]` (1.3b, `papal_genres.csv`; issue #330); none where none is recorded,
   and for every other document.
 - `issuer`, `issuer_label` (D11): the pope from `metadata["pope"]`; the council a council
-  document comes from; the Holy See for the Catechism and the Code; otherwise none.
+  document comes from; the Holy See for the Catechism and the Code; for a Roman Curia
+  document, `ddf` under the office's name as the page prints it (`metadata["issuer_label"]`,
+  5.3a; Carter, 26 Nov 2026); otherwise none.
 - `year`, `date_display`: the adapter's, with the corrections below, and the Church
   Fathers' from Quasten's Patrology (`FATHERS_DATES`, 3.2).
 - `source_credit`: the rights row's `credit_line`, exactly (0.2). A document that also
@@ -49,6 +52,8 @@ from model import Document
 # The papal collection under its key since 5.1b.3, and the old keys it replaces.
 PAPAL_COLLECTIONS = ("papal", "encyclicals", "apostolic-exhortations", "papal-documents")
 HOLY_SEE = ("holy-see", "Holy See")
+# The Dicastery for the Doctrine of the Faith, under every name it has printed (5.3a).
+ROMAN_CURIA_ISSUER = "ddf"
 VATICAN_CREDIT = "© Dicastery for Communication – Libreria Editrice Vaticana"
 
 # A dating line the build's year disagrees with (C-05): the source's own date wins.
@@ -307,13 +312,15 @@ def _issuer(document: Document) -> tuple[str | None, str | None]:
         return issuer_slug(label), label
     if document.collection in ("catechism", "canon-law", "church-law"):
         return HOLY_SEE
+    if document.collection == "roman-curia":
+        return ROMAN_CURIA_ISSUER, meta.get("issuer_label")
     return None, None
 
 
 def _genre(document: Document, work_id: str) -> str | None:
     if work_id in FATHERS_GENRES:
         return FATHERS_GENRES[work_id]
-    if document.collection in PAPAL_COLLECTIONS:
+    if document.collection in PAPAL_COLLECTIONS or document.collection == "roman-curia":
         return (document.metadata or {}).get("genre")
     if work_id in GENRES:
         return GENRES[work_id]

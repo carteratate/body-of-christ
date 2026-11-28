@@ -56,6 +56,9 @@ export interface RegistryWork {
 export const SCOPED_COLLECTIONS: Readonly<Record<string, readonly ScopeFacet[]>> = {
   papal: ["genres", "issuers"],
   catechism: ["documents"],
+  // Kinds only: its one office so far (5.3a) makes an issuer list pointless; 5.3b's
+  // offices add "issuers", with a heading other than "Pope".
+  "roman-curia": ["genres"],
 };
 
 /**

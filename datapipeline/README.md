@@ -13,8 +13,8 @@ Source adapters build domain objects; they do not write to either store directly
 ## Source data
 
 Source files are required before publication. Provenance and acquisition instructions
-for all ten sources live in [`SOURCES.md`](SOURCES.md). `publication.py` registers each
-source's adapter in `SOURCE_BUILDS`, and the eight collections a publish writes in
+for all eleven sources live in [`SOURCES.md`](SOURCES.md). `publication.py` registers each
+source's adapter in `SOURCE_BUILDS`, and the nine collections a publish writes in
 `SOURCE_ADAPTERS` (corpus cleanup 5.1b.3, `collection_keys.py`):
 
 | Collection (published) | Sources (`sources/<key>/`) | Source adapter |
@@ -25,6 +25,7 @@ source's adapter in `SOURCE_BUILDS`, and the eight collections a publish writes 
 | `church-law` | `canon-law` | `ingest/canon_law.py` |
 | `councils` | `councils` | `ingest/councils.py` |
 | `papal` | `encyclicals`, `apostolic-exhortations`, `papal-documents` | `ingest/encyclicals.py`, `ingest/apostolic_exhortations.py`, `ingest/papal_documents.py` |
+| `roman-curia` | `roman-curia` | `ingest/roman_curia.py` (5.3a) |
 | `summa` | `summa` | `ingest/summa.py` |
 | `theologians` | `medieval` (all but Boethius), and 5.6b's theologians and spiritual writers from `sources/theologians/` | `ingest/medieval.py`, then `ingest/theologians.py` (source key `ingest.keys.THEOLOGIANS`) |
 

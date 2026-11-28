@@ -52,6 +52,8 @@
   --color-collection-papal:                  #e8c040;
   --color-collection-church-law:             #e84040;
   --color-collection-theologians:            #90a0a8;
+  /* 5.3a: rose, unlike the eight (Carter, 26 Nov 2026). */
+  --color-collection-roman-curia:            #d4608c;
 }
 
 html {
