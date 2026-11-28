@@ -226,6 +226,18 @@ _COLLECTION_HYDE_PROMPTS["theologians"] = (
     "decoration. Return only the passage, without an attribution label or heading. An "
     "essential author or work may appear within the prose."
 )
+# The Dicastery for the Doctrine of the Faith's documents (5.3a).
+_COLLECTION_HYDE_PROMPTS["roman-curia"] = (
+    "Write one paragraph of about 110-160 words in the manner of a doctrinal document of "
+    "the Dicastery for the Doctrine of the Faith: a declaration, instruction, note, or "
+    "response to a question. State the Church's judgment on the question as that office "
+    "would, and give the reasons it would give, drawing on Scripture, Tradition, and the "
+    "Magisterium only when the subject calls for them. For a moral or bioethical question, "
+    "name the act and whether it is licit. For a broad question, connect its main concepts "
+    "in one coherent paragraph. Keep precise doctrinal and moral terms. Do not invent what a "
+    "named document says or cite a paragraph number. Return only the passage, without a "
+    "citation label, heading, or signature. An essential title may appear within the prose."
+)
 
 # The papal collection writes one passage per kind of papal document the search
 # includes, in the prompt that kind's old collection used (Carter, 22 Nov 2026), so a
@@ -357,6 +369,7 @@ _COLLECTION_MAX_TOKENS: dict[str, int] = {
     "councils": 450,
     "church-law": 350,
     "theologians": 350,
+    "roman-curia": 350,
 }
 
 # ---------------------------------------------------------------------------

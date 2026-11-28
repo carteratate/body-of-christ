@@ -738,7 +738,7 @@
     {
      "statement": "C. Carrieri and S. F. Aumenta on the Holy See's copyright law (Law CXXXII of 19 March 2011), L'Osservatore Romano, 30 March 2011, as reported by Vatican Radio the same day",
      "url": "https://www.archivioradiovaticana.va/storico/2011/03/30/nuova_legge_vaticana_sul_diritto_dautore_per_tutelare_l%E2%80%99autenticit%C3%A0/it1-474124",
-     "documents": 29
+     "documents": 89
     }
    ],
    "documents": [
@@ -1291,6 +1291,306 @@
      "document_id": "8e9c9c76-9be1-5e01-841a-4622c78a304d",
      "title": "Ubicumque et Semper",
      "collection": "papal-documents"
+    },
+    {
+     "document_id": "f84dc22b-e924-5ac5-9e63-26f6bca1dfeb",
+     "title": "A Journey of Hope",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "272a257e-6481-557d-8623-170bd9a70020",
+     "title": "Ad Resurgendum cum Christo",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "a129fd98-8659-56e0-907d-1556f4326af6",
+     "title": "Annus Internationalis Familiae",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "eac47dd1-a075-54ca-9b29-0baff05c4a9f",
+     "title": "Antiqua et Nova",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "3e0ac1eb-e461-5ac5-afe7-a3f1027c7759",
+     "title": "Christian Faith and Demonology",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "07bc0fe4-9dad-58e7-8993-807ab8476853",
+     "title": "Clarification on Procured Abortion",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "973f2e2b-9a39-568f-aae8-53d52911e694",
+     "title": "Communionis Notio",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "6a8e9457-7405-57f4-a48d-335638555ef1",
+     "title": "Considerations on Legislative Proposals on the Non-Discrimination of Homosexual Persons",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "f44aa614-93a1-5c63-b5f5-b1b8f628c4a7",
+     "title": "Considerations Regarding Proposals to Give Legal Recognition to Unions Between Homosexual Persons",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "25022924-8d22-540f-9ffa-f8b190f929b4",
+     "title": "Cum Oecumenicum Concilium",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "b83f3f51-e464-5edd-adc1-62da1bd47ab8",
+     "title": "Declaration on Masonic Associations",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "bbbb892d-933f-5333-bd74-f5861d932b31",
+     "title": "Declaration on Procured Abortion",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "fb73c774-c012-5763-a308-d829820992e5",
+     "title": "Dignitas Infinita",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "dea730ca-05c0-55c7-8980-faac0f48fe0d",
+     "title": "Dignitas Personae",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "946ade7c-cec3-58b9-9c11-a7fa89fe0c58",
+     "title": "Doctrinal Commentary on the Concluding Formula of the Professio Fidei",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "f2502489-79f9-556b-86f1-ee7c7f543464",
+     "title": "Doctrinal Note on Some Aspects of Evangelization",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "48451032-0194-513f-8af7-a26849bd5c9c",
+     "title": "Doctrinal Note on the Modification of the Sacramental Formula of Baptism",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "bdb5572e-46c5-594a-923e-4f413caf1b94",
+     "title": "Doctrinal Note on the Participation of Catholics in Political Life",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "d09c88a7-5862-5dcc-b58a-5b25ae34f07b",
+     "title": "Dominus Iesus",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "624bf1f4-65f9-5752-bda5-963e78ed18ae",
+     "title": "Donum Veritatis",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "8dbfcb5d-286e-57e9-80c9-c8dc1969d6d3",
+     "title": "Donum Vitae",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "97cf4ab9-fd60-59c3-aab8-e01cb00c8aaf",
+     "title": "Fiducia Supplicans",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "a2c64d54-8098-5508-a5e9-71d5016fdbe8",
+     "title": "Gestis Verbisque",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "45246017-8303-50be-b98e-6ffdbf877be1",
+     "title": "Homosexualitatis Problema",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "b72bdc2f-d454-555e-ae4d-a582c13cfbce",
+     "title": "Inter Insigniores",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "89ac8924-e7f0-5c15-8242-576c71d9db55",
+     "title": "Iura et Bona",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "ac631895-7788-51bb-ad62-8dc1992a7895",
+     "title": "Iuvenescit Ecclesia",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "765291c6-f795-55cc-a93a-7bd884e60fce",
+     "title": "Letter on the Collaboration of Men and Women in the Church and in the World",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "87b13931-d763-5a44-b161-8923968522dc",
+     "title": "Letter to the Bishops on the Revision of Catechism 2267 on the Death Penalty",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "747daef8-c384-52a8-9ebd-2c36600fac65",
+     "title": "Libertatis Conscientia",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "eb0ba68e-00c7-5966-ae4d-60de5ea8acf6",
+     "title": "Libertatis Nuntius",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "e7e81747-f9ed-5f3c-9ece-ac8b96a1ade0",
+     "title": "Mater Populi Fidelis",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "2b9d7a48-4d33-57ad-81ef-498f3d360a94",
+     "title": "Mysterium Ecclesiae",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "5f8391d8-9348-5f3d-855f-fadcbe0fc36a",
+     "title": "Mysterium Filii Dei",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "2583e66d-ac6f-5f38-be93-7ea4fe30dc1f",
+     "title": "Norms for Proceeding in the Discernment of Alleged Supernatural Phenomena",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "56fcefc0-8a4b-551f-995e-e61c19c9cfe3",
+     "title": "Note on the Expression Sister Churches",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "683cfcd6-aa0c-5ff5-9b4f-742dca6db4ad",
+     "title": "Note on the Minister of the Sacrament of the Anointing of the Sick",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "85e93108-7ec7-59ae-a98a-58d6062c0699",
+     "title": "Note on the Morality of Using Some Anti-Covid-19 Vaccines",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "4de8d38b-871e-530d-be8d-06f2e3684d83",
+     "title": "Oeconomicae et Pecuniariae Quaestiones",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "8dbd322f-bea3-5fd6-b5a9-17db4355a7dc",
+     "title": "Orationis Formas",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "2584c215-d7b5-58fe-b90e-77ccf3185cea",
+     "title": "Pastoralis Actio",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "54631828-ed24-57d6-b9bf-66dee0dc7181",
+     "title": "Persona Humana",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "44662a78-dde7-5a96-8cfe-857d58cf26f1",
+     "title": "Placuit Deo",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "5d0fa10c-f6c1-5e8d-9c27-b3c1e16568f5",
+     "title": "Recentiores Episcoporum Synodi",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "24b6521f-8807-59ff-b3af-27499e46693d",
+     "title": "Response on the Validity of Baptism",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "dacff6af-718a-564e-8846-39b0eeab8ecf",
+     "title": "Response on the Validity of Baptism Conferred by the Church of Jesus Christ of Latter-day Saints",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "211765d0-b041-5710-845f-5b6a7e016c39",
+     "title": "Response to Bishop Cortes on Catholic Membership in Freemasonry",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "a3061f68-27ba-55db-b48d-0f06c10f7e7b",
+     "title": "Response to Cardinal Zuppi on the Preservation of the Ashes of the Deceased",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "35ac3c73-de91-513a-acd4-718f67794c1e",
+     "title": "Responses of the Holy Father to the Dubia of Two Cardinals",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "29338e12-2ee7-54b7-9246-f4c854f2b76b",
+     "title": "Responses on Artificial Nutrition and Hydration",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "1c33fde4-295b-5e31-90ba-95df82c8662c",
+     "title": "Responses on Uterine Isolation",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "2ac4030b-52a9-5e13-a3ed-c5bd4e087c7b",
+     "title": "Responses to Bishop Negri on Baptism and Marriage for Transgender and Homosexual Persons",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "3accd4fa-5d35-53be-8436-a4f13c99321b",
+     "title": "Responses to Cardinal Duka on the Eucharist for the Divorced in a New Union",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "3fba95bb-f1a7-50e2-a5ac-8320cad6f428",
+     "title": "Responses to Some Questions Regarding Certain Aspects of the Doctrine on the Church",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "c0251d16-ac46-5fd9-bfaa-380d9c717f4b",
+     "title": "Responsum ad Dubium on Ordinatio Sacerdotalis",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "53874927-ea51-542f-a757-881c5ba8c09a",
+     "title": "Responsum to a Dubium Regarding the Blessing of the Unions of Persons of the Same Sex",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "397de6f4-2e52-559b-b271-7e27f70b3195",
+     "title": "Sacerdotium Ministeriale",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "5a957aa6-ebe3-5b2d-82d1-71559d78cd6a",
+     "title": "Samaritanus Bonus",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "3baa2e1c-852b-5a28-bc01-8eb86cd611d3",
+     "title": "The Primacy of the Successor of Peter in the Mystery of the Church",
+     "collection": "roman-curia"
+    },
+    {
+     "document_id": "bba02fd5-2f90-5313-ad42-39d40d7206b3",
+     "title": "Una Caro",
+     "collection": "roman-curia"
     }
    ]
   },

@@ -6183,341 +6183,310 @@
   "path": "roman-curia/a-journey-of-hope.html",
   "sha256": "0be02be84cb7b29187a049948b2b47f6473c4dba5f6156d5456e7cbc6a03da69",
   "bytes": 128651,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20260916_nota-cammino-speranza_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/ad-resurgendum-cum-christo.html",
   "sha256": "e7729cb1fed91ec947bc3746ac09bdcebbf7c3b53b5227e5d56f014d210ec863",
   "bytes": 22545,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20160815_ad-resurgendum-cum-christo_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/annus-internationalis-familiae.html",
   "sha256": "dd176efc2f83377ef648a38344b6d2b8196b7b647a52b754fda8c1e77fb41f3e",
   "bytes": 21200,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_14091994_rec-holy-comm-by-divorced_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/antiqua-et-nova.html",
   "sha256": "d5f8fca0f9f39649bef0b648ac24c394167a33f730efc59136b8852e6e335edf",
   "bytes": 219488,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20250128_antiqua-et-nova_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/christian-faith-and-demonology.html",
   "sha256": "02d05b0c47321efb8589c9d35c886e05cbff2027b69a16c30ef1d06d7e9852ce",
   "bytes": 85865,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19750626_fede-cristiana-demonologia_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/clarification-on-procured-abortion.html",
   "sha256": "e181896eb94643b8b9f2ba847dc6d72a3e4d9f89f019463086b3fe5411a03c97",
   "bytes": 12074,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20090711_aborto-procurato_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/communionis-notio.html",
   "sha256": "68c9f454d4559f1249d338a8a56437f0031af2d46afa674842d86269b1d27aef",
   "bytes": 38308,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_28051992_communionis-notio_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/considerations-on-legislative-proposals-on-the-non-discrimination-of-homosexual-persons.html",
   "sha256": "2bafe16b55bbc83fb811ab7b5a76745121ab07767b950a37bec9d08210b26de8",
   "bytes": 13802,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19920724_homosexual-persons_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/considerations-regarding-proposals-to-give-legal-recognition-to-unions-between-homosexual-persons.html",
   "sha256": "4dcd48f7191274de43bab2fd69f6a9849c8f17d3f20729b024907f222a84364c",
   "bytes": 26539,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20030731_homosexual-unions_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/cum-oecumenicum-concilium.html",
   "sha256": "a1800716fb4a53f6b5a7d0990d8be225ff431ecfa0961be505f7f9e3b272f6cb",
   "bytes": 12606,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19660724_epistula_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/declaration-on-masonic-associations.html",
   "sha256": "be1d19bcace8085b682b6f73c045c1637b552656cdbeca85c264092311b3f7ee",
   "bytes": 4830,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19831126_declaration-masonic_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/declaration-on-procured-abortion.html",
   "sha256": "3789f09389bbdbdc57f6a212a6875b9a19917eb1f832c27faf75a937c0244b0f",
   "bytes": 42891,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19741118_declaration-abortion_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/dignitas-infinita.html",
   "sha256": "4fa151c56c5dbf64f379d78253da4165b985cec7da56f72b554fb4179385fc01",
   "bytes": 143577,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20240402_dignitas-infinita_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/dignitas-personae.html",
   "sha256": "c8310d0ff1481044e28f986519481d133f957891b78a877e9e0f673c6b891f2b",
   "bytes": 106405,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20081208_dignitas-personae_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/doctrinal-commentary-on-the-concluding-formula-of-the-professio-fidei.html",
   "sha256": "26c49650d5e9f02b2742c961760cb28477f2dd489c38c9a3fbcee2ffbddcc02d",
   "bytes": 44757,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_1998_professio-fidei_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/doctrinal-note-on-some-aspects-of-evangelization.html",
   "sha256": "da023f74b672feb7fc99906174b27d325cfe6396f4da3f27de3c2f7ef211139e",
   "bytes": 61450,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20071203_nota-evangelizzazione_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/doctrinal-note-on-the-modification-of-the-sacramental-formula-of-baptism.html",
   "sha256": "e0cd299be7c9e862825144347d76f6b26c23d377b0772d6a068f295c37c3b2af",
   "bytes": 21235,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_cdf_doc_20200624_responsum-nota-battesimo_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/doctrinal-note-on-the-participation-of-catholics-in-political-life.html",
   "sha256": "fc91fbf90c197560108cbe25417bbb60c8187f8b038cf434d45305e24b87a5f7",
   "bytes": 47528,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20021124_politica_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/dominus-iesus.html",
   "sha256": "6208802633b79d2ed73209a34b23827718beb76c91bd3c9ee3796e25c3a9d960",
   "bytes": 90122,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20000806_dominus-iesus_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/donum-veritatis.html",
   "sha256": "d6f4a0369f094daf94167920309d342e4a723645d53e5a336626b6c9af5bb7af",
   "bytes": 68316,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19900524_theologian-vocation_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/donum-vitae.html",
   "sha256": "d3d7d165f448e593e69c21f65c015eb76ef0ed4b5d5911456da2ca30536adc9a",
   "bytes": 89327,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19870222_respect-for-human-life_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/fiducia-supplicans.html",
   "sha256": "e46a5707c5bfbd86e9de5a9622806ae7fa60c48e9e889a3436605cc06ed6a2b3",
   "bytes": 51461,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20231218_fiducia-supplicans_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/gestis-verbisque.html",
   "sha256": "7208843e15158355e832296fcbc1afe69e32522033555d5c9ac9fb4007d9a22e",
   "bytes": 68414,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20240202_gestis-verbisque_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/homosexualitatis-problema.html",
   "sha256": "bebe8dcc3cf37a89ff53c13cc21b2266dcd0cb9c41e984c9cd6b29946a5d69e8",
   "bytes": 27943,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19861001_homosexual-persons_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/inter-insigniores.html",
   "sha256": "c05d958d661ea80bc011367535f67952bb021ec99f5a4b37e29e4aab82e5e3b7",
   "bytes": 46848,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19761015_inter-insigniores_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/iura-et-bona.html",
   "sha256": "3e469cbcbc9898d67e4c8e68c441a4cf696336fd6d73098d7264335b32bbc8d2",
   "bytes": 25659,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19800505_eutanasia_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/iuvenescit-ecclesia.html",
   "sha256": "91189034d6b34ca865c2bdce4a1021265bb16140f7ce423b94e287cb00455152",
   "bytes": 101750,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20160516_iuvenescit-ecclesia_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/letter-on-the-collaboration-of-men-and-women-in-the-church-and-in-the-world.html",
   "sha256": "1de0d4f014fa537a7ff0ac97915c09f44b4ae0964b84d0e01f7621be26270205",
   "bytes": 48928,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20040731_collaboration_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/letter-to-the-bishops-on-the-revision-of-catechism-2267-on-the-death-penalty.html",
   "sha256": "5b8c7a96f0043d2fa693de975c83d2ed485c9f6e1744c834f330691f02863f08",
   "bytes": 21849,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20180801_lettera-vescovi-penadimorte_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/libertatis-conscientia.html",
   "sha256": "83f9cd4c3086443140d0991553687bc0658205622c40ff99e572caafbc66c2f8",
   "bytes": 155607,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19860322_freedom-liberation_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/libertatis-nuntius.html",
   "sha256": "3b6254ed196108a93c2798cf2bebde42efcf82fe39dfcdc4a32c703c0e4e7dd9",
   "bytes": 67302,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19840806_theology-liberation_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
@@ -6527,327 +6496,297 @@
   "url": null,
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-auxiliary"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/mater-populi-fidelis.html",
   "sha256": "8326475dfe3ed2aced6db15b557ef5a94af56b78b4b1aff55538a60c8aad75c3",
   "bytes": 175623,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20251104_mater-populi-fidelis_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/mysterium-ecclesiae.html",
   "sha256": "5dbe5c620396fceacf02b85687d5cdd1f412512f391d7f5b8f114d21484239f9",
   "bytes": 43934,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19730705_mysterium-ecclesiae_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/mysterium-filii-dei.html",
   "sha256": "db7c0360771ad38a137bc5e23db7903239f8f2361caadd555d0608673a3794f8",
   "bytes": 20233,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19720221_mysterium-filii-dei_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/norms-for-proceeding-in-the-discernment-of-alleged-supernatural-phenomena.html",
   "sha256": "3ed142fafdea3b94de4d1da4219d9dcd4d5cb7c68c3fe8635e112ae3cda5e2a7",
   "bytes": 70670,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20240517_norme-fenomeni-soprannaturali_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/note-on-the-expression-sister-churches.html",
   "sha256": "c1466261cc1a1130cfe1b57392a2c4e672b2e82ff9d318dcdbe347fda55c2f2d",
   "bytes": 23107,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20000630_chiese-sorelle_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/note-on-the-minister-of-the-sacrament-of-the-anointing-of-the-sick.html",
   "sha256": "a30232df022a4d974bed4ea61b13d2c2a5968b6f061aff35ff059bab06576b95",
   "bytes": 13891,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20050211_unzione-infermi_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/note-on-the-morality-of-using-some-anti-covid-19-vaccines.html",
   "sha256": "f4155858a27514cb1f2a1522f0935aa01d768ada445ee26923dc6e99a32a72b9",
   "bytes": 15148,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20201221_nota-vaccini-anticovid_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/oeconomicae-et-pecuniariae-quaestiones.html",
   "sha256": "a10bb0fda48613df0ef8c61ea54bfb58a1d055a3aa9f483c1ad54cc516a65944",
   "bytes": 92513,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20180106_oeconomicae-et-pecuniariae_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/orationis-formas.html",
   "sha256": "f038439332067d2c27b5fa47cd138ecdcc6572d33715581db550e3cfed76c9f9",
   "bytes": 53687,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19891015_meditazione-cristiana_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/pastoralis-actio.html",
   "sha256": "7e4d5b3bc94f20f829c15d448794b1f54e4293e2433e9bbde5722bbc4bdd37c9",
   "bytes": 45196,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19801020_pastoralis_actio_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/persona-humana.html",
   "sha256": "c3d28b8f0fd6bdd684e6bc7a26fc403fc3430993bdc37cf2079453af94f9f90b",
   "bytes": 48273,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19751229_persona-humana_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/placuit-deo.html",
   "sha256": "69916ed5c23c3f35dc9f54d7fc6d219f808a642bf18c4512e6aac390172955bd",
   "bytes": 39339,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20180222_placuit-deo_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/recentiores-episcoporum-synodi.html",
   "sha256": "ebf18296bc257292ce87641bd3db239ca4cfb53bb3bcdf2277427675f042ef06",
   "bytes": 16748,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19790517_escatologia_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/response-on-the-validity-of-baptism-conferred-by-the-church-of-jesus-christ-of-latter-day-saints.html",
   "sha256": "81e40e5723b8a0436c0d3392ce4af274a687aa06d72c4cb97ccfe749f6b492dd",
   "bytes": 3335,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20010605_battesimo_mormoni_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/response-on-the-validity-of-baptism.html",
   "sha256": "6933820c14967093b2a9a3813a051c8eb66d93002674ae7cf2d770041938614d",
   "bytes": 4380,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20080201_validity-baptism_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/response-to-bishop-cortes-on-catholic-membership-in-freemasonry.html",
   "sha256": "0810e540788907fe145d04323a3eda4eeeb1a96c2f2856b40bf62c091132c5aa",
   "bytes": 9060,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20231113_richiesta-cortes-massoneria_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/response-to-cardinal-zuppi-on-the-preservation-of-the-ashes-of-the-deceased.html",
   "sha256": "9d84dc5401d2b7d564060f7ccadb0a874e6539795635342b12be987f97857efb",
   "bytes": 12983,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20231209_risposta-card-zuppi-ceneri_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/responses-of-the-holy-father-to-the-dubia-of-two-cardinals.html",
   "sha256": "91277b849b72126b11b948abe58958009a031a3a31a446d240be0bdfa7776245",
   "bytes": 29254,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_risposta-dubia-2023_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/responses-on-artificial-nutrition-and-hydration.html",
   "sha256": "4b780cc8820e2384b50292b718cae7e3a922ee154ac8a19df52109d3955dd211",
   "bytes": 5027,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20070801_risposte-usa_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/responses-on-uterine-isolation.html",
   "sha256": "0a2832caba7f6951975f5f7a631a8d324ebab009177eee09d3e2d8ad0b93bc58",
   "bytes": 6797,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_31071994_uterine-isolation_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/responses-to-bishop-negri-on-baptism-and-marriage-for-transgender-and-homosexual-persons.html",
   "sha256": "0a3b2bba6d38a5d6da7c6476e63a0dfbfa968e007764f185cb01e9e9431dc9dd",
   "bytes": 17333,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_20231031-documento-mons-negri_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/responses-to-cardinal-duka-on-the-eucharist-for-the-divorced-in-a-new-union.html",
   "sha256": "1e4a0ba523fbf0bd18ce665c53eb21dc986b2d95a3f08ade216cbfaac479cd6f",
   "bytes": 24216,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_pro_20230925_risposte-card-duka_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/responses-to-some-questions-regarding-certain-aspects-of-the-doctrine-on-the-church.html",
   "sha256": "db5f0845a0a8ef27175fbc3d13ba9a32b674cba61528d84a92d58fbd1a83ac1c",
   "bytes": 24345,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20070629_responsa-quaestiones_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/responsum-ad-dubium-on-ordinatio-sacerdotalis.html",
   "sha256": "1bad53cd7dc90dd39c9768b75c091fdb19fdc2806e4e3e5bc471ed9e5d55b0e1",
   "bytes": 4488,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19951028_dubium-ordinatio-sac_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/responsum-to-a-dubium-regarding-the-blessing-of-the-unions-of-persons-of-the-same-sex.html",
   "sha256": "1cc569566685b5b8457899bfd82a5dc2a6de2b2a8f094dcfa29566c2a24a6dd2",
   "bytes": 17137,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20210222_responsum-dubium-unioni_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/sacerdotium-ministeriale.html",
   "sha256": "ad25c5e4cb55bdf3ff8fb72a1c043b14e8d3c02e3b94b861862f1e02993eb162",
   "bytes": 21666,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19830806_sacerdotium-ministeriale_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/samaritanus-bonus.html",
   "sha256": "e187762e908297e66db0755d04f3bfdde4c73791f4c5af2c3eab6f0dcaba5454",
   "bytes": 135741,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_20200714_samaritanus-bonus_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/the-primacy-of-the-successor-of-peter-in-the-mystery-of-the-church.html",
   "sha256": "945fb9b59f874eac3b76c7b471640ff6adcf2099db7444a536140d7069eb2446",
   "bytes": 29791,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_con_cfaith_doc_19981031_primato-successore-pietro_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "roman-curia",
   "path": "roman-curia/una-caro.html",
   "sha256": "869c7220af4123539eb6591293d8e6873da270b5c9ce2e22a0ba1ef783e985e5",
   "bytes": 235886,
-  "url": null,
+  "url": "https://www.vatican.va/roman_curia/congregations/cfaith/documents/rc_ddf_doc_20251125_una-caro_en.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "parked for 5.3 (branch feat/roman-curia-collection)"
+  "role": "adapter-input"
  },
  {
   "collection": "summa",

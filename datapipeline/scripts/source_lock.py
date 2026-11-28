@@ -46,6 +46,7 @@ _MANIFESTS = {
     "encyclicals": "manifest.json",
     "medieval": "manifest.json",
     "papal-documents": "manifest.json",
+    "roman-curia": "manifest.json",
 }
 
 # Collections whose adapter selects files by globbing the directory, not by reading the
@@ -142,7 +143,6 @@ _UNREGISTERED_NOTES.update({
         "Fordham's transcription, used only to check the Roman Catechism's OCR (5.5)",
 })
 _UNREGISTERED_DIR_NOTES = {
-    "roman-curia": "parked for 5.3 (branch feat/roman-curia-collection)",
     # Approved R6 downloads (docs/research/R6-editions.md, "Download list for Carter"),
     # held where no adapter reads them. The ingesting PR moves each file unchanged to
     # its "Vendored as" path, the path after `_incoming/`, so its hash is the same.

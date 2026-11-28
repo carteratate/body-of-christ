@@ -1054,7 +1054,8 @@ def compendium_units(path: str, source_file: str | None = None) -> list[SourceUn
 # --------------------------------------------------------------------------- files
 
 # Collections whose files are listed in sources/<collection>/manifest.json, by format.
-_MANIFEST_HTML = ("apostolic-exhortations", "councils", "encyclicals", "papal-documents")
+_MANIFEST_HTML = ("apostolic-exhortations", "councils", "encyclicals", "papal-documents",
+                  "roman-curia")
 
 
 def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
@@ -1134,7 +1135,8 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
         return compendium_units(path, source_file)
     if source_file.endswith(".html"):
         return html_units(path, source_file,
-                          papal=collection in PAPAL_COLLECTIONS or collection == "church-law",
+                          papal=(collection in PAPAL_COLLECTIONS
+                                 or collection in ("church-law", "roman-curia")),
                           canon_law=collection == "canon-law",
                           amendment_marks=collection == "church-law",
                           vatican2=collection == "councils" and source_file.startswith("vat2-"))
