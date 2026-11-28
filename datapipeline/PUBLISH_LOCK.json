@@ -12,7 +12,7 @@
       ],
       "reason": "Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 0
+      "pr": 521
     },
     {
       "collection": "papal",
@@ -24,7 +24,7 @@
       ],
       "reason": "Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 0
+      "pr": 521
     },
     {
       "collection": "church-law",
@@ -36,7 +36,7 @@
       ],
       "reason": "Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 0
+      "pr": 521
     },
     {
       "collection": "theologians",
@@ -48,7 +48,7 @@
       ],
       "reason": "Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 0
+      "pr": 521
     },
     {
       "collection": "all",
@@ -58,7 +58,7 @@
       ],
       "reason": "Only to delete the Qdrant collection batch 4's publish replaces, chunks-batch-3-2026-11, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 3's entries are removed here: its smoke checks passed and chunks-batch-2-2026-11 was deleted on 27 Nov 2026 (#205, #207). Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 0
+      "pr": 521
     }
   ]
 }
