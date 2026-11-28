@@ -47703,6 +47703,25 @@
   "added_on": "2026-11-23"
  },
  {
+  "id": "rm-10611",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "4e5b9787-4b81-50ef-8441-8991cc2ae804",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 9
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-26"
+ },
+ {
   "id": "rm-0127",
   "scope": "class",
   "collection": "medieval",
@@ -47873,6 +47892,25 @@
   "judgment": null,
   "added_by": "1.9",
   "added_on": "2026-11-13"
+ },
+ {
+  "id": "rm-10610",
+  "scope": "class",
+  "collection": "medieval",
+  "document_id": "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
+  "anchor": null,
+  "passage_id": null,
+  "reason": "rule-g-editorial",
+  "detail": "Translator and editor footnotes (ThML <note>) printed inline in the passages; only their count is kept, as editor_note_count. Three more notes stand in chapter heading lines (Book II Part III ch. V, VII, VIII), read as headings, not paragraphs; they leave with them uncounted.",
+  "tombstone": null,
+  "church_act": null,
+  "span": {
+   "rule": "common._p_text_without_notes",
+   "count": 300
+  },
+  "judgment": null,
+  "added_by": "5.6b",
+  "added_on": "2026-11-26"
  },
  {
   "id": "rm-10602",

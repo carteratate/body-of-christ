@@ -146,12 +146,87 @@
    "catechism",
    "roman-curia"
   ],
+  "documents": [
+   "0715be7b-c108-55c0-bad8-d989fb8cdd16",
+   "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9",
+   "29c6659f-a7ce-51c1-a485-863b4160e457",
+   "38b15a66-fbc3-560f-8a64-363a0ff24ced",
+   "4451945f-fec4-5ab0-8d9e-5da62287ed24",
+   "44b734e0-b056-5f8d-92e9-0e98e3509848",
+   "4e5b9787-4b81-50ef-8441-8991cc2ae804",
+   "725a33d3-8e0c-5d4b-81e4-7c2dc5aefdf6",
+   "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe",
+   "96d72c6a-b005-5e96-9f7f-ceca57042078",
+   "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
+   "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2",
+   "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3"
+  ],
   "authors": {
    "councils": [
     "Second Vatican Council"
    ]
   },
   "not_headings": {
+   "0715be7b-c108-55c0-bad8-d989fb8cdd16": [
+    {
+     "text": "5. The Crucified King Himself calls you by your own name: “Come, O my beloved, come, and let Me crown thee!”",
+     "reason": "numbered consideration of Part I's tenth meditation, a sentence ending in a quotation"
+    },
+    {
+     "text": "5. In speech—do you never boast in any way? Do you never indulge in self-flattery when speaking of yourself?",
+     "reason": "numbered question of Part V's examination, ending in a question mark"
+    }
+   ],
+   "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9": [
+    {
+     "text": "To the Reverend--",
+     "reason": "the address of the Second Letter"
+    }
+   ],
+   "13b94869-cf9c-590d-9573-66f1bd6ea457": [
+    {
+     "text": "Given in Rome at St. Peter's, November 21, 1964",
+     "reason": "the promulgation's dating line, not a heading"
+    }
+   ],
+   "1d8e4438-b930-5fa4-93cb-b393786064fa": [
+    {
+     "text": "Given in Rome at St. Peter's, November 21, 1964",
+     "reason": "the promulgation's dating line, not a heading"
+    }
+   ],
+   "29c6659f-a7ce-51c1-a485-863b4160e457": [
+    {
+     "text": "HERE ENDETH THE CLOUD OF UNKNOWING.",
+     "reason": "the manuscript's explicit, the book's last line"
+    }
+   ],
+   "44b734e0-b056-5f8d-92e9-0e98e3509848": [
+    {
+     "text": "Prayer. The usual Preparatory Prayer",
+     "reason": "a run-in heading and its sentence, printed without a full stop"
+    },
+    {
+     "text": "St. Matthew writes in the tenth Chapter",
+     "reason": "a Mystery's source line, printed without a full stop"
+    }
+   ],
+   "800373b1-d6c8-5a26-8910-8d1485b224c2": [
+    {
+     "text": "For this reason God “wrote on the tables of the Law what men did not read in their hearts.” (Saint Augustine)",
+     "reason": "Augustine's saying printed under answer 417, ending in its attribution; not a heading"
+    }
+   ],
+   "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe": [
+    {
+     "text": "To My Beloved Little Spouse",
+     "reason": "the address of the Christmas letter in the Counsels"
+    },
+    {
+     "text": "Player of Ninepins on the Mountain of Carmel",
+     "reason": "the address of the Christmas letter in the Counsels"
+    }
+   ],
    "9679c400-d314-5394-b916-f6fc27b50104": [
     {
      "text": "You shall have no other gods before me …",
@@ -174,18 +249,6 @@
      "reason": "a row of the Decalogue table after CCC 2051 (Exodus, Deuteronomy, the catechetical formula), not a heading"
     }
    ],
-   "13b94869-cf9c-590d-9573-66f1bd6ea457": [
-    {
-     "text": "Given in Rome at St. Peter's, November 21, 1964",
-     "reason": "the promulgation's dating line, not a heading"
-    }
-   ],
-   "1d8e4438-b930-5fa4-93cb-b393786064fa": [
-    {
-     "text": "Given in Rome at St. Peter's, November 21, 1964",
-     "reason": "the promulgation's dating line, not a heading"
-    }
-   ],
    "c1b748c6-a250-5ca1-a087-4f6be5e75bbb": [
     {
      "text": "+ PERICLE FELICI Titular Archbishop of Samosata Secretary General of the Second Vatican Ecumenical Council",
@@ -198,10 +261,10 @@
      "reason": "the closing sentence of a section, whose full stop the OCR lost; not a heading"
     }
    ],
-   "800373b1-d6c8-5a26-8910-8d1485b224c2": [
+   "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3": [
     {
-     "text": "For this reason God “wrote on the tables of the Law what men did not read in their hearts.” (Saint Augustine)",
-     "reason": "Augustine's saying printed under answer 417, ending in its attribution; not a heading"
+     "text": "And to the understanding of this He shewed this open example.—",
+     "reason": "a sentence leading into the example that follows, ending in a dash"
     }
    ],
    "35ac3c73-de91-513a-acd4-718f67794c1e": [
@@ -209,62 +272,8 @@
      "text": "Vatican City, 10 July 2023",
      "reason": "the dating line closing the Holy Father's responses (5.3a), not a heading"
     }
-   ],
-   "0715be7b-c108-55c0-bad8-d989fb8cdd16": [
-    {
-     "text": "5. The Crucified King Himself calls you by your own name: “Come, O my beloved, come, and let Me crown thee!”",
-     "reason": "numbered consideration of Part I's tenth meditation, a sentence ending in a quotation"
-    },
-    {
-     "text": "5. In speech—do you never boast in any way? Do you never indulge in self-flattery when speaking of yourself?",
-     "reason": "numbered question of Part V's examination, ending in a question mark"
-    }
-   ],
-   "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9": [
-    {
-     "text": "To the Reverend--",
-     "reason": "the address of the Second Letter"
-    }
-   ],
-   "44b734e0-b056-5f8d-92e9-0e98e3509848": [
-    {
-     "text": "Prayer. The usual Preparatory Prayer",
-     "reason": "a run-in heading and its sentence, printed without a full stop"
-    },
-    {
-     "text": "St. Matthew writes in the tenth Chapter",
-     "reason": "a Mystery's source line, printed without a full stop"
-    }
-   ],
-   "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe": [
-    {
-     "text": "To My Beloved Little Spouse",
-     "reason": "the address of the Christmas letter in the Counsels"
-    },
-    {
-     "text": "Player of Ninepins on the Mountain of Carmel",
-     "reason": "the address of the Christmas letter in the Counsels"
-    }
-   ],
-   "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3": [
-    {
-     "text": "And to the understanding of this He shewed this open example.—",
-     "reason": "a sentence leading into the example that follows, ending in a dash"
-    }
    ]
-  },
-  "documents": [
-   "0715be7b-c108-55c0-bad8-d989fb8cdd16",
-   "12a82ecc-e4bf-559a-9dba-8d8fbec56ac9",
-   "38b15a66-fbc3-560f-8a64-363a0ff24ced",
-   "4451945f-fec4-5ab0-8d9e-5da62287ed24",
-   "44b734e0-b056-5f8d-92e9-0e98e3509848",
-   "725a33d3-8e0c-5d4b-81e4-7c2dc5aefdf6",
-   "8dec91d5-0b9f-5121-9b5e-b921e2f1eabe",
-   "96d72c6a-b005-5e96-9f7f-ceca57042078",
-   "bb2ce4ce-5b00-5a10-9a06-d1a5c1343eb2",
-   "f148ae93-66ca-5a32-b0ba-e5d0991b8bb3"
-  ]
+  }
  },
  "R11_papal_editorial": {
   "_comment": "An editor's or translator's words in a papal passage (C-18, Opus A-010); the last pattern is an \"[N-M]\" paragraph-range marker, which only a table of contents prints.",

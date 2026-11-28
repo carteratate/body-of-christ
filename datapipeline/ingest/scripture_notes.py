@@ -44,14 +44,18 @@ _REFERENCE = re.compile(rf"^\[?{_LEAD}{_BOOK}\s{_CHAPTER_VERSES}{_TAG}"
 # The Vulgate's names as the Gutenberg editions print them (5.6b: the Glories of Mary's
 # "Joan. xix. 26.", "Eccli. xxiv. 19."; measured on the vendored files), and a chapter
 # set off by a comma (Brother Lawrence's "Gal. i, 10; Eph. vi, 5, 6.", the Glories'
-# "Cant. 6, 9."). Read only for the
-# works that ask for them (`vulgate=True`), so no other collection's footnotes change.
-_VULGATE_BOOKS = "Joan|Psal|Luc|Eccli|Matth|Mach|Zacc|Thren|Thr|Ezech|Jac|Sap|Colos"
-_V_BOOK = rf"(?:(?:[1-4]|I{{1,3}})\s?)?(?:St\.\s)?(?:{_VULGATE_BOOKS}|{_BOOKS})\.?"
+# "Cant. 6, 9."); and Hilton's 1901 printing's forms: a whole chapter in Arabic numerals,
+# ending the note or before another book, "St" or "S." without the usual stop, and its
+# own names ("1 Cor. 13.", "St Matt. 5.", "1 St John 4:1.", "S. Matt. 5.", "Jerem. 9.",
+# "Osee 2.", "Cantic. 1.", "Ezec. 33."). Read only for the works that ask for them
+# (`vulgate=True`), so no other collection's footnotes change.
+_VULGATE_BOOKS = ("Joan|Psal|Luc|Eccli|Matth|Mach|Zacc|Thren|Thr|Ezech|Jac|Sap|Colos|"
+                  "Jerem|Osee|Ga|Cantic|Ezec")
+_V_BOOK = rf"(?:(?:[1-4]|I{{1,3}})\s?)?(?:St\.?\s|S\.\s)?(?:{_VULGATE_BOOKS}|{_BOOKS})\.?"
 # "l. 1, c. 10" is a book and chapter of another work ("Rev. l. 1, c. 10": St Bridget's
 # Revelations, liber 1, caput 10), not chapter fifty ("Psal. l. 19" is).
 _V_CHAPTER_VERSES = (rf"(?:(?!l\.\s?\d+[.,]\s?c\.){_ROMAN}[.,](?:\s?{_VERSES}{_MORE_VERSES})?"
-                     rf"|\d+[:,]\s?{_VERSES}{_MORE_VERSES})")
+                     rf"|\d+[:,]\s?{_VERSES}{_MORE_VERSES}|\d+(?=\.?$|\s?[;,]\s?(?:[1-4]\s)?[A-Z]))")
 _V_ONE = rf"(?:{_V_BOOK}\s{_V_CHAPTER_VERSES}|{_V_CHAPTER_VERSES}|ver\.\s{_VERSES}){_TAG}"
 _VULGATE_REFERENCE = re.compile(rf"^\[?{_LEAD}{_V_BOOK}\s{_V_CHAPTER_VERSES}{_TAG}"
                                 rf"(?:\s?(?:;|,|:|and)\s?{_LEAD}{_V_ONE})*")

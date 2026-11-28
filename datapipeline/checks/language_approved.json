@@ -1170,6 +1170,76 @@
   "sha1": "b191739a4b3e9b3f174f1afcf1fb9e492119b1a1"
  },
  {
+  "document_id": "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
+  "anchor": "ii_1.i.i.viii",
+  "collection": "medieval",
+  "title": "The Scale (or Ladder) of Perfection",
+  "language": "la",
+  "words": 13,
+  "starts": "lord speaks st paul thus qui",
+  "sha1": "830232815d8664f6903d68e69ffb3d404af739cb"
+ },
+ {
+  "document_id": "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
+  "anchor": "ii_1.i.i.xi/from-p5",
+  "collection": "medieval",
+  "title": "The Scale (or Ladder) of Perfection",
+  "language": "la",
+  "words": 14,
+  "starts": "epistle thus omnis spiritus qui solvit",
+  "sha1": "f061c5992fbf9be16df8b1326a9a527c4e6c0a86"
+ },
+ {
+  "document_id": "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
+  "anchor": "ii_1.ii.ii.vii/from-p5",
+  "collection": "medieval",
+  "title": "The Scale (or Ladder) of Perfection",
+  "language": "la",
+  "words": 9,
+  "starts": "apostle saith thus ubi zelus est",
+  "sha1": "026b3f1bf9a2a9a4369ec6bcec0244de937df98e"
+ },
+ {
+  "document_id": "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
+  "anchor": "ii_1.ii.iii.iii/from-p10",
+  "collection": "medieval",
+  "title": "The Scale (or Ladder) of Perfection",
+  "language": "la",
+  "words": 7,
+  "starts": "lord haec est autem vita aeterna",
+  "sha1": "82db5c4f599e605f4de6342327c9438292e1ff0c"
+ },
+ {
+  "document_id": "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
+  "anchor": "ii_1.ii.iii.iii/from-p10",
+  "collection": "medieval",
+  "title": "The Scale (or Ladder) of Perfection",
+  "language": "la",
+  "words": 10,
+  "starts": "st paul saith thus non contemplantibus",
+  "sha1": "fd22f0ab889cf54caac8f387d34c4189dd789def"
+ },
+ {
+  "document_id": "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
+  "anchor": "ii_1.ii.iii.v/from-p8",
+  "collection": "medieval",
+  "title": "The Scale (or Ladder) of Perfection",
+  "language": "la",
+  "words": 7,
+  "starts": "grace non enim quod sumus sufficientes",
+  "sha1": "865bd149a4cac14cc7fd9618a3ca1c6011645d55"
+ },
+ {
+  "document_id": "b9d4a449-5cbd-516e-a7e7-f0b30e5f1754",
+  "anchor": "ii_1.ii.iii.vii/from-p7",
+  "collection": "medieval",
+  "title": "The Scale (or Ladder) of Perfection",
+  "language": "la",
+  "words": 12,
+  "starts": "said thus omnes gentes quasi non",
+  "sha1": "5cef0ff2174af908cf48f481a4c7820ec22b00af"
+ },
+ {
   "document_id": "c254a3b6-c2cd-5425-8205-a447b91c0bdb",
   "anchor": "deus-caritas-est/17",
   "collection": "encyclicals",
