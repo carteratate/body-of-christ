@@ -213,7 +213,7 @@ Source provenance for each collection is documented in `datapipeline/SOURCES.md`
 
 ### Prerequisites
 
-- **Node.js ≥ 20** (frontend)
+- **Node.js 24.x** (frontend; `apps/web/package.json` pins it, matching CI and Vercel)
 - **Python ≥ 3.11** (backend & data pipeline)
 - Accounts / instances for: **Supabase** (Postgres + Auth), **Qdrant** (vectors),
   **OpenAI** (embeddings, listwise rerank, explanations), **Anthropic** (HyDE), and
