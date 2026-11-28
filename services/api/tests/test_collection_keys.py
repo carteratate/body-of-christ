@@ -32,10 +32,11 @@ OLD_KEYS = ("encyclicals", "apostolic-exhortations", "papal-documents", "canon-l
 
 # --- The vocabulary ----------------------------------------------------------------
 
-def test_only_the_eight_keys_are_valid():
+def test_only_the_current_keys_are_valid():
+    # The eight of 5.1b, and Roman Curia (5.3a), accepted before it is offered.
     assert constants.VALID_COLLECTIONS == constants.CANONICAL_COLLECTIONS == {
         "bible", "catechism", "church-fathers", "papal", "church-law", "summa",
-        "theologians", "councils"}
+        "theologians", "councils", "roman-curia"}
 
 
 @pytest.mark.parametrize("old", OLD_KEYS)
@@ -211,6 +212,9 @@ def test_a_put_merges_over_a_stored_key_it_does_not_know():
 # --- Migration 0048 -----------------------------------------------------------------
 
 NARROW = "0048_drop_legacy_collection_keys.sql"
+# The keys 0048 allows: the eight collections of 5.1b.
+EIGHT = ("bible", "catechism", "church-fathers", "councils", "summa", "papal",
+         "church-law", "theologians")
 
 
 def test_0048_refuses_the_old_keys_live_and_staged():
@@ -244,7 +248,29 @@ def test_0048_refuses_the_old_keys_live_and_staged():
         cluster.sql("DELETE FROM documents; DELETE FROM staging.documents")
         cluster.migrate(NARROW)
         for table in ("documents", "staging.documents"):
-            for key in sorted(constants.VALID_COLLECTIONS):
+            for key in EIGHT:
                 insert(cluster, table, key)
-            for key in OLD_KEYS:
+            for key in (*OLD_KEYS, "roman-curia"):
                 assert refused(cluster, table, key), (table, key)
+
+
+WIDEN = "0049_add_roman_curia_collection.sql"
+
+
+def test_0049_adds_roman_curia_live_and_staged():
+    with local_cluster("tc-0049-") as cluster:
+        cluster.sql(PRODUCTION_SCHEMA)
+        cluster.migrate(*EARLIER, SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name,
+                        "0046_collection_keys.sql", NARROW)
+        cluster.sql("SELECT create_corpus_staging()")
+        cluster.migrate(WIDEN)
+        for table in ("documents", "staging.documents"):
+            for key in sorted(constants.VALID_COLLECTIONS):
+                cluster.sql(f"INSERT INTO {table} (id, collection, title) "
+                            f"VALUES (gen_random_uuid(), '{key}', '{table} {key}')")
+            for key in OLD_KEYS:
+                failed = subprocess.run(
+                    cluster.psql_args(), capture_output=True, text=True, timeout=30,
+                    input=f"INSERT INTO {table} (id, collection, title) "
+                          f"VALUES (gen_random_uuid(), '{key}', 'x');")
+                assert "documents_collection_check" in failed.stderr, (table, key)

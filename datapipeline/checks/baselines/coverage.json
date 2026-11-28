@@ -1,6 +1,6 @@
 {
  "measured_on": {
-  "apostolic-exhortations": "feat/1.3d-7-haerent-animo-menti-nostrae aee69b1",
+  "apostolic-exhortations": "feat/203-papal-universal-law e5c9867",
   "bible": "feat/1.4a-bible-every-verse 66c7561",
   "canon-law": "feat/400-canon-868-ore 024d6ee",
   "catechism": "worktree-bridge-cse_01MzvQVhQofyfUudPetZQnd3 7ae3d38",
@@ -8,8 +8,10 @@
   "councils": "feat/1.2b-trent-waterworth 656e43a",
   "encyclicals": "worktree-bridge-cse_01A8fdmje4m5ou3yKwMSugB5 aee69b1",
   "medieval": "feat/5.6b-cloud-hilton 28a96abe",
-  "papal-documents": "feat/1.3d-6-extracts d276b44",
-  "summa": "feat/1.7-summa-adapter 74b5329"
+  "papal-documents": "feat/203-papal-universal-law e5c9867",
+  "summa": "feat/1.7-summa-adapter 74b5329",
+  "church-law": "feat/203-papal-universal-law e5c9867",
+  "roman-curia": "feat/5.3a-roman-curia 664a972e"
  },
  "files": {
   "apostolic-exhortations/africae-munus.html": {
@@ -762,6 +764,16 @@
    "covered_chars": 137092,
    "pct": 99.98
   },
+  "church-fathers/npnf207.xml": {
+   "body_chars": 1739439,
+   "covered_chars": 1736549,
+   "pct": 99.83
+  },
+  "church-fathers/npnf208.xml": {
+   "body_chars": 1304714,
+   "covered_chars": 1295490,
+   "pct": 99.29
+  },
   "church-fathers/on-the-holy-trinity.xml": {
    "body_chars": 2211805,
    "covered_chars": 2170350,
@@ -791,6 +803,16 @@
    "body_chars": 1734818,
    "covered_chars": 1584170,
    "pct": 91.32
+  },
+  "church-law/normas-nonnullas.html": {
+   "body_chars": 11194,
+   "covered_chars": 11194,
+   "pct": 100.0
+  },
+  "church-law/universi-dominici-gregis.html": {
+   "body_chars": 74773,
+   "covered_chars": 74178,
+   "pct": 99.2
   },
   "councils/ecum-19-council-of-trent.html": {
    "body_chars": 535924,
@@ -1257,20 +1279,315 @@
    "covered_chars": 91564,
    "pct": 99.91
   },
+  "papal-documents/ubicumque-et-semper.html": {
+   "body_chars": 11550,
+   "covered_chars": 11550,
+   "pct": 100.0
+  },
+  "roman-curia/a-journey-of-hope.html": {
+   "body_chars": 0,
+   "covered_chars": 0,
+   "pct": 100.0
+  },
+  "roman-curia/ad-resurgendum-cum-christo.html": {
+   "body_chars": 9989,
+   "covered_chars": 9816,
+   "pct": 98.27
+  },
+  "roman-curia/annus-internationalis-familiae.html": {
+   "body_chars": 12013,
+   "covered_chars": 11945,
+   "pct": 99.43
+  },
+  "roman-curia/antiqua-et-nova.html": {
+   "body_chars": 82501,
+   "covered_chars": 82298,
+   "pct": 99.75
+  },
+  "roman-curia/christian-faith-and-demonology.html": {
+   "body_chars": 48508,
+   "covered_chars": 48508,
+   "pct": 100.0
+  },
+  "roman-curia/clarification-on-procured-abortion.html": {
+   "body_chars": 8375,
+   "covered_chars": 8306,
+   "pct": 99.18
+  },
+  "roman-curia/communionis-notio.html": {
+   "body_chars": 23513,
+   "covered_chars": 23476,
+   "pct": 99.84
+  },
+  "roman-curia/considerations-on-legislative-proposals-on-the-non-discrimination-of-homosexual-persons.html": {
+   "body_chars": 9760,
+   "covered_chars": 9760,
+   "pct": 100.0
+  },
+  "roman-curia/considerations-regarding-proposals-to-give-legal-recognition-to-unions-between-homosexual-persons.html": {
+   "body_chars": 16588,
+   "covered_chars": 12750,
+   "pct": 76.86
+  },
+  "roman-curia/cum-oecumenicum-concilium.html": {
+   "body_chars": 6420,
+   "covered_chars": 6249,
+   "pct": 97.34
+  },
+  "roman-curia/declaration-on-masonic-associations.html": {
+   "body_chars": 1524,
+   "covered_chars": 1486,
+   "pct": 97.51
+  },
+  "roman-curia/declaration-on-procured-abortion.html": {
+   "body_chars": 26294,
+   "covered_chars": 26239,
+   "pct": 99.79
+  },
+  "roman-curia/dignitas-infinita.html": {
+   "body_chars": 76095,
+   "covered_chars": 76007,
+   "pct": 99.88
+  },
+  "roman-curia/dignitas-personae.html": {
+   "body_chars": 59447,
+   "covered_chars": 59408,
+   "pct": 99.93
+  },
+  "roman-curia/doctrinal-commentary-on-the-concluding-formula-of-the-professio-fidei.html": {
+   "body_chars": 11985,
+   "covered_chars": 399,
+   "pct": 3.33
+  },
+  "roman-curia/doctrinal-note-on-some-aspects-of-evangelization.html": {
+   "body_chars": 31163,
+   "covered_chars": 31078,
+   "pct": 99.73
+  },
+  "roman-curia/doctrinal-note-on-the-modification-of-the-sacramental-formula-of-baptism.html": {
+   "body_chars": 8127,
+   "covered_chars": 8068,
+   "pct": 99.27
+  },
+  "roman-curia/doctrinal-note-on-the-participation-of-catholics-in-political-life.html": {
+   "body_chars": 25769,
+   "covered_chars": 25728,
+   "pct": 99.84
+  },
+  "roman-curia/dominus-iesus.html": {
+   "body_chars": 51791,
+   "covered_chars": 51750,
+   "pct": 99.92
+  },
+  "roman-curia/donum-veritatis.html": {
+   "body_chars": 45077,
+   "covered_chars": 45011,
+   "pct": 99.85
+  },
+  "roman-curia/donum-vitae.html": {
+   "body_chars": 65824,
+   "covered_chars": 65758,
+   "pct": 99.9
+  },
+  "roman-curia/fiducia-supplicans.html": {
+   "body_chars": 29365,
+   "covered_chars": 29238,
+   "pct": 99.57
+  },
+  "roman-curia/gestis-verbisque.html": {
+   "body_chars": 0,
+   "covered_chars": 0,
+   "pct": 100.0
+  },
+  "roman-curia/homosexualitatis-problema.html": {
+   "body_chars": 23627,
+   "covered_chars": 23561,
+   "pct": 99.72
+  },
+  "roman-curia/inter-insigniores.html": {
+   "body_chars": 31856,
+   "covered_chars": 31768,
+   "pct": 99.72
+  },
+  "roman-curia/iura-et-bona.html": {
+   "body_chars": 16627,
+   "covered_chars": 16597,
+   "pct": 99.82
+  },
+  "roman-curia/iuvenescit-ecclesia.html": {
+   "body_chars": 57471,
+   "covered_chars": 57201,
+   "pct": 99.53
+  },
+  "roman-curia/letter-on-the-collaboration-of-men-and-women-in-the-church-and-in-the-world.html": {
+   "body_chars": 41557,
+   "covered_chars": 37792,
+   "pct": 90.94
+  },
+  "roman-curia/letter-to-the-bishops-on-the-revision-of-catechism-2267-on-the-death-penalty.html": {
+   "body_chars": 7470,
+   "covered_chars": 7411,
+   "pct": 99.21
+  },
+  "roman-curia/libertatis-conscientia.html": {
+   "body_chars": 96184,
+   "covered_chars": 95652,
+   "pct": 99.45
+  },
+  "roman-curia/libertatis-nuntius.html": {
+   "body_chars": 57135,
+   "covered_chars": 57036,
+   "pct": 99.83
+  },
+  "roman-curia/mater-populi-fidelis.html": {
+   "body_chars": 77169,
+   "covered_chars": 76989,
+   "pct": 99.77
+  },
+  "roman-curia/mysterium-ecclesiae.html": {
+   "body_chars": 26141,
+   "covered_chars": 26111,
+   "pct": 99.89
+  },
+  "roman-curia/mysterium-filii-dei.html": {
+   "body_chars": 11464,
+   "covered_chars": 9958,
+   "pct": 86.86
+  },
+  "roman-curia/norms-for-proceeding-in-the-discernment-of-alleged-supernatural-phenomena.html": {
+   "body_chars": 46857,
+   "covered_chars": 46675,
+   "pct": 99.61
+  },
+  "roman-curia/note-on-the-expression-sister-churches.html": {
+   "body_chars": 10800,
+   "covered_chars": 10759,
+   "pct": 99.62
+  },
+  "roman-curia/note-on-the-minister-of-the-sacrament-of-the-anointing-of-the-sick.html": {
+   "body_chars": 66,
+   "covered_chars": 66,
+   "pct": 100.0
+  },
+  "roman-curia/note-on-the-morality-of-using-some-anti-covid-19-vaccines.html": {
+   "body_chars": 6236,
+   "covered_chars": 6148,
+   "pct": 98.59
+  },
+  "roman-curia/oeconomicae-et-pecuniariae-quaestiones.html": {
+   "body_chars": 61569,
+   "covered_chars": 61206,
+   "pct": 99.41
+  },
+  "roman-curia/orationis-formas.html": {
+   "body_chars": 35711,
+   "covered_chars": 35645,
+   "pct": 99.82
+  },
+  "roman-curia/pastoralis-actio.html": {
+   "body_chars": 29642,
+   "covered_chars": 29604,
+   "pct": 99.87
+  },
+  "roman-curia/persona-humana.html": {
+   "body_chars": 32636,
+   "covered_chars": 32598,
+   "pct": 99.88
+  },
+  "roman-curia/placuit-deo.html": {
+   "body_chars": 19201,
+   "covered_chars": 19007,
+   "pct": 98.99
+  },
+  "roman-curia/recentiores-episcoporum-synodi.html": {
+   "body_chars": 9687,
+   "covered_chars": 9649,
+   "pct": 99.61
+  },
+  "roman-curia/response-on-the-validity-of-baptism-conferred-by-the-church-of-jesus-christ-of-latter-day-saints.html": {
+   "body_chars": 610,
+   "covered_chars": 569,
+   "pct": 93.28
+  },
+  "roman-curia/response-on-the-validity-of-baptism.html": {
+   "body_chars": 1066,
+   "covered_chars": 945,
+   "pct": 88.65
+  },
+  "roman-curia/response-to-bishop-cortes-on-catholic-membership-in-freemasonry.html": {
+   "body_chars": 2193,
+   "covered_chars": 2010,
+   "pct": 91.66
+  },
+  "roman-curia/response-to-cardinal-zuppi-on-the-preservation-of-the-ashes-of-the-deceased.html": {
+   "body_chars": 5049,
+   "covered_chars": 4879,
+   "pct": 96.63
+  },
+  "roman-curia/responses-of-the-holy-father-to-the-dubia-of-two-cardinals.html": {
+   "body_chars": 16232,
+   "covered_chars": 16199,
+   "pct": 99.8
+  },
+  "roman-curia/responses-on-artificial-nutrition-and-hydration.html": {
+   "body_chars": 1597,
+   "covered_chars": 1530,
+   "pct": 95.8
+  },
+  "roman-curia/responses-on-uterine-isolation.html": {
+   "body_chars": 3899,
+   "covered_chars": 3831,
+   "pct": 98.26
+  },
+  "roman-curia/responses-to-bishop-negri-on-baptism-and-marriage-for-transgender-and-homosexual-persons.html": {
+   "body_chars": 6284,
+   "covered_chars": 6023,
+   "pct": 95.85
+  },
+  "roman-curia/responses-to-cardinal-duka-on-the-eucharist-for-the-divorced-in-a-new-union.html": {
+   "body_chars": 7973,
+   "covered_chars": 7729,
+   "pct": 96.94
+  },
+  "roman-curia/responses-to-some-questions-regarding-certain-aspects-of-the-doctrine-on-the-church.html": {
+   "body_chars": 7341,
+   "covered_chars": 7274,
+   "pct": 99.09
+  },
+  "roman-curia/responsum-ad-dubium-on-ordinatio-sacerdotalis.html": {
+   "body_chars": 1314,
+   "covered_chars": 1273,
+   "pct": 96.88
+  },
+  "roman-curia/responsum-to-a-dubium-regarding-the-blessing-of-the-unions-of-persons-of-the-same-sex.html": {
+   "body_chars": 6127,
+   "covered_chars": 5936,
+   "pct": 96.88
+  },
+  "roman-curia/sacerdotium-ministeriale.html": {
+   "body_chars": 13235,
+   "covered_chars": 13202,
+   "pct": 99.75
+  },
+  "roman-curia/samaritanus-bonus.html": {
+   "body_chars": 79510,
+   "covered_chars": 79311,
+   "pct": 99.75
+  },
+  "roman-curia/the-primacy-of-the-successor-of-peter-in-the-mystery-of-the-church.html": {
+   "body_chars": 17221,
+   "covered_chars": 17152,
+   "pct": 99.6
+  },
+  "roman-curia/una-caro.html": {
+   "body_chars": 137808,
+   "covered_chars": 137640,
+   "pct": 99.88
+  },
   "summa/summa.xml": {
    "body_chars": 14059391,
    "covered_chars": 14048828,
    "pct": 99.92
-  },
-  "church-fathers/npnf208.xml": {
-   "body_chars": 1304714,
-   "covered_chars": 1295490,
-   "pct": 99.29
-  },
-  "church-fathers/npnf207.xml": {
-   "body_chars": 1739439,
-   "covered_chars": 1736549,
-   "pct": 99.83
   }
  },
  "documents": {
@@ -3436,6 +3753,447 @@
    "body_chars": 73638,
    "covered_chars": 73514,
    "pct": 99.83
+  },
+  "8e9c9c76-9be1-5e01-841a-4622c78a304d": {
+   "collection": "papal-documents",
+   "source_file": "ubicumque-et-semper.html",
+   "body_chars": 11550,
+   "covered_chars": 11550,
+   "pct": 100.0
+  },
+  "96723311-6eb4-5b12-8ab1-b7e07b00cb35": {
+   "collection": "church-law",
+   "source_file": "normas-nonnullas.html",
+   "body_chars": 11194,
+   "covered_chars": 11194,
+   "pct": 100.0
+  },
+  "ba99edda-440c-599c-9b2c-5e65c2896c0a": {
+   "collection": "church-law",
+   "source_file": "universi-dominici-gregis.html",
+   "body_chars": 74773,
+   "covered_chars": 74178,
+   "pct": 99.2
+  },
+  "07bc0fe4-9dad-58e7-8993-807ab8476853": {
+   "collection": "roman-curia",
+   "source_file": "clarification-on-procured-abortion.html",
+   "body_chars": 8375,
+   "covered_chars": 8306,
+   "pct": 99.18
+  },
+  "1c33fde4-295b-5e31-90ba-95df82c8662c": {
+   "collection": "roman-curia",
+   "source_file": "responses-on-uterine-isolation.html",
+   "body_chars": 3899,
+   "covered_chars": 3831,
+   "pct": 98.26
+  },
+  "211765d0-b041-5710-845f-5b6a7e016c39": {
+   "collection": "roman-curia",
+   "source_file": "response-to-bishop-cortes-on-catholic-membership-in-freemasonry.html",
+   "body_chars": 2193,
+   "covered_chars": 2010,
+   "pct": 91.66
+  },
+  "24b6521f-8807-59ff-b3af-27499e46693d": {
+   "collection": "roman-curia",
+   "source_file": "response-on-the-validity-of-baptism.html",
+   "body_chars": 1066,
+   "covered_chars": 945,
+   "pct": 88.65
+  },
+  "25022924-8d22-540f-9ffa-f8b190f929b4": {
+   "collection": "roman-curia",
+   "source_file": "cum-oecumenicum-concilium.html",
+   "body_chars": 6420,
+   "covered_chars": 6249,
+   "pct": 97.34
+  },
+  "2583e66d-ac6f-5f38-be93-7ea4fe30dc1f": {
+   "collection": "roman-curia",
+   "source_file": "norms-for-proceeding-in-the-discernment-of-alleged-supernatural-phenomena.html",
+   "body_chars": 46857,
+   "covered_chars": 46675,
+   "pct": 99.61
+  },
+  "2584c215-d7b5-58fe-b90e-77ccf3185cea": {
+   "collection": "roman-curia",
+   "source_file": "pastoralis-actio.html",
+   "body_chars": 29642,
+   "covered_chars": 29604,
+   "pct": 99.87
+  },
+  "272a257e-6481-557d-8623-170bd9a70020": {
+   "collection": "roman-curia",
+   "source_file": "ad-resurgendum-cum-christo.html",
+   "body_chars": 9989,
+   "covered_chars": 9816,
+   "pct": 98.27
+  },
+  "29338e12-2ee7-54b7-9246-f4c854f2b76b": {
+   "collection": "roman-curia",
+   "source_file": "responses-on-artificial-nutrition-and-hydration.html",
+   "body_chars": 1597,
+   "covered_chars": 1530,
+   "pct": 95.8
+  },
+  "2ac4030b-52a9-5e13-a3ed-c5bd4e087c7b": {
+   "collection": "roman-curia",
+   "source_file": "responses-to-bishop-negri-on-baptism-and-marriage-for-transgender-and-homosexual-persons.html",
+   "body_chars": 6284,
+   "covered_chars": 6023,
+   "pct": 95.85
+  },
+  "2b9d7a48-4d33-57ad-81ef-498f3d360a94": {
+   "collection": "roman-curia",
+   "source_file": "mysterium-ecclesiae.html",
+   "body_chars": 26141,
+   "covered_chars": 26111,
+   "pct": 99.89
+  },
+  "35ac3c73-de91-513a-acd4-718f67794c1e": {
+   "collection": "roman-curia",
+   "source_file": "responses-of-the-holy-father-to-the-dubia-of-two-cardinals.html",
+   "body_chars": 16232,
+   "covered_chars": 16199,
+   "pct": 99.8
+  },
+  "397de6f4-2e52-559b-b271-7e27f70b3195": {
+   "collection": "roman-curia",
+   "source_file": "sacerdotium-ministeriale.html",
+   "body_chars": 13235,
+   "covered_chars": 13202,
+   "pct": 99.75
+  },
+  "3accd4fa-5d35-53be-8436-a4f13c99321b": {
+   "collection": "roman-curia",
+   "source_file": "responses-to-cardinal-duka-on-the-eucharist-for-the-divorced-in-a-new-union.html",
+   "body_chars": 7973,
+   "covered_chars": 7729,
+   "pct": 96.94
+  },
+  "3baa2e1c-852b-5a28-bc01-8eb86cd611d3": {
+   "collection": "roman-curia",
+   "source_file": "the-primacy-of-the-successor-of-peter-in-the-mystery-of-the-church.html",
+   "body_chars": 17221,
+   "covered_chars": 17152,
+   "pct": 99.6
+  },
+  "3e0ac1eb-e461-5ac5-afe7-a3f1027c7759": {
+   "collection": "roman-curia",
+   "source_file": "christian-faith-and-demonology.html",
+   "body_chars": 48508,
+   "covered_chars": 48508,
+   "pct": 100.0
+  },
+  "3fba95bb-f1a7-50e2-a5ac-8320cad6f428": {
+   "collection": "roman-curia",
+   "source_file": "responses-to-some-questions-regarding-certain-aspects-of-the-doctrine-on-the-church.html",
+   "body_chars": 7341,
+   "covered_chars": 7274,
+   "pct": 99.09
+  },
+  "44662a78-dde7-5a96-8cfe-857d58cf26f1": {
+   "collection": "roman-curia",
+   "source_file": "placuit-deo.html",
+   "body_chars": 19201,
+   "covered_chars": 19007,
+   "pct": 98.99
+  },
+  "45246017-8303-50be-b98e-6ffdbf877be1": {
+   "collection": "roman-curia",
+   "source_file": "homosexualitatis-problema.html",
+   "body_chars": 23627,
+   "covered_chars": 23561,
+   "pct": 99.72
+  },
+  "48451032-0194-513f-8af7-a26849bd5c9c": {
+   "collection": "roman-curia",
+   "source_file": "doctrinal-note-on-the-modification-of-the-sacramental-formula-of-baptism.html",
+   "body_chars": 8127,
+   "covered_chars": 8068,
+   "pct": 99.27
+  },
+  "4de8d38b-871e-530d-be8d-06f2e3684d83": {
+   "collection": "roman-curia",
+   "source_file": "oeconomicae-et-pecuniariae-quaestiones.html",
+   "body_chars": 61569,
+   "covered_chars": 61206,
+   "pct": 99.41
+  },
+  "53874927-ea51-542f-a757-881c5ba8c09a": {
+   "collection": "roman-curia",
+   "source_file": "responsum-to-a-dubium-regarding-the-blessing-of-the-unions-of-persons-of-the-same-sex.html",
+   "body_chars": 6127,
+   "covered_chars": 5936,
+   "pct": 96.88
+  },
+  "54631828-ed24-57d6-b9bf-66dee0dc7181": {
+   "collection": "roman-curia",
+   "source_file": "persona-humana.html",
+   "body_chars": 32636,
+   "covered_chars": 32598,
+   "pct": 99.88
+  },
+  "56fcefc0-8a4b-551f-995e-e61c19c9cfe3": {
+   "collection": "roman-curia",
+   "source_file": "note-on-the-expression-sister-churches.html",
+   "body_chars": 10800,
+   "covered_chars": 10759,
+   "pct": 99.62
+  },
+  "5a957aa6-ebe3-5b2d-82d1-71559d78cd6a": {
+   "collection": "roman-curia",
+   "source_file": "samaritanus-bonus.html",
+   "body_chars": 79510,
+   "covered_chars": 79311,
+   "pct": 99.75
+  },
+  "5d0fa10c-f6c1-5e8d-9c27-b3c1e16568f5": {
+   "collection": "roman-curia",
+   "source_file": "recentiores-episcoporum-synodi.html",
+   "body_chars": 9687,
+   "covered_chars": 9649,
+   "pct": 99.61
+  },
+  "5f8391d8-9348-5f3d-855f-fadcbe0fc36a": {
+   "collection": "roman-curia",
+   "source_file": "mysterium-filii-dei.html",
+   "body_chars": 11464,
+   "covered_chars": 9958,
+   "pct": 86.86
+  },
+  "624bf1f4-65f9-5752-bda5-963e78ed18ae": {
+   "collection": "roman-curia",
+   "source_file": "donum-veritatis.html",
+   "body_chars": 45077,
+   "covered_chars": 45011,
+   "pct": 99.85
+  },
+  "683cfcd6-aa0c-5ff5-9b4f-742dca6db4ad": {
+   "collection": "roman-curia",
+   "source_file": "note-on-the-minister-of-the-sacrament-of-the-anointing-of-the-sick.html",
+   "body_chars": 66,
+   "covered_chars": 66,
+   "pct": 100.0
+  },
+  "6a8e9457-7405-57f4-a48d-335638555ef1": {
+   "collection": "roman-curia",
+   "source_file": "considerations-on-legislative-proposals-on-the-non-discrimination-of-homosexual-persons.html",
+   "body_chars": 9760,
+   "covered_chars": 9760,
+   "pct": 100.0
+  },
+  "747daef8-c384-52a8-9ebd-2c36600fac65": {
+   "collection": "roman-curia",
+   "source_file": "libertatis-conscientia.html",
+   "body_chars": 96184,
+   "covered_chars": 95652,
+   "pct": 99.45
+  },
+  "765291c6-f795-55cc-a93a-7bd884e60fce": {
+   "collection": "roman-curia",
+   "source_file": "letter-on-the-collaboration-of-men-and-women-in-the-church-and-in-the-world.html",
+   "body_chars": 41557,
+   "covered_chars": 37792,
+   "pct": 90.94
+  },
+  "85e93108-7ec7-59ae-a98a-58d6062c0699": {
+   "collection": "roman-curia",
+   "source_file": "note-on-the-morality-of-using-some-anti-covid-19-vaccines.html",
+   "body_chars": 6236,
+   "covered_chars": 6148,
+   "pct": 98.59
+  },
+  "87b13931-d763-5a44-b161-8923968522dc": {
+   "collection": "roman-curia",
+   "source_file": "letter-to-the-bishops-on-the-revision-of-catechism-2267-on-the-death-penalty.html",
+   "body_chars": 7470,
+   "covered_chars": 7411,
+   "pct": 99.21
+  },
+  "89ac8924-e7f0-5c15-8242-576c71d9db55": {
+   "collection": "roman-curia",
+   "source_file": "iura-et-bona.html",
+   "body_chars": 16627,
+   "covered_chars": 16597,
+   "pct": 99.82
+  },
+  "8dbd322f-bea3-5fd6-b5a9-17db4355a7dc": {
+   "collection": "roman-curia",
+   "source_file": "orationis-formas.html",
+   "body_chars": 35711,
+   "covered_chars": 35645,
+   "pct": 99.82
+  },
+  "8dbfcb5d-286e-57e9-80c9-c8dc1969d6d3": {
+   "collection": "roman-curia",
+   "source_file": "donum-vitae.html",
+   "body_chars": 65824,
+   "covered_chars": 65758,
+   "pct": 99.9
+  },
+  "946ade7c-cec3-58b9-9c11-a7fa89fe0c58": {
+   "collection": "roman-curia",
+   "source_file": "doctrinal-commentary-on-the-concluding-formula-of-the-professio-fidei.html",
+   "body_chars": 11985,
+   "covered_chars": 399,
+   "pct": 3.33
+  },
+  "973f2e2b-9a39-568f-aae8-53d52911e694": {
+   "collection": "roman-curia",
+   "source_file": "communionis-notio.html",
+   "body_chars": 23513,
+   "covered_chars": 23476,
+   "pct": 99.84
+  },
+  "97cf4ab9-fd60-59c3-aab8-e01cb00c8aaf": {
+   "collection": "roman-curia",
+   "source_file": "fiducia-supplicans.html",
+   "body_chars": 29365,
+   "covered_chars": 29238,
+   "pct": 99.57
+  },
+  "a129fd98-8659-56e0-907d-1556f4326af6": {
+   "collection": "roman-curia",
+   "source_file": "annus-internationalis-familiae.html",
+   "body_chars": 12013,
+   "covered_chars": 11945,
+   "pct": 99.43
+  },
+  "a2c64d54-8098-5508-a5e9-71d5016fdbe8": {
+   "collection": "roman-curia",
+   "source_file": "gestis-verbisque.html",
+   "body_chars": 0,
+   "covered_chars": 0,
+   "pct": 100.0
+  },
+  "a3061f68-27ba-55db-b48d-0f06c10f7e7b": {
+   "collection": "roman-curia",
+   "source_file": "response-to-cardinal-zuppi-on-the-preservation-of-the-ashes-of-the-deceased.html",
+   "body_chars": 5049,
+   "covered_chars": 4879,
+   "pct": 96.63
+  },
+  "ac631895-7788-51bb-ad62-8dc1992a7895": {
+   "collection": "roman-curia",
+   "source_file": "iuvenescit-ecclesia.html",
+   "body_chars": 57471,
+   "covered_chars": 57201,
+   "pct": 99.53
+  },
+  "b72bdc2f-d454-555e-ae4d-a582c13cfbce": {
+   "collection": "roman-curia",
+   "source_file": "inter-insigniores.html",
+   "body_chars": 31856,
+   "covered_chars": 31768,
+   "pct": 99.72
+  },
+  "b83f3f51-e464-5edd-adc1-62da1bd47ab8": {
+   "collection": "roman-curia",
+   "source_file": "declaration-on-masonic-associations.html",
+   "body_chars": 1524,
+   "covered_chars": 1486,
+   "pct": 97.51
+  },
+  "bba02fd5-2f90-5313-ad42-39d40d7206b3": {
+   "collection": "roman-curia",
+   "source_file": "una-caro.html",
+   "body_chars": 137808,
+   "covered_chars": 137640,
+   "pct": 99.88
+  },
+  "bbbb892d-933f-5333-bd74-f5861d932b31": {
+   "collection": "roman-curia",
+   "source_file": "declaration-on-procured-abortion.html",
+   "body_chars": 26294,
+   "covered_chars": 26239,
+   "pct": 99.79
+  },
+  "bdb5572e-46c5-594a-923e-4f413caf1b94": {
+   "collection": "roman-curia",
+   "source_file": "doctrinal-note-on-the-participation-of-catholics-in-political-life.html",
+   "body_chars": 25769,
+   "covered_chars": 25728,
+   "pct": 99.84
+  },
+  "c0251d16-ac46-5fd9-bfaa-380d9c717f4b": {
+   "collection": "roman-curia",
+   "source_file": "responsum-ad-dubium-on-ordinatio-sacerdotalis.html",
+   "body_chars": 1314,
+   "covered_chars": 1273,
+   "pct": 96.88
+  },
+  "d09c88a7-5862-5dcc-b58a-5b25ae34f07b": {
+   "collection": "roman-curia",
+   "source_file": "dominus-iesus.html",
+   "body_chars": 51791,
+   "covered_chars": 51750,
+   "pct": 99.92
+  },
+  "dacff6af-718a-564e-8846-39b0eeab8ecf": {
+   "collection": "roman-curia",
+   "source_file": "response-on-the-validity-of-baptism-conferred-by-the-church-of-jesus-christ-of-latter-day-saints.html",
+   "body_chars": 610,
+   "covered_chars": 569,
+   "pct": 93.28
+  },
+  "dea730ca-05c0-55c7-8980-faac0f48fe0d": {
+   "collection": "roman-curia",
+   "source_file": "dignitas-personae.html",
+   "body_chars": 59447,
+   "covered_chars": 59408,
+   "pct": 99.93
+  },
+  "e7e81747-f9ed-5f3c-9ece-ac8b96a1ade0": {
+   "collection": "roman-curia",
+   "source_file": "mater-populi-fidelis.html",
+   "body_chars": 77169,
+   "covered_chars": 76989,
+   "pct": 99.77
+  },
+  "eac47dd1-a075-54ca-9b29-0baff05c4a9f": {
+   "collection": "roman-curia",
+   "source_file": "antiqua-et-nova.html",
+   "body_chars": 82501,
+   "covered_chars": 82298,
+   "pct": 99.75
+  },
+  "eb0ba68e-00c7-5966-ae4d-60de5ea8acf6": {
+   "collection": "roman-curia",
+   "source_file": "libertatis-nuntius.html",
+   "body_chars": 57135,
+   "covered_chars": 57036,
+   "pct": 99.83
+  },
+  "f2502489-79f9-556b-86f1-ee7c7f543464": {
+   "collection": "roman-curia",
+   "source_file": "doctrinal-note-on-some-aspects-of-evangelization.html",
+   "body_chars": 31163,
+   "covered_chars": 31078,
+   "pct": 99.73
+  },
+  "f44aa614-93a1-5c63-b5f5-b1b8f628c4a7": {
+   "collection": "roman-curia",
+   "source_file": "considerations-regarding-proposals-to-give-legal-recognition-to-unions-between-homosexual-persons.html",
+   "body_chars": 16588,
+   "covered_chars": 12750,
+   "pct": 76.86
+  },
+  "f84dc22b-e924-5ac5-9e63-26f6bca1dfeb": {
+   "collection": "roman-curia",
+   "source_file": "a-journey-of-hope.html",
+   "body_chars": 0,
+   "covered_chars": 0,
+   "pct": 100.0
+  },
+  "fb73c774-c012-5763-a308-d829820992e5": {
+   "collection": "roman-curia",
+   "source_file": "dignitas-infinita.html",
+   "body_chars": 76095,
+   "covered_chars": 76007,
+   "pct": 99.88
   }
  }
 }
