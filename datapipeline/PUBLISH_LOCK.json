@@ -3,38 +3,62 @@
   "reason": "Live writes only for a collection and release listed below, added in a reviewed PR. See docs/2026-09-28-corpus-cleanup-plan.md, D2 and D7.",
   "approved_applies": [
     {
-      "collection": "church-fathers",
-      "release": "batch-3-2026-11",
+      "collection": "roman-curia",
+      "release": "batch-4-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "Batch 3 (Carter, 23 Nov 2026): 5.6b's spiritual classics in Theology & Spirituality (#447 Teresa, #460 de Sales, #469 Julian and Thérèse, #491 Ignatius, #511 Alphonsus and Brother Lawrence) and 5.6a's Fathers (#470 Basil, #493 Cyril and Gregory of Nazianzus), staged together as one release from master once #511 and #493 have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "reason": "Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 512
+      "pr": 0
+    },
+    {
+      "collection": "papal",
+      "release": "batch-4-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "approved_by": "Carter",
+      "pr": 0
+    },
+    {
+      "collection": "church-law",
+      "release": "batch-4-2026-11",
+      "steps": [
+        "stage",
+        "apply",
+        "rollback"
+      ],
+      "reason": "Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "approved_by": "Carter",
+      "pr": 0
     },
     {
       "collection": "theologians",
-      "release": "batch-3-2026-11",
+      "release": "batch-4-2026-11",
       "steps": [
         "stage",
         "apply",
         "rollback"
       ],
-      "reason": "Batch 3 (Carter, 23 Nov 2026): 5.6b's spiritual classics in Theology & Spirituality (#447 Teresa, #460 de Sales, #469 Julian and Thérèse, #491 Ignatius, #511 Alphonsus and Brother Lawrence) and 5.6a's Fathers (#470 Basil, #493 Cyril and Gregory of Nazianzus), staged together as one release from master once #511 and #493 have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "reason": "Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 512
+      "pr": 0
     },
     {
       "collection": "all",
-      "release": "batch-3-2026-11",
+      "release": "batch-4-2026-11",
       "steps": [
         "apply"
       ],
-      "reason": "Only to delete the Qdrant collection batch 3's publish replaces, chunks-batch-2-2026-11, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 2's entries are removed here: its smoke checks were accepted and chunks-batch-1-2026-11 deleted on 27 Nov 2026 (#420). Batch 3 (Carter, 23 Nov 2026): 5.6b's spiritual classics in Theology & Spirituality (#447 Teresa, #460 de Sales, #469 Julian and Thérèse, #491 Ignatius, #511 Alphonsus and Brother Lawrence) and 5.6a's Fathers (#470 Basil, #493 Cyril and Gregory of Nazianzus), staged together as one release from master once #511 and #493 have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
+      "reason": "Only to delete the Qdrant collection batch 4's publish replaces, chunks-batch-3-2026-11, once its smoke checks pass (Carter's standing decision, 23 Nov 2026). Batch 3's entries are removed here: its smoke checks passed and chunks-batch-2-2026-11 was deleted on 27 Nov 2026 (#205, #207). Batch 4 (Carter, 27 Nov 2026): #513 the Roman Curia collection (5.3a, the DDF's 60 doctrinal documents; migration 0049 applied 27 Nov 2026), #490 Universi Dominici Gregis and Normas Nonnullas in Church law with Amoris Laetitia and Ubicumque et Semper in Papal documents (5.4), #514 the Cloud of Unknowing and Hilton's two works (5.6b) and #496 John of the Cross's Ascent of Mount Carmel (5.6c), staged together as one release from master once their PRs have merged. Each live step still needs Carter's approval when it runs; the stage goes ahead when its embedding cost is under $1, reported after.",
       "approved_by": "Carter",
-      "pr": 512
+      "pr": 0
     }
   ]
 }
