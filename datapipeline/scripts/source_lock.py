@@ -143,6 +143,7 @@ _UNREGISTERED_NOTES.update({
         "Fordham's transcription, used only to check the Roman Catechism's OCR (5.5)",
 })
 _UNREGISTERED_DIR_NOTES = {
+    "theologians": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/",
     # Approved R6 downloads (docs/research/R6-editions.md, "Download list for Carter"),
     # held where no adapter reads them. The ingesting PR moves each file unchanged to
     # its "Vendored as" path, the path after `_incoming/`, so its hash is the same.

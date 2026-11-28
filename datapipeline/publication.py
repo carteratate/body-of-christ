@@ -64,10 +64,12 @@ SOURCE_BUILDS: dict[str, SourceAdapter] = {
     "church-law": lambda: _build_from("universal_law", "build_documents"),
     "councils": lambda: _build_from("councils", "build_documents"),
     "encyclicals": lambda: _build_from("encyclicals", "build_documents"),
-    # The medieval works, then 5.6b's theologians and spiritual writers, under the
-    # source key in `ingest.keys`; published as `theologians` below.
+    # The medieval works, then 5.6b's theologians and spiritual writers, then 5.6c's
+    # scanned John of the Cross, under the source key in `ingest.keys`; published as
+    # `theologians` below.
     THEOLOGIANS: lambda: (_build_from("medieval", "build_documents")
-                          + _build_from("theologians", "build_documents")),
+                          + _build_from("theologians", "build_documents")
+                          + _build_from("john_of_the_cross", "build_documents")),
     "papal-documents": lambda: _build_from("papal_documents", "build_documents"),
     # The Dicastery for the Doctrine of the Faith's documents (5.3a).
     "roman-curia": lambda: _build_from("roman_curia", "build_documents"),

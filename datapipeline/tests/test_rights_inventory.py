@@ -12,7 +12,7 @@ import rights_inventory as R
 ENTRIES = R.load()
 # md5 of the sorted document IDs of a master build, joined with commas: the 421 live
 # documents as of 0.2. A PR that changes the published document set updates it on purpose.
-LIVE_DOCUMENT_IDS_MD5 = "c762b4e1297884bfc2707d535dbc31a4"   # 522: 5.6b adds the Cloud and Hilton (3) to 5.3a's and 5.4's 519
+LIVE_DOCUMENT_IDS_MD5 = "65aaef88b63d193eb8baa250bc486b7a"   # 523: batch 4, 5.6c's Ascent of Mount Carmel with 5.3a, 5.4 and the Cloud and Hilton (522)
 
 
 def test_every_entry_has_required_fields_and_known_status():

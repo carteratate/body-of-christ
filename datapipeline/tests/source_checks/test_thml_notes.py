@@ -51,6 +51,8 @@ def _by_file(built) -> dict:
     for collection in THML:
         for d in built[collection]:
             for p in d.passages:
+                if p.metadata.get("text_source") == "ocr":
+                    continue    # a scan read through the OCR tool (5.6c), not a ThML file
                 # A Project Gutenberg text (5.6b) is no ThML file; its notes leave by the
                 # same rule, which the coverage check's note leakage measures.
                 if p.metadata["source_file"].endswith(".xml"):
