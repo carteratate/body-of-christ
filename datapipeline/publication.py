@@ -27,6 +27,7 @@ import registry as reg
 import retirements
 from checks import card_notes as card_notes_check
 from health import refuse_block_violations
+from ingest.keys import THEOLOGIANS
 from model import Document
 from writers import reader_writer
 
@@ -61,10 +62,12 @@ SOURCE_BUILDS: dict[str, SourceAdapter] = {
     "church-fathers": lambda: _build_from("church_fathers", "build_all"),
     "councils": lambda: _build_from("councils", "build_documents"),
     "encyclicals": lambda: _build_from("encyclicals", "build_documents"),
-    # Today's medieval works, then 5.6c's scanned John of the Cross (registered under this
-    # source key until 5.1b.4; published as `theologians`).
-    "medieval": lambda: (_build_from("medieval", "build_documents")
-                         + _build_from("john_of_the_cross", "build_documents")),
+    # The medieval works, then 5.6b's theologians and spiritual writers, then 5.6c's
+    # scanned John of the Cross, under the source key in `ingest.keys`; published as
+    # `theologians` below.
+    THEOLOGIANS: lambda: (_build_from("medieval", "build_documents")
+                          + _build_from("theologians", "build_documents")
+                          + _build_from("john_of_the_cross", "build_documents")),
     "papal-documents": lambda: _build_from("papal_documents", "build_documents"),
     "summa": lambda: _build_from("summa", "build_document", single=True),
 }

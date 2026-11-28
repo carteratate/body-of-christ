@@ -89,28 +89,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/church-fathers/npnf207.xml",
-  "sha256": "3ac73f4179c0b7d6e66e6fea04ae572e64c0e4a80e8fa38980b40366c8a13928",
-  "bytes": 4247548,
-  "url": "https://ccel.org/ccel/s/schaff/npnf207.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/church-fathers/npnf208.xml",
-  "sha256": "95cf3dafefccec80e0949a03c7f1f605da293302d0dc7a8bd62a4e711a0c5532",
-  "bytes": 3303323,
-  "url": "https://ccel.org/ccel/s/schaff/npnf208.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/church-fathers/npnf210.xml",
   "sha256": "c6f1a9d66653852d8b743c84a613c72c521dfb1b05602f0a2eff400c17665ee8",
   "bytes": 3837030,
@@ -661,28 +639,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/desales-devout_life.xml",
-  "sha256": "af8c467a87fbbcf2aaac1764e7962fdcd64b8eab5db740ca565752533d73861f",
-  "bytes": 651626,
-  "url": "https://ccel.org/ccel/d/desales/devout_life.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/desales-love.xml",
-  "sha256": "b76a42327e2a53ef47912374dd1746c70d263158cef7a62b6bb1a56f45e3c8f5",
-  "bytes": 1890439,
-  "url": "https://ccel.org/ccel/d/desales/love.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/divinetrinitydog00pohluoft/divinetrinitydog00pohluoft_djvu.txt",
   "sha256": "30951138e3320baab604e85f8f17ee636fe72789d3115decded0b8b664686ad6",
   "bytes": 533230,
@@ -786,39 +742,6 @@
   "sha256": "0b258bc070b103a33f419d4b2f6b02fe57c563c18c9c59cbdabff601e2bca7e5",
   "bytes": 83173,
   "url": "https://ccel.org/ccel/h/hilton/treatise.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/ignatius-autobiography.xml",
-  "sha256": "83a245891690b11af949368a219f3e5c910430be336d02626ddb671dabb0f093",
-  "bytes": 173374,
-  "url": "https://ccel.org/ccel/i/ignatius/autobiography.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/ignatius-exercises.xml",
-  "sha256": "f564e2bc19ffd108cf308a3ba0923f727658b6e910d8ddb7234a96cc82ef9f7b",
-  "bytes": 266222,
-  "url": "https://ccel.org/ccel/i/ignatius/exercises.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/julian-revelations.xml",
-  "sha256": "4611e9128c4d957d342287dadc5adbcc82f0826815278875369fcf7045f2642d",
-  "bytes": 395019,
-  "url": "https://ccel.org/ccel/j/julian/revelations.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
@@ -969,17 +892,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/pg13871.txt",
-  "sha256": "1f4df307f62f2be596e4be48afce14067cea1a1f54c957639087386b180716e9",
-  "bytes": 80593,
-  "url": "https://www.gutenberg.org/cache/epub/13871/pg13871.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/pg22088.txt",
   "sha256": "bfa42b93d323ed1b02657923f5c70143ce9c7cd54654f8ef086e48968d5bc357",
   "bytes": 818677,
@@ -1050,17 +962,6 @@
   "sha256": "aa52d050e45fd4fc5423b1282f84d9fc6337b687b86dce0bae85d6349d2dcfeb",
   "bytes": 270046,
   "url": "https://www.gutenberg.org/cache/epub/63084/pg63084.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/pg72411.txt",
-  "sha256": "18684ebb448fe34ec152f2a0645c1d8bd85cd0d1b2281929467833036e74352f",
-  "bytes": 1232145,
-  "url": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
@@ -1343,28 +1244,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/theologians/teresa-castle2.xml",
-  "sha256": "8ff410eb6ad0bb12f3003fc902c1ff706f506d01de3cb0e4e36ef9523b10eaf7",
-  "bytes": 582155,
-  "url": "https://ccel.org/ccel/t/teresa/castle2.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/teresa-life.xml",
-  "sha256": "00e8143f2480767ce63c52159be78dab9a717ffc6defd9abd6d116c5ea9e86f0",
-  "bytes": 1639686,
-  "url": "https://ccel.org/ccel/t/teresa/life.xml",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/theologians/theartofdyingwel00belluoft/theartofdyingwel00belluoft_djvu.txt",
   "sha256": "6bb746648b3e51e7df9d521a96cf654513e2f4108725fab867f9896ab25f477f",
   "bytes": 231603,
@@ -1468,17 +1347,6 @@
   "sha256": "9bf138599cd88d26524d80c5b6514a7dd58d8b0bfef667ff0735a0f372133144",
   "bytes": 622703,
   "url": "https://archive.org/download/thepraiseofglory00elizuoft/thepraiseofglory00elizuoft_djvu.txt",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/theologians/therese-autobio.xml",
-  "sha256": "efa45a4a96f66835f663c88c982795f2b6b5372f0628761831caeb8d5fadc463",
-  "bytes": 681615,
-  "url": "https://ccel.org/ccel/t/therese/autobio.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "vendored-unregistered",
@@ -3328,11 +3196,11 @@
  {
   "collection": "church-fathers",
   "path": "church-fathers/manifest.json",
-  "sha256": "cfa843d4cab79f8b408f8b88ee02974cab573bd07bd251a6ecc65b585741a986",
-  "bytes": 2556,
+  "sha256": "89d5e9cf72d49b7c88ebfd60d0af82e0929a1756f5f4546703bfd0b7d9aebe67",
+  "bytes": 3070,
   "url": null,
   "acquired": "unknown-before-2026-11-13",
-  "hashed_on": "2026-11-13",
+  "hashed_on": "2026-11-23",
   "role": "adapter-auxiliary"
  },
  {
@@ -3341,6 +3209,26 @@
   "sha256": "bd625a0fa4f5ddd4b2fa13fcee753de8832ea4b316625e0e06454beb81cfa652",
   "bytes": 5809854,
   "url": "https://ccel.org/ccel/s/schaff/npnf204.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "church-fathers",
+  "path": "church-fathers/npnf207.xml",
+  "sha256": "3ac73f4179c0b7d6e66e6fea04ae572e64c0e4a80e8fa38980b40366c8a13928",
+  "bytes": 4247548,
+  "url": "https://ccel.org/ccel/s/schaff/npnf207.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "church-fathers",
+  "path": "church-fathers/npnf208.xml",
+  "sha256": "95cf3dafefccec80e0949a03c7f1f605da293302d0dc7a8bd62a4e711a0c5532",
+  "bytes": 3303323,
+  "url": "https://ccel.org/ccel/s/schaff/npnf208.xml",
   "acquired": "2026-10-05",
   "hashed_on": "2026-10-05",
   "role": "adapter-input"
@@ -7085,5 +6973,105 @@
   "hashed_on": "2026-11-23",
   "role": "vendored-unregistered",
   "note": "a 5.6c scan, read through the OCR tool's frozen text in ocr/texts/"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/desales-devout_life.xml",
+  "sha256": "af8c467a87fbbcf2aaac1764e7962fdcd64b8eab5db740ca565752533d73861f",
+  "bytes": 651626,
+  "url": "https://ccel.org/ccel/d/desales/devout_life.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/desales-love.xml",
+  "sha256": "b76a42327e2a53ef47912374dd1746c70d263158cef7a62b6bb1a56f45e3c8f5",
+  "bytes": 1890439,
+  "url": "https://ccel.org/ccel/d/desales/love.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/ignatius-autobiography.xml",
+  "sha256": "83a245891690b11af949368a219f3e5c910430be336d02626ddb671dabb0f093",
+  "bytes": 173374,
+  "url": "https://ccel.org/ccel/i/ignatius/autobiography.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/ignatius-exercises.xml",
+  "sha256": "f564e2bc19ffd108cf308a3ba0923f727658b6e910d8ddb7234a96cc82ef9f7b",
+  "bytes": 266222,
+  "url": "https://ccel.org/ccel/i/ignatius/exercises.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/julian-revelations.xml",
+  "sha256": "4611e9128c4d957d342287dadc5adbcc82f0826815278875369fcf7045f2642d",
+  "bytes": 395019,
+  "url": "https://ccel.org/ccel/j/julian/revelations.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/pg13871.txt",
+  "sha256": "1f4df307f62f2be596e4be48afce14067cea1a1f54c957639087386b180716e9",
+  "bytes": 80593,
+  "url": "https://www.gutenberg.org/cache/epub/13871/pg13871.txt",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/pg72411.txt",
+  "sha256": "18684ebb448fe34ec152f2a0645c1d8bd85cd0d1b2281929467833036e74352f",
+  "bytes": 1232145,
+  "url": "https://www.gutenberg.org/cache/epub/72411/pg72411.txt",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/teresa-castle2.xml",
+  "sha256": "8ff410eb6ad0bb12f3003fc902c1ff706f506d01de3cb0e4e36ef9523b10eaf7",
+  "bytes": 582155,
+  "url": "https://ccel.org/ccel/t/teresa/castle2.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/teresa-life.xml",
+  "sha256": "00e8143f2480767ce63c52159be78dab9a717ffc6defd9abd6d116c5ea9e86f0",
+  "bytes": 1639686,
+  "url": "https://ccel.org/ccel/t/teresa/life.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "theologians",
+  "path": "theologians/therese-autobio.xml",
+  "sha256": "efa45a4a96f66835f663c88c982795f2b6b5372f0628761831caeb8d5fadc463",
+  "bytes": 681615,
+  "url": "https://ccel.org/ccel/t/therese/autobio.xml",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
  }
 ]

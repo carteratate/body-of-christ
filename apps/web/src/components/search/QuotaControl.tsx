@@ -16,6 +16,11 @@ interface QuotaControlProps {
   focusedCollection: string | null;
 }
 
+/**
+ * On phones the box is only as wide as the buttons shown (3·4·5, widening as 10 slides
+ * in), so a parent that centres it centres the buttons, and the "Per source:" label
+ * hangs off its left side, out of the flow. On wider screens it is laid out as before.
+ */
 export function QuotaControl({ value, onChange, focusedCollection }: QuotaControlProps) {
   const collection = focusedCollection ? getCollectionMeta(focusedCollection) : undefined;
   const focusedEligible = collection !== undefined;
@@ -47,11 +52,21 @@ export function QuotaControl({ value, onChange, focusedCollection }: QuotaContro
     : undefined;
 
   return (
-    <div className="flex shrink-0 items-center gap-2">
-      <span className="text-[10px] font-medium uppercase tracking-widest text-brand-muted">
+    <div className="relative flex shrink-0 items-center gap-2">
+      {/* On phones the bar is the screen's width: the label may use what lies between
+          the bar's 16px padding and the selector (half its width, plus the 8px gap),
+          wrapping onto two lines on the narrowest screens rather than running off. */}
+      <span
+        className={`text-[10px] font-medium uppercase tracking-widest text-brand-muted max-md:absolute max-md:right-full max-md:top-1/2 max-md:mr-2 max-md:w-max max-md:-translate-y-1/2 max-md:text-right max-md:leading-tight ${
+          focusedEligible ? "max-md:max-w-[calc(50vw-98px)]" : "max-md:max-w-[calc(50vw-79.5px)]"}`}
+      >
         Per source:
       </span>
-      <div className={styles.viewport} role="group" aria-label="Results per source">
+      <div
+        className={`${styles.viewport} ${focusedEligible ? styles.viewportWide : ""}`}
+        role="group"
+        aria-label="Results per source"
+      >
         <div
           className={`${styles.standardChoices} ${focusedEligible ? styles.standardChoicesShifted : ""}`}
         >

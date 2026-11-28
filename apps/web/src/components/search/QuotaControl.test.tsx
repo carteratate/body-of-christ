@@ -48,6 +48,15 @@ describe("QuotaControl", () => {
     expect(screen.queryByRole("button", { name: "10 passages per source" })).toBeNull();
   });
 
+  it("sizes its box to the buttons shown, so centring it centres them", () => {
+    const view = render(<QuotaControl value={5} onChange={vi.fn()} focusedCollection={null} />);
+    const group = screen.getByRole("group", { name: "Results per source" });
+    expect(group.className).not.toContain("viewportWide");
+
+    view.rerender(<QuotaControl value={5} onChange={vi.fn()} focusedCollection="bible" />);
+    expect(group.className).toContain("viewportWide");
+  });
+
   it("uses the collection color, four-pixel gold boundary, and a high-contrast numeral", () => {
     const view = render(<QuotaControl value={5} onChange={vi.fn()} focusedCollection="bible" />);
     const ten = screen.getByRole("button", { name: "10 passages per source" });

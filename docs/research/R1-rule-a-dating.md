@@ -317,6 +317,56 @@ Each item has a recommendation. **Carter accepted every recommendation on 5 Oct 
 
 Carter approved every result on 15 Nov 2026 (Decision log "Cyprian's correspondents under rule A (3.1, C-02)"). No new Church act was found.
 
+## Addendum (5.6a, 23 Nov 2026): Basil (NPNF2-08)
+
+5.6a's research step for Basil's three works in NPNF2-08 (*On the Holy Spirit*, the *Hexaemeron*, the letters), by this file's method, with two sources this file did not use before:
+
+- **Quasten, vol. III in English, in its Spanish edition:** *Patrología* II, *La edad de oro de la literatura patrística griega* (BAC, 1978), Internet Archive item [`QUASTENPatrologaII`](https://archive.org/details/QUASTENPatrologaII), read through the search-inside service. Every English copy of vol. III on the Internet Archive is lending-only, and its search-inside returned 403 (23 Nov 2026). The scan is two pages a leaf; printed page = 2 × leaf − 8 (left) or − 7 (right), checked at leaf 119, which prints p. 231, the page Quasten's own cross-reference to *De Spiritu Sancto* names.
+- **Fedwick (1981):** P. J. Fedwick, "A Chronology of the Life and Works of Basil of Caesarea" and "The Works of Basil of Caesarea" (its list of Dubia and Spuria, which follows CPG 2900), in Fedwick, ed., *Basil of Caesarea: Christian, Humanist, Ascetic* (Toronto, 1981), read in the transcription at [uecf.net](https://www.uecf.net/books/basil-of-caesarea-symposium/), chapters 6 and 7. The CPG itself was not reachable.
+
+**Rule A.** Basil was baptized as an adult, from a Christian family: Quasten (pp. 224-225) puts the baptism before his journey to the monks, Fedwick's chronology ("357 (or 358)") after it and after Letter 1. That difference decides nothing, because Basil is a Doctor of the Church and limit 2 passes a Doctor's works whatever their date. (This file's table above listed him for dating; limit 2 makes that unnecessary.) What rule A leaves out of his volume is the work of other writers:
+
+| Work or letters | Result | Basis |
+|---|---|---|
+| *On the Holy Spirit*, the *Hexaemeron*, every letter of Basil's (Letter 1 and his letters to Libanius included) | include | Limit 2 (Doctor). Dates for the facts: *On the Holy Spirit* about 375 (Quasten p. 231); the *Hexaemeron* before 370 (pp. 238-239) |
+| Letters 336, 338, 340, 341, 343, 345 to 347, 349, 352, 354, 355, 357, 358 (Libanius to Basil) | exclude | Libanius was "un pagano declarado" (Quasten p. 245): not a Christian |
+| Letters 39 and 40 (Julian to Basil) | exclude | In the name of the emperor Julian, who had abandoned the faith (the testimony of the Fathers). Quasten (p. 248) calls the Julian correspondence (39 to 41, 360) spurious; errors fall toward exclusion. **For Carter** |
+| Letter 8, to the Caesareans | include (Carter's decision) | By Evagrius Ponticus (Bousset, Melcher; Quasten p. 247; Fedwick, Spuria), whom the Second Council of Nicaea's definition condemns by name ("the mythical speculations of Origen, Evagrius and Didymus", vendored `councils/ecum-07-second-council-of-nicaea.html`). Limit 1 would leave it out; Carter kept it on 24 Nov 2026, credited to Evagrius with a note (Decision log "Basil's Letter 8 (5.6a)") |
+| Every other letter | include | Basil's (limit 2), or another writer's presumed in communion |
+
+**Rule H (labels).** Quasten pp. 244-249 and Fedwick's Spuria agree on each:
+
+| Letters | Credited to | Certainty |
+|---|---|---|
+| 10, 38 (CPG 3196), 189 | Gregory of Nyssa | disputed |
+| 16 (an extract of his *Against Eunomius*) | Gregory of Nyssa | genuine |
+| 47 (about Basil; the Benedictines give it to Gregory's father, in his son's hand), 169, 170, 171 | Gregory of Nazianzus (Fedwick) | disputed |
+| 167 (Gregory's Letter 66) | retired as a duplicate: Gregory's own copy is built from NPNF2-07 (Decision log, 24 Nov 2026) | |
+| 187 ("Antipater to Basil") | Antipater, governor of Cappadocia | genuine |
+| 335, 337, 339, 344 (Fedwick's Dubia), 342 (Fedwick's Spuria; Quasten counts 335 to 346 authentic) | Basil | disputed |
+| 41 to 45, 50, 81, 197 §2 (Cavallin), 348, 350, 351, 353, 356, 359, 366 (extracts of Clement's *Stromata*) | Pseudo-Basil | pseudonymous (rule B keeps them: no source names their writers heretics) |
+| 360, on images | Pseudo-Basil | pseudonymous; spurious (Quasten), but the Second Council of Nicaea quoted it, so rule D keeps it |
+
+Letters 166 and 321 are Gregory of Nazianzus's too (Fedwick), and Letters 361 to 365 (the Apollinarius correspondence and the letter to Theodosius) are disputed or spurious, but NPNF2-08 prints none of their text, so nothing is built. Quasten (p. 247) reports Schäfer's doubts on Letters 53 and 54 as one scholar's; they stay Basil's.
+
+5.6a records these decisions in its removal entries (rm-11501 to rm-11551, rm-11522 to rm-11531 retired), in `attributions.BASIL_LETTER_LABELS` and in each work's `rule_a` in works.json, not in `rule_a_R1.json`, which 3.1's `rule_removals.py` reads as its own complete list.
+
+## Addendum (5.6a, 24 Nov 2026): Cyril of Jerusalem and Gregory of Nazianzus (NPNF2-07)
+
+By the method of the Basil addendum above (Quasten's vol. III in its Spanish edition, `QUASTENPatrologaII`, search-inside; printed page = 2 × leaf − 8 or − 7).
+
+**Rule A.** Cyril of Jerusalem (Doctor, 1882) and Gregory of Nazianzus (Doctor, 1568) pass by limit 2, so none of their works is dated for rule A. NPNF2-07 prints no letter or work by anyone else: the 23 letters of its "Correspondence with Saint Basil" division are Gregory's to Basil and others (Letter XLI written in his father's name, still his own).
+
+**Rule H.**
+
+| Work | Credited to | Certainty | Basis |
+|---|---|---|---|
+| Procatechesis and Lectures 1 to 18 | Cyril of Jerusalem | genuine | "todos aceptan unánimemente como auténticas las catequesis prebautismales" (Quasten p. 406) |
+| Mystagogical Lectures (19 to 23) | Cyril of Jerusalem | disputed | Codex Monac. gr. 394 gives them to Cyril's successor John (386-417); Schermann, Swaans, Richard and Telfer follow it; Cross and others argue a common author; Quasten (p. 407): neither the manuscripts nor the cross-references settle it. The Catechism cites them as Cyril's ("St. Cyril of Jerusalem, Catech. myst."), which rule H follows first |
+| Select Orations (24) and Select Letters (96 with text) | Gregory of Nazianzus | genuine | Quasten's account of the orations (pp. 264-271) and letters (pp. 272-275) raises no doubt of authorship (a search of those leaves for "auténtic", "espuri" and "dudos" finds none); Letters LXV and LXVI, "sometimes attributed to Basil" (the editor), are Basil's 166 and 167, which Fedwick gives to Gregory (Basil addendum) |
+
+Dates for the facts: the lectures "347 or 348" (Quasten p. 404); the orations and letters span Gregory's life and carry none.
+
 ## Files
 
 - `datapipeline/registry/rule_a_R1.json`: 216 entries, as described above, and 16 more for Cyprian's correspondents since 3.1 (232).

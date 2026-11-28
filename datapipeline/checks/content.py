@@ -317,6 +317,12 @@ LETTER_NUMBER_LINE = re.compile(r"^(?:Epistle|Letter) [IVXLC]+\.")
 # The editor's title line names the letter's direction. "To X" and "From A to X" with A
 # the author are the author's; otherwise the words before " to "/" Replies"/" Answer"
 # name the sender.
+# Title lines that name a letter's kind or subject, not its sender: "Without inscription,
+# on behalf of Elpidius", "Consolatory, to the clergy of Colonia", "Admonition to the
+# Young", "That the oath ought not to be taken" (Basil's, 5.6a).
+_SUBJECT_LINE = re.compile(r"^(?:Without|Consolatory|Commendatory|Admonition|That)\b")
+_SENDER_FORM = re.compile(r"^(?:From |The Reply |The Answer |The Letter of )|’s Answer| Replies"
+                          r"| Answer| to |,? on ")
 _TITLE_SENDER = re.compile(
     r"^(?:From |The Reply (?:to the Same )?of |The Answer of |The Letter of )?"
     r"(?P<sender>.+?)(?:’s Answer| Replies| Answer| to |,? on |$)")
@@ -376,6 +382,10 @@ def letter_sender(document: Document, letter: list) -> str | None:
     author = _fold(document.author or "").split(" ")[0]
     if title.startswith("To ") or _fold(title).split(" ")[0] == author \
             or _fold(greeting.lstrip("0123456789. ")).split(" ")[0] == author:
+        return None
+    # A title line that names no sender ("Without address.", "Consolatory", "Canonica
+    # Secunda", a subject line) says nothing about who wrote the letter (5.6a, Basil).
+    if not _SENDER_FORM.search(title) or _SUBJECT_LINE.match(title):
         return None
     m = _TITLE_SENDER.match(title)
     return m.group("sender").strip(" ,.") if m else title
