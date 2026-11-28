@@ -303,7 +303,7 @@ or deleting a migration already on `master` fails unless the file says
   Passage occurrence carrying a private source snapshot, so corpus pruning can remove the
   live chunk without erasing authored work. Update this entry when the migration lands.
 
-Migrations 0001–0034, 0036–0038 and 0040–0048 are committed (0044 and 0045 were applied on 16 Nov 2026; 0047 and 0046, which widened `documents_collection_check` to the new keys for 5.1b.3, on 23 Nov 2026; 0048, 5.1b.4's narrowing of that constraint to the eight keys, on 24 Nov 2026, ledger `20261125025359`, after the zero-old-keys count read 0 everywhere, Qdrant included); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 still renumbers when it lands. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
+Migrations 0001–0034, 0036–0038 and 0040–0049 are committed (0044 and 0045 were applied on 16 Nov 2026; 0047 and 0046, which widened `documents_collection_check` to the new keys for 5.1b.3, on 23 Nov 2026; 0048, 5.1b.4's narrowing of that constraint to the eight keys, on 24 Nov 2026, ledger `20261125025359`, after the zero-old-keys count read 0 everywhere, Qdrant included; 0049, which adds `roman-curia` to that constraint for 5.3a, on 26 Nov 2026, ledger `20261127022446`, with Carter's approval); `0035_studies.sql` is drafted only (see above). **0039 is unused:** it was reserved for corpus-cleanup item 2.2a (#178), which landed as 0042/0043 so that it runs after the tables staging mirrors (Carter, 2 Nov 2026); the parked `feat/roman-curia-collection` branch's own 0039 became 0049 in 5.3a. **Two identity collisions exist — `0026_compare_runs_pricing` / `0026_guest_onboarding_continuity`, and `0027_reading_progress` / `0027_guest_transfer_readiness`.** All four hold live schema, and the two members of each pair touch disjoint tables, so order within a pair does not matter. Audit the Supabase migration ledger before renaming any of them.
 
 `chunks.content_embedding` and `chunks.annotation_embedding` exist but are **unused** —
 NULL in every row, and no pgvector operator (`<=>`, `<->`, `<#>`) appears anywhere in the
@@ -360,9 +360,10 @@ failures consistently. See §18.
 `rag/collection_scope.py`). The request lists what to search; a `CollectionScope` holds the
 complement, and retrieval excludes only those values (Qdrant `must_not`, SQL
 `genre IS NULL OR genre <> ALL(...)`), so a document without a genre or issuer is searched
-under every selection. Only the papal collections can be narrowed (`GENRES_BY_COLLECTION`,
-`ISSUERS_BY_COLLECTION` in `constants.py`, `papal` included, the genres a copy of `datapipeline/registry/genres.py`
-kept equal by a test). A search without scopes sends master's exact Qdrant filter and SQL
+under every selection. Only `papal` and `roman-curia` (5.3a) can be narrowed this way
+(`GENRES_BY_COLLECTION`, `ISSUERS_BY_COLLECTION` in `constants.py`, the genres a copy of
+`datapipeline/registry/genres.py` kept equal by a test); the web offers Roman Curia's kinds
+only, as its one office (`ddf`) makes an issuer list pointless until 5.3b. A search without scopes sends master's exact Qdrant filter and SQL
 (`tests/test_collection_scope.py`); keep it that way.
 
 **The work filter narrows a collection to some of its documents** (`documents`, by document ID,
@@ -630,8 +631,12 @@ Auto-save on toggle/quota/translation change is debounced `PUT /v1/preferences` 
   guest's saved draft, an old tab): `canonicalCollectionKey` translates them, and a
   restored old papal search becomes a Papal documents genre selection
   (`canonicalSearchFilters`), so the web never sends an old key (Carter, 23 Nov 2026).
-- **Datapipeline (5.1b.3):** `publication.SOURCE_ADAPTERS` builds the eight published
-  collections; `SOURCE_BUILDS` builds the ten sources (`sources/<key>/`, the old names),
+- **Roman Curia (5.3a):** `roman-curia` is in `CANONICAL_COLLECTIONS` and accepted by the API,
+  but the web lists it in `UNRELEASED_COLLECTIONS` (label and colour only, no toggle) until
+  its documents are published; a later PR moves it into `COLLECTIONS` and adds it to the
+  `/evaluate` prompt. Its 60 documents are excerpt-only (the vatican.va basis).
+- **Datapipeline (5.1b.3):** `publication.SOURCE_ADAPTERS` builds the nine published
+  collections; `SOURCE_BUILDS` builds the eleven sources (`sources/<key>/`, the old names),
   which the work registry, the 0.1a to 0.1c checks, their known defects and the embedding
   overlap stay keyed by (`collection_keys.source_of`). Until 5.1b.3's publish is applied,
   live rows carry the old keys, and 2.2w reads them as part of the new key
@@ -683,7 +688,7 @@ What focused changes, all derived from the plan:
 
 | | Standard | Focused |
 |---|---|---|
-| Collections | 1–8 | exactly 1 |
+| Collections | 1–9 | exactly 1 |
 | `terminal_candidate_budget` | `settings.llm_pool_global_cap` | 25 |
 | `max_passages_per_source` | 2 | 4 | *(per **chapter** for chapter-keyed collections — see below)* |
 | Bible HyDE | genre-selected subset | all genres, fused as one retrieval family (`hyde_s25.run(..., all_bible_genres=True)`) |

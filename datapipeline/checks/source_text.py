@@ -679,7 +679,7 @@ def _mark_callers(main: Tag) -> None:
 
 def html_units(path: str, source_file: str | None = None,
                papal: bool = False, canon_law: bool = False,
-               vatican2: bool = False) -> list[SourceUnit]:
+               vatican2: bool = False, amendment_marks: bool = False) -> list[SourceUnit]:
     """vatican.va and papalencyclicals.net HTML. Body is the visible text of the main
     content element, one unit per block (<p>, <li>, <div>, table cell, …). Text after
     the first notes marker is "note": a notes heading ("Notes", "NOTES", "ENDNOTES",
@@ -703,12 +703,19 @@ def html_units(path: str, source_file: str | None = None,
     heading, its superseded texts included.
 
     With `vatican2`, for the Vatican II pages of the councils collection, body text loses
-    its footnote callers, as the parser's does (1.1)."""
+    its footnote callers, as the parser's does (1.1).
+
+    With `amendment_marks`, for Universi Dominici Gregis (5.4), the superscript "n" the
+    page sets beside each amended number is not text, as the parser reads it."""
     source_file = source_file or os.path.basename(path)
     with open(path, "rb") as f:
         soup = BeautifulSoup(f.read(), "lxml")
     for tag in soup.find_all(_HTML_DROP):
         tag.decompose()
+    if amendment_marks:
+        for tag in soup.find_all("sup"):
+            if tag.get_text(strip=True) == "n":
+                tag.decompose()
     if canon_law:
         for tag in soup.find_all("font"):
             if (tag.get("color") or "").lower() == "#663300" and tag.get_text(strip=True) == "n":
@@ -1047,7 +1054,8 @@ def compendium_units(path: str, source_file: str | None = None) -> list[SourceUn
 # --------------------------------------------------------------------------- files
 
 # Collections whose files are listed in sources/<collection>/manifest.json, by format.
-_MANIFEST_HTML = ("apostolic-exhortations", "councils", "encyclicals", "papal-documents")
+_MANIFEST_HTML = ("apostolic-exhortations", "councils", "encyclicals", "papal-documents",
+                  "roman-curia")
 
 
 def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
@@ -1083,6 +1091,10 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
             entries = [e for e in entries if resolve_document_id(
                 collection, f"{collection}/{e['slug']}", (collection, e["slug"])) not in held
                 and printing(collection, e["slug"]) is None]
+            # A text published only as a PDF (Amoris Laetitia, 5.4) is read from its text
+            # layer by size; `tests/test_papal_pdf.py` checks it against its own index and
+            # its run of numbered paragraphs.
+            entries = [e for e in entries if not e["file"].endswith(".pdf")]
         files = [e["file"] for e in entries]
         if collection == theologians.COLLECTION:
             # 5.6b's works, read from sources/theologians/ (`ingest.theologians`).
@@ -1091,6 +1103,12 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
     if collection == "canon-law":
         with open(os.path.join(base, "pages.json"), encoding="utf-8") as f:
             return [p["file"] for p in json.load(f) if p.get("parsed", True)]
+    if collection == "church-law":
+        # Universi Dominici Gregis and Normas Nonnullas (5.4). The 1996 original is a PDF;
+        # `tests/test_universal_law.py` holds it equal to the current text outside the
+        # numbers Normas Nonnullas amended.
+        from ingest.universal_law import EDITIONS
+        return [e.file for e in EDITIONS if e.file.endswith(".html")]
     if collection == "bible":
         return sorted(os.path.relpath(p, base)
                       for p in glob(os.path.join(base, "eng-web-c_usfm", "*.usfm")))
@@ -1116,8 +1134,11 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
     if collection == "catechism" and source_file.endswith(".html"):
         return compendium_units(path, source_file)
     if source_file.endswith(".html"):
-        return html_units(path, source_file, papal=collection in PAPAL_COLLECTIONS,
+        return html_units(path, source_file,
+                          papal=(collection in PAPAL_COLLECTIONS
+                                 or collection in ("church-law", "roman-curia")),
                           canon_law=collection == "canon-law",
+                          amendment_marks=collection == "church-law",
                           vatican2=collection == "councils" and source_file.startswith("vat2-"))
     if source_file.endswith(".usfm"):
         return usfm_units(path, source_file)

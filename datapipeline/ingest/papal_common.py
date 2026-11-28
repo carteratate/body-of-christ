@@ -25,6 +25,7 @@ from typing import NamedTuple
 
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
+import headings
 from config import settings
 from identity import anchor as make_anchor, unit_anchor
 from ingest.pieces import (ORDINAL_ATTR, Segment, element_locator, name_pieces,
@@ -43,6 +44,8 @@ log = logging.getLogger(__name__)
 _NUM = re.compile(r"^(\d{1,4})\s*\.(?=\s|$|[^\d\s])\s*(.*)", re.DOTALL)
 _UNDOTTED = re.compile(r"^(\d{1,3})\s+([A-Z“\"].*)", re.DOTALL)
 _ROMAN = re.compile(r"^[IVX]+\.\s+\S")
+# An article's number on its own line ("Art. 1."), heading a motu proprio's norms (5.4).
+_ARTICLE = re.compile(r"^Art\.\s*\d+\.?$")
 # A short line closing on a Scripture reference: a heading quoting the verse.
 _CITED_LINE = re.compile(r"\([^)]*\d+:\d+[^)]*\)$")
 _BARE_NUMERAL = re.compile(r"^[IVX]+\.?$")
@@ -136,6 +139,12 @@ _SIGNATURE_MAX = 40
 _LAST_PARAGRAPH = {"syllabus-of-errors": 80}
 # Where a list ends and the document's own prose follows it, unnumbered (C-01).
 _LIST_END = {"exsurge-domine": 41}
+# Documents whose headings are marked in their passages (#445): 5.4's additions. The rest
+# of the papal collection keeps its headings unmarked until #445 marks it as a whole.
+_MARKED_HEADINGS = frozenset({"amoris-laetitia", "ubicumque-et-semper"})
+# Where an unnumbered document's closing formula starts after its last article (5.4):
+# its opening words. It is the document's conclusion, not part of that article.
+_CLOSING_FROM = {"ubicumque-et-semper": "I order that all that has been established"}
 # Site text inside a document (C-05), cut from the first match to the end of its unit.
 _SITE_CUT = {
     "cum-sancta-mater-ecclesia": re.compile(r"\s*Perform bulk operations\b.*$", re.DOTALL),
@@ -728,7 +737,7 @@ def _pre_tokens(items: list[_Item], first_number: int) -> tuple[list[Token], lis
     return out, rest
 
 
-def _unnumbered_tokens(items: list[_Item]) -> list[Token]:
+def _unnumbered_tokens(items: list[_Item], slug: str | None = None) -> list[Token]:
     """A source with no paragraph numbers. Each `<p>` keeps the running count earlier
     builds gave it, because it is that unit's anchor; only the citation drops the number.
     Headings are sections, a masthead is skipped, and closing lines join the last text."""
@@ -743,7 +752,10 @@ def _unnumbered_tokens(items: list[_Item]) -> list[Token]:
             toks.append(Token(kind, None, text, [item.segment]))
             continue
         opened = any(t.kind == "text" for t in toks)
-        if is_shouting(text) or (_ROMAN.match(text) and len(text) < _BOLD_HEADING_MAX):
+        if slug in _CLOSING_FROM and text.startswith(_CLOSING_FROM[slug]):
+            toks.append(Token("section", None, "Conclusion", []))
+        if is_shouting(text) or _ARTICLE.match(text) \
+                or (_ROMAN.match(text) and len(text) < _BOLD_HEADING_MAX):
             if opened:
                 toks.append(Token("section", None, text, [item.segment]))
             continue
@@ -788,7 +800,7 @@ def tokens(soup, slug: str | None = None) -> list[Token]:
         items = _split_run_on(items, numbered)
         numbered = _numbered(items)
     if not numbered:
-        return _unnumbered_tokens(items)
+        return _unnumbered_tokens(items, slug)
     items = items[:_reset_cut(items, numbered)]
     # A site numbers the closing date as a last paragraph; it joins the one before.
     last = max(numbered)
@@ -827,7 +839,10 @@ def _label_part(part: str) -> str:
 
 
 def _chapter_label(text: str) -> str:
-    label = ": ".join(_label_part(part) for part in clean_text(text).rstrip(" -–").split(": "))
+    text = clean_text(text).rstrip(" -–")
+    if _ARTICLE.match(text):
+        text = text.rstrip(".")
+    label = ": ".join(_label_part(part) for part in text.split(": "))
     label = _ROMAN_WORD.sub(lambda m: m.group(0).upper(), label)
     label = _NUMERAL_OPENING.sub(lambda m: m.group(0)[:-1] + m.group(0)[-1].upper(), label)
     return _WORD_OPENING.sub(lambda m: m.group(0).upper(), label)
@@ -873,25 +888,59 @@ class _Unit(NamedTuple):
     chapter_label: str
     unit_label: str | None
     segments: list[Segment]
+    marks: list[list[dict]] | None = None     # each piece's heading marks (#445)
+
+
+def _heading_marks(content: str, held: list[Token], chapter_label: str,
+                   levels: dict[str, int]) -> list[dict]:
+    """The marks of the headings a unit's text opens with, one paragraph each, in order:
+    a chapter's (a section token) level 1, flagged where it repeats the chapter label; an
+    epigraph as one; any other heading the level `levels` gives its text, else 2."""
+    paragraphs = headings.paragraphs(content)
+    if len(paragraphs) <= len(held):
+        raise ValueError(f"{chapter_label}: a unit holds only its headings")
+    marks = []
+    for (at, end), token in zip(paragraphs, held):
+        text = content[at:end]
+        if token.kind == "epigraph":
+            marks.append(headings.mark(at, end, role=headings.EPIGRAPH))
+        elif token.kind == "section":
+            marks.append(headings.mark(at, end, level=1, chapter_title=headings.repeats_label(
+                text, chapter_label)))
+        else:
+            marks.append(headings.mark(at, end, level=levels.get(token.text, 2)))
+    return marks
 
 
 def build_document(entry: dict, collection: str, src_dir: str) -> Document:
     path = os.path.join(src_dir, entry["file"])
-    with open(path, "rb") as f:
-        soup = BeautifulSoup(f.read(), "lxml")
-    return document_from_tokens(entry, collection, tokens(soup, entry["slug"]))
+    if path.endswith(".pdf"):
+        # A text vatican.va publishes only as a PDF (5.4), read into the same HTML shape.
+        from ingest import papal_pdf
+
+        soup = papal_pdf.soup(path, entry["slug"])
+    else:
+        with open(path, "rb") as f:
+            soup = BeautifulSoup(f.read(), "lxml")
+    # A third tier of headings (`h4`) is marked level 3, one tier below the rest.
+    levels = {" ".join(el.get_text(" ").split()): 3 for el in soup.find_all("h4")}
+    return document_from_tokens(entry, collection, tokens(soup, entry["slug"]),
+                                heading_levels=levels)
 
 
 def document_from_tokens(entry: dict, collection: str, toks: list[Token], *,
                          url: str | None = None, text_replaced: str | None = None,
                          translation: str = "", metadata: dict | None = None,
                          passage_metadata: dict | None = None,
-                         callers: bool = True) -> Document:
+                         callers: bool = True,
+                         heading_levels: dict[str, int] | None = None) -> Document:
     """A document from its tokens, by the rules every papal source shares. A document
     built from another edition than its manifest's page (1.3d's printings) names that
     edition's `url`, the `text_replaced` every passage declares, its `translation`, and any
     further document and passage metadata (a scanned printing's label, 1.2f), and
-    `callers=False`, since its text holds no site note callers (`_clean`)."""
+    `callers=False`, since its text holds no site note callers (`_clean`). A document in
+    `_MARKED_HEADINGS` marks the headings each unit opens with (#445): a chapter's level
+    1, any other level 2, or the level `heading_levels` gives its text."""
     slug, author = entry["slug"], entry["author"]
     url = url or entry["url"]
     title = _disambiguate_title(entry["title"], slug, entry["year"])
@@ -902,12 +951,18 @@ def document_from_tokens(entry: dict, collection: str, toks: list[Token], *,
     units: list[_Unit] = []
 
     def emit(content: str, ref: str | None, base_anchor: str, ckey: str, clabel: str,
-             unit: str | None, segments: list[Segment]) -> None:
+             unit: str | None, segments: list[Segment], held: list[Token] = ()) -> None:
         content = _clean(content, slug, callers)
         if not content:
             return
         pieces = pack_text(content, segments, settings.MAX_PASSAGE_CHARS)
-        units.append(_Unit(content, pieces, ref, base_anchor, ckey, clabel, unit, segments))
+        marks = None
+        if slug in _MARKED_HEADINGS:
+            found = _heading_marks(content, held, clabel, heading_levels or {})
+            pieces = headings.hold_headings(content, pieces, found)
+            marks = headings.split_marks(content, pieces, found)
+        units.append(_Unit(content, pieces, ref, base_anchor, ckey, clabel, unit, segments,
+                           marks))
 
     pre = [t for t in toks if t.kind == "preamble"]
     if pre:
@@ -950,7 +1005,8 @@ def document_from_tokens(entry: dict, collection: str, toks: list[Token], *,
             cur_key = make_anchor(slug, f"sec-{sec_ord}")
             cur_label = label
             empty_chapter = True
-            pending.append(t)
+            if t.segments:      # a label the source does not print names the chapter only
+                pending.append(t)
             continue
         if t.kind in ("heading", "epigraph"):
             pending.append(t)
@@ -982,15 +1038,17 @@ def document_from_tokens(entry: dict, collection: str, toks: list[Token], *,
             ckey, clabel = make_anchor(slug, f"bucket-{b}"), _bucket_label(*bucket_range[b])
         text = "\n\n".join([h.text for h in pending] + [t.text])
         segments = _with_headings(pending, t.segments)
-        pending = []
+        held, pending = pending, []
         empty_chapter = False
         if t.kind == "preface":
             label = cur_label or "Preface"
-            emit(text, f"{title}, {label}", _anchor(slug, "preface"), ckey, clabel, None, segments)
+            emit(text, f"{title}, {label}", _anchor(slug, "preface"), ckey, clabel, None, segments,
+                 held)
         elif t.kind == "para":
-            emit(text, f"{title}, §{n}", _anchor(slug, str(n)), ckey, clabel, f"§{n}", segments)
+            emit(text, f"{title}, §{n}", _anchor(slug, str(n)), ckey, clabel, f"§{n}", segments,
+                 held)
         else:
-            emit(text, None, _anchor(slug, str(n)), ckey, clabel, None, segments)
+            emit(text, None, _anchor(slug, str(n)), ckey, clabel, None, segments, held)
 
     passages = _passages(units, title, meta)
     if text_replaced:
@@ -1057,7 +1115,9 @@ def _passages(units: list[_Unit], title: str, meta: dict) -> list[Passage]:
                 reference = piece_reference(u.reference, None, None, k, len(u.pieces))
             passages.append(Passage(content=piece, reference=reference, anchor=anchor,
                                     chapter_key=u.chapter_key, chapter_label=u.chapter_label,
-                                    position=len(passages), unit_label=u.unit_label, metadata=meta,
+                                    position=len(passages), unit_label=u.unit_label,
+                                    metadata=headings.with_headings(meta, u.marks[k - 1])
+                                    if u.marks else meta,
                                     source_units=held))
     return passages
 

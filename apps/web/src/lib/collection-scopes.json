@@ -127,7 +127,7 @@
    },
    "apostolic-exhortation": {
     "pope-benedict-xvi": 4,
-    "pope-francis": 6,
+    "pope-francis": 7,
     "pope-john-paul-ii": 14,
     "pope-leo-xiv": 1,
     "pope-paul-vi": 5,
@@ -163,7 +163,7 @@
     "pope-pius-xii": 4
    },
    "motu-proprio": {
-    "pope-benedict-xvi": 1
+    "pope-benedict-xvi": 2
    },
    "other": {
     "pope-pius-ix": 1
@@ -191,5 +191,88 @@
    }
   ],
   "counts": {}
+ },
+ "roman-curia": {
+  "genres": [
+   {
+    "value": "letter",
+    "label": "Letter"
+   },
+   {
+    "value": "response",
+    "label": "Response"
+   },
+   {
+    "value": "declaration",
+    "label": "Declaration"
+   },
+   {
+    "value": "instruction",
+    "label": "Instruction"
+   },
+   {
+    "value": "note",
+    "label": "Note"
+   },
+   {
+    "value": "doctrinal-note",
+    "label": "Doctrinal note"
+   },
+   {
+    "value": "considerations",
+    "label": "Considerations"
+   },
+   {
+    "value": "commentary",
+    "label": "Commentary"
+   },
+   {
+    "value": "norms",
+    "label": "Norms"
+   },
+   {
+    "value": "other",
+    "label": "Other"
+   }
+  ],
+  "issuers": [
+   {
+    "value": "ddf",
+    "label": "Dicastery for the Doctrine of the Faith"
+   }
+  ],
+  "documents": [],
+  "counts": {
+   "commentary": {
+    "ddf": 1
+   },
+   "considerations": {
+    "ddf": 4
+   },
+   "declaration": {
+    "ddf": 10
+   },
+   "doctrinal-note": {
+    "ddf": 5
+   },
+   "instruction": {
+    "ddf": 7
+   },
+   "letter": {
+    "ddf": 12
+   },
+   "norms": {
+    "ddf": 1
+   },
+   "note": {
+    "ddf": 6
+   },
+   "other": {
+    "ddf": 2
+   },
+   "response": {
+    "ddf": 12
+   }
+  }
  }
 }

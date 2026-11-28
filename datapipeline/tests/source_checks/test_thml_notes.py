@@ -12,6 +12,7 @@ import pytest
 import registry
 from checks.language import mostly_foreign
 from checks.source_text import REPLACED_CHAPTERS, SOURCES
+from ingest import theologians
 from ingest.church_fathers import _read_root
 from ingest.common import _block_text, _blocks, _extract_p_text, _strip_tags, direct_blocks
 from ingest.scripture_notes import scripture_reference
@@ -131,8 +132,11 @@ def test_footnotes_are_scripture_references_after_a_word(built):
                 total[c] += len(notes)
                 if [n["n"] for n in notes] != list(range(1, len(notes) + 1)):
                     bad.append((p.anchor, "numbering"))
-                # A Gutenberg text's references are read with the Vulgate's names (5.6b).
-                vulgate = p.metadata.get("source_file", "").endswith(".txt")
+                # A work its build reads with the edition's forms (5.6b: the Gutenberg
+                # texts, Hilton's 1901 printing) is checked the same way.
+                source = p.metadata.get("source_file", "")
+                vulgate = source.endswith(".txt") or os.path.basename(source) in \
+                    theologians._EDITION_REFERENCES
                 for n in notes:
                     if scripture_reference(n["text"], vulgate) != n["text"] \
                             or not 0 < n["at"] <= len(p.content) \
