@@ -400,6 +400,8 @@ _MOVED_TO_VATICAN = frozenset({
 
 
 def _papal_file_name(slug: str, url: str) -> str:
+    if url.endswith(".pdf"):
+        return slug + ".pdf"        # a text published only as a PDF (5.4's Amoris Laetitia)
     if slug in _MOVED_TO_VATICAN:
         if "://www.vatican.va/" not in url:
             raise SystemExit(f"{slug}: 1.3c takes its text from vatican.va, not {url}")
@@ -460,7 +462,8 @@ APOSTOLIC_EXHORTATIONS = [
     ("Verbum Domini",               "Pope Benedict XVI", 2010, "https://www.vatican.va/content/benedict-xvi/en/apost_exhortations/documents/hf_ben-xvi_exh_20100930_verbum-domini.html"),
     ("Africae Munus",               "Pope Benedict XVI", 2011, "https://www.vatican.va/content/benedict-xvi/en/apost_exhortations/documents/hf_ben-xvi_exh_20111119_africae-munus.html"),
     ("Ecclesia in Medio Oriente",   "Pope Benedict XVI", 2012, "https://www.vatican.va/content/benedict-xvi/en/apost_exhortations/documents/hf_ben-xvi_exh_20120914_ecclesia-in-medio-oriente.html"),
-    # Pope Francis
+    # Pope Francis. Amoris Laetitia's English is published only as a PDF (5.4, R6).
+    ("Amoris Laetitia",             "Pope Francis",      2016, "https://www.vatican.va/content/dam/francesco/pdf/apost_exhortations/documents/papa-francesco_esortazione-ap_20160319_amoris-laetitia_en.pdf"),
     ("Gaudete et Exsultate",        "Pope Francis",      2018, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20180319_gaudete-et-exsultate.html"),
     ("Christus Vivit",              "Pope Francis",      2019, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20190325_christus-vivit.html"),
     ("Querida Amazonia",            "Pope Francis",      2020, "https://www.vatican.va/content/francesco/en/apost_exhortations/documents/papa-francesco_esortazione-ap_20200202_querida-amazonia.html"),
@@ -481,7 +484,7 @@ def vendor_apostolic_exhortations(force: bool) -> None:
             base_slug = _slug(title)
             slug = base_slug if base_slug not in seen_slugs else f"{base_slug}-{year}"
             seen_slugs.add(slug)
-            fname = slug + ".html"
+            fname = _papal_file_name(slug, url)
             if not (os.path.exists(os.path.join(d, fname)) and not force):
                 data = _fetch(client, url)
                 if data is None:
@@ -509,6 +512,7 @@ PAPAL_DOCUMENTS = [
     ("Novo Millennio Ineunte",     "Pope John Paul II",   2001, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2001/documents/hf_jp-ii_apl_20010106_novo-millennio-ineunte.html"),
     ("Rosarium Virginis Mariae",   "Pope John Paul II",   2002, "https://www.vatican.va/content/john-paul-ii/en/apost_letters/2002/documents/hf_jp-ii_apl_20021016_rosarium-virginis-mariae.html"),
     # Apostolic Letters — Benedict XVI
+    ("Ubicumque et Semper",        "Pope Benedict XVI",   2010, "https://www.vatican.va/content/benedict-xvi/en/apost_letters/documents/hf_ben-xvi_apl_20100921_ubicumque-et-semper.html"),
     ("Porta Fidei",                "Pope Benedict XVI",   2011, "https://www.vatican.va/content/benedict-xvi/en/motu_proprio/documents/hf_ben-xvi_motu-proprio_20111011_porta-fidei.html"),
     # Apostolic Letters — Francis
     ("Misericordia et Misera",     "Pope Francis",        2016, "https://www.vatican.va/content/francesco/en/apost_letters/documents/papa-francesco-lettera-ap_20161120_misericordia-et-misera.html"),
@@ -526,7 +530,7 @@ def vendor_papal_documents(force: bool) -> None:
             base_slug = _slug(title)
             slug = base_slug if base_slug not in seen_slugs else f"{base_slug}-{year}"
             seen_slugs.add(slug)
-            fname = slug + ".html"
+            fname = _papal_file_name(slug, url)
             if not (os.path.exists(os.path.join(d, fname)) and not force):
                 data = _fetch(client, url)
                 if data is None:

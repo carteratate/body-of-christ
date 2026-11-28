@@ -22,7 +22,7 @@ source's adapter in `SOURCE_BUILDS`, and the nine collections a publish writes i
 | `bible` | `bible` | `ingest/bible.py` |
 | `catechism` | `catechism` | `ingest/catechism.py`, then `ingest/catechism_compendium.py` (the Compendium) and `ingest/roman_catechism.py` (the Roman Catechism) |
 | `church-fathers` | `church-fathers`, and Boethius from `medieval` | `ingest/church_fathers.py`, `ingest/medieval.py` |
-| `church-law` | `canon-law` | `ingest/canon_law.py` |
+| `church-law` | `canon-law`, `church-law` (Universi Dominici Gregis, 5.4) | `ingest/canon_law.py`, `ingest/universal_law.py` |
 | `councils` | `councils` | `ingest/councils.py` |
 | `papal` | `encyclicals`, `apostolic-exhortations`, `papal-documents` | `ingest/encyclicals.py`, `ingest/apostolic_exhortations.py`, `ingest/papal_documents.py` |
 | `roman-curia` | `roman-curia` | `ingest/roman_curia.py` (5.3a) |

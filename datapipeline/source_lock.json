@@ -133,28 +133,6 @@
  },
  {
   "collection": "_incoming",
-  "path": "_incoming/church-law/normas-nonnullas.html",
-  "sha256": "af61f9f990b2035dc3482a4e798c80d2b2167f247fe808deda145510adffc7a9",
-  "bytes": 47878,
-  "url": "https://www.vatican.va/content/benedict-xvi/en/motu_proprio/documents/hf_ben-xvi_motu-proprio_20130222_normas-nonnullas.html",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
-  "path": "_incoming/church-law/universi-dominici-gregis.html",
-  "sha256": "e23e82f75cc0deac14f4e895a7ce8bf6937a7ac8f6bab93d41149c6fbf69b452",
-  "bytes": 122061,
-  "url": "https://www.vatican.va/content/john-paul-ii/en/apost_constitutions/documents/hf_jp-ii_apc_22021996_universi-dominici-gregis.html",
-  "acquired": "2026-10-05",
-  "hashed_on": "2026-10-05",
-  "role": "vendored-unregistered",
-  "note": "approved R6 download awaiting its ingesting PR; moves unchanged to the path after _incoming/"
- },
- {
-  "collection": "_incoming",
   "path": "_incoming/roman-curia/compendium-of-the-social-doctrine-of-the-church.html",
   "sha256": "85e585bed01b303e67ddbef64f1be03b0e9b4c638151df3ea1d4a6f5e361f525",
   "bytes": 1160524,
@@ -1449,7 +1427,7 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "vendored-unregistered",
-  "note": "scheduled for PR 5.4"
+  "note": "the English page, which offers the text only in French and Italian; not added (rule E, revised 29 Oct 2026; Carter, 23 Nov 2026, 5.4)"
  },
  {
   "collection": "apostolic-exhortations",
@@ -1470,7 +1448,17 @@
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
   "role": "vendored-unregistered",
-  "note": "not published; scheduled for PR 5.4 (Carter, 4 Oct 2026)"
+  "note": "the English page, which only links the PDF; the text is read from amoris-laetitia.pdf (5.4)"
+ },
+ {
+  "collection": "apostolic-exhortations",
+  "path": "apostolic-exhortations/amoris-laetitia.pdf",
+  "sha256": "b2d37a6f684f1938bd4d60d64221eb8767170fb4587773856e6b0e26301e59d4",
+  "bytes": 1330556,
+  "url": "https://www.vatican.va/content/dam/francesco/pdf/apost_exhortations/documents/papa-francesco_esortazione-ap_20160319_amoris-laetitia_en.pdf",
+  "acquired": "2026-11-23",
+  "hashed_on": "2026-11-23",
+  "role": "adapter-input"
  },
  {
   "collection": "apostolic-exhortations",
@@ -1667,11 +1655,11 @@
  {
   "collection": "apostolic-exhortations",
   "path": "apostolic-exhortations/manifest.json",
-  "sha256": "440aa3b4c971320e0945196c46da789c71f5fc758d938c07150105662701f1d9",
-  "bytes": 13080,
+  "sha256": "054fe6dd6cbd34fb4dceff3f0f740448c01c5455730e9be1bda7ab028d2b8429",
+  "bytes": 13530,
   "url": null,
-  "acquired": "2026-11-09",
-  "hashed_on": "2026-11-09",
+  "acquired": "2026-11-23",
+  "hashed_on": "2026-11-23",
   "role": "adapter-auxiliary"
  },
  {
@@ -3280,6 +3268,36 @@
   "url": "https://ccel.org/ccel/s/schaff/anf07.xml",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "church-law",
+  "path": "church-law/normas-nonnullas.html",
+  "sha256": "af61f9f990b2035dc3482a4e798c80d2b2167f247fe808deda145510adffc7a9",
+  "bytes": 47878,
+  "url": "https://www.vatican.va/content/benedict-xvi/en/motu_proprio/documents/hf_ben-xvi_motu-proprio_20130222_normas-nonnullas.html",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "church-law",
+  "path": "church-law/universi-dominici-gregis-1996.pdf",
+  "sha256": "648404b7c71385b094bad9ab4815f714325f288210611a663a598cfe6ceb3c96",
+  "bytes": 264696,
+  "url": "https://www.vatican.va/content/dam/john-paul-ii/pdf/apost_constitutions/documents/universi-dominici-gregis-19960222_en.pdf",
+  "acquired": "2026-11-23",
+  "hashed_on": "2026-11-23",
+  "role": "adapter-input"
+ },
+ {
+  "collection": "church-law",
+  "path": "church-law/universi-dominici-gregis.html",
+  "sha256": "e23e82f75cc0deac14f4e895a7ce8bf6937a7ac8f6bab93d41149c6fbf69b452",
+  "bytes": 122061,
+  "url": "https://www.vatican.va/content/john-paul-ii/en/apost_constitutions/documents/hf_jp-ii_apc_22021996_universi-dominici-gregis.html",
+  "acquired": "2026-10-05",
+  "hashed_on": "2026-10-05",
   "role": "adapter-input"
  },
  {
@@ -6001,11 +6019,11 @@
  {
   "collection": "papal-documents",
   "path": "papal-documents/manifest.json",
-  "sha256": "3260a0a561cbe0caf03e6d2ff9052d225e1d6df52397b23e694645de3adf11e6",
-  "bytes": 5992,
+  "sha256": "47f08d0ef224e66f7edc8e4b45321dbfaa5a132e429093b8b826dfb339e6d882",
+  "bytes": 6429,
   "url": null,
-  "acquired": "2026-11-09",
-  "hashed_on": "2026-11-09",
+  "acquired": "2026-11-23",
+  "hashed_on": "2026-11-23",
   "role": "adapter-auxiliary"
  },
  {
@@ -6145,11 +6163,10 @@
   "path": "papal-documents/ubicumque-et-semper.html",
   "sha256": "a10f218b938959a544300b23062f89de8ace12a3fe87471e0ee588fc2ee9ad04",
   "bytes": 47830,
-  "url": null,
+  "url": "https://www.vatican.va/content/benedict-xvi/en/apost_letters/documents/hf_ben-xvi_apl_20100921_ubicumque-et-semper.html",
   "acquired": "unknown-before-2026-09-29",
   "hashed_on": "2026-10-04",
-  "role": "vendored-unregistered",
-  "note": "scheduled for PR 5.4"
+  "role": "adapter-input"
  },
  {
   "collection": "papal-documents",

@@ -198,12 +198,14 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
         "passage, without a citation label, section number, or attribution."
     ),
     "church-law": (
-        "Write one provision of about 50-100 words in the manner of a single canon of the 1983 "
-        "Code of Canon Law. Express the right, duty, condition, procedure, or consequence that "
+        "Write one provision of about 50-100 words in the manner of the Church's universal law, "
+        "such as a canon of the 1983 Code of Canon Law or a numbered norm of an apostolic "
+        "constitution. Express the right, duty, condition, procedure, or consequence that "
         "most directly addresses the question; focus on an exception or limit when the user asks "
         "for one. Keep a named office, sacrament, or legal term when it belongs. For a broad "
         "legal question, connect its main concepts within one rule. Add another clause only if it "
-        "clarifies that rule. Do not invent a canon number, legal effect, or unrelated provision. "
+        "clarifies that rule. Do not invent a canon or norm number, legal effect, or unrelated "
+        "provision. "
         "Where exact details are uncertain, use a general legal formulation without invented "
         "specifics. Return only the provision, without a citation label or heading. A naturally "
         "brief rule may be shorter."
@@ -211,8 +213,8 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
 }
 
 # Theology & Spirituality holds writers to the 1930s, so its prompt is the medieval one
-# past the medieval period. Church law keeps canon law's prompt until 5.4 adds the
-# universal laws.
+# past the medieval period. Church law's prompt was canon law's, which 5.4 broadened to
+# the universal laws beside the Code (Universi Dominici Gregis).
 _COLLECTION_HYDE_PROMPTS["theologians"] = (
     "Write one passage of about 100-150 words in the manner of a Christian theologian or "
     "spiritual writer, from the medieval schoolmen and mystics to later masters of the "

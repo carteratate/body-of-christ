@@ -60,6 +60,8 @@ SOURCE_BUILDS: dict[str, SourceAdapter] = {
                                         single=True)
                           + _build_from("roman_catechism", "build_document", single=True)),
     "church-fathers": lambda: _build_from("church_fathers", "build_all"),
+    # Universal law outside the Code: Universi Dominici Gregis and its history (5.4).
+    "church-law": lambda: _build_from("universal_law", "build_documents"),
     "councils": lambda: _build_from("councils", "build_documents"),
     "encyclicals": lambda: _build_from("encyclicals", "build_documents"),
     # The medieval works, then 5.6b's theologians and spiritual writers, under the
@@ -122,7 +124,8 @@ SOURCE_ADAPTERS: dict[str, SourceAdapter] = {
     "bible": SOURCE_BUILDS["bible"],
     "catechism": SOURCE_BUILDS["catechism"],
     "church-fathers": _church_fathers,
-    "church-law": lambda: _published_as("church-law", SOURCE_BUILDS["canon-law"]()),
+    "church-law": lambda: _published_as("church-law", [*SOURCE_BUILDS["canon-law"](),
+                                                       *SOURCE_BUILDS["church-law"]()]),
     "councils": SOURCE_BUILDS["councils"],
     "papal": _papal,
     "roman-curia": SOURCE_BUILDS["roman-curia"],
