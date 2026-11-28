@@ -17,7 +17,7 @@ _vendored = os.path.exists(os.path.join(_SRC, "manifest.json"))
 @pytest.mark.skipif(not _vendored, reason="papal-documents not vendored")
 def test_all_documents_produce_passages():
     docs = build_documents()
-    assert len(docs) == 15
+    assert len(docs) == 15     # 14 from the manifest, and Inter Cunctas from its printing (5.9)
     for d in docs:
         assert d.passages, f"{d.title} produced no passages"
 

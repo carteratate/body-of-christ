@@ -74,9 +74,12 @@ def test_source_credit_is_the_rights_inventory_wording():
 
 
 def test_documents_with_another_edition_name_it_in_their_credit():
+    """An edition credited otherwise than the row's own is named. One with the same credit
+    line (Exsurge Domine's censure, from the book its propositions are in; 5.9) already is."""
     for w in FILLED:
-        others = [a for a in ROWS[w["document_id"]].get("also_from") or []
-                  if a.get("credit_line")]
+        row = ROWS[w["document_id"]]
+        others = [a for a in row.get("also_from") or []
+                  if a.get("credit_line") and a["credit_line"] != row["credit_line"]]
         if others:
             assert w["work_id"] in document_facts.COMBINED_CREDITS, w["work_id"]
 
@@ -126,7 +129,7 @@ def test_papal_forms_are_1_3b_s():
         "encyclicals/salutis-nostrae": "bull", "encyclicals/in-supremo-apostolatus": "brief",
         "encyclicals/ineffabilis-deus": "bull", "encyclicals/munificentissimus-deus": "bull",
         "papal-documents/unam-sanctam": "bull", "papal-documents/exsurge-domine": "bull",
-        "papal-documents/sublimis-deus": "bull"}
+        "papal-documents/sublimis-deus": "bull", "papal-documents/inter-cunctas": "bull"}
 
 
 def test_issuers():

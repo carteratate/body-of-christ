@@ -4575,5 +4575,153 @@
     "unit": 145
    }
   ]
+ },
+ "papal-documents/inter-cunctas": {
+  "source": "ocr",
+  "file": "../councils/sources-of-catholic-dogma/",
+  "url": "https://archive.org/details/sourcesofcatholi00denz",
+  "translation": "R. J. Deferrari, The Sources of Catholic Dogma (St. Louis, 1957), from Denzinger's Enchiridion",
+  "passage_note": "Extract, in R. J. Deferrari's translation of Denzinger, The Sources of Catholic Dogma (1957).",
+  "work": "deferrari-inter-cunctas",
+  "document": {
+   "title": "Inter Cunctas",
+   "author": "Pope Martin V",
+   "year": 1418
+  },
+  "units": [
+   {
+    "opens": "5. Likewise, whether",
+    "unit": 5
+   },
+   {
+    "opens": "6. Likewise, whether",
+    "unit": 6
+   },
+   {
+    "opens": "7. Likewise, whether",
+    "unit": 7
+   },
+   {
+    "opens": "8. Likewise, whether",
+    "unit": 8
+   },
+   {
+    "opens": "11. Likewise, let",
+    "unit": 11
+   },
+   {
+    "opens": "12. Likewise, whether",
+    "unit": 12
+   },
+   {
+    "opens": "13. Likewise, whether",
+    "unit": 13
+   },
+   {
+    "opens": "14. Likewise whether",
+    "unit": 14
+   },
+   {
+    "opens": "15. Likewise, whether",
+    "unit": 15
+   },
+   {
+    "opens": "16. Likewise, whether",
+    "unit": 16
+   },
+   {
+    "opens": "17. Likewise, whether",
+    "unit": 17
+   },
+   {
+    "opens": "18. Likewise, whether",
+    "unit": 18
+   },
+   {
+    "opens": "19. Likewise, whether",
+    "unit": 19
+   },
+   {
+    "opens": "20. Likewise, whether",
+    "unit": 20
+   },
+   {
+    "opens": "21. Likewise, whether",
+    "unit": 21
+   },
+   {
+    "opens": "22. Likewise, whether",
+    "unit": 22
+   },
+   {
+    "opens": "23. Likewise, whether",
+    "unit": 23
+   },
+   {
+    "opens": "24. Likewise, whether",
+    "unit": 24
+   },
+   {
+    "opens": "25. Likewise, whether",
+    "unit": 25
+   },
+   {
+    "opens": "26. Likewise, whether",
+    "unit": 26
+   },
+   {
+    "opens": "27. And whether",
+    "unit": 27
+   },
+   {
+    "opens": "28. Likewise, whether",
+    "unit": 28
+   },
+   {
+    "opens": "29. Likewise, whether",
+    "unit": 29
+   },
+   {
+    "opens": "30. Likewise, whether",
+    "unit": 30
+   },
+   {
+    "opens": "31. Likewise, whether",
+    "unit": 31
+   },
+   {
+    "opens": "32. Likewise, whether",
+    "unit": 32
+   },
+   {
+    "opens": "33. Likewise, whether",
+    "unit": 33
+   },
+   {
+    "opens": "34. Likewise, whether",
+    "unit": 34
+   },
+   {
+    "opens": "35. Likewise, whether",
+    "unit": 35
+   },
+   {
+    "opens": "36. Likewise, whether",
+    "unit": 36
+   },
+   {
+    "opens": "37. Likewise, whether",
+    "unit": 37
+   },
+   {
+    "opens": "38. Likewise, whether",
+    "unit": 38
+   },
+   {
+    "opens": "39. Likewise, whether",
+    "unit": 39
+   }
+  ],
+  "notes": "Only extracts of this bull are given, in R. J. Deferrari's translation of Denzinger (1957): questions 5–8 and 11–39 of those to be put to followers of Wyclif and Hus. Questions 1–4, 9 and 10, and the rest of the bull, are not available on TheoCorpus at present."
  }
 }

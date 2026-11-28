@@ -134,3 +134,12 @@ export function consumeReaderReturnKey(key: string | null, origin: ReaderOrigin)
     return false;
   }
 }
+
+/** The collection a document's reader sections are worded for. The Catechism collection's
+ *  paragraph-range wording belongs to the Catechism of the Catholic Church; its other works
+ *  (the Roman Catechism, 5.5) have plain sections. */
+export function readerSectionCollection(document: { collection: string; title: string }): string {
+  return document.collection === "catechism" && document.title !== "Catechism of the Catholic Church"
+    ? ""
+    : document.collection;
+}

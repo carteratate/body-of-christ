@@ -106,10 +106,13 @@ PASSAGE_NOTES: dict[str, Note | None] = {
         ANASTASIUS,
     "From Hefele's account of the session, in W. R. Clark's translation (1896).": HEFELE,
     "Translated from another recension of this canon.": RECENSION,
-    # The rejected-voice label says "condemned"; the sentence's absence is the caution.
+    # The rejected-voice label says "condemned"; the sentence's absence is the caution,
+    # and the caution names the bull that states the council's verdict (5.9).
     "Articles the council condemned, not its teaching. Its sentence is not available on "
-    "TheoCorpus at present. Translated by R. J. Deferrari (1957).": caution(
-        "incomplete", f"The council's sentence on these articles is {NOT_AVAILABLE}."),
+    "TheoCorpus; Martin V's Inter Cunctas (1418) states its verdict. Translated by R. J. "
+    "Deferrari (1957).": caution(
+        "incomplete", "The council's sentence is not available on TheoCorpus; Martin V's "
+                      "Inter Cunctas (1418) states its verdict."),
     # Every passage of Exsurge Domine: the label says it, the overview says the rest.
     "Propositions of Martin Luther that the bull condemned, not its teaching. The rest of "
     "the bull is not available on TheoCorpus at present. Translated by R. J. Deferrari "
@@ -130,6 +133,11 @@ PASSAGE_NOTES: dict[str, Note | None] = {
     "which the English translation does not print.": caution(
         "incomplete", "The Latin text ends this article with a short reply to all the "
                       "objections together, which the English translation does not print."),
+    # 5.6a: Basil's Letter 125, whose Greek creed is cut under rule E.
+    "The Creed of Nicaea, which this letter quotes in full, is omitted: the translator left "
+    "it in Greek.": caution(
+        "incomplete", "The Creed of Nicaea, which this letter quotes in full, is omitted: the "
+                      "translator left it in Greek."),
 }
 # `summa._missing_note`'s wordings, each exactly as built: a new one stops the build
 # until it is added here.
@@ -160,11 +168,34 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
         overview("It also amends Benedict XVI's motu proprio De aliquibus mutationibus (11 "
                  "June 2007), which had replaced No. 75; that act is published in Latin only, "
                  "on vatican.va."),),
+    # The Roman Catechism (5.5): read with care on every card; the header names the work.
+    "Catechism of the Council of Trent, a historical catechism; for current teaching see "
+    "the Catechism of the Catholic Church": (caution(
+        "authority", "A historical catechism; for current teaching see the Catechism of the "
+                     "Catholic Church."),),
     # The Code of Canon Law: excerpt-only, so its Library row shows it.
-    "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no "
+    "Canons 295, 296, 579, 695 and 700 are not shown: their current text has no "
     "English translation. The official Latin is on vatican.va.": (overview(
-        "Canons 295, 296, 579, 695, 700 and 868 are not shown: their current text has no "
+        "Canons 295, 296, 579, 695 and 700 are not shown: their current text has no "
         "English translation. The official Latin is on vatican.va.", "incomplete"),),
+    # 5.6b's Life of St. Teresa (`ingest.theologians.LIFE_NOTE`): a document-wide fact.
+    "Teresa's chapter headings, left out of the original translation, follow Benedict "
+    "Zimmerman's 1904 edition.": (overview(
+        "Teresa's chapter headings, left out of the original translation, follow Benedict "
+        "Zimmerman's 1904 edition."),),
+    # 5.6b's Story of a Soul (`ingest.theologians.THERESE_NOTE`): a document-wide fact.
+    "Its Counsels and Reminiscences are her sayings as her novices recorded them.": (
+        overview("Its Counsels and Reminiscences are her sayings as her novices recorded "
+                 "them."),),
+    # 5.6b's Practice of the Presence of God (`ingest.theologians.LAWRENCE_NOTE`).
+    "Its Conversations are attributed to Joseph de Beaufort; the close of the Fourth draws on "
+    "other accounts.": (
+        overview("Its Conversations are attributed to Joseph de Beaufort; the close of the "
+                 "Fourth draws on other accounts."),),
+    # 5.6b's Autobiography of St. Ignatius (`ingest.theologians.IGNATIUS_NOTE`).
+    "Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens it.": (
+        overview("Ignatius dictated it to Luis Gonçalves da Câmara, whose preface opens "
+                 "it."),),
     # 3.2's labels.
     # The header names the Church of Smyrna.
     "A letter of the Church of Smyrna on Polycarp's death; its writer, Evarestus, is named "
@@ -182,6 +213,7 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "Its attribution to Pamphilus is doubtful.": (),
     "Its attribution to Methodius is doubtful.": (),
     "Its attribution to Lactantius is doubtful.": (),
+    "Its attribution to Basil is doubtful.": (),
     "Not by Gregory Thaumaturgus.": (),
     "Written by Hegemonius; Archelaus is the bishop who debates Mani in it.": (
         overview("Archelaus is the bishop who debates Mani in it."),),
@@ -208,6 +240,33 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
                      "(canon 1).")),
     "Some passages are omitted: the translators left them in Latin and no public-domain "
     "English translation exists.": (LATIN_OMITTED,),
+    # 5.6a's labels on Basil's letters. The header names the writer and the certainty.
+    "Transmitted among Basil's letters, but not his.": (),
+    "Transmitted among Basil's letters; scholars now assign it to Gregory of Nyssa.": (
+        caution("authorship", "Transmitted among Basil's letters."),),
+    "Transmitted among Basil's letters; Fedwick (1981) assigns it to Gregory of Nazianzus.": (
+        caution("authorship", "Transmitted among Basil's letters."),),
+    "An extract from Gregory of Nyssa's Against Eunomius, transmitted among Basil's "
+    "letters.": (caution("authorship", "An extract from Against Eunomius, transmitted among "
+                                       "Basil's letters."),),
+    "Transmitted among Basil's letters, but written about him; the Benedictine editors give "
+    "it to Gregory of Nazianzus's father, written in his son's hand.": (caution(
+        "authorship", "Transmitted among Basil's letters, but written about him; the "
+                      "Benedictine editors give it to Gregory's father, written in his son's "
+                      "hand."),),
+    # The header names Evagrius (rule 1), so the card says the rest.
+    "Scholars now give this letter to Evagrius Ponticus, whose teachings the Second Council "
+    "of Nicaea condemned.": (caution(
+        "authorship", "Long read as Basil's; scholars now give it to this writer, whose "
+                      "teachings the Second Council of Nicaea condemned."),),
+    "Some manuscripts give these lectures to Cyril's successor, John of Jerusalem; the "
+    "Catechism cites them as Cyril's.": (caution(
+        "authorship", "Some manuscripts give these lectures to Cyril's successor, John of "
+                      "Jerusalem; the Catechism cites them as Cyril's."),),
+    "A later addition to Basil's letter to Ambrose.": (
+        caution("authorship", "A later addition to Basil's letter to Ambrose."),),
+    "Not by Basil. The Second Council of Nicaea (787) quoted it as his.": (
+        caution("authority", "The Second Council of Nicaea (787) quoted it as Basil's."),),
     # 3.2's fragment collections: how the text survives, on the record line.
     **{text: (record(text.rstrip(".")),) for text in (
         "Preserved in quotations by later writers, chiefly Irenaeus (Against Heresies) and "
@@ -244,6 +303,13 @@ FACT_NOTES: dict[str, tuple[Note, ...]] = {
     "rest is not available on TheoCorpus at present.": (overview(
         f"Only extracts are given: paragraph 7, the first part of paragraph 8, and "
         f"paragraph 9. The rest is {NOT_AVAILABLE}.", "incomplete"),),
+    # 5.9's Inter Cunctas: no site page, so nothing is held; the overview names the rest.
+    "Only extracts of this bull are given, in R. J. Deferrari's translation of Denzinger "
+    "(1957): questions 5–8 and 11–39 of those to be put to followers of Wyclif and Hus. "
+    "Questions 1–4, 9 and 10, and the rest of the bull, are not available on TheoCorpus at "
+    "present.": (overview(
+        f"Only extracts are given: questions 5–8 and 11–39. Questions 1–4, 9 and 10, and "
+        f"the rest of the bull, are {NOT_AVAILABLE}.", "incomplete"),),
     "This English printing (Interesting Letters of Clement XIV, 1777, translated from the "
     "French) omits paragraph 9; it is not available on TheoCorpus at present.": (
         FROM_FRENCH,
@@ -289,8 +355,8 @@ DOCUMENT_NOTES: dict[str, tuple[Note, ...]] = {
     "encyclicals/levate": (caution("incomplete", "This printing gives only part of each "
                                                  "paragraph."),),
     "papal-documents/exsurge-domine": (overview(
-        f"Only the condemned propositions are given; the rest of the bull is "
-        f"{NOT_AVAILABLE}.", "incomplete"),),
+        f"Only the condemned propositions and the censure are given; the rest of the bull "
+        f"is {NOT_AVAILABLE}.", "incomplete"),),
 }
 
 # The translator of each scanned edition a council takes passages from (the passage's
@@ -307,6 +373,19 @@ SCAN_TRANSLATORS = {
     "alexandrianchris012826mbp": "Translated by Henry Chadwick (1954)",
 }
 TRANSLATOR_COLLECTIONS = ("councils", "church-fathers")
+# Passages NPNF2-08 gives wholly or partly in Newman's translation (The Church of the
+# Fathers, 1840), as its notes say, by (document ID, passage anchor): each names both
+# translators (rule 3). 5.6a, Basil's Letters 2 (to paragraph 18, where "his translation
+# ends"), 14, 90 and 136 (their first paragraphs), 138 (section 1), 203 and 204 (the
+# bracketed passages).
+NEWMAN_AND_JACKSON = ("Translated by John Henry Newman (1840) and Blomfield Jackson "
+                      "(1895)")
+PASSAGE_TRANSLATORS = {
+    ("75cc7965-7501-595d-af44-9997bb7498be", anchor): NEWMAN_AND_JACKSON
+    for anchor in ("ix.iii", "ix.iii/from-p10", "ix.iii/from-p17", "ix.xv", "ix.xci",
+                   "ix.cxxxvii", "ix.cxxxix", "ix.cciv", "ix.cciv/from-p7", "ix.ccv",
+                   "ix.ccv/from-p14", "ix.ccv/from-p23", "ix.ccv/from-p26",
+                   "ix.ccv/from-p27")}
 
 
 # --------------------------------------------------------------------------- translator
@@ -317,10 +396,17 @@ _TRANSLATIONS = {
     # The Bible's badge names it (rule 1), and so does the Catechism's required notice.
     "WEB-C": "",
     "United States edition (1997)": "",
+    # The Devout Life's 1876 translation names no translator (5.6b; R6).
+    "Anonymous translation (Rivingtons, 1876)": "Anonymous translation (Rivingtons, 1876)",
+    # The Glories of Mary's and Brother Lawrence's translations name no translator (R6).
+    "Anonymous translation (Dunigan, 1852)": "Anonymous translation (Dunigan, 1852)",
+    "Anonymous translation (Revell, about 1895)": "Anonymous translation (Revell, about 1895)",
 }
 _TAILS = re.compile(r"(?:\.\s+(?:Sourced via|Text:).*|;.*|,\s*(?:abridged|extract)\s*)$")
 _SENTENCE = re.compile(r"^(Translated by|Translation|Official English|From Hefele)")
 _SERIES = ("Ante-Nicene Fathers", "Nicene and Post-Nicene Fathers")
+# Translators that are a community, read with "the": "the Benedictines of Stanbrook" (5.6b).
+_BODIES = ("Fathers of ", "Benedictines of ")
 
 
 def card_translator(credit: str | None, translation: str | None) -> str | None:
@@ -340,7 +426,7 @@ def card_translator(credit: str | None, translation: str | None) -> str | None:
         return None
     if value.startswith(_SERIES):
         return re.sub(r"(?<=\d)-(?=\d)", "–", value)  # a date range takes an en dash
-    if value.startswith("Fathers of "):
+    if value.startswith(_BODIES):
         return f"Translated by the {value}"
     return f"Translated by {value}"
 
@@ -400,7 +486,8 @@ def _passage(p: Passage, translator: str | None) -> Passage:
 def _passage_translator(document: Document, p: Passage, card: str) -> str | None:
     if document.collection not in TRANSLATOR_COLLECTIONS:
         return None
-    named = SCAN_TRANSLATORS.get((p.metadata or {}).get("scan_id") or "")
+    named = SCAN_TRANSLATORS.get((p.metadata or {}).get("scan_id") or "") \
+        or PASSAGE_TRANSLATORS.get((document.id, p.anchor))
     return named if named and named != card else None
 
 

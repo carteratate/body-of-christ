@@ -4,14 +4,14 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from typing import Mapping
+from typing import Mapping, NamedTuple
 
 import anthropic
 
 from app.config import HyDEProvider, settings
 from app.rag.api_keys import get_client, get_key_for, get_semaphore
 from app.rag.collection_scope import CollectionScope
-from app.rag.constants import GENRES_BY_COLLECTION, LEGACY_COLLECTIONS
+from app.rag.constants import GENRES_BY_COLLECTION
 from app.rag.steps.cost_tracker import CostTracker
 from app.rag.steps.embed import run as embed_run
 from app.rag.steps import degradation, hyde_luna
@@ -163,17 +163,6 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
         "Return only the passage, without a heading or attribution. An essential name or title "
         "may appear within the prose."
     ),
-    "encyclicals": (
-        "Write one paragraph of about 120-170 words in the manner of a papal encyclical. Develop "
-        "the theological or moral argument that most directly addresses the question. Focus on a "
-        "concern or qualification when the user asks for it. For a broad question, connect its "
-        "main concepts in one line of reasoning rather than reducing it to a single subtopic. "
-        "Draw on Scripture, earlier Church teaching, or human experience when relevant. Keep "
-        "distinctive terms and named subjects when they belong. Preserve the formal, measured "
-        "voice of an encyclical without forcing a closing directive or quotation. Do not invent "
-        "exact quotations or document claims. Return only the passage, without a citation label, "
-        "signature, or heading. An essential title may appear within the prose."
-    ),
     "church-fathers": (
         "Write one passage of about 100-150 words in the manner of an early Church Father "
         "speaking in a homily or treatise. Address the question's central concern through a "
@@ -208,17 +197,7 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
         "a named document says. Do not force the words \"let him be anathema.\" Return only the "
         "passage, without a citation label, section number, or attribution."
     ),
-    "medieval": (
-        "Write one passage of about 100-150 words in the manner of medieval Christian theology or "
-        "devotion. Choose careful reasoning or direct meditation on prayer and the spiritual life "
-        "according to the question. Develop an objection or qualification when the user asks for "
-        "one. For a broad question, connect its main concepts while keeping one coherent line of "
-        "thought. Keep relevant names and theological terms when they fit. Use medieval concepts "
-        "when they illuminate the question, not as decoration. Return only the passage, without "
-        "an attribution label or heading. An essential author or work may appear within the "
-        "prose."
-    ),
-    "canon-law": (
+    "church-law": (
         "Write one provision of about 50-100 words in the manner of the Church's universal law, "
         "such as a canon of the 1983 Code of Canon Law or a numbered norm of an apostolic "
         "constitution. Express the right, duty, condition, procedure, or consequence that "
@@ -231,36 +210,11 @@ _COLLECTION_HYDE_PROMPTS: dict[str, str] = {
         "specifics. Return only the provision, without a citation label or heading. A naturally "
         "brief rule may be shorter."
     ),
-    "apostolic-exhortations": (
-        "Write one paragraph of about 110-160 words in the manner of an apostolic exhortation. "
-        "Connect the teaching most relevant to the question with Christian life; focus on a "
-        "difficulty or qualification when the user asks about one. For a broad question, connect "
-        "its main concepts within one pastoral line of thought. Keep distinctive terms and named "
-        "subjects when they belong. Use a pastoral voice without turning every passage into a "
-        "generic appeal or easy resolution. Draw on prayer, family life, holiness, "
-        "evangelization, or care for others only when the subject calls for it. Do not invent "
-        "what a named exhortation says. Return only the passage, without a citation label, "
-        "paragraph number, or signature. An essential title may appear within the prose."
-    ),
-    "papal-documents": (
-        "Write one paragraph of about 100-160 words in the manner of a papal letter, "
-        "constitution, or bull. If the question concerns a papal act, address what it "
-        "establishes, defines, directs, limits, or changes. If it concerns teaching, develop the "
-        "most direct relevant claim; focus on an objection or qualification when the user asks "
-        "about one. For a broad question, connect its main concepts in one coherent paragraph. "
-        "Keep named offices, doctrines, and documents when they belong, but do not invent what a "
-        "particular document says or does. Where exact details are uncertain, address the issue "
-        "at a level that does not require invented dates or legal effects. Match the document's "
-        "operative or teaching character. Return only the passage, without a citation label or "
-        "signature. An essential title may appear within the prose."
-    ),
 }
 
-# The new keys of 5.1b.1. Church law is canon law under a new name, with the same prompt,
-# which 5.4 broadened to the universal laws beside the Code (Universi Dominici Gregis).
-# Theologians and spiritual writers will hold
-# writers to the 1930s, so its prompt is the medieval one past the medieval period.
-_COLLECTION_HYDE_PROMPTS["church-law"] = _COLLECTION_HYDE_PROMPTS["canon-law"]
+# Theology & Spirituality holds writers to the 1930s, so its prompt is the medieval one
+# past the medieval period. Church law's prompt was canon law's, which 5.4 broadened to
+# the universal laws beside the Code (Universi Dominici Gregis).
 _COLLECTION_HYDE_PROMPTS["theologians"] = (
     "Write one passage of about 100-150 words in the manner of a Christian theologian or "
     "spiritual writer, from the medieval schoolmen and mystics to later masters of the "
@@ -274,25 +228,64 @@ _COLLECTION_HYDE_PROMPTS["theologians"] = (
 )
 
 # The papal collection writes one passage per kind of papal document the search
-# includes, in the prompt that kind's old collection uses (Carter, 22 Nov 2026), so a
+# includes, in the prompt that kind's old collection used (Carter, 22 Nov 2026), so a
 # search of all papal documents draws the three passages a search of the three old
-# collections draws today. A kind is skipped when the genre filter turns off every
-# genre it covers. Each kind is an old key that `LEGACY_COLLECTIONS` maps to `papal`.
+# collections drew. A kind is skipped when the genre filter turns off every genre it
+# covers; `None` covers every genre the other kinds do not.
 _PAPAL = "papal"
+_DEFAULT_MAX_TOKENS = 300
+
+
+class _PapalKind(NamedTuple):
+    prompt: str
+    max_tokens: int
+    genres: frozenset[str] | None
+
+
+_PAPAL_KINDS: dict[str, _PapalKind] = {
+    "encyclical": _PapalKind((
+        "Write one paragraph of about 120-170 words in the manner of a papal encyclical. Develop "
+        "the theological or moral argument that most directly addresses the question. Focus on a "
+        "concern or qualification when the user asks for it. For a broad question, connect its "
+        "main concepts in one line of reasoning rather than reducing it to a single subtopic. "
+        "Draw on Scripture, earlier Church teaching, or human experience when relevant. Keep "
+        "distinctive terms and named subjects when they belong. Preserve the formal, measured "
+        "voice of an encyclical without forcing a closing directive or quotation. Do not invent "
+        "exact quotations or document claims. Return only the passage, without a citation label, "
+        "signature, or heading. An essential title may appear within the prose."
+    ), 400, frozenset({"encyclical"})),
+    "apostolic-exhortation": _PapalKind((
+        "Write one paragraph of about 110-160 words in the manner of an apostolic exhortation. "
+        "Connect the teaching most relevant to the question with Christian life; focus on a "
+        "difficulty or qualification when the user asks about one. For a broad question, connect "
+        "its main concepts within one pastoral line of thought. Keep distinctive terms and named "
+        "subjects when they belong. Use a pastoral voice without turning every passage into a "
+        "generic appeal or easy resolution. Draw on prayer, family life, holiness, "
+        "evangelization, or care for others only when the subject calls for it. Do not invent "
+        "what a named exhortation says. Return only the passage, without a citation label, "
+        "paragraph number, or signature. An essential title may appear within the prose."
+    ), _DEFAULT_MAX_TOKENS, frozenset({"apostolic-exhortation"})),
+    "other": _PapalKind((
+        "Write one paragraph of about 100-160 words in the manner of a papal letter, "
+        "constitution, or bull. If the question concerns a papal act, address what it "
+        "establishes, defines, directs, limits, or changes. If it concerns teaching, develop the "
+        "most direct relevant claim; focus on an objection or qualification when the user asks "
+        "about one. For a broad question, connect its main concepts in one coherent paragraph. "
+        "Keep named offices, doctrines, and documents when they belong, but do not invent what a "
+        "particular document says or does. Where exact details are uncertain, address the issue "
+        "at a level that does not require invented dates or legal effects. Match the document's "
+        "operative or teaching character. Return only the passage, without a citation label or "
+        "signature. An essential title may appear within the prose."
+    ), _DEFAULT_MAX_TOKENS, None),
+}
 
 
 def papal_hyde_kinds(excluded_genres: frozenset[str] = frozenset()) -> list[str]:
-    """The old papal keys whose prompts a `papal` search uses, in a fixed order."""
-    vocabulary = GENRES_BY_COLLECTION[_PAPAL]
-    kinds = []
-    for key, legacy in LEGACY_COLLECTIONS.items():
-        if legacy.canonical != _PAPAL:
-            continue
-        covered = (legacy.genres if legacy.genres is not None
-                   else vocabulary - legacy.without_genres)
-        if covered - excluded_genres:
-            kinds.append(key)
-    return kinds
+    """The papal kinds whose prompts a `papal` search uses, in a fixed order."""
+    named = frozenset().union(*(k.genres for k in _PAPAL_KINDS.values() if k.genres))
+    rest = GENRES_BY_COLLECTION[_PAPAL] - named
+    return [name for name, kind in _PAPAL_KINDS.items()
+            if (kind.genres if kind.genres is not None else rest) - excluded_genres]
 
 
 _BIBLE_SELECTED_GENRE_COUNT = 4
@@ -359,17 +352,12 @@ _BIBLE_GENRE_SELECT_LUNA_SYSTEM = (
 _COLLECTION_MAX_TOKENS: dict[str, int] = {
     "bible": 300,
     "catechism": 250,
-    "encyclicals": 400,
     "church-fathers": 400,
     "summa": 300,
     "councils": 450,
-    "medieval": 350,
-    "canon-law": 350,
-    # 5.1b.1. A papal search sizes each passage by its kind's old key instead.
     "church-law": 350,
     "theologians": 350,
 }
-_DEFAULT_MAX_TOKENS = 300
 
 # ---------------------------------------------------------------------------
 # Internal helpers
@@ -540,8 +528,7 @@ async def generate_hyde_passages(
 
     if collection == _PAPAL:
         results = await asyncio.gather(*[
-            _guarded(_COLLECTION_HYDE_PROMPTS[kind],
-                     _COLLECTION_MAX_TOKENS.get(kind, _DEFAULT_MAX_TOKENS))
+            _guarded(_PAPAL_KINDS[kind].prompt, _PAPAL_KINDS[kind].max_tokens)
             for kind in papal_hyde_kinds(excluded_genres)
         ])
         return [r for r in results if r is not None]

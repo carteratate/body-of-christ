@@ -35,6 +35,7 @@ import defusedxml.ElementTree as ET
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 from checks.language import latin_runs, mostly_foreign
+from ingest import theologians
 from ingest.editorial import PLAIN_CALLERS
 from ingest.editorial_keep import kept_quotes, quoted_text
 from ingest.stromata_chadwick import BOOK as _CHADWICK_BOOK
@@ -49,6 +50,8 @@ REGIONS = ("body", "note", "toc", "heading", "apparatus", "withheld", "excluded"
 
 
 PAPAL_COLLECTIONS = ("encyclicals", "apostolic-exhortations", "papal-documents")
+# The file the Catechism of the Catholic Church is measured on (#279).
+CCC_FILE = "us-edition/ccc-us.json"
 
 
 class SourceUnit(NamedTuple):
@@ -206,7 +209,9 @@ def withheld_chapters(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
     return _withheld_chapters[path]
 
 
-_EXCLUDING_REASONS = ("rule-a", "rule-b", "rule-c")
+# A duplicate (5.6a: Basil's Letter 167, kept as Gregory of Nazianzus's Letter 66 in his
+# own letters) is taken out on purpose too.
+_EXCLUDING_REASONS = ("rule-a", "rule-b", "rule-c", "duplicate")
 _excluded_divs: dict[str, frozenset[tuple[str, str]]] = {}
 
 
@@ -243,9 +248,11 @@ def excluded_divs(path: str = REMOVALS_PATH) -> frozenset[tuple[str, str]]:
 
 
 # Volumes only some works of which are built, by file: the work divs measured. Text outside
-# them is not part of any built work (NPNF2-04's other works wait for 5.6a), so it is not
-# read. The adapter names the same divs (`ingest.church_fathers.VOLUME_WORKS`).
-VOLUME_SCOPE = {"npnf204.xml": ("vii.ii",)}
+# them is not part of any built work (NPNF2-04's other works wait for 5.6a; an NPNF volume
+# 5.6a adds has title pages, prolegomena and indexes around its works), so it is not read.
+# The adapter names the same divs (`ingest.church_fathers.VOLUME_WORKS` and `NPNF_WORKS`).
+VOLUME_SCOPE = {"npnf204.xml": ("vii.ii",), "npnf207.xml": ("ii", "iii", "iv"),
+                "npnf208.xml": ("vii", "viii", "ix")}
 
 
 def _in_scope(div_id: str | None, scope: tuple[str, ...] | None) -> bool:
@@ -285,6 +292,8 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     removed = removed_paragraphs()
     withheld = withheld_chapters()
     excluded = {d for f, d in excluded_divs() if f == source_file}
+    # 5.6b's headings and editors' paragraphs inside the author's chapters.
+    class_regions, heading_divs, paragraph_regions = theologians.not_body(source_file)
     quotes = {}
     for q in kept_quotes(source_file):
         quotes.setdefault(q.first, []).append(q)
@@ -316,8 +325,15 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                     for printed, without in PLAIN_CALLERS.get((source_file, child.get("id")),
                                                               ()):
                         text = text.replace(printed, without)
+                    text = theologians.without_page_refs(source_file, text)
                     own = "apparatus" if region == "body" and (
                         _paragraph_sha1(text) in removed or div_id in own_text) else region
+                    if own == "body" and div_id in heading_divs:
+                        own = "heading"           # a div's own heading lines (5.6b)
+                    elif own == "body" and child.get("id") in paragraph_regions:
+                        own = paragraph_regions[child.get("id")]
+                    elif own == "body" and child.get("class") in class_regions:
+                        own = class_regions[child.get("class")]
                     if own == "body" and (mostly_foreign(text)
                                           or (source_file, div_id) in withheld
                                           or (source_file, div_id) in REPLACED_CHAPTERS):
@@ -339,6 +355,33 @@ def thml_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
                 walk(child, div_id, region, in_div)
 
     walk(root, None, "body", False)
+    return [u for u in units if u.text.strip()]
+
+
+def gutenberg_units(path: str, source_file: str) -> list[SourceUnit]:
+    """A Project Gutenberg text (5.6b, `ingest.gutenberg_text`). Body is its paragraphs
+    between the START and END lines, before its notes heading; each note is "note". A
+    paragraph in capitals throughout is "heading"; the edition's front matter and
+    contents (`ingest.theologians.TEXT_APPARATUS`) are "apparatus"; a paragraph mostly in
+    another language is "withheld". unit_id is the paragraph's number (`p<k>`)."""
+    from ingest import gutenberg_text
+    name = source_file.removeprefix(f"../{theologians.SOURCE_DIR}/")
+    work = next(w for w in theologians.WORKS if w.file == name)
+    with open(path, encoding="utf-8", newline="") as f:
+        raw = f.read().replace("\r\n", "\n")
+    paras, notes = gutenberg_text.split_notes(
+        gutenberg_text.paragraphs(gutenberg_text.book_text(raw)), work.notes_heading)
+    texts = [gutenberg_text.CALLER.sub(
+        lambda m: "" if m.group(1) in notes else m.group(), t) for t, _ in paras]
+    apparatus = theologians.text_apparatus(name, texts)
+    units = []
+    for k, text in enumerate(texts):
+        letters = [c for c in text if c.isalpha()]
+        region = ("apparatus" if k in apparatus
+                  else "heading" if letters and all(c.isupper() for c in letters)
+                  else "withheld" if mostly_foreign(text) else "body")
+        units.append(SourceUnit(source_file, f"p{k + 1}", text, region))
+    units += [SourceUnit(source_file, None, text, "note") for text in notes.values()]
     return [u for u in units if u.text.strip()]
 
 
@@ -966,6 +1009,48 @@ def ccc_us_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
     return units
 
 
+# The Compendium's references line under each question ("27-30 44-45"), and a footnote
+# of its introduction ("[1] John Paul II, …").
+_COMPENDIUM_NUMBERS = re.compile(r"^[\d\s,;\-–]+$")
+_COMPENDIUM_NOTE = re.compile(r"^\[\d+\]")
+
+
+def compendium_units(path: str, source_file: str | None = None) -> list[SourceUnit]:
+    """vatican.va's Compendium of the Catechism (5.5). One unit per paragraph or list item
+    of the page's `#corpo`: the language bar and contents before the motu proprio's
+    heading are contents, centred lines headings, the introduction's "[n]" footnotes
+    notes, and the line of CCC paragraph numbers under each question apparatus (the
+    adapter keeps it in metadata). Everything else is body, the motu proprio,
+    introduction, appendix and the texts between sections included, so what the adapter
+    leaves out shows as uncovered."""
+    source_file = source_file or os.path.basename(path)
+    with open(path, "rb") as f:
+        soup = BeautifulSoup(f.read().decode("latin-1"), "html.parser")
+    units = []
+    contents = True
+    for el in soup.find(id="corpo").find_all(["p", "li"]):
+        if el.name == "p" and el.find_parent("li") is not None:
+            continue
+        for br in el.find_all("br"):
+            br.replace_with(" ")
+        text = " ".join(el.get_text("").split())
+        if not text:
+            continue
+        contents = contents and text != "MOTU PROPRIO"
+        if contents:
+            region = "toc"
+        elif el.get("align") == "center":
+            region = "heading"
+        elif _COMPENDIUM_NOTE.match(text):
+            region = "note"
+        elif _COMPENDIUM_NUMBERS.match(text):
+            region = "apparatus"
+        else:
+            region = "body"
+        units.append(SourceUnit(source_file, None, text, region))
+    return units
+
+
 # --------------------------------------------------------------------------- files
 
 # Collections whose files are listed in sources/<collection>/manifest.json, by format.
@@ -1009,7 +1094,11 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
             # layer by size; `tests/test_papal_pdf.py` checks it against its own index and
             # its run of numbered paragraphs.
             entries = [e for e in entries if not e["file"].endswith(".pdf")]
-        return [e["file"] for e in entries]
+        files = [e["file"] for e in entries]
+        if collection == theologians.COLLECTION:
+            # 5.6b's works, read from sources/theologians/ (`ingest.theologians`).
+            files += [f"../{theologians.SOURCE_DIR}/{w.file}" for w in theologians.WORKS]
+        return files
     if collection == "canon-law":
         with open(os.path.join(base, "pages.json"), encoding="utf-8") as f:
             return [p["file"] for p in json.load(f) if p.get("parsed", True)]
@@ -1023,8 +1112,9 @@ def collection_files(collection: str, sources: str = SOURCES) -> list[str]:
         return sorted(os.path.relpath(p, base)
                       for p in glob(os.path.join(base, "eng-web-c_usfm", "*.usfm")))
     if collection == "catechism":
-        # The words come from the US edition (#279); ccc.json supplies only structure.
-        return ["us-edition/ccc-us.json"]
+        # The CCC's words come from the US edition (#279); ccc.json supplies only
+        # structure. The Compendium is vatican.va's page (5.5).
+        return [CCC_FILE, "compendium-ccc.html"]
     if collection == "summa":
         return ["summa.xml"]
     raise ValueError(f"unknown collection {collection!r}")
@@ -1036,6 +1126,12 @@ def file_units(collection: str, source_file: str, sources: str = SOURCES) -> lis
         return summa_units(path, source_file)
     if source_file.endswith(".xml"):
         return thml_units(path, source_file)
+    if source_file.endswith(".txt") and any(
+            w.ebook and source_file == f"../{theologians.SOURCE_DIR}/{w.file}"
+            for w in theologians.WORKS):
+        return gutenberg_units(path, source_file)
+    if collection == "catechism" and source_file.endswith(".html"):
+        return compendium_units(path, source_file)
     if source_file.endswith(".html"):
         return html_units(path, source_file,
                           papal=collection in PAPAL_COLLECTIONS or collection == "church-law",

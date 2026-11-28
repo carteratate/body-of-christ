@@ -1,11 +1,10 @@
 "use client";
 
 import { useRef, useState, type CSSProperties } from "react";
-import { scopeOptions } from "@/lib/collection-scopes";
+import { SCOPED_COLLECTIONS, scopeOptions } from "@/lib/collection-scopes";
 import { COLLECTIONS, hexToRgb } from "@/lib/collections";
 import type { ScopeExclusions, SearchDraftEvent } from "@/lib/search-draft";
 import { GenreFilter } from "./GenreFilter";
-import { TranslationSelector } from "./TranslationSelector";
 import styles from "./CollectionToggles.module.css";
 
 type ScopeEvent = Extract<SearchDraftEvent, { readonly collection: string }>;
@@ -13,8 +12,6 @@ type ScopeEvent = Extract<SearchDraftEvent, { readonly collection: string }>;
 interface CollectionTogglesProps {
   activeCollections: readonly string[];
   onToggle: (collection: string) => void;
-  translation: string;
-  onTranslationChange: (t: string) => void;
   /** Genre and issuer filters (5.1a); a collection without options has no caret. */
   excluded?: Readonly<Record<string, ScopeExclusions>>;
   onScopeEvent?: (event: ScopeEvent) => void;
@@ -34,27 +31,20 @@ function Caret() {
 export function CollectionToggles({
   activeCollections,
   onToggle,
-  translation,
-  onTranslationChange,
   excluded = {},
   onScopeEvent,
   scopesLocked = false,
 }: CollectionTogglesProps) {
-  const [translationOpen, setTranslationOpen] = useState(false);
   const [scopeOpen, setScopeOpen] = useState<string | null>(null);
   const openCue = useRef<HTMLButtonElement | null>(null);
   // A search starting closes the panel for good, not just while it runs.
   if (scopesLocked && scopeOpen !== null) setScopeOpen(null);
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className="text-[10px] font-medium uppercase tracking-widest text-brand-muted">
-        Sources:
-      </span>
+    <div className="flex flex-wrap items-center gap-1.5 max-md:justify-center">
 
       {COLLECTIONS.map((col) => {
         const isActive = activeCollections.includes(col.key);
-        const isBible = col.key === "bible";
         const rgb = hexToRgb(col.hex);
 
         const activeStyle = {
@@ -67,44 +57,6 @@ export function CollectionToggles({
           border: `1px solid rgba(${rgb},0.15)`,
           color: `rgba(${rgb},0.65)`,
         };
-
-        if (isBible) {
-          return (
-            <div key={col.key} className="relative">
-              {/* Split-button pill: left part toggles collection, right part opens translation dropdown */}
-              <div
-                className="flex items-center rounded-full text-xs font-medium transition-colors"
-                style={isActive ? activeStyle : inactiveStyle}
-              >
-                <button
-                  onClick={() => onToggle(col.key)}
-                  className="flex items-center gap-1 py-1 pl-3 pr-1.5"
-                  aria-pressed={isActive}
-                >
-                  {col.label}
-                </button>
-                <button
-                  onClick={() => setTranslationOpen(true)}
-                  aria-label="Select Bible translation"
-                  aria-expanded={translationOpen}
-                  className="py-1 pr-2 text-[9px] transition-opacity hover:opacity-70"
-                >
-                  ▾
-                </button>
-              </div>
-
-              {translationOpen && (
-                <TranslationSelector
-                  value={translation}
-                  onChange={(t) => {
-                    onTranslationChange(t);
-                  }}
-                  onClose={() => setTranslationOpen(false)}
-                />
-              )}
-            </div>
-          );
-        }
 
         if (onScopeEvent && scopeOptions(col.key)) {
           // The pill keeps its width: selecting slides the name left and shows the caret.
@@ -140,7 +92,8 @@ export function CollectionToggles({
                 }}
                 aria-haspopup="dialog"
                 aria-expanded={open}
-                aria-label={`Filter ${col.label} by kind and pope`}
+                aria-label={`Filter ${col.label} by ${
+                  (SCOPED_COLLECTIONS[col.key] ?? []).includes("documents") ? "work" : "kind and pope"}`}
                 aria-hidden={!isActive}
                 disabled={scopesLocked}
                 tabIndex={isActive ? 0 : -1}
@@ -160,6 +113,10 @@ export function CollectionToggles({
           );
         }
 
+        // The Bible is a plain pill: its one-choice translation dropdown was removed.
+        // A second translation should come back as a single-choice "Translation" list
+        // in the 5.1a caret panel (GenreFilter, with a Bible entry in collection-scopes),
+        // not as a dropdown on the pill.
         return (
           <button
             key={col.key}

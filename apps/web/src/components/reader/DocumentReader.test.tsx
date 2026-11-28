@@ -750,7 +750,7 @@ describe("DocumentReader overview", () => {
   it("uses source-specific searchable section language and preserves original numbering", async () => {
     navigation.params = new Map([["from", "library"]]);
     api.getToc.mockResolvedValue({
-      document: { ...documentInfo("doc-a"), collection: "catechism", title: "Catechism" },
+      document: { ...documentInfo("doc-a"), collection: "catechism", title: "Catechism of the Catholic Church" },
       chapters: Array.from({ length: 13 }, (_, index) => ({ chapter_key: `range-${index + 1}`, chapter_label: `CCC §§${index * 100}–${index * 100 + 99}` })),
     });
     render(<DocumentReader docId="doc-a" />);

@@ -90,8 +90,8 @@ contents. If Carter chose to copy the corpus data, `$REPO/datapipeline/sources` 
 ## 6. Main checkout dependencies
 
 In `$REPO`: `npm ci` in `apps/web`; a venv at `services/api/.venv` with
-`pip install -e ".[dev]"`; a venv at `datapipeline/.venv` with
-`pip install -r requirements.txt`.
+`pip install --require-hashes -r requirements-dev.lock && pip install --no-deps -e .`;
+a venv at `datapipeline/.venv` with `pip install --require-hashes -r requirements.lock`.
 
 Install headless Chromium so agents can check pages with Playwright. Playwright isn't a
 dependency of `apps/web`, so pick one version (the latest, from `npm view playwright version`)

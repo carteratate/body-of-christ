@@ -80,7 +80,7 @@ def test_the_translator_is_the_passages_then_the_cards_then_the_translation():
 
 
 def test_an_unofficial_english_canon_names_its_translator_once_and_links_the_latin():
-    card = _card(collection="canon-law", text_status="unofficial_english",
+    card = _card(collection="church-law", text_status="unofficial_english",
                  official_latin_url="https://www.vatican.va/latin.html",
                  card_translator="The Vatican's English translation",
                  document_url="https://www.vatican.va/cic_index_en.html")
@@ -167,18 +167,16 @@ def test_an_unknown_card_version_is_treated_as_before_4_4():
     assert card_notes.card_version(1) == card_notes.card_version("1") == 1
 
 
-def test_kind_and_form_name_a_papal_kind_the_badge_does_not():
+def test_kind_and_form_name_a_papal_kind():
+    # The Papal documents badge names no kind, so every papal kind is shown.
     kf = card_notes.kind_and_form
-    assert kf(DocumentFacts(genre="encyclical"), "encyclicals") is None
-    assert kf(DocumentFacts(genre="encyclical", form="brief"), "encyclicals") == \
-        "Encyclical, issued as a brief"
-    # Evangelii Gaudium sits under the Encyclicals badge.
-    assert kf(DocumentFacts(genre="apostolic-exhortation"), "encyclicals") == \
-        "Apostolic exhortation"
-    assert kf(DocumentFacts(genre="apostolic-letter"), "papal-documents") == "Apostolic letter"
-    assert kf(DocumentFacts(form="brief"), "encyclicals") == "Issued as a brief"
-    assert kf(DocumentFacts(genre="treatise"), "church-fathers") is None
-    assert kf(DocumentFacts(genre="other", form="bull"), "papal-documents") == "Issued as a bull"
+    assert kf(DocumentFacts(genre="encyclical")) == "Encyclical"
+    assert kf(DocumentFacts(genre="encyclical", form="brief")) == "Encyclical, issued as a brief"
+    assert kf(DocumentFacts(genre="apostolic-exhortation")) == "Apostolic exhortation"
+    assert kf(DocumentFacts(genre="apostolic-letter")) == "Apostolic letter"
+    assert kf(DocumentFacts(form="brief")) == "Issued as a brief"
+    assert kf(DocumentFacts(genre="treatise")) is None
+    assert kf(DocumentFacts(genre="other", form="bull")) == "Issued as a bull"
 
 
 def test_the_facts_query_reads_only_the_card_keys_of_either_metadata():

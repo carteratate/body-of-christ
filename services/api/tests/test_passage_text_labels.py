@@ -38,10 +38,10 @@ INDEX = "https://www.vatican.va/archive/cod-iuris-canonici/cic_index_en.html"
 
 SEED = f"""
     INSERT INTO corpus_publishes (id, collections, qdrant_collection)
-    VALUES ('rel-4', ARRAY['canon-law'], 'chunks-rel-4');
+    VALUES ('rel-4', ARRAY['church-law'], 'chunks-rel-4');
 
     INSERT INTO documents (id, collection, title, author, year, translation, metadata)
-    VALUES ('{CODE}', 'canon-law', 'Code of Canon Law', NULL, 1983, '',
+    VALUES ('{CODE}', 'church-law', 'Code of Canon Law', NULL, 1983, '',
             '{{"url": "{INDEX}", "official_latin_urls":
                {{"can/295": "{LATIN_295}", "can/579": "{LATIN_579}"}}}}'),
            ('{FATHERS}', 'church-fathers', 'Scanned Works', 'Aphrahat', 345, '', '{{}}');
@@ -63,6 +63,7 @@ SEED = f"""
       ('{P_SUFFIXED}', '{CODE}', -1000001, 'can/579#retired-rel-4', 'book-1', 'Book I',
        'Can. 579', 'old 579', now());
 
+    -- Snapshots keep the key of their day: these were taken before 5.1b.3.
     INSERT INTO corpus_tombstones (entity, id, document_id, retired_at, publish_id,
                                    removal_key, rule, reason_code, public_reason,
                                    church_act, snapshot)
@@ -79,7 +80,7 @@ SEED = f"""
          "reference": "Can. 579", "chapter_label": "Book I"}}');
 
     INSERT INTO searches (id, user_id, query, filters, result_count)
-    VALUES ('{SEARCH}', '{USER}', 'marriage', '{{"collections": ["canon-law"]}}', 4);
+    VALUES ('{SEARCH}', '{USER}', 'marriage', '{{"collections": ["church-law"]}}', 4);
     INSERT INTO retrievals (search_id, chunk_id, rank, reranker_score, explanation) VALUES
       ('{SEARCH}', '{P_PLAIN}', 1, 0.9, NULL),
       ('{SEARCH}', '{P_UNOFFICIAL}', 2, 0.8, NULL),
@@ -96,7 +97,8 @@ LABELS = ("text_source", "text_status", "official_latin_url")
 def cluster():
     with local_cluster("tc-text-labels-") as running:
         running.sql(PRODUCTION_SCHEMA)
-        running.migrate(*EARLIER, SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name)
+        running.migrate(*EARLIER, SCHEMA_MIGRATION.name, VALIDATE_MIGRATION.name,
+                        "0046_collection_keys.sql", "0048_drop_legacy_collection_keys.sql")
         running.sql(USER_TABLES)
         running.sql(SEED)
         yield running

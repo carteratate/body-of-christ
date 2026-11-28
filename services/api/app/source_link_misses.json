@@ -660,7 +660,17 @@
   "fea7b3ef-b8cf-589d-ba81-81b6bc299489",
   "ff1e99b4-b955-557b-b849-24db6ab351e2",
   "ff49331d-bb56-52a3-8a50-7b4f7b80cdda",
-  "ff8f03eb-aaf0-5f3b-acf4-38847a495dc8"
+  "ff8f03eb-aaf0-5f3b-acf4-38847a495dc8",
+  "2da42702-a4ba-5721-969e-6ce135cb3ef3",
+  "7022565e-7abd-5b46-a1ea-3a95f16bcdb7",
+  "92f43681-b372-5e16-b78a-7368f3bc00a2",
+  "b3946f38-c68b-5d39-99f6-3ca22347130b",
+  "bd99ab8f-8ff7-5b30-bf81-9afbce92f9d8",
+  "be11b07d-c84a-530c-9d39-4534dbfc82c4",
+  "d0143da9-413a-599e-b684-c5ecce653cb3",
+  "d2cf81d3-f2ff-5a58-bbed-88b4ed843e2f",
+  "d56bf4f7-5e31-5c7d-9cde-555b1e5d67fe",
+  "fc0accc8-4974-5448-8c62-c012f16b4655"
  ],
  "from_build": {
   "generated": "2026-11-23",
@@ -708,11 +718,12 @@
    "encyclicals/quas-primas",
    "encyclicals/rerum-novarum",
    "encyclicals/spiritus-paraclitus",
-   "papal-documents/ubicumque-et-semper"
+   "papal-documents/ubicumque-et-semper",
+   "catechism/compendium"
   ],
   "counts": {
    "found": 23,
-   "repeated": 1
+   "repeated": 8
   },
   "chunk_ids": [
    "003874c0-dd62-541b-a39b-f73025ba3d13",
@@ -1162,7 +1173,17 @@
    "fc35e5df-d3dd-522c-aca2-48b1530b331f",
    "fcf13bc5-4db2-523c-a725-9128d115ec75",
    "fdf1659a-93c1-5acb-a07f-7dbfe53d6d16",
-   "fea7b3ef-b8cf-589d-ba81-81b6bc299489"
+   "fea7b3ef-b8cf-589d-ba81-81b6bc299489",
+   "2da42702-a4ba-5721-969e-6ce135cb3ef3",
+   "7022565e-7abd-5b46-a1ea-3a95f16bcdb7",
+   "92f43681-b372-5e16-b78a-7368f3bc00a2",
+   "b3946f38-c68b-5d39-99f6-3ca22347130b",
+   "bd99ab8f-8ff7-5b30-bf81-9afbce92f9d8",
+   "be11b07d-c84a-530c-9d39-4534dbfc82c4",
+   "d0143da9-413a-599e-b684-c5ecce653cb3",
+   "d2cf81d3-f2ff-5a58-bbed-88b4ed843e2f",
+   "d56bf4f7-5e31-5c7d-9cde-555b1e5d67fe",
+   "fc0accc8-4974-5448-8c62-c012f16b4655"
   ]
  }
 }

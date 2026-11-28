@@ -20,13 +20,13 @@ source's adapter in `SOURCE_BUILDS`, and the eight collections a publish writes 
 | Collection (published) | Sources (`sources/<key>/`) | Source adapter |
 |---|---|---|
 | `bible` | `bible` | `ingest/bible.py` |
-| `catechism` | `catechism` | `ingest/catechism.py` |
+| `catechism` | `catechism` | `ingest/catechism.py`, then `ingest/catechism_compendium.py` (the Compendium) and `ingest/roman_catechism.py` (the Roman Catechism) |
 | `church-fathers` | `church-fathers`, and Boethius from `medieval` | `ingest/church_fathers.py`, `ingest/medieval.py` |
 | `church-law` | `canon-law`, `church-law` (Universi Dominici Gregis, 5.4) | `ingest/canon_law.py`, `ingest/universal_law.py` |
 | `councils` | `councils` | `ingest/councils.py` |
 | `papal` | `encyclicals`, `apostolic-exhortations`, `papal-documents` | `ingest/encyclicals.py`, `ingest/apostolic_exhortations.py`, `ingest/papal_documents.py` |
 | `summa` | `summa` | `ingest/summa.py` |
-| `theologians` | `medieval` (all but Boethius) | `ingest/medieval.py` |
+| `theologians` | `medieval` (all but Boethius), and 5.6b's theologians and spiritual writers from `sources/theologians/` | `ingest/medieval.py`, then `ingest/theologians.py` (source key `ingest.keys.THEOLOGIANS`) |
 
 A source keeps its old name: the work registry files each frozen ID under it, the checks
 (0.1a to 0.1c) and their known defects are keyed by it, and the embedding overlap follows
@@ -50,10 +50,15 @@ The three papal adapters build an older document from its public-domain printing
 ## Setup
 
 ```bash
-pip install -r requirements.txt
+pip install --require-hashes -r requirements.lock
 cp .env.example .env
 # Fill in the Supabase, Qdrant, and OpenAI values.
 ```
+
+`requirements.txt` lists what the pipeline needs; `requirements.lock` pins the exact
+versions (with hashes) that CI tests. After editing `requirements.txt`, run
+`scripts/lock_python_deps.sh datapipeline` from the repo root (needs `pip install uv`)
+and commit both files. CI fails when the lock is out of date.
 
 ## Publish one collection
 
